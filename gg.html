@@ -1,0 +1,2787 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LV GmbH — DATENBANK</title>
+
+<style>
+:root{
+  --bg:#050505;
+  --panel:#0d0d10;
+  --panel2:#121217;
+  --line:#292930;
+  --text:#f5f5f5;
+  --muted:#777;
+  --acid:#d8ff00;
+  --pink:#ff2aa8;
+  --cyan:#00e5ff;
+  --red:#ff3b3b;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    linear-gradient(rgba(216,255,0,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(216,255,0,.025) 1px,transparent 1px),
+    var(--bg);
+  background-size:32px 32px;
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+header{
+  min-height:76px;
+  padding:14px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  border-bottom:2px solid var(--acid);
+  background:#050505;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.brand-main{
+  font:900 22px monospace;
+  letter-spacing:-1px;
+}
+
+.brand-sub{
+  margin-top:4px;
+  color:var(--muted);
+  font:9px monospace;
+  letter-spacing:3px;
+}
+
+.brand-divider{
+  color:var(--pink);
+}
+
+nav{
+  display:flex;
+  gap:8px;
+}
+
+button{
+  cursor:pointer;
+}
+
+.nav{
+  padding:10px 14px;
+  background:#09090b;
+  color:#aaa;
+  border:1px solid var(--line);
+  font:900 10px monospace;
+  letter-spacing:1px;
+}
+
+.nav.active{
+  background:var(--acid);
+  color:#000;
+  border-color:var(--acid);
+  transform:skew(-6deg);
+  box-shadow:4px 4px 0 var(--pink);
+}
+
+.status-db{
+  color:#888;
+  font:9px monospace;
+}
+
+.status-db span{
+  display:inline-block;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--acid);
+  box-shadow:0 0 10px var(--acid);
+}
+
+main{
+  max-width:1400px;
+  margin:auto;
+  padding:30px 24px 80px;
+}
+
+.view{
+  display:none;
+}
+
+.view.active{
+  display:block;
+}
+
+.head{
+  margin-bottom:25px;
+  padding-bottom:18px;
+  border-bottom:1px solid var(--line);
+}
+
+.kicker{
+  color:var(--pink);
+  font:900 10px monospace;
+  letter-spacing:3px;
+}
+
+h1{
+  margin:8px 0 0;
+  font:900 clamp(34px,6vw,70px)/.9 monospace;
+  letter-spacing:-4px;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  box-shadow:6px 6px 0 #000;
+}
+
+.card + .card{
+  margin-top:20px;
+}
+
+.card-head{
+  padding:15px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  font:900 11px monospace;
+}
+
+.card-body{
+  padding:18px;
+}
+
+textarea{
+  width:100%;
+  min-height:430px;
+  resize:vertical;
+  padding:18px;
+  background:#020202;
+  color:var(--acid);
+  border:1px solid #333;
+  outline:none;
+  font:13px/1.5 monospace;
+}
+
+textarea.small{
+  min-height:180px;
+}
+
+textarea:focus{
+  border-color:var(--acid);
+  box-shadow:0 0 0 1px var(--acid);
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:15px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  padding:12px 18px;
+  background:var(--acid);
+  color:#000;
+  border:1px solid var(--acid);
+  font:900 11px monospace;
+  letter-spacing:1px;
+  box-shadow:4px 4px 0 #000;
+}
+
+.btn.secondary{
+  background:#09090b;
+  color:#fff;
+  border-color:#444;
+}
+
+.btn.pink{
+  background:var(--pink);
+  color:#000;
+  border-color:var(--pink);
+}
+
+.btn.cyan{
+  background:var(--cyan);
+  color:#000;
+  border-color:var(--cyan);
+}
+
+.status{
+  margin-top:16px;
+  padding:13px;
+  border:1px solid var(--line);
+  min-height:43px;
+  font:11px monospace;
+}
+
+.status.ok{
+  color:var(--acid);
+  border-color:var(--acid);
+}
+
+.status.error{
+  color:var(--red);
+  border-color:var(--red);
+}
+
+.status.warn{
+  color:var(--pink);
+  border-color:var(--pink);
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.stat{
+  padding:18px;
+  background:#09090b;
+  border:1px solid var(--line);
+}
+
+.stat-label{
+  color:var(--muted);
+  font:9px monospace;
+  letter-spacing:2px;
+}
+
+.stat-value{
+  margin-top:8px;
+  font:900 36px monospace;
+}
+
+.toolbar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:14px;
+}
+
+.tab{
+  padding:10px 14px;
+  background:#09090b;
+  color:#888;
+  border:1px solid var(--line);
+  font:900 10px monospace;
+}
+
+.tab.active{
+  color:#000;
+  background:var(--pink);
+  border-color:var(--pink);
+}
+
+.search{
+  margin-left:auto;
+  min-width:260px;
+  padding:10px 12px;
+  background:#050505;
+  color:#fff;
+  border:1px solid var(--line);
+  outline:none;
+  font:11px monospace;
+}
+
+.search:focus{
+  border-color:var(--cyan);
+}
+
+.table-wrap{
+  overflow:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+}
+
+th{
+  padding:12px 10px;
+  text-align:left;
+  white-space:nowrap;
+  color:var(--acid);
+  background:#050505;
+  border-bottom:2px solid var(--acid);
+  font:900 9px monospace;
+  letter-spacing:1px;
+}
+
+td{
+  padding:12px 10px;
+  border-bottom:1px solid #202025;
+}
+
+tr:hover{
+  background:rgba(216,255,0,.04);
+}
+
+.mono{
+  color:var(--cyan);
+  font-family:monospace;
+}
+
+.good{
+  color:var(--acid);
+}
+
+.bad{
+  color:var(--red);
+}
+
+.warn{
+  color:var(--pink);
+}
+
+.info{
+  color:var(--cyan);
+}
+
+.query-input{
+  width:100%;
+  padding:15px;
+  background:#030303;
+  color:#fff;
+  border:1px solid var(--line);
+  outline:none;
+  font:12px monospace;
+}
+
+.query-input:focus{
+  border-color:var(--cyan);
+}
+
+.examples{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.examples button{
+  padding:7px 10px;
+  color:#999;
+  background:#09090b;
+  border:1px solid var(--line);
+  font:9px monospace;
+}
+
+.examples button:hover{
+  color:var(--cyan);
+  border-color:var(--cyan);
+}
+
+.plan{
+  margin-top:20px;
+  padding:16px;
+  color:var(--cyan);
+  background:#020202;
+  border:1px solid var(--cyan);
+  font:11px monospace;
+  overflow:auto;
+  white-space:pre-wrap;
+}
+
+.prompt{
+  min-height:300px;
+  color:var(--cyan);
+}
+
+.field-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.field label{
+  color:var(--muted);
+  font:900 9px monospace;
+  letter-spacing:2px;
+}
+
+.field input,
+.field select{
+  width:100%;
+  padding:11px 12px;
+  background:#050505;
+  color:#fff;
+  border:1px solid var(--line);
+  outline:none;
+  font:11px monospace;
+}
+
+.field input:focus,
+.field select:focus{
+  border-color:var(--cyan);
+}
+
+.notice{
+  padding:14px;
+  border-left:3px solid var(--acid);
+  background:#09090b;
+  color:#aaa;
+  font:11px/1.5 monospace;
+  margin-bottom:15px;
+}
+
+.badge{
+  display:inline-block;
+  padding:4px 7px;
+  border:1px solid var(--line);
+  font:900 8px monospace;
+  letter-spacing:1px;
+}
+
+.badge.good{
+  border-color:var(--acid);
+}
+
+.badge.bad{
+  border-color:var(--red);
+}
+
+.badge.warn{
+  border-color:var(--pink);
+}
+
+.empty{
+  padding:30px;
+  text-align:center;
+  color:var(--muted);
+  font:11px monospace;
+}
+
+.hidden{
+  display:none!important;
+}
+
+@media(max-width:950px){
+
+  header{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  nav{
+    width:100%;
+    overflow:auto;
+  }
+
+  .status-db{
+    position:absolute;
+    right:15px;
+    top:20px;
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .field-grid{
+    grid-template-columns:1fr;
+  }
+
+  .search{
+    width:100%;
+    margin-left:0;
+  }
+
+  main{
+    padding:20px 12px;
+  }
+}
+
+@media(max-width:600px){
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+  <div>
+    <div class="brand-main">
+      LV GmbH <span class="brand-divider">|</span> DATENBANK
+    </div>
+
+    <div class="brand-sub">
+      DATENABGLEICH - VALIDIERUNG
+    </div>
+  </div>
+
+  <nav>
+
+    <button class="nav active" data-view="import">
+      ↓
+    </button>
+
+    <button class="nav" data-view="database">
+      ▦
+    </button>
+
+    <button class="nav" data-view="query">
+      ⚡
+    </button>
+
+  </nav>
+
+  <div class="status-db">
+    <span></span>
+    INDEXEDDB LOCAL
+  </div>
+
+</header>
+
+
+<main>
+
+
+<!-- =====================================================
+     DATEN EINGEBEN
+===================================================== -->
+
+<section id="view-import" class="view active">
+
+  <div class="head">
+    <div class="kicker">DATEN EINGABE</div>
+    <h1>Daten rein.<br>Abgleich raus.</h1>
+  </div>
+
+
+  <!-- GPT PROMPT -->
+
+  <div class="card">
+
+    <div class="card-head">
+      <strong>VORBEREITUNG</strong>
+      <span>GPT</span>
+    </div>
+
+    <div class="card-body">
+
+      <div class="notice">
+        Kopiere den folgenden Text und sende ihn zusammen mit
+        deinen beiden Tabellen an GPT. GPT bereitet die Daten
+        für den späteren Abgleich vor.
+      </div>
+
+<textarea
+  id="promptText"
+  class="prompt"
+  readonly>DU BIST EIN DATENASSISTENT FÜR DIE AUSWERTUNG VON BUCHUNGSDATEN AUS TELEKOMSHOPS.
+
+Ich gebe dir zwei Tabellen mit Buchungsdaten.
+
+Die Tabellen beziehen sich auf denselben fachlichen Zeitraum bzw. Vorgang,
+können aber unterschiedliche Einträge oder Schreibweisen enthalten.
+
+DEINE AUFGABE:
+
+1. Lies beide Tabellen vollständig.
+2. Übernimm jede vorhandene Zeile.
+3. Erhalte die Werte so, wie sie in der jeweiligen Tabelle stehen.
+4. Erfinde keine fehlenden Werte.
+5. Korrigiere keine Buchungsfehler.
+6. Korrigiere keine Tippfehler.
+7. Vereinheitliche nur die technische Struktur.
+8. Wenn ein Wert nicht eindeutig erkennbar ist, übernimm ihn nicht als erfundenen Wert.
+9. Ordne jede Zeile eindeutig der ursprünglichen Tabelle zu.
+10. Vergib für jede Zeile eine eindeutige record_id.
+11. Übernimm auch zusätzliche Spalten, sofern sie vorhanden sind.
+
+WICHTIG:
+
+Die beiden Tabellen dürfen NICHT miteinander vermischt werden.
+
+Es geht zunächst ausschließlich darum,
+die vorhandenen Buchungsdaten strukturiert abzubilden.
+
+Noch keinen Abgleich durchführen.
+Noch keine Abweichungen bewerten.
+Noch keine Buchung als richtig oder falsch einstufen.
+
+GIB DIE DATEN IN FOLGENDER STRUKTUR AUS:
+
+{
+  "version": "1.0",
+  "dataset": {
+    "name": "BOOKING_RECON",
+    "tables": [
+      {
+        "table_id": "TABLE_A",
+        "name": "Originalname Tabelle A",
+        "records": [
+          {
+            "record_id": "A-000001",
+            "date": "2026-08-01",
+            "source_table": "TABLE_A",
+            "data": {
+              "..."
+            }
+          }
+        ]
+      },
+      {
+        "table_id": "TABLE_B",
+        "name": "Originalname Tabelle B",
+        "records": [
+          {
+            "record_id": "B-000001",
+            "date": "2026-08-01",
+            "source_table": "TABLE_B",
+            "data": {
+              "..."
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+
+GIB AUSSCHLIESSLICH DIE DATENSTRUKTUR ZURÜCK.
+KEINE ERKLÄRUNG.
+KEINE BEWERTUNG.
+KEINE KORREKTUREN.</textarea>
+
+      <div class="actions">
+
+        <button
+          id="copyPrompt"
+          class="btn pink">
+          KOPIEREN
+        </button>
+
+      </div>
+
+      <div
+        id="promptStatus"
+        class="status">
+        Bereit.
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- DATEN ÜBERNEHMEN -->
+
+  <div class="card">
+
+    <div class="card-head">
+      <strong>AUSGABE VON GPT</strong>
+      <span>ÜBERNEHMEN</span>
+    </div>
+
+    <div class="card-body">
+
+<textarea
+  id="jsonInput"
+  spellcheck="false"
+  placeholder="Füge hier die vollständige Ausgabe von GPT ein."></textarea>
+
+      <div class="actions">
+
+        <button
+          id="importBtn"
+          class="btn">
+          ÜBERNEHMEN
+        </button>
+
+        <button
+          id="clearJson"
+          class="btn secondary">
+          CLEAR
+        </button>
+
+      </div>
+
+      <div
+        id="importStatus"
+        class="status">
+        Bereit.
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     DATENBANK
+===================================================== -->
+
+<section id="view-database" class="view">
+
+  <div class="head">
+    <div class="kicker">GESPEICHERTE DATEN</div>
+    <h1>DATENBANK</h1>
+  </div>
+
+
+  <div class="stats">
+
+    <div class="stat">
+      <div class="stat-label">TABELLE A</div>
+      <div id="tableACount" class="stat-value">0</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">TABELLE B</div>
+      <div id="tableBCount" class="stat-value">0</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">GESAMT</div>
+      <div id="recordCount" class="stat-value">0</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">ABWEICHUNGEN</div>
+      <div id="differenceCount" class="stat-value">0</div>
+    </div>
+
+  </div>
+
+
+  <div class="toolbar">
+
+    <button
+      class="tab active"
+      data-tab="tableA">
+      TABELLE A
+    </button>
+
+    <button
+      class="tab"
+      data-tab="tableB">
+      TABELLE B
+    </button>
+
+    <button
+      class="tab"
+      data-tab="differences">
+      ABWEICHUNGEN
+    </button>
+
+    <input
+      id="dbSearch"
+      class="search"
+      placeholder="Datenbank durchsuchen...">
+
+  </div>
+
+
+  <div class="card">
+
+    <div class="table-wrap">
+      <div id="databaseTable"></div>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     ABGLEICH
+===================================================== -->
+
+<section id="view-query" class="view">
+
+  <div class="head">
+    <div class="kicker">ABGLEICH</div>
+    <h1>VALIDIERUNG</h1>
+  </div>
+
+
+  <div class="card">
+
+    <div class="card-head">
+      <strong>ABGLEICH</strong>
+      <span>DETERMINISTISCH</span>
+    </div>
+
+    <div class="card-body">
+
+      <input
+        id="queryInput"
+        class="query-input"
+        placeholder="Vergleichsanfrage...">
+
+      <div class="examples">
+
+        <button
+          data-query="Vergleiche Tabelle A und Tabelle B und zeige alle Abweichungen.">
+          ALLE ABWEICHUNGEN
+        </button>
+
+        <button
+          data-query="Vergleiche Tabelle A und Tabelle B für den gewählten Zeitraum.">
+          ZEITRAUM
+        </button>
+
+        <button
+          data-query="Vergleiche die relevanten Buchungswerte aus Tabelle A und Tabelle B.">
+          BUCHUNGEN
+        </button>
+
+      </div>
+
+      <div class="actions">
+
+        <button
+          id="runQuery"
+          class="btn">
+          AUSFÜHREN
+        </button>
+
+        <button
+          id="clearQuery"
+          class="btn secondary">
+          CLEAR
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <div class="card-head">
+      <strong>VERGLEICHSKONFIGURATION</strong>
+      <span>FESTE REGELN</span>
+    </div>
+
+    <div class="card-body">
+
+      <div class="field-grid">
+
+        <div class="field">
+          <label>VON</label>
+          <input
+            id="dateFrom"
+            type="date">
+        </div>
+
+        <div class="field">
+          <label>BIS</label>
+          <input
+            id="dateTo"
+            type="date">
+        </div>
+
+        <div class="field">
+          <label>ABGLEICH ÜBER</label>
+          <input
+            id="matchKeys"
+            value="auftrag_id"
+            placeholder="z.B. auftrag_id, vertrags_id">
+        </div>
+
+        <div class="field">
+          <label>ZU VERGLEICHEN</label>
+          <input
+            id="numericFields"
+            value="menge,betrag"
+            placeholder="z.B. menge,betrag">
+        </div>
+
+      </div>
+
+      <div class="actions">
+
+        <button
+          id="resetConfig"
+          class="btn secondary">
+          ZURÜCKSETZEN
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="queryPlan"
+    class="plan hidden">
+  </div>
+
+
+  <div
+    id="queryResults"
+    class="card hidden"
+    style="margin-top:20px">
+  </div>
+
+</section>
+
+</main>
+
+
+<script>
+
+/* =========================================================
+   DATABASE
+========================================================= */
+
+const DB_NAME = "BOOKING_RECON_DB";
+
+const DB_VERSION = 1;
+
+const STORE_RECORDS = "records";
+const STORE_DIFFERENCES = "differences";
+
+let database = null;
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let state = {
+  records:[],
+  differences:[]
+};
+
+let currentTab = "tableA";
+
+
+/* =========================================================
+   OPEN DATABASE
+========================================================= */
+
+function openDatabase(){
+
+  if(database){
+    return Promise.resolve(database);
+  }
+
+  return new Promise((resolve,reject)=>{
+
+    const request =
+      indexedDB.open(
+        DB_NAME,
+        DB_VERSION
+      );
+
+    request.onupgradeneeded =
+      event => {
+
+        const db =
+          event.target.result;
+
+        if(
+          !db.objectStoreNames.contains(
+            STORE_RECORDS
+          )
+        ){
+
+          const store =
+            db.createObjectStore(
+              STORE_RECORDS,
+              {
+                keyPath:"id",
+                autoIncrement:true
+              }
+            );
+
+          store.createIndex(
+            "source_table",
+            "source_table",
+            {unique:false}
+          );
+
+          store.createIndex(
+            "record_id",
+            "record_id",
+            {unique:false}
+          );
+
+          store.createIndex(
+            "date",
+            "date",
+            {unique:false}
+          );
+
+        }
+
+        if(
+          !db.objectStoreNames.contains(
+            STORE_DIFFERENCES
+          )
+        ){
+
+          db.createObjectStore(
+            STORE_DIFFERENCES,
+            {
+              keyPath:"difference_id"
+            }
+          );
+
+        }
+
+      };
+
+    request.onsuccess =
+      () => {
+
+        database =
+          request.result;
+
+        resolve(database);
+
+      };
+
+    request.onerror =
+      () => {
+
+        reject(
+          request.error ||
+          new Error(
+            "IndexedDB konnte nicht geöffnet werden."
+          )
+        );
+
+      };
+
+  });
+
+}
+
+
+/* =========================================================
+   GET ALL
+========================================================= */
+
+function getAll(storeName){
+
+  return new Promise((resolve,reject)=>{
+
+    const tx =
+      database.transaction(
+        storeName,
+        "readonly"
+      );
+
+    const request =
+      tx.objectStore(
+        storeName
+      ).getAll();
+
+    request.onsuccess =
+      () => resolve(
+        request.result || []
+      );
+
+    request.onerror =
+      () => reject(
+        request.error
+      );
+
+  });
+
+}
+
+
+/* =========================================================
+   READ DATABASE
+========================================================= */
+
+async function readDatabase(){
+
+  await openDatabase();
+
+  return {
+    records:
+      await getAll(
+        STORE_RECORDS
+      ),
+
+    differences:
+      await getAll(
+        STORE_DIFFERENCES
+      )
+  };
+
+}
+
+
+/* =========================================================
+   CLEAR DATABASE
+========================================================= */
+
+function clearStore(storeName){
+
+  return new Promise((resolve,reject)=>{
+
+    const tx =
+      database.transaction(
+        storeName,
+        "readwrite"
+      );
+
+    tx.objectStore(
+      storeName
+    ).clear();
+
+    tx.oncomplete =
+      () => resolve();
+
+    tx.onerror =
+      () => reject(
+        tx.error
+      );
+
+  });
+
+}
+
+
+/* =========================================================
+   IMPORT
+========================================================= */
+
+async function importJSON(payload){
+
+  await openDatabase();
+
+  if(
+    !payload ||
+    !payload.dataset ||
+    !Array.isArray(
+      payload.dataset.tables
+    )
+  ){
+
+    throw new Error(
+      "Die Ausgabe konnte nicht erkannt werden."
+    );
+
+  }
+
+  const tables =
+    payload.dataset.tables;
+
+  if(tables.length !== 2){
+
+    throw new Error(
+      "Es werden genau zwei Tabellen benötigt."
+    );
+
+  }
+
+  const transaction =
+    database.transaction(
+      STORE_RECORDS,
+      "readwrite"
+    );
+
+  const store =
+    transaction.objectStore(
+      STORE_RECORDS
+    );
+
+  let inserted = 0;
+
+  for(
+    const table
+    of tables
+  ){
+
+    if(
+      !table.table_id ||
+      !Array.isArray(
+        table.records
+      )
+    ){
+
+      throw new Error(
+        "Eine Tabelle besitzt keine gültigen Daten."
+      );
+
+    }
+
+    for(
+      const record
+      of table.records
+    ){
+
+      if(
+        !record ||
+        !record.record_id
+      ){
+
+        continue;
+
+      }
+
+      store.put({
+
+        record_id:
+          String(
+            record.record_id
+          ),
+
+        source_table:
+          String(
+            table.table_id
+          ),
+
+        source_name:
+          String(
+            table.name ||
+            table.table_id
+          ),
+
+        date:
+          record.date ||
+          null,
+
+        data:
+          record.data &&
+          typeof record.data === "object"
+            ? record.data
+            : {},
+
+        imported_at:
+          new Date().toISOString()
+
+      });
+
+      inserted++;
+
+    }
+
+  }
+
+  return new Promise(
+    (resolve,reject)=>{
+
+      transaction.oncomplete =
+        () => resolve({
+          tables:2,
+          records:inserted
+        });
+
+      transaction.onerror =
+        () => reject(
+          transaction.error ||
+          new Error(
+            "Die Daten konnten nicht gespeichert werden."
+          )
+        );
+
+      transaction.onabort =
+        () => reject(
+          transaction.error ||
+          new Error(
+            "Die Übernahme wurde abgebrochen."
+          )
+        );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   REFRESH
+========================================================= */
+
+async function refresh(){
+
+  state =
+    await readDatabase();
+
+  const a =
+    state.records.filter(
+      r =>
+        r.source_table === "TABLE_A"
+    );
+
+  const b =
+    state.records.filter(
+      r =>
+        r.source_table === "TABLE_B"
+    );
+
+  document
+    .getElementById(
+      "tableACount"
+    )
+    .textContent =
+      a.length;
+
+  document
+    .getElementById(
+      "tableBCount"
+    )
+    .textContent =
+      b.length;
+
+  document
+    .getElementById(
+      "recordCount"
+    )
+    .textContent =
+      state.records.length;
+
+  document
+    .getElementById(
+      "differenceCount"
+    )
+    .textContent =
+      state.differences.length;
+
+  renderDatabase();
+
+}
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function esc(value){
+
+  return String(
+    value ?? ""
+  ).replace(
+    /[&<>"']/g,
+    char => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    })[char]
+  );
+
+}
+
+
+/* =========================================================
+   FORMAT DATA
+========================================================= */
+
+function formatData(data){
+
+  if(
+    data === null ||
+    data === undefined
+  ){
+
+    return "—";
+
+  }
+
+  if(
+    typeof data === "object"
+  ){
+
+    return JSON.stringify(
+      data
+    );
+
+  }
+
+  return String(data);
+
+}
+
+
+/* =========================================================
+   DATABASE RENDER
+========================================================= */
+
+function renderDatabase(){
+
+  const container =
+    document.getElementById(
+      "databaseTable"
+    );
+
+  const search =
+    document
+      .getElementById(
+        "dbSearch"
+      )
+      .value
+      .toLowerCase()
+      .trim();
+
+  if(
+    currentTab ===
+    "differences"
+  ){
+
+    renderDifferences(
+      container,
+      search
+    );
+
+    return;
+
+  }
+
+  const source =
+    currentTab === "tableA"
+      ? "TABLE_A"
+      : "TABLE_B";
+
+  let rows =
+    state.records.filter(
+      record =>
+        record.source_table ===
+        source
+    );
+
+  if(search){
+
+    rows =
+      rows.filter(
+        record =>
+          JSON.stringify(record)
+            .toLowerCase()
+            .includes(search)
+      );
+
+  }
+
+  if(!rows.length){
+
+    container.innerHTML =
+      `<div class="empty">
+        KEINE DATENSÄTZE VORHANDEN
+      </div>`;
+
+    return;
+
+  }
+
+  const keys = new Set();
+
+  rows.forEach(
+    row =>
+      Object.keys(
+        row.data || {}
+      ).forEach(
+        key =>
+          keys.add(key)
+      )
+  );
+
+  const columns =
+    Array.from(keys);
+
+  let html = `
+    <table>
+      <thead>
+        <tr>
+          <th>RECORD-ID</th>
+          <th>DATUM</th>
+          ${columns.map(
+            key =>
+              `<th>${esc(
+                key.toUpperCase()
+              )}</th>`
+          ).join("")}
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  rows.forEach(
+    row => {
+
+      html += `
+        <tr>
+          <td class="mono">
+            ${esc(row.record_id)}
+          </td>
+
+          <td>
+            ${esc(row.date || "—")}
+          </td>
+
+          ${columns.map(
+            key =>
+              `<td>${esc(
+                formatData(
+                  row.data[key]
+                )
+              )}</td>`
+          ).join("")}
+
+        </tr>
+      `;
+
+    }
+  );
+
+  html += `
+      </tbody>
+    </table>
+  `;
+
+  container.innerHTML =
+    html;
+
+}
+
+
+/* =========================================================
+   DIFFERENCES
+========================================================= */
+
+function renderDifferences(
+  container,
+  search
+){
+
+  let rows =
+    [...state.differences];
+
+  if(search){
+
+    rows =
+      rows.filter(
+        row =>
+          JSON.stringify(row)
+            .toLowerCase()
+            .includes(search)
+      );
+
+  }
+
+  if(!rows.length){
+
+    container.innerHTML =
+      `<div class="empty">
+        KEINE ABWEICHUNGEN GEFUNDEN
+      </div>`;
+
+    return;
+
+  }
+
+  let html = `
+    <table>
+
+      <thead>
+        <tr>
+          <th>STATUS</th>
+          <th>ABGLEICH</th>
+          <th>FELD</th>
+          <th>TABELLE A</th>
+          <th>TABELLE B</th>
+          <th>DIFFERENZ</th>
+        </tr>
+      </thead>
+
+      <tbody>
+  `;
+
+  rows.forEach(
+    row => {
+
+      const statusClass =
+        row.status === "DIFFERENCE"
+          ? "bad"
+          : "warn";
+
+      html += `
+        <tr>
+
+          <td>
+            <span class="badge ${statusClass}">
+              ${esc(row.status)}
+            </span>
+          </td>
+
+          <td class="mono">
+            ${esc(row.match_key)}
+          </td>
+
+          <td>
+            ${esc(row.field)}
+          </td>
+
+          <td>
+            ${esc(
+              formatData(
+                row.value_a
+              )
+            )}
+          </td>
+
+          <td>
+            ${esc(
+              formatData(
+                row.value_b
+              )
+            )}
+          </td>
+
+          <td class="${statusClass}">
+            ${esc(
+              formatData(
+                row.difference
+              )
+            )}
+          </td>
+
+        </tr>
+      `;
+
+    }
+  );
+
+  html += `
+      </tbody>
+    </table>
+  `;
+
+  container.innerHTML =
+    html;
+
+}
+
+
+/* =========================================================
+   VALUE
+========================================================= */
+
+function getField(
+  record,
+  field
+){
+
+  if(
+    record.data &&
+    Object.prototype.hasOwnProperty.call(
+      record.data,
+      field
+    )
+  ){
+
+    return record.data[field];
+
+  }
+
+  return undefined;
+
+}
+
+
+/* =========================================================
+   NORMALIZE KEY
+========================================================= */
+
+function normalizeKey(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+  .trim()
+  .toLowerCase();
+
+}
+
+
+/* =========================================================
+   MATCH KEY
+========================================================= */
+
+function makeMatchKey(
+  record,
+  fields
+){
+
+  return fields
+    .map(
+      field =>
+        normalizeKey(
+          getField(
+            record,
+            field
+          )
+        )
+    )
+    .join("||");
+
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function dateAllowed(
+  record,
+  from,
+  to
+){
+
+  if(!record.date){
+    return true;
+  }
+
+  if(from && record.date < from){
+    return false;
+  }
+
+  if(to && record.date > to){
+    return false;
+  }
+
+  return true;
+
+}
+
+
+/* =========================================================
+   NUMBER
+========================================================= */
+
+function numeric(
+  value
+){
+
+  if(
+    typeof value === "number"
+  ){
+
+    return Number.isFinite(value)
+      ? value
+      : null;
+
+  }
+
+  if(
+    value === null ||
+    value === undefined ||
+    value === ""
+  ){
+
+    return null;
+
+  }
+
+  const text =
+    String(value)
+      .replace(/\./g,"")
+      .replace(",",".")
+      .replace(/[^\d.-]/g,"");
+
+  const number =
+    Number(text);
+
+  return Number.isFinite(number)
+    ? number
+    : null;
+
+}
+
+
+/* =========================================================
+   COMPARISON
+========================================================= */
+
+async function compareTables(){
+
+  await openDatabase();
+
+  const from =
+    document
+      .getElementById(
+        "dateFrom"
+      )
+      .value;
+
+  const to =
+    document
+      .getElementById(
+        "dateTo"
+      )
+      .value;
+
+  const matchFields =
+    document
+      .getElementById(
+        "matchKeys"
+      )
+      .value
+      .split(",")
+      .map(
+        value =>
+          value.trim()
+      )
+      .filter(Boolean);
+
+  const numericFields =
+    document
+      .getElementById(
+        "numericFields"
+      )
+      .value
+      .split(",")
+      .map(
+        value =>
+          value.trim()
+      )
+      .filter(Boolean);
+
+  if(!matchFields.length){
+
+    throw new Error(
+      "Mindestens ein Abgleich-Feld ist erforderlich."
+    );
+
+  }
+
+  const tableA =
+    state.records.filter(
+      record =>
+        record.source_table === "TABLE_A" &&
+        dateAllowed(
+          record,
+          from,
+          to
+        )
+    );
+
+  const tableB =
+    state.records.filter(
+      record =>
+        record.source_table === "TABLE_B" &&
+        dateAllowed(
+          record,
+          from,
+          to
+        )
+    );
+
+  const mapB =
+    new Map();
+
+  tableB.forEach(
+    record => {
+
+      const key =
+        makeMatchKey(
+          record,
+          matchFields
+        );
+
+      if(
+        !mapB.has(key)
+      ){
+
+        mapB.set(
+          key,
+          []
+        );
+
+      }
+
+      mapB
+        .get(key)
+        .push(record);
+
+    }
+  );
+
+  const differences = [];
+
+  let comparisonCount = 0;
+
+  for(
+    const recordA
+    of tableA
+  ){
+
+    const key =
+      makeMatchKey(
+        recordA,
+        matchFields
+      );
+
+    const candidates =
+      mapB.get(key) || [];
+
+    if(!candidates.length){
+
+      differences.push({
+
+        difference_id:
+          "DIFF-" +
+          Date.now() +
+          "-" +
+          differences.length,
+
+        status:
+          "MISSING_IN_B",
+
+        match_key:
+          key,
+
+        field:
+          "__record__",
+
+        value_a:
+          recordA.record_id,
+
+        value_b:
+          null,
+
+        difference:
+          null
+
+      });
+
+      continue;
+
+    }
+
+    for(
+      const recordB
+      of candidates
+    ){
+
+      comparisonCount++;
+
+      for(
+        const field
+        of numericFields
+      ){
+
+        const valueA =
+          numeric(
+            getField(
+              recordA,
+              field
+            )
+          );
+
+        const valueB =
+          numeric(
+            getField(
+              recordB,
+              field
+            )
+          );
+
+        if(
+          valueA === null &&
+          valueB === null
+        ){
+
+          continue;
+
+        }
+
+        const difference =
+          (valueA ?? 0) -
+          (valueB ?? 0);
+
+        if(
+          difference !== 0
+        ){
+
+          differences.push({
+
+            difference_id:
+              "DIFF-" +
+              Date.now() +
+              "-" +
+              differences.length,
+
+            status:
+              "DIFFERENCE",
+
+            match_key:
+              key,
+
+            field,
+
+            value_a:
+              valueA,
+
+            value_b:
+              valueB,
+
+            difference,
+
+            record_a:
+              recordA.record_id,
+
+            record_b:
+              recordB.record_id
+
+          });
+
+        }
+
+      }
+
+    }
+
+  }
+
+  const mapA =
+    new Map();
+
+  tableA.forEach(
+    record => {
+
+      const key =
+        makeMatchKey(
+          record,
+          matchFields
+        );
+
+      mapA.set(
+        key,
+        true
+      );
+
+    }
+  );
+
+  tableB.forEach(
+    record => {
+
+      const key =
+        makeMatchKey(
+          record,
+          matchFields
+        );
+
+      if(
+        !mapA.has(key)
+      ){
+
+        differences.push({
+
+          difference_id:
+            "DIFF-" +
+            Date.now() +
+            "-" +
+            differences.length,
+
+          status:
+            "MISSING_IN_A",
+
+          match_key:
+            key,
+
+          field:
+            "__record__",
+
+          value_a:
+            null,
+
+          value_b:
+            record.record_id,
+
+          difference:
+            null
+
+        });
+
+      }
+
+    }
+  );
+
+  await clearStore(
+    STORE_DIFFERENCES
+  );
+
+  const transaction =
+    database.transaction(
+      STORE_DIFFERENCES,
+      "readwrite"
+    );
+
+  const store =
+    transaction.objectStore(
+      STORE_DIFFERENCES
+    );
+
+  differences.forEach(
+    difference =>
+      store.put(
+        difference
+      )
+  );
+
+  return new Promise(
+    (resolve,reject)=>{
+
+      transaction.oncomplete =
+        () => resolve({
+
+          tableA:
+            tableA.length,
+
+          tableB:
+            tableB.length,
+
+          comparisons:
+            comparisonCount,
+
+          differences:
+            differences.length,
+
+          plan:{
+            version:"1.0",
+
+            operation:
+              "COMPARE_TABLES",
+
+            period:{
+              from:
+                from || null,
+
+              to:
+                to || null
+            },
+
+            matching:{
+              strategy:
+                "EXACT",
+
+              fields:
+                matchFields
+            },
+
+            calculations:
+              numericFields.map(
+                field => ({
+                  field,
+                  operation:
+                    "A_MINUS_B"
+                })
+              ),
+
+            output:
+              "VALIDATED_DIFFERENCES"
+          }
+
+        });
+
+      transaction.onerror =
+        () => reject(
+          transaction.error
+        );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   PROMPT COPY
+========================================================= */
+
+document
+  .getElementById(
+    "copyPrompt"
+  )
+  .onclick =
+  async function(){
+
+    const prompt =
+      document
+        .getElementById(
+          "promptText"
+        )
+        .value;
+
+    try{
+
+      await navigator.clipboard.writeText(
+        prompt
+      );
+
+      const status =
+        document.getElementById(
+          "promptStatus"
+        );
+
+      status.className =
+        "status ok";
+
+      status.textContent =
+        "✓ KOPIERT. Tabellen jetzt zusammen mit dem Text an GPT senden.";
+
+    }
+    catch(error){
+
+      const status =
+        document.getElementById(
+          "promptStatus"
+        );
+
+      status.className =
+        "status error";
+
+      status.textContent =
+        "✕ Kopieren nicht möglich.";
+
+    }
+
+  };
+
+
+/* =========================================================
+   IMPORT
+========================================================= */
+
+document
+  .getElementById(
+    "importBtn"
+  )
+  .onclick =
+  async function(){
+
+    const status =
+      document.getElementById(
+        "importStatus"
+      );
+
+    try{
+
+      const text =
+        document
+          .getElementById(
+            "jsonInput"
+          )
+          .value
+          .trim();
+
+      if(!text){
+
+        throw new Error(
+          "Bitte zuerst die Ausgabe von GPT einfügen."
+        );
+
+      }
+
+      let json;
+
+      try{
+
+        json =
+          JSON.parse(
+            text
+          );
+
+      }
+      catch(error){
+
+        throw new Error(
+          "Die Ausgabe konnte nicht gelesen werden."
+        );
+
+      }
+
+      status.className =
+        "status";
+
+      status.textContent =
+        "ÜBERNEHMEN → SPEICHERE DATEN...";
+
+      const result =
+        await importJSON(
+          json
+        );
+
+      await refresh();
+
+      status.className =
+        "status ok";
+
+      status.textContent =
+        "✓ " +
+        result.records +
+        " Datensätze aus " +
+        result.tables +
+        " Tabellen gespeichert.";
+
+    }
+    catch(error){
+
+      console.error(error);
+
+      status.className =
+        "status error";
+
+      status.textContent =
+        "✕ " +
+        error.message;
+
+    }
+
+  };
+
+
+/* =========================================================
+   CLEAR
+========================================================= */
+
+document
+  .getElementById(
+    "clearJson"
+  )
+  .onclick =
+  function(){
+
+    document
+      .getElementById(
+        "jsonInput"
+      )
+      .value = "";
+
+  };
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+document
+  .querySelectorAll(
+    ".nav"
+  )
+  .forEach(
+    button => {
+
+      button.onclick =
+        function(){
+
+          document
+            .querySelectorAll(
+              ".nav"
+            )
+            .forEach(
+              item =>
+                item.classList
+                  .remove(
+                    "active"
+                  )
+            );
+
+          button.classList
+            .add(
+              "active"
+            );
+
+          document
+            .querySelectorAll(
+              ".view"
+            )
+            .forEach(
+              view =>
+                view.classList
+                  .remove(
+                    "active"
+                  )
+            );
+
+          document
+            .getElementById(
+              "view-" +
+              button.dataset.view
+            )
+            .classList
+            .add(
+              "active"
+            );
+
+          if(
+            button.dataset.view ===
+            "database"
+          ){
+
+            refresh();
+
+          }
+
+        };
+
+    }
+  );
+
+
+/* =========================================================
+   TABS
+========================================================= */
+
+document
+  .querySelectorAll(
+    ".tab"
+  )
+  .forEach(
+    button => {
+
+      button.onclick =
+        function(){
+
+          document
+            .querySelectorAll(
+              ".tab"
+            )
+            .forEach(
+              item =>
+                item.classList
+                  .remove(
+                    "active"
+                  )
+            );
+
+          button.classList
+            .add(
+              "active"
+            );
+
+          currentTab =
+            button.dataset.tab;
+
+          renderDatabase();
+
+        };
+
+    }
+  );
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+document
+  .getElementById(
+    "dbSearch"
+  )
+  .oninput =
+  renderDatabase;
+
+
+/* =========================================================
+   EXAMPLES
+========================================================= */
+
+document
+  .querySelectorAll(
+    ".examples button"
+  )
+  .forEach(
+    button => {
+
+      button.onclick =
+        function(){
+
+          document
+            .getElementById(
+              "queryInput"
+            )
+            .value =
+              button.dataset.query;
+
+        };
+
+    }
+  );
+
+
+/* =========================================================
+   QUERY CLEAR
+========================================================= */
+
+document
+  .getElementById(
+    "clearQuery"
+  )
+  .onclick =
+  function(){
+
+    document
+      .getElementById(
+        "queryInput"
+      )
+      .value = "";
+
+    document
+      .getElementById(
+        "queryPlan"
+      )
+      .classList
+      .add(
+        "hidden"
+      );
+
+    document
+      .getElementById(
+        "queryResults"
+      )
+      .classList
+      .add(
+        "hidden"
+      );
+
+  };
+
+
+/* =========================================================
+   RESET CONFIG
+========================================================= */
+
+document
+  .getElementById(
+    "resetConfig"
+  )
+  .onclick =
+  function(){
+
+    document
+      .getElementById(
+        "dateFrom"
+      )
+      .value = "";
+
+    document
+      .getElementById(
+        "dateTo"
+      )
+      .value = "";
+
+    document
+      .getElementById(
+        "matchKeys"
+      )
+      .value =
+        "auftrag_id";
+
+    document
+      .getElementById(
+        "numericFields"
+      )
+      .value =
+        "menge,betrag";
+
+  };
+
+
+/* =========================================================
+   RUN
+========================================================= */
+
+document
+  .getElementById(
+    "runQuery"
+  )
+  .onclick =
+  async function(){
+
+    const planElement =
+      document.getElementById(
+        "queryPlan"
+      );
+
+    try{
+
+      await refresh();
+
+      const result =
+        await compareTables();
+
+      planElement
+        .textContent =
+          JSON.stringify(
+            result.plan,
+            null,
+            2
+          );
+
+      planElement
+        .classList
+        .remove(
+          "hidden"
+        );
+
+      await refresh();
+
+      const resultCard =
+        document.getElementById(
+          "queryResults"
+        );
+
+      resultCard.innerHTML = `
+
+        <div class="card-head">
+          <strong>ERGEBNIS</strong>
+          <span>FESTE AUSFÜHRUNG</span>
+        </div>
+
+        <div class="card-body">
+
+          <div class="stats">
+
+            <div class="stat">
+              <div class="stat-label">
+                TABELLE A
+              </div>
+
+              <div class="stat-value">
+                ${result.tableA}
+              </div>
+            </div>
+
+            <div class="stat">
+              <div class="stat-label">
+                TABELLE B
+              </div>
+
+              <div class="stat-value">
+                ${result.tableB}
+              </div>
+            </div>
+
+            <div class="stat">
+              <div class="stat-label">
+                VERGLEICHE
+              </div>
+
+              <div class="stat-value">
+                ${result.comparisons}
+              </div>
+            </div>
+
+            <div class="stat">
+              <div class="stat-label">
+                ABWEICHUNGEN
+              </div>
+
+              <div class="stat-value">
+                ${result.differences}
+              </div>
+            </div>
+
+          </div>
+
+          <div class="status ${
+            result.differences === 0
+              ? "ok"
+              : "warn"
+          }">
+
+            ${
+              result.differences === 0
+                ? "✓ KEINE ABWEICHUNGEN GEFUNDEN."
+                : "⚠ " +
+                  result.differences +
+                  " ABWEICHUNGEN GEFUNDEN."
+            }
+
+          </div>
+
+        </div>
+
+      `;
+
+      resultCard
+        .classList
+        .remove(
+          "hidden"
+        );
+
+    }
+    catch(error){
+
+      planElement
+        .textContent =
+          "FEHLER:\n\n" +
+          error.message;
+
+      planElement
+        .classList
+        .remove(
+          "hidden"
+        );
+
+    }
+
+  };
+
+
+/* =========================================================
+   START
+========================================================= */
+
+openDatabase()
+  .then(
+    refresh
+  )
+  .catch(
+    error => {
+
+      console.error(
+        error
+      );
+
+      const status =
+        document.getElementById(
+          "importStatus"
+        );
+
+      status.className =
+        "status error";
+
+      status.textContent =
+        "DATENBANK FEHLER: " +
+        error.message;
+
+    }
+  );
+
+</script>
+
+</body>
+</html>
