@@ -2,1900 +2,1393 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<title>LV GmbH — DATENBANK</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>LV BOOKING CONTROL</title>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-
 <style>
 :root{
   --bg:#050505;
   --panel:#0d0d0d;
-  --panel2:#151515;
+  --panel2:#131313;
   --line:#292929;
   --acid:#d8ff00;
-  --pink:#ff2aa8;
   --cyan:#00e5ff;
+  --pink:#ff2aa8;
   --green:#4ade80;
   --red:#ff4d6d;
+  --orange:#ffb020;
   --text:#f2f2f2;
   --muted:#888;
 }
-
 *{
   box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
-
 html,body{
   margin:0;
   padding:0;
+  min-height:100%;
   background:var(--bg);
   color:var(--text);
   font-family:Arial,Helvetica,sans-serif;
 }
-
 body{
+  overflow-x:hidden;
+}
+button,input,select,textarea{
+  font:inherit;
+}
+button{
+  cursor:pointer;
+}
+.app{
   min-height:100vh;
 }
-
 /* HEADER */
-
-header{
-  padding:18px;
+.header{
+  height:68px;
   border-bottom:1px solid var(--line);
-  background:#080808;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 22px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(5,5,5,.96);
+  backdrop-filter:blur(12px);
 }
-
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
 .logo{
+  width:34px;
+  height:34px;
+  border:2px solid var(--acid);
+  display:grid;
+  place-items:center;
   color:var(--acid);
-  font-size:22px;
+  font-weight:900;
+  font-size:13px;
+}
+.brand-title{
   font-weight:900;
   letter-spacing:2px;
 }
-
-.sub{
-  color:#777;
-  font-size:11px;
-  margin-top:5px;
+.brand-sub{
+  color:var(--muted);
+  font-size:10px;
   letter-spacing:1px;
+  margin-top:2px;
 }
-
+.system-status{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  color:var(--muted);
+}
+.status-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 12px rgba(74,222,128,.8);
+}
 /* NAV */
-
-nav{
+.nav{
   display:flex;
   gap:4px;
-  padding:8px;
-  background:#090909;
+  padding:10px 18px;
   border-bottom:1px solid var(--line);
   overflow-x:auto;
+  background:#080808;
 }
-
-nav button{
-  border:1px solid var(--line);
-  background:#111;
-  color:#aaa;
-  padding:11px 14px;
-  font-weight:bold;
+.nav button{
+  border:1px solid transparent;
+  background:transparent;
+  color:#888;
+  padding:9px 13px;
   font-size:11px;
+  letter-spacing:.8px;
   white-space:nowrap;
-  cursor:pointer;
 }
-
-nav button.active{
-  color:#000;
-  background:var(--acid);
+.nav button:hover{
+  color:#fff;
 }
-
-/* MAIN */
-
+.nav button.active{
+  color:var(--acid);
+  border-color:#394000;
+  background:#151800;
+}
+/* GENERAL */
 main{
-  max-width:1400px;
+  max-width:1500px;
   margin:auto;
-  padding:14px;
+  padding:24px;
 }
-
-.page{
+.view{
   display:none;
 }
-
-.page.active{
+.view.active{
   display:block;
 }
-
-/* PANELS */
-
-.panel{
-  background:var(--panel);
-  border:1px solid var(--line);
-  margin-bottom:14px;
-}
-
-.panel-head{
-  padding:13px;
-  border-bottom:1px solid var(--line);
+.page-head{
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  gap:10px;
+  gap:20px;
+  align-items:flex-end;
+  margin-bottom:24px;
 }
-
-.panel-title{
-  font-size:12px;
+.kicker{
+  color:var(--acid);
+  font-size:10px;
+  letter-spacing:2px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+h1{
+  font-size:30px;
+  margin:0;
+  letter-spacing:-1px;
+}
+h2{
+  font-size:18px;
+  margin:0;
+}
+.card{
+  background:linear-gradient(145deg,#101010,#0b0b0b);
+  border:1px solid var(--line);
+  border-radius:12px;
+}
+.card-pad{
+  padding:18px;
+}
+.muted{
+  color:var(--muted);
+}
+.small{
+  font-size:11px;
+}
+/* HERO */
+.hero{
+  border:1px solid #303500;
+  background:
+    radial-gradient(circle at 90% 10%,rgba(216,255,0,.08),transparent 35%),
+    linear-gradient(145deg,#111400,#090909);
+  border-radius:16px;
+  padding:28px;
+  margin-bottom:18px;
+}
+.hero h1{
+  font-size:38px;
+  max-width:760px;
+}
+.hero p{
+  color:#999;
+  max-width:720px;
+  line-height:1.6;
+}
+.hero-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:22px;
+}
+.primary{
+  background:var(--acid);
+  color:#050505;
+  border:0;
+  padding:13px 18px;
+  border-radius:7px;
   font-weight:900;
+  letter-spacing:.5px;
+}
+.primary:hover{
+  filter:brightness(1.08);
+}
+.secondary{
+  background:#171717;
+  color:#ddd;
+  border:1px solid #333;
+  padding:12px 16px;
+  border-radius:7px;
+}
+.secondary:hover{
+  border-color:#555;
+}
+.danger{
+  background:#190b0e;
+  color:#ff7187;
+  border:1px solid #4a1d26;
+  padding:11px 14px;
+  border-radius:7px;
+}
+/* STATS */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+  margin-bottom:18px;
+}
+.stat{
+  padding:17px;
+  border:1px solid var(--line);
+  background:#0c0c0c;
+  border-radius:10px;
+}
+.stat-label{
+  color:#777;
+  font-size:10px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.stat-value{
+  font-size:29px;
+  font-weight:900;
+  margin-top:7px;
+}
+.stat.green .stat-value{color:var(--green)}
+.stat.red .stat-value{color:var(--red)}
+.stat.orange .stat-value{color:var(--orange)}
+.stat.cyan .stat-value{color:var(--cyan)}
+.stat.pink .stat-value{color:var(--pink)}
+/* WORKFLOW */
+.workflow{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:18px;
+}
+.step{
+  padding:16px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#0c0c0c;
+  min-height:120px;
+}
+.step-number{
+  color:var(--acid);
+  font-size:10px;
+  font-weight:bold;
   letter-spacing:1px;
 }
-
-.panel-body{
-  padding:14px;
+.step-title{
+  margin-top:13px;
+  font-weight:bold;
 }
-
-/* BUTTONS */
-
-button{
-  font-family:inherit;
-}
-
-.btn{
-  border:1px solid var(--acid);
-  background:transparent;
-  color:var(--acid);
-  padding:10px 14px;
+.step-text{
+  color:#777;
   font-size:11px;
-  font-weight:900;
+  line-height:1.5;
+  margin-top:6px;
+}
+/* IMPORT */
+.import-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.source-card{
+  padding:20px;
+  position:relative;
+  overflow:hidden;
+}
+.source-card.a{
+  border-top:3px solid var(--cyan);
+}
+.source-card.b{
+  border-top:3px solid var(--pink);
+}
+.source-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:15px;
+}
+.source-label{
+  font-size:10px;
+  letter-spacing:2px;
+  font-weight:bold;
+}
+.a .source-label{color:var(--cyan)}
+.b .source-label{color:var(--pink)}
+.dropzone{
+  border:1px dashed #3a3a3a;
+  border-radius:9px;
+  padding:28px 15px;
+  text-align:center;
+  transition:.2s;
+}
+.dropzone:hover,
+.dropzone.drag{
+  border-color:var(--acid);
+  background:#111500;
+}
+.drop-icon{
+  font-size:27px;
+  margin-bottom:8px;
+}
+.dropzone input{
+  display:none;
+}
+.file-button{
+  display:inline-block;
+  margin-top:12px;
+  border:1px solid #444;
+  background:#151515;
+  padding:9px 13px;
+  border-radius:6px;
+  font-size:11px;
   cursor:pointer;
 }
-
-.btn:hover{
-  background:var(--acid);
-  color:#000;
-}
-
-.btn.cyan{
-  border-color:var(--cyan);
-  color:var(--cyan);
-}
-
-.btn.cyan:hover{
-  background:var(--cyan);
-  color:#000;
-}
-
-.btn.pink{
-  border-color:var(--pink);
-  color:var(--pink);
-}
-
-.btn.pink:hover{
-  background:var(--pink);
-  color:#000;
-}
-
-.btn.green{
-  border-color:var(--green);
+.file-info{
+  margin-top:12px;
   color:var(--green);
+  font-size:11px;
+  min-height:15px;
 }
-
-.btn.green:hover{
-  background:var(--green);
-  color:#000;
+textarea{
+  width:100%;
+  min-height:260px;
+  resize:vertical;
+  background:#070707;
+  color:#ddd;
+  border:1px solid #292929;
+  border-radius:8px;
+  padding:14px;
+  outline:none;
+  font-family:monospace;
+  font-size:11px;
+  line-height:1.5;
 }
-
-/* GRID */
-
-.grid{
+textarea:focus{
+  border-color:#555;
+}
+.import-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
+/* BADGES */
+.badge{
+  display:inline-flex;
+  align-items:center;
+  border:1px solid #333;
+  border-radius:20px;
+  padding:3px 7px;
+  font-size:9px;
+  color:#aaa;
+  white-space:nowrap;
+}
+.badge.good{
+  color:var(--green);
+  border-color:#24502f;
+}
+.badge.bad{
+  color:var(--red);
+  border-color:#54212b;
+}
+.badge.warn{
+  color:var(--orange);
+  border-color:#533d18;
+}
+.badge.info{
+  color:var(--cyan);
+  border-color:#164d55;
+}
+/* ATLAS */
+.atlas{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:10px;
 }
-
-@media(max-width:800px){
-  .grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-}
-
-@media(max-width:500px){
-  .grid{
-    grid-template-columns:1fr;
-  }
-}
-
-/* STAT */
-
-.stat{
+.atlas-group{
   border:1px solid var(--line);
-  background:#0a0a0a;
+  background:#0c0c0c;
+  border-radius:10px;
   padding:15px;
 }
-
-.stat-label{
-  font-size:10px;
-  color:#777;
-  text-transform:uppercase;
-}
-
-.stat-value{
-  margin-top:7px;
-  font-size:24px;
-  font-weight:900;
+.atlas-main{
   color:var(--acid);
-}
-
-/* DROP */
-
-.dropzone{
-  border:1px dashed #444;
-  padding:30px;
-  text-align:center;
-  cursor:pointer;
+  font-weight:900;
+  font-size:12px;
   margin-bottom:10px;
 }
-
-.dropzone:hover{
-  border-color:var(--acid);
-}
-
-.dropzone strong{
-  color:var(--acid);
-}
-
-input[type=file]{
-  display:none;
-}
-
-/* TEXTAREA */
-
-textarea{
-  width:100%;
-  min-height:300px;
-  resize:vertical;
-  background:#050505;
-  border:1px solid var(--line);
-  color:#ddd;
-  padding:12px;
-  font-family:monospace;
-  font-size:12px;
-  outline:none;
-}
-
-textarea:focus{
-  border-color:var(--cyan);
-}
-
-/* CODE */
-
-pre{
-  white-space:pre-wrap;
-  word-break:break-word;
-  background:#050505;
-  border:1px solid var(--line);
-  padding:14px;
-  color:#ccc;
-  font-family:monospace;
-  font-size:11px;
-  line-height:1.5;
-  max-height:500px;
-  overflow:auto;
-}
-
-/* TABLE */
-
-.table-wrap{
-  overflow:auto;
-  max-height:600px;
-  border:1px solid var(--line);
-}
-
-table{
-  border-collapse:collapse;
-  width:100%;
-  min-width:900px;
-  font-size:11px;
-}
-
-th{
-  position:sticky;
-  top:0;
-  background:#171717;
-  color:var(--acid);
-  text-align:left;
-  padding:9px;
-  border-bottom:1px solid var(--acid);
-  z-index:2;
-}
-
-td{
-  padding:8px;
-  border-bottom:1px solid #202020;
-  vertical-align:top;
-}
-
-tr:hover td{
-  background:#111;
-}
-
-/* BADGES */
-
-.badge{
-  display:inline-block;
-  padding:4px 7px;
-  border:1px solid;
-  font-size:9px;
-  font-weight:bold;
-}
-
-.badge.ok{
-  color:var(--green);
-  border-color:var(--green);
-}
-
-.badge.warn{
-  color:#ffd43b;
-  border-color:#ffd43b;
-}
-
-.badge.error{
-  color:var(--red);
-  border-color:var(--red);
-}
-
-.badge.info{
-  color:var(--cyan);
-  border-color:var(--cyan);
-}
-
-/* LOG */
-
-.log{
-  background:#030303;
-  border:1px solid var(--line);
-  padding:12px;
-  font-family:monospace;
-  font-size:11px;
-  line-height:1.7;
-  min-height:120px;
-  max-height:300px;
-  overflow:auto;
-}
-
-.log-ok{
-  color:var(--green);
-}
-
-.log-info{
-  color:var(--cyan);
-}
-
-.log-warn{
-  color:#ffd43b;
-}
-
-.log-error{
-  color:var(--red);
-}
-
-/* EMPTY */
-
-.empty{
-  color:#666;
-  padding:30px;
-  text-align:center;
-}
-
-/* FLOW */
-
-.flow{
+.atlas-item{
   display:flex;
-  align-items:center;
-  gap:8px;
-  overflow-x:auto;
-  padding-bottom:5px;
+  justify-content:space-between;
+  gap:10px;
+  padding:7px 0;
+  border-bottom:1px solid #1c1c1c;
+  color:#aaa;
+  font-size:11px;
 }
-
-.flow-step{
-  min-width:150px;
-  border:1px solid var(--line);
-  padding:15px;
-  background:#0a0a0a;
+.atlas-item:last-child{
+  border-bottom:0;
 }
-
-.flow-step strong{
-  display:block;
-  color:var(--acid);
-  margin-bottom:6px;
-}
-
-.arrow{
-  color:var(--pink);
-  font-size:20px;
-}
-
-/* FILTER */
-
-.filters{
+/* RESULTS */
+.result-toolbar{
   display:flex;
   flex-wrap:wrap;
   gap:8px;
-  margin-bottom:10px;
+  align-items:center;
+  margin-bottom:15px;
 }
-
-select,
-input[type=text],
-input[type=date]{
-  background:#080808;
-  border:1px solid var(--line);
-  color:#ddd;
-  padding:10px;
+.search{
+  flex:1;
+  min-width:220px;
+  background:#0c0c0c;
+  border:1px solid #292929;
+  color:#eee;
+  padding:11px 13px;
+  border-radius:7px;
   outline:none;
 }
-
-select:focus,
-input:focus{
-  border-color:var(--cyan);
+.filter{
+  background:#0c0c0c;
+  border:1px solid #292929;
+  color:#bbb;
+  padding:10px 12px;
+  border-radius:7px;
 }
-
-/* MOBILE */
-
-@media(max-width:600px){
+.result-layout{
+  display:grid;
+  grid-template-columns:1fr 390px;
+  gap:14px;
+}
+.result-list{
+  min-height:400px;
+}
+.issue{
+  padding:15px;
+  border-bottom:1px solid #202020;
+  cursor:pointer;
+  transition:.15s;
+}
+.issue:hover{
+  background:#111;
+}
+.issue.selected{
+  background:#151700;
+  border-left:3px solid var(--acid);
+}
+.issue-top{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+}
+.issue-name{
+  font-weight:bold;
+}
+.issue-meta{
+  color:#777;
+  font-size:10px;
+  margin-top:6px;
+}
+.issue-reason{
+  color:#bbb;
+  font-size:11px;
+  margin-top:10px;
+}
+.detail{
+  position:sticky;
+  top:135px;
+  align-self:start;
+  padding:18px;
+  max-height:calc(100vh - 155px);
+  overflow:auto;
+}
+.detail-title{
+  margin-bottom:15px;
+}
+.detail-section{
+  margin-top:18px;
+}
+.detail-row{
+  display:grid;
+  grid-template-columns:100px 1fr 1fr;
+  gap:8px;
+  border-bottom:1px solid #1f1f1f;
+  padding:9px 0;
+  font-size:10px;
+}
+.detail-row.head{
+  color:#666;
+  font-size:9px;
+  text-transform:uppercase;
+}
+.value-a{
+  color:var(--cyan);
+  word-break:break-word;
+}
+.value-b{
+  color:var(--pink);
+  word-break:break-word;
+}
+.diff{
+  background:#180d11;
+}
+.diff .value-a,
+.diff .value-b{
+  color:var(--red);
+}
+/* DATABASE */
+.table-wrap{
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#090909;
+}
+table{
+  border-collapse:collapse;
+  width:100%;
+  min-width:1100px;
+}
+th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  background:#111;
+  color:#777;
+  text-align:left;
+  padding:10px;
+  border-bottom:1px solid #292929;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.6px;
+}
+td{
+  padding:10px;
+  border-bottom:1px solid #1b1b1b;
+  font-size:10px;
+  color:#bbb;
+}
+tr:hover td{
+  background:#101010;
+}
+/* REPORT */
+.report-box{
+  padding:22px;
+}
+.report-header{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  border-bottom:1px solid #292929;
+  padding-bottom:18px;
+  margin-bottom:18px;
+}
+.report-title{
+  font-size:24px;
+  font-weight:900;
+}
+.report-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+.report-stat{
+  padding:15px;
+  border:1px solid #292929;
+  background:#0b0b0b;
+  border-radius:8px;
+}
+.report-issue{
+  padding:14px 0;
+  border-bottom:1px solid #222;
+}
+.report-issue strong{
+  color:#fff;
+}
+/* TOAST */
+.toast{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:999;
+  background:#151515;
+  border:1px solid #444;
+  padding:13px 16px;
+  border-radius:8px;
+  font-size:11px;
+  transform:translateY(100px);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+}
+.toast.show{
+  transform:translateY(0);
+  opacity:1;
+}
+.empty{
+  padding:45px;
+  text-align:center;
+  color:#666;
+}
+/* RESPONSIVE */
+@media(max-width:1000px){
+  .stats{
+    grid-template-columns:repeat(3,1fr);
+  }
+  .workflow,
+  .atlas{
+    grid-template-columns:repeat(2,1fr);
+  }
+  .result-layout{
+    grid-template-columns:1fr;
+  }
+  .detail{
+    position:relative;
+    top:0;
+    max-height:none;
+  }
+}
+@media(max-width:700px){
   main{
-    padding:8px;
+    padding:14px;
   }
-
-  .panel-body{
-    padding:10px;
+  .header{
+    padding:0 14px;
   }
-
-  .panel-head{
+  .system-status{
+    display:none;
+  }
+  h1,
+  .hero h1{
+    font-size:27px;
+  }
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+  .workflow,
+  .atlas,
+  .import-grid{
+    grid-template-columns:1fr;
+  }
+  .hero{
+    padding:20px;
+  }
+  .page-head{
     align-items:flex-start;
     flex-direction:column;
-  }
-
-  .btn{
-    width:100%;
   }
 }
 </style>
 </head>
-
 <body>
-
-<header>
-  <div class="logo">LV GmbH // DATENBANK</div>
-  <div class="sub">BOOKING RECONCILIATION SYSTEM</div>
+<div class="app">
+<header class="header">
+  <div class="brand">
+    <div class="logo">LV</div>
+    <div>
+      <div class="brand-title">BOOKING CONTROL</div>
+      <div class="brand-sub">
+        BUCHUNGSPRÜFUNG · DETERMINISTISCH
+      </div>
+    </div>
+  </div>
+  <div class="system-status">
+    <span class="status-dot"></span>
+    SYSTEM BEREIT
+  </div>
 </header>
-
-<nav>
-  <button class="active" onclick="showPage('import',this)">JSON IMPORT</button>
-  <button onclick="showPage('db',this)">DATENBANK</button>
-  <button onclick="showPage('query',this)">ABFRAGEN</button>
-  <button onclick="showPage('prompt',this)">LLM PROMPT</button>
+<nav class="nav">
+  <button class="nav-btn active"
+          data-view="dashboard">
+    ÜBERSICHT
+  </button>
+  <button class="nav-btn"
+          data-view="import">
+    DATEN HINEIN
+  </button>
+  <button class="nav-btn"
+          data-view="atlas">
+    VORGÄNGE
+  </button>
+  <button class="nav-btn"
+          data-view="results">
+    PRÜFUNG
+  </button>
+  <button class="nav-btn"
+          data-view="database">
+    DATENBESTAND
+  </button>
+  <button class="nav-btn"
+          data-view="report">
+    PRÜFBERICHT
+  </button>
+  <button class="nav-btn"
+          data-view="prompt">
+    LLM-AUFTRAG
+  </button>
 </nav>
-
 <main>
-
-<!-- =========================================================
-     IMPORT
-========================================================= -->
-
-<section id="page-import" class="page active">
-
-  <div class="panel">
-    <div class="panel-head">
-      <div class="panel-title">01 // QUELLDATEN</div>
+<!-- =====================================================
+     ÜBERSICHT
+===================================================== -->
+<section id="dashboard" class="view active">
+  <div class="hero">
+    <div class="kicker">
+      LV · BOOKING CONTROL
     </div>
-
-    <div class="panel-body">
-
-      <div class="flow">
-
-        <div class="flow-step">
-          <strong>01</strong>
-          Tabellen bereitstellen
-        </div>
-
-        <div class="arrow">→</div>
-
-        <div class="flow-step">
-          <strong>02</strong>
-          LLM strukturiert
-        </div>
-
-        <div class="arrow">→</div>
-
-        <div class="flow-step">
-          <strong>03</strong>
-          JSON hier einfügen
-        </div>
-
-        <div class="arrow">→</div>
-
-        <div class="flow-step">
-          <strong>04</strong>
-          Datenbank
-        </div>
-
-        <div class="arrow">→</div>
-
-        <div class="flow-step">
-          <strong>05</strong>
-          Abgleich
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-
-
-  <div class="panel">
-
-    <div class="panel-head">
-      <div class="panel-title">JSON IMPORT</div>
-    </div>
-
-    <div class="panel-body">
-
-      <textarea
-        id="jsonInput"
-        placeholder="Hier das vom LLM erzeugte JSON einfügen ..."></textarea>
-
-      <br><br>
-
-      <button class="btn green" onclick="importJSON()">
-        JSON IMPORTIEREN
+    <h1>
+      Zwei Tabellen.<br>
+      Ein klares Prüfergebnis.
+    </h1>
+    <p>
+      Das System strukturiert Buchungsdaten, erkennt die vorhandenen
+      Vorgänge und vergleicht anschließend die Datensätze automatisch.
+      Die eigentliche Prüfung erfolgt regelbasiert und nachvollziehbar.
+    </p>
+    <div class="hero-actions">
+      <button class="primary"
+              onclick="go('import')">
+        DATEN IMPORTIEREN
       </button>
-
-      <button class="btn" onclick="loadExample()" style="margin-left:5px">
-        BEISPIEL LADEN
+      <button class="secondary"
+              onclick="go('prompt')">
+        LLM-AUFTRAG ÖFFNEN
       </button>
-
+      <button class="secondary"
+              onclick="runReconciliation()">
+        PRÜFUNG STARTEN
+      </button>
     </div>
-
   </div>
-
-
-  <div class="panel">
-
-    <div class="panel-head">
-      <div class="panel-title">IMPORT STATUS</div>
-    </div>
-
-    <div class="panel-body">
-
-      <div id="importLog" class="log">
-        <span class="log-info">System bereit.</span>
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- =========================================================
-     DATABASE
-========================================================= -->
-
-<section id="page-db" class="page">
-
-  <div class="grid">
-
-    <div class="stat">
+  <div class="stats">
+    <div class="stat cyan">
       <div class="stat-label">Tabelle A</div>
       <div class="stat-value" id="statA">0</div>
     </div>
-
-    <div class="stat">
+    <div class="stat pink">
       <div class="stat-label">Tabelle B</div>
       <div class="stat-value" id="statB">0</div>
     </div>
-
-    <div class="stat">
-      <div class="stat-label">Vorgänge</div>
-      <div class="stat-value" id="statVorgang">0</div>
+    <div class="stat green">
+      <div class="stat-label">Übereinstimmend</div>
+      <div class="stat-value" id="statMatch">0</div>
     </div>
-
-    <div class="stat">
+    <div class="stat red">
       <div class="stat-label">Abweichungen</div>
       <div class="stat-value" id="statDiff">0</div>
     </div>
-
+    <div class="stat orange">
+      <div class="stat-label">Nicht zugeordnet</div>
+      <div class="stat-value" id="statMissing">0</div>
+    </div>
   </div>
-
-  <br>
-
-  <div class="panel">
-
-    <div class="panel-head">
-      <div class="panel-title">DATENBESTAND</div>
-
-      <button class="btn pink" onclick="clearDB()">
-        DATENBANK LÖSCHEN
+  <div class="workflow">
+    <div class="step">
+      <div class="step-number">
+        01 · DATEN
+      </div>
+      <div class="step-title">
+        Tabellen bereitstellen
+      </div>
+      <div class="step-text">
+        Zwei Buchungsbestände werden in das System übernommen.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">
+        02 · STRUKTUR
+      </div>
+      <div class="step-title">
+        Vorgänge erkennen
+      </div>
+      <div class="step-text">
+        Vorhandene Kennzeichnungen wie FN, MF, VVL, FTTH
+        oder Congstar bleiben erhalten.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">
+        03 · PRÜFUNG
+      </div>
+      <div class="step-title">
+        Datensätze vergleichen
+      </div>
+      <div class="step-text">
+        Auftragsnummern und definierte Felder werden
+        deterministisch gegeneinander geprüft.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">
+        04 · ERGEBNIS
+      </div>
+      <div class="step-title">
+        Abweichungen sehen
+      </div>
+      <div class="step-text">
+        Jeder problematische Vorgang kann einzeln geöffnet
+        und nachvollzogen werden.
+      </div>
+    </div>
+  </div>
+  <div class="card card-pad">
+    <div class="page-head"
+         style="margin-bottom:12px">
+      <div>
+        <div class="kicker">
+          SYSTEMSTATUS
+        </div>
+        <h2 id="dashboardStatus">
+          Noch keine Prüfung durchgeführt.
+        </h2>
+      </div>
+      <span class="badge info"
+            id="recordBadge">
+        0 Datensätze
+      </span>
+    </div>
+    <div class="muted small"
+         id="dashboardExplanation">
+      Importiere zwei Datenbestände oder füge das vom LLM
+      erzeugte JSON ein.
+    </div>
+  </div>
+</section>
+<!-- =====================================================
+     DATEN HINEIN
+===================================================== -->
+<section id="import" class="view">
+  <div class="page-head">
+    <div>
+      <div class="kicker">
+        01 · DATEN HINEIN
+      </div>
+      <h1>
+        Daten übernehmen
+      </h1>
+      <div class="muted small">
+        Zwei getrennte Datenbestände werden im System gehalten.
+      </div>
+    </div>
+    <button class="secondary"
+            onclick="go('prompt')">
+      LLM-AUFTRAG
+    </button>
+  </div>
+  <div class="import-grid">
+    <!-- TABLE A -->
+    <div class="card source-card a">
+      <div class="source-head">
+        <div>
+          <div class="source-label">
+            TABLE A
+          </div>
+          <h2>
+            Erster Datenbestand
+          </h2>
+        </div>
+        <span class="badge info">
+          A
+        </span>
+      </div>
+      <div class="dropzone"
+           id="dropA">
+        <div class="drop-icon">
+          ▣
+        </div>
+        <div class="muted small">
+          XLSX, XLS, CSV oder JSON
+        </div>
+        <label class="file-button">
+          DATEI AUSWÄHLEN
+          <input type="file"
+                 id="fileA"
+                 accept=".xlsx,.xls,.csv,.json">
+        </label>
+        <div class="file-info"
+             id="fileInfoA">
+          Keine Datei geladen.
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <textarea id="jsonA"
+          placeholder="Oder JSON für TABLE_A hier einfügen..."></textarea>
+      </div>
+      <div class="import-actions">
+        <button class="secondary"
+                onclick="loadJsonArea('A')">
+          JSON ÜBERNEHMEN
+        </button>
+        <button class="secondary"
+                onclick="clearSource('A')">
+          LEEREN
+        </button>
+      </div>
+    </div>
+    <!-- TABLE B -->
+    <div class="card source-card b">
+      <div class="source-head">
+        <div>
+          <div class="source-label">
+            TABLE B
+          </div>
+          <h2>
+            Zweiter Datenbestand
+          </h2>
+        </div>
+        <span class="badge"
+              style="color:var(--pink);border-color:#55204a">
+          B
+        </span>
+      </div>
+      <div class="dropzone"
+           id="dropB">
+        <div class="drop-icon">
+          ▣
+        </div>
+        <div class="muted small">
+          XLSX, XLS, CSV oder JSON
+        </div>
+        <label class="file-button">
+          DATEI AUSWÄHLEN
+          <input type="file"
+                 id="fileB"
+                 accept=".xlsx,.xls,.csv,.json">
+        </label>
+        <div class="file-info"
+             id="fileInfoB">
+          Keine Datei geladen.
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <textarea id="jsonB"
+          placeholder="Oder JSON für TABLE_B hier einfügen..."></textarea>
+      </div>
+      <div class="import-actions">
+        <button class="secondary"
+                onclick="loadJsonArea('B')">
+          JSON ÜBERNEHMEN
+        </button>
+        <button class="secondary"
+                onclick="clearSource('B')">
+          LEEREN
+        </button>
+      </div>
+    </div>
+  </div>
+  <div style="height:14px"></div>
+  <div class="card card-pad">
+    <div class="page-head"
+         style="margin-bottom:14px">
+      <div>
+        <div class="kicker">
+          IMPORT
+        </div>
+        <h2>
+          Datenbestand übernehmen
+        </h2>
+      </div>
+    </div>
+    <div class="muted small"
+         style="line-height:1.7">
+      Das System verändert keine Originalwerte absichtlich.
+      Die Tabellen bleiben getrennt. Kassenabschluss-Zeilen
+      werden erkannt und nicht als normale Kundenbuchungen
+      gewertet.
+    </div>
+    <div class="hero-actions">
+      <button class="primary"
+              onclick="commitImportedData()">
+        DATENBESTAND ÜBERNEHMEN
+      </button>
+      <button class="secondary"
+              onclick="loadDemo()">
+        DEMODATEN LADEN
+      </button>
+      <button class="danger"
+              onclick="clearAllData()">
+        ALLES LÖSCHEN
       </button>
     </div>
-
-    <div class="panel-body">
-
-      <div class="filters">
-
-        <select id="tableFilter" onchange="renderDatabase()">
-          <option value="ALL">ALLE TABELLEN</option>
-          <option value="TABLE_A">TABLE A</option>
-          <option value="TABLE_B">TABLE B</option>
-        </select>
-
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Suche ..."
-          oninput="renderDatabase()">
-
-      </div>
-
-      <div id="databaseTable">
-        <div class="empty">
-          Noch keine Daten importiert.
-        </div>
-      </div>
-
-    </div>
-
   </div>
-
 </section>
-
-
-<!-- =========================================================
-     QUERY
-========================================================= -->
-
-<section id="page-query" class="page">
-
-  <div class="panel">
-
-    <div class="panel-head">
-      <div class="panel-title">VORGANGSABGLEICH</div>
-
-      <button class="btn cyan" onclick="runRecon()">
-        ABGLEICH STARTEN
+<!-- =====================================================
+     VORGÄNGE
+===================================================== -->
+<section id="atlas" class="view">
+  <div class="page-head">
+    <div>
+      <div class="kicker">
+        02 · VORGANGSATLAS
+      </div>
+      <h1>
+        Was wurde gebucht?
+      </h1>
+      <div class="muted small">
+        Die vorhandenen Kennzeichnungen werden sichtbar gemacht.
+      </div>
+    </div>
+  </div>
+  <div id="atlasContainer"
+       class="atlas">
+  </div>
+</section>
+<!-- =====================================================
+     PRÜFUNG
+===================================================== -->
+<section id="results" class="view">
+  <div class="page-head">
+    <div>
+      <div class="kicker">
+        03 · PRÜFUNG
+      </div>
+      <h1>
+        Prüfergebnis
+      </h1>
+      <div class="muted small"
+           id="resultSubtitle">
+        Noch keine Prüfung durchgeführt.
+      </div>
+    </div>
+    <button class="primary"
+            onclick="runReconciliation()">
+      PRÜFUNG STARTEN
+    </button>
+  </div>
+  <div class="stats">
+    <div class="stat green">
+      <div class="stat-label">Match</div>
+      <div class="stat-value" id="resMatch">0</div>
+    </div>
+    <div class="stat red">
+      <div class="stat-label">Wertabweichung</div>
+      <div class="stat-value" id="resDiff">0</div>
+    </div>
+    <div class="stat orange">
+      <div class="stat-label">Nur A</div>
+      <div class="stat-value" id="resOnlyA">0</div>
+    </div>
+    <div class="stat pink">
+      <div class="stat-label">Nur B</div>
+      <div class="stat-value" id="resOnlyB">0</div>
+    </div>
+    <div class="stat cyan">
+      <div class="stat-label">Duplikate</div>
+      <div class="stat-value" id="resDup">0</div>
+    </div>
+  </div>
+  <div class="result-toolbar">
+    <input
+      class="search"
+      id="issueSearch"
+      placeholder="Name, Auftragsnummer, Vorgang suchen..."
+      oninput="renderIssues()">
+    <select class="filter"
+            id="issueFilter"
+            onchange="renderIssues()">
+      <option value="ALL">
+        ALLE
+      </option>
+      <option value="VALUE_DIFFERENCE">
+        ABWEICHUNGEN
+      </option>
+      <option value="ONLY_A">
+        NUR A
+      </option>
+      <option value="ONLY_B">
+        NUR B
+      </option>
+      <option value="DUPLICATE">
+        DUPLIKATE
+      </option>
+    </select>
+  </div>
+  <div class="result-layout">
+    <div class="card result-list"
+         id="issueList">
+      <div class="empty">
+        Noch kein Prüfergebnis.
+      </div>
+    </div>
+    <div class="card detail"
+         id="issueDetail">
+      <div class="empty">
+        Wähle einen Vorgang aus.
+      </div>
+    </div>
+  </div>
+</section>
+<!-- =====================================================
+     DATENBESTAND
+===================================================== -->
+<section id="database" class="view">
+  <div class="page-head">
+    <div>
+      <div class="kicker">
+        DATENBESTAND
+      </div>
+      <h1>
+        Alle Vorgänge
+      </h1>
+      <div class="muted small">
+        Originaldaten plus erkannte Vorgangsstruktur.
+      </div>
+    </div>
+    <input
+      class="search"
+      style="max-width:350px"
+      id="dbSearch"
+      placeholder="Datenbestand durchsuchen..."
+      oninput="renderDatabase()">
+  </div>
+  <div class="card table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>
+            Quelle
+          </th>
+          <th>
+            Datum
+          </th>
+          <th>
+            Art
+          </th>
+          <th>
+            Name
+          </th>
+          <th>
+            Produktklasse
+          </th>
+          <th>
+            Vorgang
+          </th>
+          <th>
+            Auftragsnummer
+          </th>
+          <th>
+            Gesamt
+          </th>
+          <th>
+            Verkäufer
+          </th>
+        </tr>
+      </thead>
+      <tbody id="databaseBody"></tbody>
+    </table>
+  </div>
+</section>
+<!-- =====================================================
+     BERICHT
+===================================================== -->
+<section id="report" class="view">
+  <div class="page-head">
+    <div>
+      <div class="kicker">
+        04 · PRÜFBERICHT
+      </div>
+      <h1>
+        Prüfbericht
+      </h1>
+      <div class="muted small">
+        Zusammenfassung der letzten deterministischen Prüfung.
+      </div>
+    </div>
+    <div class="hero-actions"
+         style="margin-top:0">
+      <button class="secondary"
+              onclick="exportReportJSON()">
+        JSON EXPORT
+      </button>
+      <button class="secondary"
+              onclick="exportReportCSV()">
+        CSV EXPORT
+      </button>
+      <button class="primary"
+              onclick="printReport()">
+        BERICHT DRUCKEN
       </button>
     </div>
-
-    <div class="panel-body">
-
-      <div class="filters">
-
-        <input
-          type="date"
-          id="dateFrom">
-
-        <input
-          type="date"
-          id="dateTo">
-
-        <select id="vorgangFilter">
-          <option value="ALL">ALLE VORGÄNGE</option>
-        </select>
-
-      </div>
-
-      <div id="reconStats" class="grid">
-
-        <div class="stat">
-          <div class="stat-label">GEPRÜFT</div>
-          <div class="stat-value" id="checkedCount">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">GEFUNDEN</div>
-          <div class="stat-value" id="matchedCount">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">ABWEICHUNG</div>
-          <div class="stat-value" id="differenceCount">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">NICHT ZUORDENBAR</div>
-          <div class="stat-value" id="unmatchedCount">0</div>
-        </div>
-
-      </div>
-
-      <br>
-
-      <div id="reconResult">
-        <div class="empty">
-          Noch kein Abgleich durchgeführt.
-        </div>
-      </div>
-
-    </div>
-
   </div>
-
+  <div class="card report-box"
+       id="reportContent">
+    <div class="empty">
+      Noch kein Prüfbericht vorhanden.
+    </div>
+  </div>
 </section>
-
-
-<!-- =========================================================
-     PROMPT
-========================================================= -->
-
-<section id="page-prompt" class="page">
-
-  <div class="panel">
-
-    <div class="panel-head">
-      <div class="panel-title">LLM // DATENSTRUKTURIERUNG</div>
-
-      <button class="btn cyan" onclick="copyPrompt()">
-        PROMPT KOPIEREN
+<!-- =====================================================
+     LLM
+===================================================== -->
+<section id="prompt" class="view">
+  <div class="page-head">
+    <div>
+      <div class="kicker">
+        LLM · STRUKTURIERUNG
+      </div>
+      <h1>
+        LLM-Auftrag
+      </h1>
+      <div class="muted small">
+        Das LLM strukturiert die Tabellen.
+        Die Prüfung übernimmt dieses Tool anschließend selbst.
+      </div>
+    </div>
+  </div>
+  <div class="card card-pad">
+    <div class="import-actions">
+      <button class="primary"
+              onclick="copyPrompt()">
+        AUFTRAG KOPIEREN
+      </button>
+      <button class="secondary"
+              onclick="downloadPrompt()">
+        ALS TXT SPEICHERN
       </button>
     </div>
-
-    <div class="panel-body">
-
-      <p style="color:#999;font-size:12px">
-        Dieser Auftrag wird an das Kunden-LLM gegeben.
-        Das LLM strukturiert die vorhandenen Tabellen.
-        Es entscheidet nicht über den späteren Abgleich.
-      </p>
-
-      <pre id="promptOutput"></pre>
-
+    <div class="prompt-status"
+         id="promptStatus">
     </div>
-
+    <textarea id="promptText"></textarea>
   </div>
-
 </section>
-
 </main>
-
-
+<div class="toast"
+     id="toast">
+</div>
+</div>
 <script>
-
 /* =========================================================
-   STATE
+   ZUSTAND
 ========================================================= */
-
-const STORAGE_KEY = "LV_BOOKING_RECON_V1";
-
-let state = {
-  version:"1.0",
-  dataset:"BOOKING_RECON",
-  tables:{
-    TABLE_A:[],
-    TABLE_B:[]
-  },
-  recon:[],
-  importedAt:null
+const STATE = {
+  A:[],
+  B:[],
+  results:[],
+  selectedIssue:null,
+  lastRun:null
 };
-
-
-/* =========================================================
-   INIT
-========================================================= */
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-  loadState();
-
-  updateStats();
-
-  renderDatabase();
-
-  renderPrompt();
-
-  updateVorgangFilter();
-
-});
-
-
+const STORAGE_KEY =
+  "LV_BOOKING_CONTROL_V1";
 /* =========================================================
    NAVIGATION
 ========================================================= */
-
-function showPage(page,button){
-
-  document.querySelectorAll(".page")
-    .forEach(p=>p.classList.remove("active"));
-
-  document
-    .getElementById("page-"+page)
-    .classList.add("active");
-
-  document.querySelectorAll("nav button")
-    .forEach(b=>b.classList.remove("active"));
-
-  button.classList.add("active");
-
-}
-
-
-/* =========================================================
-   STORAGE
-========================================================= */
-
-function saveState(){
-
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(state)
-  );
-
-}
-
-function loadState(){
-
-  const raw =
-    localStorage.getItem(STORAGE_KEY);
-
-  if(!raw) return;
-
-  try{
-
-    const parsed = JSON.parse(raw);
-
-    state = {
-      ...state,
-      ...parsed,
-      tables:{
-        TABLE_A:parsed.tables?.TABLE_A || [],
-        TABLE_B:parsed.tables?.TABLE_B || []
-      }
-    };
-
-  }catch(e){
-
-    console.error(e);
-
+function go(view){
+  document.querySelectorAll(".view")
+    .forEach(v=>{
+      v.classList.remove("active");
+    });
+  document.querySelectorAll(".nav-btn")
+    .forEach(b=>{
+      b.classList.remove("active");
+    });
+  const target =
+    document.getElementById(view);
+  if(target){
+    target.classList.add("active");
   }
-
-}
-
-
-/* =========================================================
-   IMPORT
-========================================================= */
-
-function importJSON(){
-
-  const input =
-    document.getElementById("jsonInput").value.trim();
-
-  const log =
-    document.getElementById("importLog");
-
-  if(!input){
-
-    log.innerHTML =
-      `<span class="log-error">
-        Kein JSON vorhanden.
-      </span>`;
-
-    return;
+  const button =
+    document.querySelector(
+      `.nav-btn[data-view="${view}"]`
+    );
+  if(button){
+    button.classList.add("active");
   }
-
-  try{
-
-    const data = JSON.parse(input);
-
-    if(!data.tables){
-
-      throw new Error(
-        "Feld 'tables' fehlt."
-      );
-
-    }
-
-    state.version =
-      data.version || "1.0";
-
-    state.dataset =
-      data.dataset || "BOOKING_RECON";
-
-    state.tables.TABLE_A =
-      Array.isArray(data.tables.TABLE_A)
-        ? data.tables.TABLE_A
-        : [];
-
-    state.tables.TABLE_B =
-      Array.isArray(data.tables.TABLE_B)
-        ? data.tables.TABLE_B
-        : [];
-
-    state.importedAt =
-      new Date().toISOString();
-
-    state.recon = [];
-
-    saveState();
-
-    updateStats();
-
+  if(view==="atlas"){
+    renderAtlas();
+  }
+  if(view==="database"){
     renderDatabase();
-
-    updateVorgangFilter();
-
-    log.innerHTML = `
-      <div class="log-ok">
-        ✓ JSON erfolgreich importiert.
-      </div>
-      <div>
-        TABLE_A: ${state.tables.TABLE_A.length} Datensätze
-      </div>
-      <div>
-        TABLE_B: ${state.tables.TABLE_B.length} Datensätze
-      </div>
-    `;
-
-    alert(
-      "JSON importiert: " +
-      (state.tables.TABLE_A.length +
-       state.tables.TABLE_B.length) +
-      " Datensätze."
-    );
-
-  }catch(e){
-
-    log.innerHTML = `
-      <div class="log-error">
-        ✕ JSON konnte nicht importiert werden.
-      </div>
-      <div>
-        ${escapeHTML(e.message)}
-      </div>
-    `;
-
   }
-
+  if(view==="results"){
+    renderIssues();
+    renderIssueDetail();
+  }
+  if(view==="report"){
+    renderReport();
+  }
 }
-
-
 /* =========================================================
-   EXAMPLE
+   NAV BUTTONS
 ========================================================= */
-
-function loadExample(){
-
-  const example = {
-
-    version:"1.0",
-
-    dataset:"BOOKING_RECON",
-
-    tables:{
-
-      TABLE_A:[
-
-        {
-          record_id:"A-000001",
-          source_table:"TABLE_A",
-          datum:"2023-04-29",
-          art:"FN",
-          name:"Bönsch",
-          produktklasse:"NEU TV BBFN",
-          tarif:"Neugeschäft Magenta Zuhause M - Magenta TV Smart + TV One",
-          auftragsnummer:"90544688112",
-          vorgang:"Festnetz / Neugeschäft mit TV",
-          gesamt:195.00
-        },
-
-        {
-          record_id:"A-000002",
-          source_table:"TABLE_A",
-          datum:"2023-04-29",
-          art:"FN",
-          name:"Karababa",
-          produktklasse:"NEU DP BBFN",
-          tarif:"Neugeschäft Magenta Zuhause M",
-          auftragsnummer:"90544689882",
-          vorgang:"Festnetz / Neugeschäft",
-          gesamt:80.00
-        }
-
-      ],
-
-      TABLE_B:[
-
-        {
-          record_id:"B-000001",
-          source_table:"TABLE_B",
-          datum:"2023-04-29",
-          art:"FN",
-          name:"Bönsch",
-          produktklasse:"NEU TV BBFN",
-          tarif:"Neugeschäft Magenta Zuhause M - Magenta TV Smart + TV One",
-          auftragsnummer:"90544688112",
-          vorgang:"Festnetz / Neugeschäft mit TV",
-          gesamt:195.00
-        }
-
-      ]
-
-    }
-
-  };
-
-  document.getElementById("jsonInput").value =
-    JSON.stringify(example,null,2);
-
-}
-
-
-/* =========================================================
-   DATABASE TABLE
-========================================================= */
-
-function getAllRecords(){
-
-  return [
-
-    ...state.tables.TABLE_A,
-    ...state.tables.TABLE_B
-
-  ];
-
-}
-
-
-function renderDatabase(){
-
-  const container =
-    document.getElementById("databaseTable");
-
-  const filter =
-    document.getElementById("tableFilter").value;
-
-  const search =
-    document
-      .getElementById("searchInput")
-      .value
-      .toLowerCase()
-      .trim();
-
-  let records = [];
-
-  if(filter==="ALL"){
-
-    records=getAllRecords();
-
-  }else{
-
-    records=state.tables[filter] || [];
-
-  }
-
-  if(search){
-
-    records=records.filter(r=>
-      JSON.stringify(r)
-        .toLowerCase()
-        .includes(search)
-    );
-
-  }
-
-  if(!records.length){
-
-    container.innerHTML =
-      `<div class="empty">
-        Keine Datensätze vorhanden.
-      </div>`;
-
-    return;
-
-  }
-
-  const columns = [
-
-    "record_id",
-    "source_table",
-    "datum",
-    "art",
-    "name",
-    "produktklasse",
-    "tarif",
-    "auftragsnummer",
-    "vorgang",
-    "gesamt",
-    "verkaeufer"
-
-  ];
-
-  let html="<div class='table-wrap'><table><thead><tr>";
-
-  columns.forEach(c=>{
-    html += `<th>${escapeHTML(c)}</th>`;
-  });
-
-  html+="</tr></thead><tbody>";
-
-  records.forEach(r=>{
-
-    html+="<tr>";
-
-    columns.forEach(c=>{
-
-      let value =
-        r[c] ?? "";
-
-      if(c==="gesamt" &&
-         typeof value==="number"){
-
-        value =
-          value.toLocaleString(
-            "de-DE",
-            {
-              minimumFractionDigits:2
-            }
-          )+" €";
-
+document.querySelectorAll(".nav-btn")
+  .forEach(button=>{
+    button.addEventListener(
+      "click",
+      ()=>{
+        go(button.dataset.view);
       }
-
-      html+=
-        `<td>${escapeHTML(String(value))}</td>`;
-
+    );
+  });
+/* =========================================================
+   DATEI-IMPORT
+========================================================= */
+document.getElementById("fileA")
+  .addEventListener(
+    "change",
+    e=>{
+      handleFile(
+        e.target.files[0],
+        "A"
+      );
+    }
+  );
+document.getElementById("fileB")
+  .addEventListener(
+    "change",
+    e=>{
+      handleFile(
+        e.target.files[0],
+        "B"
+      );
+    }
+  );
+function setupDropzone(id,source){
+  const zone =
+    document.getElementById(id);
+  ["dragenter","dragover"]
+    .forEach(event=>{
+      zone.addEventListener(
+        event,
+        e=>{
+          e.preventDefault();
+          zone.classList.add("drag");
+        }
+      );
     });
-
-    html+="</tr>";
-
-  });
-
-  html+="</tbody></table></div>";
-
-  container.innerHTML=html;
-
-}
-
-
-/* =========================================================
-   STATS
-========================================================= */
-
-function updateStats(){
-
-  const a =
-    state.tables.TABLE_A.length;
-
-  const b =
-    state.tables.TABLE_B.length;
-
-  const all =
-    getAllRecords();
-
-  const vorgaenge =
-    new Set(
-      all
-        .map(x=>x.vorgang)
-        .filter(Boolean)
-    ).size;
-
-  document.getElementById("statA").textContent=a;
-  document.getElementById("statB").textContent=b;
-  document.getElementById("statVorgang").textContent=vorgaenge;
-  document.getElementById("statDiff").textContent=
-    state.recon.filter(x=>x.status!=="MATCH").length;
-
-}
-
-
-/* =========================================================
-   VORGANG FILTER
-========================================================= */
-
-function updateVorgangFilter(){
-
-  const select =
-    document.getElementById("vorgangFilter");
-
-  const current =
-    select.value;
-
-  const values =
-    [...new Set(
-      getAllRecords()
-        .map(r=>r.vorgang)
-        .filter(Boolean)
-    )]
-    .sort();
-
-  select.innerHTML =
-    `<option value="ALL">ALLE VORGÄNGE</option>`;
-
-  values.forEach(v=>{
-
-    const option =
-      document.createElement("option");
-
-    option.value=v;
-    option.textContent=v;
-
-    select.appendChild(option);
-
-  });
-
-  if(values.includes(current)){
-    select.value=current;
-  }
-
-}
-
-
-/* =========================================================
-   RECONCILIATION
-========================================================= */
-
-function runRecon(){
-
-  const from =
-    document.getElementById("dateFrom").value;
-
-  const to =
-    document.getElementById("dateTo").value;
-
-  const vorgang =
-    document.getElementById("vorgangFilter").value;
-
-  let A =
-    [...state.tables.TABLE_A];
-
-  let B =
-    [...state.tables.TABLE_B];
-
-
-  /* DATE FILTER */
-
-  function inRange(record){
-
-    if(!record.datum)
-      return true;
-
-    if(from && record.datum < from)
-      return false;
-
-    if(to && record.datum > to)
-      return false;
-
-    return true;
-
-  }
-
-  A=A.filter(inRange);
-  B=B.filter(inRange);
-
-
-  /* VORGANG FILTER */
-
-  if(vorgang!=="ALL"){
-
-    A=A.filter(
-      r=>r.vorgang===vorgang
-    );
-
-    B=B.filter(
-      r=>r.vorgang===vorgang
-    );
-
-  }
-
-
-  /*
-    DETERMINISTISCHER SCHLÜSSEL
-
-    Primär:
-    Auftragsnummer
-
-    Sekundär:
-    Art + Name + Vorgang + Datum
-  */
-
-  const mapB =
-    new Map();
-
-  B.forEach(r=>{
-
-    const key =
-      makeKey(r);
-
-    if(!mapB.has(key)){
-      mapB.set(key,[]);
-    }
-
-    mapB.get(key).push(r);
-
-  });
-
-
-  const results=[];
-
-
-  A.forEach(a=>{
-
-    const key =
-      makeKey(a);
-
-    const candidates =
-      mapB.get(key) || [];
-
-    if(!candidates.length){
-
-      results.push({
-
-        status:"NOT_FOUND",
-
-        a,
-
-        b:null,
-
-        reason:"Kein passender Datensatz in TABLE_B"
-
-      });
-
-      return;
-
-    }
-
-    const b =
-      candidates.shift();
-
-    const differences =
-      compareRecords(a,b);
-
-    results.push({
-
-      status:
-        differences.length
-          ? "DIFFERENCE"
-          : "MATCH",
-
-      a,
-      b,
-      differences
-
+  ["dragleave","drop"]
+    .forEach(event=>{
+      zone.addEventListener(
+        event,
+        e=>{
+          e.preventDefault();
+          zone.classList.remove("drag");
+        }
+      );
     });
-
-  });
-
-
-  /* TABLE B RECORDS WITHOUT A */
-
-  const matchedB =
-    new Set(
-      results
-        .filter(x=>x.b)
-        .map(x=>x.b.record_id)
-    );
-
-  B.forEach(b=>{
-
-    if(!matchedB.has(b.record_id)){
-
-      results.push({
-
-        status:"ONLY_B",
-
-        a:null,
-
-        b,
-
-        reason:"Datensatz nur in TABLE_B vorhanden"
-
-      });
-
+  zone.addEventListener(
+    "drop",
+    e=>{
+      const file =
+        e.dataTransfer.files[0];
+      if(file){
+        handleFile(file,source);
+      }
     }
-
-  });
-
-
-  state.recon=results;
-
-  saveState();
-
-  renderRecon();
-
-  updateStats();
-
+  );
 }
-
-
-/* =========================================================
-   KEY
-========================================================= */
-
-function makeKey(r){
-
-  if(r.auftragsnummer){
-
-    return "AUFTRAG:" +
-      String(r.auftragsnummer).trim();
-
-  }
-
-  return [
-
-    r.art,
-    r.name,
-    r.vorgang,
-    r.datum
-
-  ]
-  .map(x=>String(x ?? "").trim().toLowerCase())
-  .join("|");
-
-}
-
-
-/* =========================================================
-   COMPARE
-========================================================= */
-
-function compareRecords(a,b){
-
-  const fields=[
-
-    "datum",
-    "art",
-    "name",
-    "produktklasse",
-    "tarif",
-    "auftragsnummer",
-    "vorgang",
-    "gesamt",
-    "verkaeufer"
-
-  ];
-
-  const differences=[];
-
-  fields.forEach(field=>{
-
-    const av =
-      normalizeValue(a[field]);
-
-    const bv =
-      normalizeValue(b[field]);
-
-    if(av!==bv){
-
-      differences.push({
-
-        field,
-
-        tableA:a[field] ?? "",
-
-        tableB:b[field] ?? ""
-
-      });
-
-    }
-
-  });
-
-  return differences;
-
-}
-
-
-function normalizeValue(value){
-
-  if(value===null ||
-     value===undefined)
-    return "";
-
-  if(typeof value==="number")
-    return Math.round(value*100)/100;
-
-  return String(value)
-    .trim()
-    .toLowerCase();
-
-}
-
-
-/* =========================================================
-   RENDER RECON
-========================================================= */
-
-function renderRecon(){
-
-  const container =
-    document.getElementById("reconResult");
-
-  const results =
-    state.recon || [];
-
-  const matches =
-    results.filter(
-      r=>r.status==="MATCH"
-    ).length;
-
-  const differences =
-    results.filter(
-      r=>r.status==="DIFFERENCE"
-    ).length;
-
-  const notFound =
-    results.filter(
-      r=>r.status==="NOT_FOUND" ||
-         r.status==="ONLY_B"
-    ).length;
-
-  document.getElementById(
-    "checkedCount"
-  ).textContent=results.length;
-
-  document.getElementById(
-    "matchedCount"
-  ).textContent=matches;
-
-  document.getElementById(
-    "differenceCount"
-  ).textContent=differences;
-
-  document.getElementById(
-    "unmatchedCount"
-  ).textContent=notFound;
-
-
-  if(!results.length){
-
-    container.innerHTML=
-      `<div class="empty">
-        Keine Ergebnisse.
-      </div>`;
-
-    return;
-
-  }
-
-
-  let html=
-    `<div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>STATUS</th>
-            <th>AUFTRAGSNUMMER</th>
-            <th>VORGANG</th>
-            <th>NAME</th>
-            <th>TABLE A</th>
-            <th>TABLE B</th>
-            <th>DETAIL</th>
-          </tr>
-        </thead>
-        <tbody>`;
-
-
-  results.forEach(r=>{
-
-    let badge="";
-
-    if(r.status==="MATCH"){
-
-      badge=
-        `<span class="badge ok">MATCH</span>`;
-
-    }
-    else if(r.status==="DIFFERENCE"){
-
-      badge=
-        `<span class="badge warn">ABWEICHUNG</span>`;
-
-    }
-    else{
-
-      badge=
-        `<span class="badge error">
-          ${escapeHTML(r.status)}
-        </span>`;
-
-    }
-
-
-    const record =
-      r.a || r.b || {};
-
-    const number =
-      record.auftragsnummer || "";
-
-    const name =
-      record.name || "";
-
-    const vorgang =
-      record.vorgang || "";
-
-
-    let detail="";
-
-    if(r.differences?.length){
-
-      detail =
-        r.differences
-          .map(d=>
-            `<div>
-              <strong>${escapeHTML(d.field)}</strong>:
-              A="${escapeHTML(String(d.tableA))}"
-              |
-              B="${escapeHTML(String(d.tableB))}"
-            </div>`
-          )
-          .join("");
-
-    }else{
-
-      detail =
-        escapeHTML(
-          r.reason || "Identisch"
-        );
-
-    }
-
-
-    html+=`
-
-      <tr>
-
-        <td>${badge}</td>
-
-        <td>${escapeHTML(String(number))}</td>
-
-        <td>${escapeHTML(String(vorgang))}</td>
-
-        <td>${escapeHTML(String(name))}</td>
-
-        <td>
-          ${
-            r.a
-              ? `<span class="badge info">VORHANDEN</span>`
-              : "—"
-          }
-        </td>
-
-        <td>
-          ${
-            r.b
-              ? `<span class="badge info">VORHANDEN</span>`
-              : "—"
-          }
-        </td>
-
-        <td>${detail}</td>
-
-      </tr>
-
-    `;
-
-  });
-
-
-  html+=
-    `</tbody></table></div>`;
-
-  container.innerHTML=html;
-
-}
-
-
-/* =========================================================
-   PROMPT
-========================================================= */
-
-function renderPrompt(){
-
-  const prompt=`
-
-DU ANALYSIERST GESCHÄFTSTABELLEN.
-
-AUFGABE:
-Tabellen auslesen → vorhandene Kennzeichen erkennen → Vorgänge strukturieren → gültiges JSON erzeugen.
-
-WICHTIG:
-Das vorhandene Kennzeichen beschreibt den Vorgang.
-
-Berücksichtige insbesondere:
-
-- Art
-- Produktklasse
-- Tarif
-- Auftragsnummer
-
-Beispiele:
-
-FN + NEU DP BBFN
-= Festnetz / Neugeschäft
-
-FN + NEU TV BBFN
-= Festnetz / Neugeschäft mit TV
-
-FN + VVL Upgrade
-= Festnetz / Vertragsverlängerung / Upgrade
-
-FN + VVL Neutral
-= Festnetz / Vertragsverlängerung / Neutral
-
-MF + MoFu NEU
-= Mobilfunk / Neugeschäft
-
-MF + MoFu VVL
-= Mobilfunk / Vertragsverlängerung
-
-CON + Congstar NEU
-= Congstar / Neugeschäft
-
-FTTH + FTTH
-= FTTH
-
-Kassenabschluß
-= Kassenabschluss und KEIN normaler Kundenauftrag
-
-Diese Beispiele erklären die vorhandene Tabellenlogik.
-Erfinde keine weiteren Vorgangsarten.
-
-REGELN:
-
-1. Originalwerte exakt übernehmen.
-2. Keine Werte erfinden.
-3. Keine Werte korrigieren.
-4. Keine Datensätze zusammenführen.
-5. Tabelle A und Tabelle B getrennt halten.
-6. Auftragsnummern exakt übernehmen.
-7. Namen exakt übernehmen.
-8. Beträge numerisch ausgeben.
-9. Datum möglichst als YYYY-MM-DD ausgeben.
-10. Bemerkungen und To-Do-Informationen erhalten.
-11. Kassenabschlüsse nicht als Kundenaufträge behandeln.
-12. Keine Rückfragen an den Kunden.
-
-Die Vorgangsbeschreibung ist eine strukturierte Beschreibung der vorhandenen Kennzeichen.
-
-Originalkennzeichen und Vorgangsbeschreibung müssen beide erhalten bleiben.
-
-JSON:
-
-{
-  "version":"1.0",
-  "dataset":"BOOKING_RECON",
-  "tables":{
-    "TABLE_A":[],
-    "TABLE_B":[]
-  }
-}
-
-Jeder normale Datensatz erhält:
-
-{
-  "record_id":"A-000001",
-  "source_table":"TABLE_A",
-  "datum":"",
-  "art":"",
-  "name":"",
-  "produktklasse":"",
-  "tarif":"",
-  "auftragsnummer":"",
-  "vorgang":"",
-  "bem":"",
-  "schalttermin":"",
-  "basis":0,
-  "ixus":0,
-  "hw_bonus":0,
-  "gesamt":0,
-  "hardware_ek":0,
-  "hw_verkauf":0,
-  "gewinn":0,
-  "verkaeufer":"",
-  "hardware":"",
-  "to_do":"",
-  "grund":"",
-  "summe":""
-}
-
-Für TABLE_B entsprechend:
-
-"record_id":"B-000001",
-"source_table":"TABLE_B"
-
-AUSGABE:
-
-Gib ausschließlich gültiges JSON aus.
-
-Keinen erklärenden Text vor oder nach dem JSON.
-
-Keine Rückfragen.
-`;
-
-  document.getElementById(
-    "promptOutput"
-  ).textContent=prompt.trim();
-
-}
-
-
-async function copyPrompt(){
-
-  const text =
+setupDropzone("dropA","A");
+setupDropzone("dropB","B");
+async function handleFile(file,source){
+  if(!file) return;
+  const info =
     document.getElementById(
-      "promptOutput"
-    ).textContent;
-
-  try{
-
-    await navigator.clipboard.writeText(text);
-
-    alert("Prompt kopiert.");
-
-  }catch(e){
-
-    alert(
-      "Kopieren nicht möglich. Text manuell markieren."
+      "fileInfo"+source
     );
-
-  }
-
-}
-
-
-/* =========================================================
-   CLEAR DATABASE
-========================================================= */
-
-function clearDB(){
-
-  if(!confirm(
-    "Gesamten lokalen Datenbestand löschen?"
-  )){
-    return;
-  }
-
-  state={
-    version:"1.0",
-    dataset:"BOOKING_RECON",
-    tables:{
-      TABLE_A:[],
-      TABLE_B:[]
-    },
-    recon:[],
-    importedAt:null
-  };
-
-  saveState();
-
-  updateStats();
-
-  renderDatabase();
-
-  updateVorgangFilter();
-
-  document.getElementById(
-    "reconResult"
-  ).innerHTML=
-    `<div class="empty">
-      Datenbestand gelöscht.
-    </div>`;
-
-}
-
-
-/* =========================================================
-   ESCAPE
-========================================================= */
-
-function escapeHTML(value){
-
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
-}
-
-</script>
-
-</body>
-</html>
+  info.textContent =
+    "Wird gelesen...";
+  try{
+    const extension =
+      file.name
+        .split(".")
+        .pop()
+        .
