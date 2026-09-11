@@ -1,1965 +1,1850 @@
-```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>LV GmbH — DATENBANK</title>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <style>
 :root{
-  --bg:#05050a;
-  --panel:#0c0c14;
-  --panel2:#10101a;
-  --line:#222233;
-  --text:#f2f2f7;
-  --muted:#7a7a90;
-  --acid:#00e5a0;
-  --pink:#e20074;
-  --cyan:#00c8ff;
-  --red:#ff3b6b;
-  --orange:#ff9f1c;
-  --violet:#a855f7;
-  --glow-pink:0 0 10px rgba(226,0,116,.55), 0 0 22px rgba(226,0,116,.25);
-  --glow-cyan:0 0 10px rgba(0,200,255,.45), 0 0 20px rgba(0,200,255,.2);
-  --glow-acid:0 0 8px rgba(0,229,160,.4), 0 0 16px rgba(0,229,160,.18);
+--bg:#05050a;--panel:#0c0c14;--panel2:#10101a;--line:#222233;
+--text:#f2f2f7;--muted:#7a7a90;--acid:#00e5a0;--pink:#e20074;
+--cyan:#00c8ff;--red:#ff3b6b;--orange:#ff9f1c;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{
-  background:
-    radial-gradient(ellipse at 15% 0%, rgba(226,0,116,.06) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 100%, rgba(0,200,255,.05) 0%, transparent 50%),
-    linear-gradient(rgba(0,200,255,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(226,0,116,.02) 1px, transparent 1px),
-    var(--bg);
-  background-size:100% 100%, 100% 100%, 42px 42px, 42px 42px;
-  color:var(--text);
-  font-family:"Courier New",Courier,monospace;
-  min-height:100vh;
+background:
+radial-gradient(ellipse at 15% 0%,rgba(226,0,116,.06),transparent 55%),
+radial-gradient(ellipse at 85% 100%,rgba(0,200,255,.05),transparent 50%),
+linear-gradient(rgba(0,200,255,.025) 1px,transparent 1px),
+linear-gradient(90deg,rgba(226,0,116,.02) 1px,transparent 1px),var(--bg);
+background-size:100% 100%,100% 100%,42px 42px,42px 42px;
+color:var(--text);font-family:"Courier New",monospace;min-height:100vh
 }
 header{
-  min-height:82px;
-  padding:16px 22px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  border-bottom:2px solid var(--pink);
-  background:linear-gradient(180deg,#08080f 0%,#05050a 100%);
-  box-shadow:0 0 28px rgba(226,0,116,.22), inset 0 -1px 0 rgba(0,200,255,.12);
-  position:sticky;
-  top:0;
-  z-index:100;
+min-height:82px;padding:16px 22px;display:flex;align-items:center;
+justify-content:space-between;gap:16px;border-bottom:2px solid var(--pink);
+background:#07070d;position:sticky;top:0;z-index:100;
+box-shadow:0 0 28px rgba(226,0,116,.22)
 }
-.brand-main{
-  font:900 22px monospace;
-  letter-spacing:-1px;
-  color:#fff;
-  text-shadow:0 0 12px rgba(226,0,116,.55);
-}
-.brand-sub{
-  margin-top:5px;
-  color:var(--cyan);
-  font:10px monospace;
-  letter-spacing:3px;
-  text-shadow:0 0 8px rgba(0,200,255,.4);
-}
-.brand-divider{color:var(--pink);text-shadow:var(--glow-pink)}
+.brand-main{font-weight:900;font-size:22px;color:#fff}
+.brand-sub{margin-top:5px;color:var(--cyan);font-size:10px;letter-spacing:3px}
+.brand-divider{color:var(--pink)}
 nav{display:flex;gap:8px;flex-wrap:wrap}
 button{cursor:pointer;font-family:inherit}
-.nav{
-  padding:11px 14px;
-  background:#0a0a12;
-  color:#888;
-  border:1px solid #2a2a3a;
-  font:900 11px monospace;
-  letter-spacing:1px;
-  transition:all .15s;
+.nav,.tab,.examples button{
+padding:11px 14px;background:#0a0a12;color:#888;border:1px solid #2a2a3a;
+font-weight:900;font-size:10px;letter-spacing:1px
 }
-.nav:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:var(--glow-cyan)}
-.nav.active{
-  background:var(--pink);
-  color:#fff;
-  border-color:var(--pink);
-  transform:skew(-6deg);
-  box-shadow:4px 4px 0 #000, var(--glow-pink);
-}
-.status-db{color:#7a7a9a;font:9px monospace;white-space:nowrap}
-.status-db span{
-  display:inline-block;width:8px;height:8px;border-radius:50%;
-  background:var(--acid);box-shadow:0 0 12px var(--acid);margin-right:5px
-}
-main{max-width:1100px;margin:auto;padding:26px 16px 90px}
-.view{display:none}
-.view.active{display:block}
+.nav.active,.tab.active{background:var(--pink);color:#fff;border-color:var(--pink)}
+.nav:hover,.tab:hover{border-color:var(--cyan);color:var(--cyan)}
+.status-db{font-size:9px;color:#777;white-space:nowrap}
+.status-db span{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--acid);margin-right:5px}
+main{max-width:1150px;margin:auto;padding:26px 16px 90px}
+.view{display:none}.view.active{display:block}
 .head{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid #1e1e2e}
-.kicker{
-  color:var(--pink);
-  font:900 11px monospace;
-  letter-spacing:4px;
-  text-shadow:0 0 10px rgba(226,0,116,.5);
-}
-h1{
-  margin:10px 0 0;
-  font:900 clamp(30px,5.8vw,58px)/.9 monospace;
-  letter-spacing:-3px;
-  color:#fff;
-  text-shadow:0 0 16px rgba(0,200,255,.25);
-}
+.kicker{color:var(--pink);font-weight:900;font-size:11px;letter-spacing:4px}
+h1{margin-top:10px;font-size:clamp(30px,5.8vw,58px);line-height:.9;letter-spacing:-3px}
 .card{
-  background:var(--panel);
-  border:1px solid #222236;
-  box-shadow:6px 6px 0 #000, 0 0 24px rgba(0,0,0,.45);
-  margin-bottom:20px;
-  position:relative;
-}
-.card::before{
-  content:"";
-  position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--pink),var(--cyan));
-  opacity:.75;
+background:var(--panel);border:1px solid #222236;
+box-shadow:6px 6px #000;margin-bottom:20px
 }
 .card-head{
-  padding:15px 18px;
-  border-bottom:1px solid #1e1e2e;
-  display:flex;justify-content:space-between;align-items:center;gap:12px;
-  font:900 11px monospace;
-  color:var(--cyan);
-  text-shadow:0 0 6px rgba(0,200,255,.35);
+padding:15px 18px;border-bottom:1px solid #1e1e2e;
+display:flex;justify-content:space-between;gap:12px;
+font-weight:900;font-size:11px;color:var(--cyan)
 }
 .card-body{padding:18px}
-textarea{
-  width:100%;min-height:280px;resize:vertical;padding:16px;
-  background:#030308;color:var(--acid);border:1px solid #2a2a40;outline:none;
-  font:12px/1.5 monospace;
-  box-shadow:inset 0 0 24px rgba(0,0,0,.55);
-}
-textarea:focus{
-  border-color:var(--cyan);
-  box-shadow:inset 0 0 24px rgba(0,0,0,.55), 0 0 14px rgba(0,200,255,.2);
-}
 .actions{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
 .btn{
-  padding:14px 20px;
-  background:var(--pink);
-  color:#fff;
-  border:1px solid var(--pink);
-  font:900 12px monospace;
-  letter-spacing:1.5px;
-  box-shadow:4px 4px 0 #000, var(--glow-pink);
-  min-height:48px;
-  transition:all .12s;
+padding:14px 20px;background:var(--pink);color:#fff;border:1px solid var(--pink);
+font-weight:900;font-size:11px;letter-spacing:1px;box-shadow:4px 4px #000;
+min-height:48px
 }
-.btn:hover{filter:brightness(1.08)}
-.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #000}
-.btn.secondary{
-  background:#0a0a14;
-  color:#ccc;
-  border-color:#3a3a50;
-  box-shadow:4px 4px 0 #000;
-}
-.btn.secondary:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:4px 4px 0 #000, var(--glow-cyan)}
-.btn.pink{
-  background:var(--pink);
-  color:#fff;
-  border-color:var(--pink);
-  box-shadow:4px 4px 0 #000, var(--glow-pink);
-}
-.btn.cyan{
-  background:var(--cyan);
-  color:#000;
-  border-color:var(--cyan);
-  box-shadow:4px 4px 0 #000, var(--glow-cyan);
-}
-.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;filter:none;box-shadow:4px 4px 0 #000}
+.btn.cyan{background:var(--cyan);color:#000;border-color:var(--cyan)}
+.btn.secondary{background:#0a0a14;color:#ccc;border-color:#3a3a50}
+.btn:disabled{opacity:.4;cursor:not-allowed}
 .status{
-  margin-top:16px;padding:14px;
-  border:1px solid #2a2a40;
-  min-height:46px;
-  font:12px monospace;
-  background:#08080f;
+margin-top:16px;padding:14px;border:1px solid #2a2a40;
+min-height:46px;background:#08080f;font-size:11px;line-height:1.5
 }
-.status.ok{color:var(--acid);border-color:var(--acid);box-shadow:0 0 12px rgba(0,229,160,.18)}
-.status.error{color:var(--red);border-color:var(--red);box-shadow:0 0 12px rgba(255,59,107,.22)}
-.status.warn{color:var(--pink);border-color:var(--pink);box-shadow:0 0 12px rgba(226,0,116,.18)}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-.stat{
-  padding:18px;
-  background:#0a0a12;
-  border:1px solid #222236;
-  box-shadow:0 0 16px rgba(0,0,0,.35);
+.status.ok{color:var(--acid);border-color:var(--acid)}
+.status.error{color:var(--red);border-color:var(--red)}
+.status.warn{color:var(--orange);border-color:var(--orange)}
+.notice{
+padding:14px;border-left:3px solid var(--pink);
+background:#0a0a12;color:#999;font-size:11px;line-height:1.55;margin-bottom:16px
 }
-.stat-label{color:var(--muted);font:9px monospace;letter-spacing:2px}
-.stat-value{
-  margin-top:8px;
-  font:900 34px monospace;
-  color:#fff;
-  text-shadow:0 0 12px rgba(0,200,255,.35);
+textarea,.query-input,.search,.field input,.field select{
+width:100%;padding:13px;background:#030308;color:#fff;
+border:1px solid #2a2a3a;outline:none;font:11px monospace
 }
+textarea{min-height:280px;resize:vertical;color:var(--acid)}
+textarea:focus,.query-input:focus,.search:focus,
+.field input:focus,.field select:focus{border-color:var(--cyan)}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.stat{padding:18px;background:#0a0a12;border:1px solid #222236}
+.stat-label{color:var(--muted);font-size:9px;letter-spacing:2px}
+.stat-value{margin-top:8px;font-size:30px;font-weight:900}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.tab{
-  padding:11px 15px;
-  background:#0a0a12;
-  color:#777;
-  border:1px solid #2a2a3a;
-  font:900 10px monospace;
-  transition:all .12s;
-}
-.tab:hover{border-color:var(--cyan);color:var(--cyan)}
-.tab.active{
-  color:#fff;
-  background:var(--pink);
-  border-color:var(--pink);
-  box-shadow:0 0 14px rgba(226,0,116,.4);
-}
-.search{
-  margin-left:auto;min-width:200px;padding:11px 13px;
-  background:#08080f;color:#fff;border:1px solid #2a2a3a;outline:none;font:11px monospace;
-}
-.search:focus{border-color:var(--cyan);box-shadow:0 0 10px rgba(0,200,255,.2)}
-.table-wrap{overflow:auto;-webkit-overflow-scrolling:touch}
-table{width:100%;border-collapse:collapse;font-size:12px}
+.search{margin-left:auto;min-width:230px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:11px}
 th{
-  padding:12px 10px;text-align:left;white-space:nowrap;
-  color:var(--cyan);background:#08080f;
-  border-bottom:2px solid var(--cyan);
-  font:900 9px monospace;letter-spacing:1px;
+padding:11px;text-align:left;white-space:nowrap;color:var(--cyan);
+background:#08080f;border-bottom:2px solid var(--cyan);font-size:9px
 }
-td{padding:12px 10px;border-bottom:1px solid #1a1a28}
+td{padding:10px;border-bottom:1px solid #1a1a28;vertical-align:top}
 tr:hover{background:rgba(226,0,116,.04)}
-.mono{color:var(--cyan);font-family:monospace}
-.good{color:var(--acid)}.bad{color:var(--red)}.warn{color:var(--pink)}.info{color:var(--cyan)}.ambiguous{color:var(--orange)}
-.query-input{
-  width:100%;padding:15px;
-  background:#030308;color:#fff;border:1px solid #2a2a3a;outline:none;font:12px monospace;
-}
-.query-input:focus{border-color:var(--cyan);box-shadow:0 0 12px rgba(0,200,255,.18)}
-.examples{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.examples button{
-  padding:9px 12px;color:#888;background:#0a0a12;border:1px solid #2a2a3a;font:9px monospace;
-  transition:all .12s;
-}
-.examples button:hover{color:var(--cyan);border-color:var(--cyan);box-shadow:var(--glow-cyan)}
-.plan{
-  margin-top:20px;padding:16px;
-  color:var(--cyan);background:#030308;
-  border:1px solid var(--cyan);
-  font:11px monospace;overflow:auto;white-space:pre-wrap;
-  box-shadow:0 0 16px rgba(0,200,255,.12);
-}
+.mono{color:var(--cyan)}.good{color:var(--acid)}.bad{color:var(--red)}
+.warn{color:var(--pink)}.ambiguous{color:var(--orange)}
+.badge{display:inline-block;padding:4px 7px;border:1px solid currentColor;font-size:8px;font-weight:900}
+.empty{padding:32px;text-align:center;color:var(--muted);font-size:11px}
+.hidden{display:none!important}
 .field-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 .field{display:flex;flex-direction:column;gap:7px}
-.field label{color:var(--muted);font:900 9px monospace;letter-spacing:2px}
-.field input,.field select{
-  width:100%;padding:12px 13px;
-  background:#08080f;color:#fff;border:1px solid #2a2a3a;outline:none;font:11px monospace;
+.field label{color:var(--muted);font-size:9px;letter-spacing:2px;font-weight:900}
+.plan{
+margin-top:20px;padding:16px;background:#020206;border:1px solid var(--cyan);
+color:var(--cyan);font-size:10px;white-space:pre-wrap;overflow:auto
 }
-.field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:0 0 10px rgba(0,200,255,.18)}
-.notice{
-  padding:14px;
-  border-left:3px solid var(--pink);
-  background:#0a0a12;
-  color:#9a9ab0;
-  font:11px/1.55 monospace;
-  margin-bottom:16px;
-}
-.badge{display:inline-block;padding:4px 8px;border:1px solid #333;font:900 8px monospace;letter-spacing:1px}
-.badge.good{border-color:var(--acid);color:var(--acid)}
-.badge.bad{border-color:var(--red);color:var(--red)}
-.badge.warn{border-color:var(--pink);color:var(--pink)}
-.badge.ambiguous{border-color:var(--orange);color:var(--orange)}
-.empty{padding:32px;text-align:center;color:var(--muted);font:12px monospace}
-.hidden{display:none!important}
-
-/* STEPPER */
-.stepper{
-  display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 28px;align-items:center;
-  font:900 10px monospace;letter-spacing:1.5px;
-}
-.step-item{
-  padding:10px 13px;
-  border:1px solid #2a2a40;
-  background:#0a0a12;
-  color:#555;
-  white-space:nowrap;
-  transition:all .15s;
-}
-.step-item.active{
-  background:transparent;
-  color:var(--cyan);
-  border-color:var(--cyan);
-  box-shadow:0 0 14px rgba(0,200,255,.35);
-  text-shadow:0 0 8px rgba(0,200,255,.5);
-}
-.step-item.done{
-  color:var(--pink);
-  border-color:var(--pink);
-  box-shadow:0 0 10px rgba(226,0,116,.2);
-}
-.step-arrow{color:#333;font-size:13px}
-
-/* UPLOAD */
 .upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:720px){.upload-grid{grid-template-columns:1fr}}
 .upload-card{
-  background:var(--panel2);
-  border:1px solid #222236;
-  padding:22px;
-  box-shadow:5px 5px 0 #000, 0 0 20px rgba(0,0,0,.4);
-  min-height:190px;
-  display:flex;flex-direction:column;
-  position:relative;
+background:var(--panel2);border:1px solid #222236;padding:22px;
+min-height:190px
 }
-.upload-card::after{
-  content:"";
-  position:absolute;bottom:0;left:0;right:0;height:2px;
-  opacity:.7;
-}
-#cardA::after{background:linear-gradient(90deg,transparent,var(--pink),transparent)}
-#cardB::after{background:linear-gradient(90deg,transparent,var(--cyan),transparent)}
-.upload-card h3{font:900 17px monospace;letter-spacing:2px;margin-bottom:4px;color:#fff}
-#cardA h3{color:var(--pink);text-shadow:0 0 12px rgba(226,0,116,.6)}
-#cardB h3{color:var(--cyan);text-shadow:0 0 12px rgba(0,200,255,.55)}
-.upload-card .sub{color:var(--muted);font:10px monospace;margin-bottom:16px;letter-spacing:1px}
+.upload-card h3{font-size:17px;margin-bottom:5px}
+.upload-card .sub{color:var(--muted);font-size:10px;margin-bottom:15px}
 .upload-zone{
-  flex:1;border:2px dashed #33334a;
-  display:flex;align-items:center;justify-content:center;
-  padding:22px;cursor:pointer;transition:all .15s;
-  background:rgba(0,0,0,.22);
+border:2px dashed #33334a;padding:30px;text-align:center;cursor:pointer
 }
-.upload-zone:hover,.upload-zone.drag{
-  border-color:var(--pink);
-  box-shadow:inset 0 0 20px rgba(226,0,116,.06), 0 0 14px rgba(226,0,116,.12);
-}
-#cardB .upload-zone:hover,#cardB .upload-zone.drag{
-  border-color:var(--cyan);
-  box-shadow:inset 0 0 20px rgba(0,200,255,.06), 0 0 14px rgba(0,200,255,.12);
-}
+.upload-zone:hover{border-color:var(--cyan)}
 .upload-zone input{display:none}
-.meta-box{margin-top:16px;font:11px monospace;line-height:1.7}
-.meta-box .label{color:var(--muted)}
-.col-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-.col-tag{
-  padding:6px 10px;
-  border:1px solid #2a2a40;
-  background:#08080f;
-  font:900 10px monospace;
-  color:var(--cyan);
-}
-
-/* QUESTIONS */
+.meta-box{margin-top:15px;font-size:10px;line-height:1.7}
+.col-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.col-tag{padding:5px 8px;border:1px solid #2a2a40;color:var(--cyan);font-size:9px}
+.stepper{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 28px}
+.step-item{padding:9px 12px;border:1px solid #2a2a40;color:#555;font-size:9px;font-weight:900}
+.step-item.active{color:var(--cyan);border-color:var(--cyan)}
+.step-item.done{color:var(--pink);border-color:var(--pink)}
 .question-box{
-  background:#0a0a12;
-  border:1px solid #2a2a40;
-  padding:24px 20px;
-  box-shadow:6px 6px 0 #000, 0 0 24px rgba(0,0,0,.35);
-  margin-bottom:18px;
-  animation:fadeIn .28s ease;
-  position:relative;
+background:#0a0a12;border:1px solid #2a2a40;padding:24px 20px;margin-bottom:18px
 }
-.question-box::before{
-  content:"";
-  position:absolute;top:0;left:0;width:3px;height:100%;
-  background:linear-gradient(180deg,var(--pink),var(--cyan));
-}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.q-num{
-  color:var(--pink);
-  font:900 11px monospace;
-  letter-spacing:3px;
-  margin-bottom:10px;
-  text-shadow:0 0 8px rgba(226,0,116,.5);
-}
-.q-title{
-  font:900 19px monospace;
-  margin-bottom:20px;
-  letter-spacing:-.5px;
-  color:#fff;
-}
-.q-options{display:flex;flex-direction:column;gap:11px}
+.q-num{color:var(--pink);font-size:10px;font-weight:900;letter-spacing:3px;margin-bottom:10px}
+.q-title{font-size:18px;font-weight:900;margin-bottom:20px}
+.q-options{display:flex;flex-direction:column;gap:10px}
 .q-btn{
-  padding:15px 18px;
-  background:#08080f;
-  border:1px solid #2a2a3a;
-  color:#ccc;
-  font:900 13px monospace;
-  text-align:left;
-  min-height:52px;
-  box-shadow:3px 3px 0 #000;
-  transition:all .12s;
+padding:14px;background:#08080f;border:1px solid #2a2a3a;color:#ccc;
+font-weight:900;text-align:left;min-height:48px
 }
-.q-btn:hover,.q-btn.selected{
-  border-color:var(--cyan);
-  color:var(--cyan);
-  background:#0c0c16;
-  box-shadow:3px 3px 0 #000, 0 0 12px rgba(0,200,255,.2);
-}
-.q-btn.multi.selected{
-  background:rgba(0,200,255,.08);
-  border-color:var(--cyan);
-}
-.q-suggest{
-  margin-bottom:14px;padding:12px;
-  border:1px solid var(--orange);
-  color:var(--orange);
-  font:11px monospace;
-}
-.q-text{
-  width:100%;min-height:95px;padding:14px;
-  background:#030308;border:1px solid #2a2a40;color:#fff;
-  font:12px monospace;resize:vertical;
-}
-.progress-mini{color:var(--muted);font:11px monospace;margin-bottom:12px;letter-spacing:1px}
-
-/* PROMPT / JSON */
+.q-btn:hover,.q-btn.selected{border-color:var(--cyan);color:var(--cyan)}
+.q-text{min-height:100px;width:100%;background:#030308;color:#fff;border:1px solid #2a2a40;padding:14px}
 .terminal{
-  background:#020206;
-  border:1px solid #222240;
-  padding:16px;
-  font:12px/1.45 monospace;
-  color:var(--acid);
-  max-height:420px;overflow:auto;white-space:pre-wrap;word-break:break-all;
-  box-shadow:inset 0 0 30px rgba(0,0,0,.6);
+background:#020206;border:1px solid #222240;padding:16px;color:var(--acid);
+font-size:10px;line-height:1.45;max-height:440px;overflow:auto;
+white-space:pre-wrap;word-break:break-word
 }
-.step-hint{margin-top:14px;color:#7a7a9a;font:11px monospace;line-height:1.55}
-
-/* POLICY CARDS */
-.policy-list{display:flex;flex-direction:column;gap:12px}
 .policy-card{
-  background:#0a0a12;
-  border:1px solid #2a2a40;
-  padding:16px;
-  box-shadow:4px 4px 0 #000;
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:16px;
-  flex-wrap:wrap;
+background:#0a0a12;border:1px solid #2a2a40;padding:16px;
+margin-bottom:12px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap
 }
-.policy-card.active-policy{
-  border-color:var(--cyan);
-  box-shadow:4px 4px 0 #000, 0 0 14px rgba(0,200,255,.2);
+.policy-meta{font-size:10px;line-height:1.6}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){
+header{flex-direction:column;align-items:flex-start}
+.upload-grid,.field-grid{grid-template-columns:1fr}
+.stats{grid-template-columns:1fr 1fr}
+.search{width:100%;margin-left:0}
 }
-.policy-meta{font:11px monospace;line-height:1.6}
-.policy-meta strong{color:#fff;font-size:13px}
-.policy-meta .ver{color:var(--cyan)}
-.policy-meta .st{color:var(--acid)}
-.policy-meta .st.draft{color:var(--orange)}
-
-@media(max-width:950px){
-  header{flex-direction:column;align-items:flex-start}
-  nav{width:100%;overflow:auto}
-  .status-db{position:absolute;right:14px;top:20px}
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .field-grid{grid-template-columns:1fr}
-  .search{width:100%;margin-left:0}
-  main{padding:18px 12px 80px}
-}
-@media(max-width:600px){
-  .stats{grid-template-columns:1fr}
-  .stepper{font-size:9px}
-  .step-item{padding:8px 9px}
-}
+@media(max-width:500px){.stats{grid-template-columns:1fr}}
 </style>
 </head>
+
 <body>
 
 <header>
-  <div>
-    <div class="brand-main">LV GmbH <span class="brand-divider">|</span> DATENBANK</div>
-    <div class="brand-sub">BOOKING RECON // CYBERUNK</div>
-  </div>
-  <nav>
-    <button class="nav active" data-view="import">↓</button>
-    <button class="nav" data-view="database">▦</button>
-    <button class="nav" data-view="query">⚡</button>
-    <button class="nav" data-view="policies">▣</button>
-  </nav>
-  <div class="status-db"><span></span>INDEXEDDB LOCAL</div>
+<div>
+<div class="brand-main">LV GmbH <span class="brand-divider">|</span> DATENBANK</div>
+<div class="brand-sub">BOOKING RECON // CYBERUNK</div>
+</div>
+<nav>
+<button class="nav active" data-view="import">↓</button>
+<button class="nav" data-view="database">▦</button>
+<button class="nav" data-view="query">⚡</button>
+<button class="nav" data-view="policies">▣</button>
+</nav>
+<div class="status-db"><span></span>INDEXEDDB LOCAL</div>
 </header>
 
 <main>
 
-<!-- ===================== IMPORT ===================== -->
 <section id="view-import" class="view active">
-  <div class="head">
-    <div class="kicker">LOKALER WORKFLOW</div>
-    <h1>TABELLEN<br>AUFBEREITEN</h1>
-  </div>
+<div class="head">
+<div class="kicker">LOKALER WORKFLOW</div>
+<h1>TABELLEN<br>AUFBEREITEN</h1>
+</div>
 
-  <div class="stepper" id="stepper">
-    <div class="step-item active" data-step="1">01 TABELLEN</div>
-    <span class="step-arrow">→</span>
-    <div class="step-item" data-step="2">02 FRAGEN</div>
-    <span class="step-arrow">→</span>
-    <div class="step-item" data-step="3">03 LLM-AUFTRAG</div>
-    <span class="step-arrow">→</span>
-    <div class="step-item" data-step="4">04 JSON</div>
-    <span class="step-arrow">→</span>
-    <div class="step-item" data-step="5">05 ABGLEICH</div>
-  </div>
+<div class="stepper">
+<div class="step-item active" data-step="1">01 TABELLEN</div> →
+<div class="step-item" data-step="2">02 FRAGEN</div> →
+<div class="step-item" data-step="3">03 LLM-AUFTRAG</div> →
+<div class="step-item" data-step="4">04 JSON</div> →
+<div class="step-item" data-step="5">05 ABGLEICH</div>
+</div>
 
-  <div id="step1" class="step-panel">
-    <div class="upload-grid">
-      <div class="upload-card" id="cardA">
-        <h3>TABLE A</h3>
-        <div class="sub">Erste Tabelle</div>
-        <div class="upload-zone" id="zoneA" onclick="document.getElementById('fileA').click()">
-          <div>
-            <div style="font:900 13px monospace;margin-bottom:6px;letter-spacing:1px">DATEI AUSWÄHLEN</div>
-            <div style="font:10px monospace;color:#555">CSV · XLSX · XLS · TSV</div>
-          </div>
-          <input type="file" id="fileA" accept=".csv,.xlsx,.xls,.tsv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
-        </div>
-        <div class="meta-box hidden" id="metaA"></div>
-      </div>
-      <div class="upload-card" id="cardB">
-        <h3>TABLE B</h3>
-        <div class="sub">Zweite Tabelle</div>
-        <div class="upload-zone" id="zoneB" onclick="document.getElementById('fileB').click()">
-          <div>
-            <div style="font:900 13px monospace;margin-bottom:6px;letter-spacing:1px">DATEI AUSWÄHLEN</div>
-            <div style="font:10px monospace;color:#555">CSV · XLSX · XLS · TSV</div>
-          </div>
-          <input type="file" id="fileB" accept=".csv,.xlsx,.xls,.tsv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
-        </div>
-        <div class="meta-box hidden" id="metaB"></div>
-      </div>
-    </div>
-    <div class="actions">
-      <button class="btn" id="btnToQuestions" disabled>WEITER ZU FRAGEN →</button>
-    </div>
-    <div id="step1Status" class="status">Beide Tabellen hochladen.</div>
-  </div>
+<div id="step1" class="step-panel">
+<div class="upload-grid">
 
-  <div id="step2" class="step-panel hidden">
-    <div class="progress-mini" id="qProgress"></div>
-    <div id="questionContainer"></div>
-    <div class="actions">
-      <button class="btn secondary" id="btnBackToUpload">← ZURÜCK</button>
-    </div>
-  </div>
+<div class="upload-card">
+<h3 style="color:var(--pink)">TABLE A</h3>
+<div class="sub">z.B. ZDF BAD URACH</div>
+<div class="upload-zone" id="zoneA">
+<strong>DATEI AUSWÄHLEN</strong><br>
+<small>CSV · XLSX · XLS · TSV</small>
+<input id="fileA" type="file" accept=".csv,.xlsx,.xls,.tsv">
+</div>
+<div id="metaA" class="meta-box hidden"></div>
+</div>
 
-  <div id="step3" class="step-panel hidden">
-    <div class="card">
-      <div class="card-head"><strong>LLM-AUFTRAG</strong><span>GENERATED</span></div>
-      <div class="card-body">
-        <div class="notice">Der Auftrag enthält Struktur, Benutzerantworten und die vollständigen Originaldaten. Kein Abgleich, keine Korrekturen.</div>
-        <div class="terminal" id="promptOutput"></div>
-        <div class="actions">
-          <button class="btn pink" id="btnCopyPrompt">📋 LLM-AUFTRAG KOPIEREN</button>
-          <button class="btn secondary" id="btnBackToQuestions">← FRAGEN</button>
-        </div>
-        <div id="promptStatus" class="status">Bereit zum Kopieren.</div>
-        <div class="step-hint">Öffne Grok oder ChatGPT, füge den Auftrag ein und kopiere anschließend die JSON-Antwort zurück hierher.</div>
-      </div>
-    </div>
-    <div class="actions">
-      <button class="btn" id="btnToJson">WEITER ZU JSON →</button>
-    </div>
-  </div>
+<div class="upload-card">
+<h3 style="color:var(--cyan)">TABLE B</h3>
+<div class="sub">z.B. SCHALTUNGSLISTE</div>
+<div class="upload-zone" id="zoneB">
+<strong>DATEI AUSWÄHLEN</strong><br>
+<small>CSV · XLSX · XLS · TSV</small>
+<input id="fileB" type="file" accept=".csv,.xlsx,.xls,.tsv">
+</div>
+<div id="metaB" class="meta-box hidden"></div>
+</div>
 
-  <div id="step4" class="step-panel hidden">
-    <div class="card">
-      <div class="card-head"><strong>LLM-JSON</strong><span>VALIDIERUNG</span></div>
-      <div class="card-body">
-        <textarea id="jsonInput" spellcheck="false" placeholder="LLM-JSON HIER EINFÜGEN"></textarea>
-        <div class="actions">
-          <button class="btn" id="btnValidateJson">JSON VALIDIEREN</button>
-          <button class="btn cyan hidden" id="btnImportJson">IN DATENBANK IMPORTIEREN</button>
-          <button class="btn secondary" id="btnClearJson">CLEAR</button>
-        </div>
-        <div id="jsonStatus" class="status">JSON einfügen und validieren.</div>
-      </div>
-    </div>
-    <div class="actions">
-      <button class="btn secondary" id="btnBackToPrompt">← LLM-AUFTRAG</button>
-      <button class="btn cyan hidden" id="btnSaveAsPolicy">ALS POLICY SPEICHERN</button>
-    </div>
-  </div>
+</div>
+
+<div class="actions">
+<button class="btn" id="btnToQuestions" disabled>WEITER ZU FRAGEN →</button>
+</div>
+<div id="step1Status" class="status">Beide Tabellen hochladen.</div>
+</div>
+
+<div id="step2" class="step-panel hidden">
+<div id="qProgress" style="font-size:10px;color:var(--muted);margin-bottom:12px"></div>
+<div id="questionContainer"></div>
+<button class="btn secondary" id="btnBackToUpload">← ZURÜCK</button>
+</div>
+
+<div id="step3" class="step-panel hidden">
+<div class="card">
+<div class="card-head"><strong>LLM-AUFTRAG</strong><span>STRUCTURE ONLY</span></div>
+<div class="card-body">
+<div class="notice">
+Das LLM strukturiert die Originaldaten. Es führt noch keinen Abgleich durch.
+</div>
+<div id="promptOutput" class="terminal"></div>
+<div class="actions">
+<button class="btn" id="btnCopyPrompt">📋 LLM-AUFTRAG KOPIEREN</button>
+<button class="btn secondary" id="btnBackToQuestions">← FRAGEN</button>
+</div>
+<div id="promptStatus" class="status">Bereit.</div>
+</div>
+</div>
+<button class="btn" id="btnToJson">WEITER ZU JSON →</button>
+</div>
+
+<div id="step4" class="step-panel hidden">
+<div class="card">
+<div class="card-head"><strong>LLM-JSON</strong><span>VALIDIERUNG</span></div>
+<div class="card-body">
+<textarea id="jsonInput" spellcheck="false"
+placeholder='{
+  "version": "1.0",
+  "dataset": "BOOKING_RECON",
+  "tables": {
+    "TABLE_A": {
+      "source_type": "...",
+      "description": "...",
+      "records": []
+    },
+    "TABLE_B": {
+      "source_type": "...",
+      "description": "...",
+      "records": []
+    }
+  }
+}'></textarea>
+
+<div class="actions">
+<button class="btn" id="btnValidateJson">JSON VALIDIEREN</button>
+<button class="btn cyan hidden" id="btnImportJson">IN DATENBANK IMPORTIEREN</button>
+<button class="btn secondary" id="btnClearJson">CLEAR</button>
+</div>
+<div id="jsonStatus" class="status">JSON einfügen und validieren.</div>
+</div>
+</div>
+
+<div class="actions">
+<button class="btn secondary" id="btnBackToPrompt">← LLM-AUFTRAG</button>
+<button class="btn cyan hidden" id="btnSaveAsPolicy">ALS POLICY SPEICHERN</button>
+</div>
+</div>
 </section>
 
-<!-- ===================== DATENBANK ===================== -->
 <section id="view-database" class="view">
-  <div class="head">
-    <div class="kicker">GESPEICHERTE DATEN</div>
-    <h1>DATENBANK</h1>
-  </div>
-  <div class="stats">
-    <div class="stat"><div class="stat-label">TABELLE A</div><div id="tableACount" class="stat-value">0</div></div>
-    <div class="stat"><div class="stat-label">TABELLE B</div><div id="tableBCount" class="stat-value">0</div></div>
-    <div class="stat"><div class="stat-label">GESAMT</div><div id="recordCount" class="stat-value">0</div></div>
-    <div class="stat"><div class="stat-label">ABWEICHUNGEN</div><div id="differenceCount" class="stat-value">0</div></div>
-  </div>
-  <div class="toolbar">
-    <button class="tab active" data-tab="tableA">TABELLE A</button>
-    <button class="tab" data-tab="tableB">TABELLE B</button>
-    <button class="tab" data-tab="differences">ABWEICHUNGEN</button>
-    <input id="dbSearch" class="search" placeholder="Datenbank durchsuchen...">
-  </div>
-  <div class="card"><div class="table-wrap"><div id="databaseTable"></div></div></div>
+<div class="head">
+<div class="kicker">GESPEICHERTE DATEN</div>
+<h1>DATENBANK</h1>
+</div>
+
+<div class="stats">
+<div class="stat"><div class="stat-label">TABLE A</div><div id="tableACount" class="stat-value">0</div></div>
+<div class="stat"><div class="stat-label">TABLE B</div><div id="tableBCount" class="stat-value">0</div></div>
+<div class="stat"><div class="stat-label">AKTIV</div><div id="activeCount" class="stat-value">0</div></div>
+<div class="stat"><div class="stat-label">AUSSORTIERT</div><div id="excludedCount" class="stat-value">0</div></div>
+<div class="stat"><div class="stat-label">ERGEBNISSE</div><div id="differenceCount" class="stat-value">0</div></div>
+</div>
+
+<div class="toolbar">
+<button class="tab active" data-tab="tableA">TABLE A</button>
+<button class="tab" data-tab="tableB">TABLE B</button>
+<button class="tab" data-tab="differences">ERGEBNISSE</button>
+<input id="dbSearch" class="search" placeholder="Datenbank durchsuchen...">
+</div>
+
+<div class="card">
+<div class="table-wrap"><div id="databaseTable"></div></div>
+</div>
 </section>
 
-<!-- ===================== ABGLEICH ===================== -->
 <section id="view-query" class="view">
-  <div class="head">
-    <div class="kicker">ABGLEICH</div>
-    <h1>VALIDIERUNG</h1>
-  </div>
+<div class="head">
+<div class="kicker">DETERMINISTISCHER ABGLEICH</div>
+<h1>VALIDIERUNG</h1>
+</div>
 
-  <div class="card">
-    <div class="card-head"><strong>POLICY AUSWÄHLEN</strong><span>DETERMINISTISCH</span></div>
-    <div class="card-body">
-      <div class="notice">Wähle eine gespeicherte Policy. Der Executor führt ausschließlich die Regeln der Policy aus. Keine LLM-Entscheidung zur Laufzeit.</div>
-      <div class="field">
-        <label>AKTIVE POLICY</label>
-        <select id="policySelect">
-          <option value="">— manuelle Konfiguration —</option>
-        </select>
-      </div>
-      <div id="policyPreview" class="status" style="margin-top:12px">Keine Policy gewählt. Manuelle Felder unten werden verwendet.</div>
-    </div>
-  </div>
+<div class="card">
+<div class="card-head"><strong>ABGLEICH</strong><span>KEIN LLM ZUR LAUFZEIT</span></div>
+<div class="card-body">
 
-  <div class="card">
-    <div class="card-head"><strong>ABGLEICH</strong><span>DETERMINISTISCH</span></div>
-    <div class="card-body">
-      <div class="notice">Die eigentliche Ausführung verwendet ausschließlich die unten festgelegte Vergleichskonfiguration bzw. die gewählte Policy.</div>
-      <input id="queryInput" class="query-input" placeholder="Beschreibung der Vergleichsanfrage...">
-      <div class="examples">
-        <button data-query="Vergleiche Tabelle A und Tabelle B und zeige alle Abweichungen.">ALLE ABWEICHUNGEN</button>
-        <button data-query="Vergleiche Tabelle A und Tabelle B für den gewählten Zeitraum.">ZEITRAUM</button>
-        <button data-query="Vergleiche die relevanten Buchungswerte aus Tabelle A und Tabelle B.">BUCHUNGEN</button>
-      </div>
-      <div class="actions">
-        <button id="runQuery" class="btn">AUSFÜHREN</button>
-        <button id="clearQuery" class="btn secondary">CLEAR</button>
-      </div>
-    </div>
-  </div>
+<div class="notice">
+Das LLM strukturiert die Daten. Dieser Schritt entscheidet ausschließlich anhand
+fest definierter Regeln. KASSENABSCHLUSS wird nicht als normale Buchung verglichen.
+</div>
 
-  <div class="card">
-    <div class="card-head"><strong>VERGLEICHSKONFIGURATION</strong><span>EXPLIZITE REGELN</span></div>
-    <div class="card-body">
-      <div class="field-grid">
-        <div class="field"><label>VON</label><input id="dateFrom" type="date"></div>
-        <div class="field"><label>BIS</label><input id="dateTo" type="date"></div>
-        <div class="field"><label>ABGLEICH ÜBER</label><input id="matchKeys" value="auftrag_id" placeholder="z.B. auftrag_id, vertrags_id"></div>
-        <div class="field"><label>ZU VERGLEICHEN</label><input id="numericFields" value="menge,betrag" placeholder="z.B. menge,betrag"></div>
-      </div>
-      <div class="actions"><button id="resetConfig" class="btn secondary">ZURÜCKSETZEN</button></div>
-    </div>
-  </div>
+<div class="field-grid">
+<div class="field">
+<label>VON</label>
+<input id="dateFrom" type="date">
+</div>
+<div class="field">
+<label>BIS</label>
+<input id="dateTo" type="date">
+</div>
+<div class="field">
+<label>ABGLEICH-FELDER</label>
+<input id="matchKeys" value="auftragsnummer">
+</div>
+<div class="field">
+<label>VERGLEICHSFELDER</label>
+<input id="numericFields" value="gesamt,gewinn,hw_bonus">
+</div>
+</div>
 
-  <div id="queryPlan" class="plan hidden"></div>
-  <div id="queryResults" class="card hidden" style="margin-top:20px"></div>
+<div class="actions">
+<button id="runQuery" class="btn">ABGLEICH AUSFÜHREN</button>
+<button id="resetConfig" class="btn secondary">ZURÜCKSETZEN</button>
+</div>
+</div>
+</div>
+
+<div id="queryPlan" class="plan hidden"></div>
+<div id="queryResults" class="card hidden"></div>
 </section>
 
-<!-- ===================== POLICIES ===================== -->
 <section id="view-policies" class="view">
-  <div class="head">
-    <div class="kicker">ABGLEICH-PROFILE</div>
-    <h1>POLICIES</h1>
-  </div>
-
-  <div class="card">
-    <div class="card-head"><strong>GESPEICHERTE POLICIES</strong><span>VERSIONIERT</span></div>
-    <div class="card-body">
-      <div class="notice">
-        Eine Policy ist ein vom Nutzer beigebrachter, versionierter Ablauf.<br>
-        Das LLM erzeugt die Policy. Der Compiler prüft sie. Der Executor führt sie deterministisch aus.
-      </div>
-      <div id="policyList" class="policy-list">
-        <div class="empty">NOCH KEINE POLICIES GESPEICHERT</div>
-      </div>
-      <div class="actions" style="margin-top:18px">
-        <button class="btn cyan" id="btnCreatePolicyFromAnswers">AUS AKTUELLEM WORKFLOW ERZEUGEN</button>
-        <button class="btn secondary" id="btnRefreshPolicies">AKTUALISIEREN</button>
-      </div>
-      <div id="policyStatus" class="status">Bereit.</div>
-    </div>
-  </div>
+<div class="head">
+<div class="kicker">ABGLEICH-PROFILE</div>
+<h1>POLICIES</h1>
+</div>
+<div class="card">
+<div class="card-head"><strong>GESPEICHERTE POLICIES</strong></div>
+<div class="card-body">
+<div class="notice">
+Eine Policy beschreibt einen vom Benutzer festgelegten Ablauf.
+Der Executor führt diesen Ablauf deterministisch aus.
+</div>
+<div id="policyList"></div>
+<button class="btn secondary" id="btnRefreshPolicies">AKTUALISIEREN</button>
+<div id="policyStatus" class="status">Bereit.</div>
+</div>
+</div>
 </section>
 
 </main>
 
 <script>
 /* =========================================================
-   DATABASE
+   DATENBANK
 ========================================================= */
-const DB_NAME = "BOOKING_RECON_DB";
-const DB_VERSION = 2;
-const STORE_RECORDS = "records";
-const STORE_DIFFERENCES = "differences";
-const STORE_POLICIES = "policies";
-let database = null;
 
-let state = { records: [], differences: [], policies: [] };
-let currentTab = "tableA";
-let activePolicyId = null;
+const DB_NAME="BOOKING_RECON_DB";
+const DB_VERSION=3;
+const STORE_RECORDS="records";
+const STORE_DIFFERENCES="differences";
+const STORE_POLICIES="policies";
 
-const workflow = {
-  step: 1,
-  tableA: null,
-  tableB: null,
-  answersA: {},
-  answersB: {},
-  currentTable: "A",
-  qIndex: 0,
-  validatedPayload: null
+let database=null;
+let state={records:[],differences:[],policies:[]};
+let currentTab="tableA";
+
+const workflow={
+step:1,
+tableA:null,
+tableB:null,
+answersA:{},
+answersB:{},
+currentTable:"A",
+qIndex:0,
+validatedPayload:null
 };
 
-const QUESTIONS = [
-  { id: "table_type", title: "WAS IST DAS FÜR EINE TABELLE?", type: "single", options: ["KASSENAUFTRÄGE", "VERTRAGSBUCHUNGEN", "SONSTIGES"] },
-  { id: "row_meaning", title: "WAS BEDEUTET EINE ZEILE?", type: "single", options: ["EIN AUFTRAG", "EINE POSITION", "EINE BUCHUNG", "SONSTIGES"] },
-  { id: "identifier", title: "WELCHE SPALTE IDENTIFIZIERT DEN VORGANG?", type: "columns", allowNone: false },
-  { id: "date_field", title: "WELCHE SPALTE ENTHÄLT DAS DATUM?", type: "columns", allowNone: true },
-  { id: "relevant", title: "WELCHE SPALTEN SIND FÜR DEN SPÄTEREN ABGLEICH RELEVANT?", type: "multi" },
-  { id: "extra", title: "GIBT ES NOCH EINE WICHTIGE INFORMATION?", type: "text", placeholder: "z.B. Vorgang entspricht dem Auftrag aus Tabelle A." }
+const QUESTIONS=[
+{
+id:"table_type",
+title:"WAS IST DAS FÜR EINE TABELLE?",
+type:"single",
+options:["KASSENAUFTRÄGE","VERTRAGSBUCHUNGEN","SYSTEMEXPORT","SONSTIGES"]
+},
+{
+id:"row_meaning",
+title:"WAS BEDEUTET EINE ZEILE?",
+type:"single",
+options:["EIN VORGANG","EIN AUFTRAG","EINE POSITION","EINE BUCHUNG","SONSTIGES"]
+},
+{
+id:"identifier",
+title:"WELCHE SPALTE IDENTIFIZIERT DEN VORGANG?",
+type:"columns"
+},
+{
+id:"date_field",
+title:"WELCHE SPALTE ENTHÄLT DAS DATUM?",
+type:"columns",
+allowNone:true
+},
+{
+id:"relevant",
+title:"WELCHE FELDER SIND FÜR DEN SPÄTEREN ABGLEICH RELEVANT?",
+type:"multi"
+},
+{
+id:"extra",
+title:"GIBT ES EINE WICHTIGE ZUSATZINFORMATION?",
+type:"text"
+}
 ];
 
-const ALLOWED_OPERATIONS = [
-  "READ_TABLE",
-  "MATCH_RECORDS",
-  "COMPARE_FIELDS",
-  "CLASSIFY_DIFFERENCE",
-  "STORE_RESULT"
-];
-
-/* =========================================================
-   OPEN DATABASE (Version 2 + Policies)
-========================================================= */
 function openDatabase(){
-  if(database) return Promise.resolve(database);
-  return new Promise((resolve,reject)=>{
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onupgradeneeded = event => {
-      const db = event.target.result;
-      if(!db.objectStoreNames.contains(STORE_RECORDS)){
-        const store = db.createObjectStore(STORE_RECORDS, { keyPath:"id", autoIncrement:true });
-        store.createIndex("source_table","source_table",{unique:false});
-        store.createIndex("record_id","record_id",{unique:false});
-        store.createIndex("date","date",{unique:false});
-      }
-      if(!db.objectStoreNames.contains(STORE_DIFFERENCES)){
-        db.createObjectStore(STORE_DIFFERENCES, { keyPath:"difference_id" });
-      }
-      if(!db.objectStoreNames.contains(STORE_POLICIES)){
-        const pStore = db.createObjectStore(STORE_POLICIES, { keyPath:"id", autoIncrement:true });
-        pStore.createIndex("policy_id","policy_id",{unique:false});
-        pStore.createIndex("version","version",{unique:false});
-        pStore.createIndex("status","status",{unique:false});
-      }
-    };
-    request.onsuccess = () => {
-      database = request.result;
-      database.onversionchange = () => { database.close(); database = null; };
-      resolve(database);
-    };
-    request.onerror = () => reject(request.error || new Error("IndexedDB konnte nicht geöffnet werden."));
-  });
+if(database)return Promise.resolve(database);
+return new Promise((resolve,reject)=>{
+const req=indexedDB.open(DB_NAME,DB_VERSION);
+
+req.onupgradeneeded=e=>{
+const db=e.target.result;
+
+if(!db.objectStoreNames.contains(STORE_RECORDS)){
+const s=db.createObjectStore(STORE_RECORDS,{keyPath:"id",autoIncrement:true});
+s.createIndex("source_table","source_table",{unique:false});
+s.createIndex("record_id","record_id",{unique:false});
+s.createIndex("date","date",{unique:false});
+}
+
+if(!db.objectStoreNames.contains(STORE_DIFFERENCES)){
+db.createObjectStore(STORE_DIFFERENCES,{keyPath:"difference_id"});
+}
+
+if(!db.objectStoreNames.contains(STORE_POLICIES)){
+const s=db.createObjectStore(STORE_POLICIES,{keyPath:"id",autoIncrement:true});
+s.createIndex("policy_id","policy_id",{unique:false});
+}
+};
+
+req.onsuccess=()=>{
+database=req.result;
+database.onversionchange=()=>{
+database.close();
+database=null;
+};
+resolve(database);
+};
+
+req.onerror=()=>reject(req.error);
+});
 }
 
 function getAll(storeName){
-  return new Promise((resolve,reject)=>{
-    const tx = database.transaction(storeName,"readonly");
-    const request = tx.objectStore(storeName).getAll();
-    request.onsuccess = () => resolve(request.result || []);
-    request.onerror = () => reject(request.error);
-  });
+return new Promise((resolve,reject)=>{
+const tx=database.transaction(storeName,"readonly");
+const req=tx.objectStore(storeName).getAll();
+req.onsuccess=()=>resolve(req.result||[]);
+req.onerror=()=>reject(req.error);
+});
 }
 
-async function readDatabase(){
-  await openDatabase();
-  return {
-    records: await getAll(STORE_RECORDS),
-    differences: await getAll(STORE_DIFFERENCES),
-    policies: await getAll(STORE_POLICIES)
-  };
+function clearStore(name){
+return new Promise((resolve,reject)=>{
+const tx=database.transaction(name,"readwrite");
+tx.objectStore(name).clear();
+tx.oncomplete=resolve;
+tx.onerror=()=>reject(tx.error);
+});
 }
 
-function clearStore(storeName){
-  return new Promise((resolve,reject)=>{
-    const tx = database.transaction(storeName,"readwrite");
-    tx.objectStore(storeName).clear();
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-    tx.onabort = () => reject(tx.error || new Error("Transaktion abgebrochen."));
-  });
-}
+async function refresh(){
+await openDatabase();
+state.records=await getAll(STORE_RECORDS);
+state.differences=await getAll(STORE_DIFFERENCES);
+state.policies=await getAll(STORE_POLICIES);
 
-/* =========================================================
-   POLICY MODEL + COMPILER + STORE
-========================================================= */
-function buildPolicyFromWorkflow(){
-  const A = workflow.tableA;
-  const B = workflow.tableB;
-  const ansA = workflow.answersA;
-  const ansB = workflow.answersB;
+const a=state.records.filter(x=>x.source_table==="TABLE_A");
+const b=state.records.filter(x=>x.source_table==="TABLE_B");
 
-  if(!A || !B) throw new Error("Beide Tabellen müssen geladen sein.");
+document.getElementById("tableACount").textContent=a.length;
+document.getElementById("tableBCount").textContent=b.length;
 
-  const matchKeys = [];
-  if(ansA.identifier) matchKeys.push(ansA.identifier);
-  if(ansB.identifier && ansB.identifier !== ansA.identifier) matchKeys.push(ansB.identifier);
+const excluded=state.records.filter(x=>x.record_type==="KASSENABSCHLUSS");
+document.getElementById("excludedCount").textContent=excluded.length;
 
-  const numeric = [];
-  (ansA.relevant || []).forEach(f => { if(!numeric.includes(f)) numeric.push(f); });
-  (ansB.relevant || []).forEach(f => { if(!numeric.includes(f)) numeric.push(f); });
+document.getElementById("activeCount").textContent=
+state.records.filter(x=>x.status==="AKTIV").length;
 
-  const policy = {
-    policy_id: "BOOKING_RECON",
-    version: "1.0",
-    name: (ansA.table_type || "TABELLE A") + " ↔ " + (ansB.table_type || "TABELLE B"),
-    created_at: new Date().toISOString(),
-    status: "active",
-    schema: {
-      TABLE_A: A.headers.slice(),
-      TABLE_B: B.headers.slice()
-    },
-    match: {
-      keys: matchKeys.length ? matchKeys : ["auftrag_id"],
-      numeric_fields: numeric.length ? numeric : ["menge","betrag"],
-      date_field_a: ansA.date_field || null,
-      date_field_b: ansB.date_field || null
-    },
-    operations: [
-      "READ_TABLE",
-      "MATCH_RECORDS",
-      "COMPARE_FIELDS",
-      "CLASSIFY_DIFFERENCE",
-      "STORE_RESULT"
-    ],
-    dependencies: [
-      ["v1","v3"],
-      ["v2","v3"],
-      ["v3","v4"],
-      ["v4","v5"]
-    ],
-    semantics: {
-      table_a: {
-        description: ansA.table_type || "",
-        row_meaning: ansA.row_meaning || "",
-        identifier: ansA.identifier || null,
-        extra: ansA.extra || ""
-      },
-      table_b: {
-        description: ansB.table_type || "",
-        row_meaning: ansB.row_meaning || "",
-        identifier: ansB.identifier || null,
-        extra: ansB.extra || ""
-      }
-    }
-  };
-  return policy;
-}
+document.getElementById("differenceCount").textContent=state.differences.length;
 
-function compilePolicy(raw){
-  if(!raw || typeof raw !== "object") throw new Error("Policy ist kein Objekt.");
-  if(!raw.policy_id) throw new Error("policy_id fehlt.");
-  if(!raw.version) throw new Error("version fehlt.");
-  if(!raw.match || !Array.isArray(raw.match.keys) || raw.match.keys.length === 0){
-    throw new Error("match.keys muss mindestens ein Feld enthalten.");
-  }
-  if(!Array.isArray(raw.match.numeric_fields) || raw.match.numeric_fields.length === 0){
-    throw new Error("match.numeric_fields muss mindestens ein Feld enthalten.");
-  }
-  if(!Array.isArray(raw.operations)) throw new Error("operations fehlt.");
-  for(const op of raw.operations){
-    if(!ALLOWED_OPERATIONS.includes(op)) throw new Error("Unzulässige Operation: " + op);
-  }
-  if(!Array.isArray(raw.dependencies)) throw new Error("dependencies fehlt.");
-
-  // simple cycle check on dependency pairs
-  const nodes = new Set();
-  raw.dependencies.forEach(([a,b]) => { nodes.add(a); nodes.add(b); });
-  const adj = {};
-  nodes.forEach(n => adj[n] = []);
-  raw.dependencies.forEach(([a,b]) => adj[a].push(b));
-  const visited = {};
-  const stack = {};
-  function hasCycle(n){
-    if(stack[n]) return true;
-    if(visited[n]) return false;
-    visited[n] = true;
-    stack[n] = true;
-    for(const m of (adj[n]||[])) if(hasCycle(m)) return true;
-    stack[n] = false;
-    return false;
-  }
-  for(const n of nodes) if(hasCycle(n)) throw new Error("Abhängigkeitsgraph enthält einen Zyklus.");
-
-  return {
-    ...raw,
-    compiled_at: new Date().toISOString(),
-    compiled: true
-  };
-}
-
-async function savePolicy(policy){
-  await openDatabase();
-  const compiled = compilePolicy(policy);
-  const tx = database.transaction(STORE_POLICIES, "readwrite");
-  const store = tx.objectStore(STORE_POLICIES);
-  const record = {
-    policy_id: compiled.policy_id,
-    version: compiled.version,
-    name: compiled.name || compiled.policy_id,
-    created_at: compiled.created_at || new Date().toISOString(),
-    status: compiled.status || "active",
-    policy: compiled
-  };
-  return new Promise((resolve,reject)=>{
-    const req = store.add(record);
-    req.onsuccess = () => resolve({ id: req.result, ...record });
-    req.onerror = () => reject(req.error || new Error("Policy konnte nicht gespeichert werden."));
-  });
-}
-
-async function loadPolicies(){
-  await openDatabase();
-  const list = await getAll(STORE_POLICIES);
-  state.policies = list.sort((a,b) => (b.created_at||"").localeCompare(a.created_at||""));
-  return state.policies;
-}
-
-async function deletePolicy(id){
-  await openDatabase();
-  return new Promise((resolve,reject)=>{
-    const tx = database.transaction(STORE_POLICIES,"readwrite");
-    tx.objectStore(STORE_POLICIES).delete(id);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-  });
+renderDatabase();
+renderPolicies();
 }
 
 /* =========================================================
-   FILE PARSE + ANALYZE (unchanged)
+   DATEIEN
 ========================================================= */
+
 function parseFile(file){
-  return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    const name = file.name.toLowerCase();
-    reader.onload = e => {
-      try{
-        let workbook;
-        if(name.endsWith(".csv") || name.endsWith(".tsv") || file.type.includes("csv") || file.type.includes("tab")){
-          const text = e.target.result;
-          const delim = name.endsWith(".tsv") || (text.indexOf("\t") > -1 && text.indexOf("\t") < text.indexOf(",")) ? "\t" : ",";
-          workbook = XLSX.read(text, { type:"string", FS:delim, raw:false });
-        } else {
-          workbook = XLSX.read(e.target.result, { type:"array", cellDates:true });
-        }
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const json = XLSX.utils.sheet_to_json(sheet, { header:1, defval:"", raw:false });
-        if(!json.length) throw new Error("Leere Tabelle");
-        const headers = json[0].map(h => String(h || "").trim() || "SPALTE");
-        const rows = json.slice(1).filter(r => r.some(c => String(c).trim() !== ""));
-        const data = rows.map(r => {
-          const obj = {};
-          headers.forEach((h,i) => { obj[h] = r[i] !== undefined && r[i] !== null ? String(r[i]).trim() : ""; });
-          return obj;
-        });
-        resolve({ fileName: file.name, fileType: file.name.split(".").pop().toUpperCase(), headers, rows: data, rowCount: data.length, colCount: headers.length });
-      }catch(err){ reject(err); }
-    };
-    reader.onerror = () => reject(new Error("Datei konnte nicht gelesen werden."));
-    if(name.endsWith(".csv") || name.endsWith(".tsv")) reader.readAsText(file);
-    else reader.readAsArrayBuffer(file);
-  });
+return new Promise((resolve,reject)=>{
+const reader=new FileReader();
+const name=file.name.toLowerCase();
+
+reader.onload=e=>{
+try{
+let wb;
+
+if(name.endsWith(".csv")||name.endsWith(".tsv")){
+const text=e.target.result;
+const delim=name.endsWith(".tsv")?"\t":",";
+wb=XLSX.read(text,{type:"string",FS:delim,raw:false});
+}else{
+wb=XLSX.read(e.target.result,{type:"array",cellDates:true});
+}
+
+const sheet=wb.Sheets[wb.SheetNames[0]];
+const raw=XLSX.utils.sheet_to_json(sheet,{header:1,defval:"",raw:false});
+
+if(!raw.length)throw new Error("Leere Tabelle.");
+
+const headers=raw[0].map((x,i)=>String(x||"").trim()||"SPALTE_"+(i+1));
+
+const rows=raw.slice(1)
+.filter(r=>r.some(x=>String(x??"").trim()!==""))
+.map(r=>{
+const obj={};
+headers.forEach((h,i)=>{
+obj[h]=r[i]===undefined||r[i]===null?"":String(r[i]).trim();
+});
+return obj;
+});
+
+resolve({
+fileName:file.name,
+fileType:file.name.split(".").pop().toUpperCase(),
+headers,
+rows,
+rowCount:rows.length,
+colCount:headers.length
+});
+
+}catch(err){reject(err)}
+};
+
+reader.onerror=()=>reject(new Error("Datei konnte nicht gelesen werden."));
+
+if(name.endsWith(".csv")||name.endsWith(".tsv"))
+reader.readAsText(file);
+else
+reader.readAsArrayBuffer(file);
+});
 }
 
 function analyzeTable(tbl){
-  const samples = {};
-  const emptyCols = [];
-  const types = {};
-  const possibleDate = [];
-  const possibleNum = [];
-  const possibleId = [];
-  tbl.headers.forEach(h => {
-    const vals = tbl.rows.map(r => r[h]).filter(v => v !== "");
-    samples[h] = vals.slice(0,3);
-    if(vals.length === 0) emptyCols.push(h);
-    let numCount = 0, dateCount = 0;
-    vals.slice(0,50).forEach(v => {
-      if(/^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$/.test(v) || /^\d{4}-\d{2}-\d{2}/.test(v)) dateCount++;
-      if(/^-?[\d.,]+$/.test(v.replace(/\s/g,""))) numCount++;
-    });
-    if(dateCount > vals.length * 0.4) possibleDate.push(h);
-    if(numCount > vals.length * 0.5) possibleNum.push(h);
-    const low = h.toLowerCase();
-    if(/id|nr|nummer|auftrag|vertrag|key|code|ref/.test(low)) possibleId.push(h);
-    types[h] = dateCount > numCount ? "date-like" : numCount > vals.length*0.4 ? "numeric-like" : "text";
-  });
-  return { samples, emptyCols, types, possibleDate, possibleNum, possibleId };
+const possibleDate=[],possibleNum=[],possibleId=[],emptyCols=[];
+
+tbl.headers.forEach(h=>{
+const values=tbl.rows.map(r=>r[h]).filter(Boolean);
+
+if(!values.length)emptyCols.push(h);
+
+let dates=0,nums=0;
+
+values.slice(0,50).forEach(v=>{
+if(/^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$/.test(v)||
+/^\d{4}-\d{2}-\d{2}/.test(v))dates++;
+
+if(/^-?[\d.,]+$/.test(String(v).replace(/\s/g,"")))nums++;
+});
+
+if(dates>values.length*.4)possibleDate.push(h);
+if(nums>values.length*.5)possibleNum.push(h);
+
+if(/id|nr|nummer|auftrag|vertrag|code|ref/i.test(h))
+possibleId.push(h);
+});
+
+return{possibleDate,possibleNum,possibleId,emptyCols};
 }
 
-function renderMeta(which, tbl){
-  const el = document.getElementById("meta" + which);
-  const a = analyzeTable(tbl);
-  tbl.analysis = a;
-  el.innerHTML = `
-    <div><span class="label">DATEI</span> ${esc(tbl.fileName)}</div>
-    <div><span class="label">TYP</span> ${esc(tbl.fileType)}</div>
-    <div><span class="label">ZEILEN</span> ${tbl.rowCount.toLocaleString("de-DE")}</div>
-    <div><span class="label">SPALTEN</span> ${tbl.colCount}</div>
-    <div style="margin-top:8px"><span class="label">GEFUNDENE SPALTEN</span></div>
-    <div class="col-tags">${tbl.headers.map(h => `<span class="col-tag">${esc(h)}</span>`).join("")}</div>
-  `;
-  el.classList.remove("hidden");
+function renderMeta(which,tbl){
+const a=analyzeTable(tbl);
+tbl.analysis=a;
+
+const el=document.getElementById("meta"+which);
+
+el.innerHTML=`
+<div>DATEI: ${esc(tbl.fileName)}</div>
+<div>ZEILEN: ${tbl.rowCount}</div>
+<div>SPALTEN: ${tbl.colCount}</div>
+<div class="col-tags">
+${tbl.headers.map(h=>`<span class="col-tag">${esc(h)}</span>`).join("")}
+</div>`;
+
+el.classList.remove("hidden");
 }
 
-async function handleFile(which, file){
-  const status = document.getElementById("step1Status");
-  try{
-    status.className = "status"; status.textContent = "Analysiere " + file.name + " …";
-    const tbl = await parseFile(file);
-    if(which === "A") workflow.tableA = tbl; else workflow.tableB = tbl;
-    renderMeta(which, tbl);
-    status.className = "status ok";
-    status.textContent = "TABLE " + which + " geladen: " + tbl.rowCount + " Zeilen, " + tbl.colCount + " Spalten.";
-    checkReady();
-  }catch(e){
-    status.className = "status error";
-    status.textContent = "✕ " + e.message;
-  }
+async function handleFile(which,file){
+try{
+const tbl=await parseFile(file);
+
+if(which==="A")workflow.tableA=tbl;
+else workflow.tableB=tbl;
+
+renderMeta(which,tbl);
+
+document.getElementById("step1Status").className="status ok";
+document.getElementById("step1Status").textContent=
+"TABLE "+which+" geladen: "+tbl.rowCount+" Zeilen.";
+
+document.getElementById("btnToQuestions").disabled=
+!(workflow.tableA&&workflow.tableB);
+
+}catch(e){
+document.getElementById("step1Status").className="status error";
+document.getElementById("step1Status").textContent="✕ "+e.message;
+}
 }
 
-function checkReady(){
-  document.getElementById("btnToQuestions").disabled = !(workflow.tableA && workflow.tableB);
-}
+["A","B"].forEach(w=>{
+const input=document.getElementById("file"+w);
+const zone=document.getElementById("zone"+w);
 
-["A","B"].forEach(w => {
-  const input = document.getElementById("file" + w);
-  const zone = document.getElementById("zone" + w);
-  input.addEventListener("change", e => { if(e.target.files[0]) handleFile(w, e.target.files[0]); });
-  zone.addEventListener("dragover", e => { e.preventDefault(); zone.classList.add("drag"); });
-  zone.addEventListener("dragleave", () => zone.classList.remove("drag"));
-  zone.addEventListener("drop", e => {
-    e.preventDefault(); zone.classList.remove("drag");
-    if(e.dataTransfer.files[0]) handleFile(w, e.dataTransfer.files[0]);
-  });
+zone.onclick=()=>input.click();
+
+input.onchange=e=>{
+if(e.target.files[0])handleFile(w,e.target.files[0]);
+};
+
+zone.ondragover=e=>{
+e.preventDefault();
+zone.style.borderColor="var(--cyan)";
+};
+
+zone.ondragleave=()=>{
+zone.style.borderColor="";
+};
+
+zone.ondrop=e=>{
+e.preventDefault();
+zone.style.borderColor="";
+if(e.dataTransfer.files[0])handleFile(w,e.dataTransfer.files[0]);
+};
 });
 
 /* =========================================================
-   STEPPER + QUESTIONS (unchanged core)
+   FRAGEN
 ========================================================= */
+
 function setStep(n){
-  workflow.step = n;
-  document.querySelectorAll(".step-item").forEach(el => {
-    const s = +el.dataset.step;
-    el.classList.remove("active","done");
-    if(s === n) el.classList.add("active");
-    else if(s < n) el.classList.add("done");
-  });
-  document.querySelectorAll(".step-panel").forEach(p => p.classList.add("hidden"));
-  const panel = document.getElementById("step" + n);
-  if(panel) panel.classList.remove("hidden");
+workflow.step=n;
+
+document.querySelectorAll(".step-item").forEach(x=>{
+const s=Number(x.dataset.step);
+x.classList.remove("active","done");
+if(s===n)x.classList.add("active");
+else if(s<n)x.classList.add("done");
+});
+
+document.querySelectorAll(".step-panel").forEach(x=>x.classList.add("hidden"));
+document.getElementById("step"+n)?.classList.remove("hidden");
 }
 
-document.getElementById("btnToQuestions").onclick = () => {
-  workflow.currentTable = "A";
-  workflow.qIndex = 0;
-  workflow.answersA = {};
-  workflow.answersB = {};
-  setStep(2);
-  renderQuestion();
-};
-document.getElementById("btnBackToUpload").onclick = () => setStep(1);
-document.getElementById("btnBackToQuestions").onclick = () => {
-  workflow.currentTable = "B";
-  workflow.qIndex = QUESTIONS.length - 1;
-  setStep(2);
-  renderQuestion();
-};
-document.getElementById("btnToJson").onclick = () => setStep(4);
-document.getElementById("btnBackToPrompt").onclick = () => setStep(3);
+function currentAnswers(){
+return workflow.currentTable==="A"?workflow.answersA:workflow.answersB;
+}
 
-function getCurrentAnswers(){ return workflow.currentTable === "A" ? workflow.answersA : workflow.answersB; }
-function getCurrentTable(){ return workflow.currentTable === "A" ? workflow.tableA : workflow.tableB; }
+function currentTable(){
+return workflow.currentTable==="A"?workflow.tableA:workflow.tableB;
+}
 
 function renderQuestion(){
-  const container = document.getElementById("questionContainer");
-  const progress = document.getElementById("qProgress");
-  const tbl = getCurrentTable();
-  const answers = getCurrentAnswers();
-  const q = QUESTIONS[workflow.qIndex];
-  const totalQ = QUESTIONS.length * 2;
-  const done = (workflow.currentTable === "A" ? 0 : QUESTIONS.length) + workflow.qIndex;
-  progress.textContent = `TABLE ${workflow.currentTable} · FRAGE ${workflow.qIndex + 1}/${QUESTIONS.length} · GESAMT ${done + 1}/${totalQ}`;
+const tbl=currentTable();
+const answers=currentAnswers();
+const q=QUESTIONS[workflow.qIndex];
 
-  let html = `<div class="question-box"><div class="q-num">QUESTION ${String(workflow.qIndex + 1).padStart(2,"0")} — TABLE ${workflow.currentTable}</div><div class="q-title">${q.title}</div>`;
+document.getElementById("qProgress").textContent=
+`TABLE ${workflow.currentTable} · FRAGE ${workflow.qIndex+1}/${QUESTIONS.length}`;
 
-  if(q.type === "single"){
-    html += `<div class="q-options">`;
-    q.options.forEach(opt => { html += `<button class="q-btn" data-val="${esc(opt)}">${esc(opt)}</button>`; });
-    html += `</div>`;
-  }
-  else if(q.type === "columns"){
-    const analysis = tbl.analysis || {};
-    if(q.id === "identifier" && analysis.possibleId && analysis.possibleId.length){
-      html += `<div class="q-suggest">MÖGLICHES IDENTIFIKATIONSFELD ERKANNT: ${analysis.possibleId.map(x=>esc(x)).join(", ")}</div>`;
-    }
-    if(q.id === "date_field" && analysis.possibleDate && analysis.possibleDate.length){
-      html += `<div class="q-suggest">MÖGLICHES DATUMSFELD ERKANNT: ${analysis.possibleDate.map(x=>esc(x)).join(", ")}</div>`;
-    }
-    html += `<div class="q-options">`;
-    tbl.headers.forEach(h => { html += `<button class="q-btn" data-val="${esc(h)}">${esc(h)}</button>`; });
-    if(q.allowNone) html += `<button class="q-btn" data-val="__NONE__">[ KEIN DATUM ]</button>`;
-    html += `</div>`;
-  }
-  else if(q.type === "multi"){
-    html += `<div class="q-options" id="multiOpts">`;
-    tbl.headers.forEach(h => {
-      const checked = (answers.relevant || []).includes(h);
-      html += `<button class="q-btn multi ${checked?"selected":""}" data-val="${esc(h)}">${checked?"[x]":"[ ]"} ${esc(h)}</button>`;
-    });
-    html += `</div><div class="actions" style="margin-top:16px"><button class="btn" id="btnMultiNext">WEITER</button></div>`;
-  }
-  else if(q.type === "text"){
-    html += `<textarea class="q-text" id="extraText" placeholder="${esc(q.placeholder||"")}">${esc(answers.extra||"")}</textarea>`;
-    html += `<div class="actions" style="margin-top:14px">
-      <button class="btn" id="btnTextNext">WEITER</button>
-      <button class="btn secondary" id="btnTextSkip">NICHTS WEITERES</button>
-    </div>`;
-  }
-  html += `</div>`;
-  container.innerHTML = html;
+let html=`
+<div class="question-box">
+<div class="q-num">TABLE ${workflow.currentTable}</div>
+<div class="q-title">${q.title}</div>`;
 
-  if(q.type === "single" || q.type === "columns"){
-    container.querySelectorAll(".q-btn").forEach(btn => {
-      btn.onclick = () => {
-        const val = btn.dataset.val;
-        if(q.id === "table_type") answers.table_type = val;
-        if(q.id === "row_meaning") answers.row_meaning = val;
-        if(q.id === "identifier") answers.identifier = val === "__NONE__" ? null : val;
-        if(q.id === "date_field") answers.date_field = val === "__NONE__" ? null : val;
-        nextQuestion();
-      };
-    });
-  }
-  if(q.type === "multi"){
-    const selected = new Set(answers.relevant || []);
-    container.querySelectorAll(".q-btn.multi").forEach(btn => {
-      btn.onclick = () => {
-        const v = btn.dataset.val;
-        if(selected.has(v)){ selected.delete(v); btn.classList.remove("selected"); btn.textContent = "[ ] " + v; }
-        else { selected.add(v); btn.classList.add("selected"); btn.textContent = "[x] " + v; }
-      };
-    });
-    document.getElementById("btnMultiNext").onclick = () => {
-      answers.relevant = Array.from(selected);
-      nextQuestion();
-    };
-  }
-  if(q.type === "text"){
-    document.getElementById("btnTextNext").onclick = () => {
-      answers.extra = document.getElementById("extraText").value.trim();
-      nextQuestion();
-    };
-    document.getElementById("btnTextSkip").onclick = () => {
-      answers.extra = "";
-      nextQuestion();
-    };
-  }
+if(q.type==="single"){
+html+=`<div class="q-options">`;
+q.options.forEach(o=>{
+html+=`<button class="q-btn" data-value="${esc(o)}">${esc(o)}</button>`;
+});
+html+=`</div>`;
+}
+
+if(q.type==="columns"){
+const suggestions=q.id==="identifier"
+?tbl.analysis?.possibleId||[]
+:tbl.analysis?.possibleDate||[];
+
+if(suggestions.length){
+html+=`<div class="notice">
+MÖGLICH: ${suggestions.map(esc).join(", ")}
+</div>`;
+}
+
+html+=`<div class="q-options">`;
+
+tbl.headers.forEach(h=>{
+html+=`<button class="q-btn" data-value="${esc(h)}">${esc(h)}</button>`;
+});
+
+if(q.allowNone)
+html+=`<button class="q-btn" data-value="__NONE__">[ KEIN DATUM ]</button>`;
+
+html+=`</div>`;
+}
+
+if(q.type==="multi"){
+html+=`<div class="q-options">`;
+
+(tbl.headers||[]).forEach(h=>{
+const checked=(answers.relevant||[]).includes(h);
+html+=`
+<button class="q-btn multi ${checked?"selected":""}"
+data-value="${esc(h)}">${checked?"[x]":"[ ]"} ${esc(h)}</button>`;
+});
+
+html+=`</div>
+<div class="actions">
+<button class="btn" id="multiNext">WEITER</button>
+</div>`;
+}
+
+if(q.type==="text"){
+html+=`
+<textarea id="extraText" class="q-text"
+placeholder="z.B. Tabelle B ist technischer Systemexport.">${esc(answers.extra||"")}</textarea>
+<div class="actions">
+<button class="btn" id="textNext">WEITER</button>
+</div>`;
+}
+
+html+=`</div>`;
+
+document.getElementById("questionContainer").innerHTML=html;
+
+document.querySelectorAll(".q-btn:not(.multi)").forEach(btn=>{
+btn.onclick=()=>{
+const v=btn.dataset.value;
+
+if(q.id==="table_type")answers.table_type=v;
+if(q.id==="row_meaning")answers.row_meaning=v;
+if(q.id==="identifier")answers.identifier=v==="__NONE__"?null:v;
+if(q.id==="date_field")answers.date_field=v==="__NONE__"?null:v;
+
+nextQuestion();
+};
+});
+
+const selected=new Set(answers.relevant||[]);
+
+document.querySelectorAll(".q-btn.multi").forEach(btn=>{
+btn.onclick=()=>{
+const v=btn.dataset.value;
+
+if(selected.has(v)){
+selected.delete(v);
+btn.classList.remove("selected");
+btn.textContent="[ ] "+v;
+}else{
+selected.add(v);
+btn.classList.add("selected");
+btn.textContent="[x] "+v;
+}
+};
+});
+
+document.getElementById("multiNext")?.addEventListener("click",()=>{
+answers.relevant=[...selected];
+nextQuestion();
+});
+
+document.getElementById("textNext")?.addEventListener("click",()=>{
+answers.extra=document.getElementById("extraText").value.trim();
+nextQuestion();
+});
 }
 
 function nextQuestion(){
-  workflow.qIndex++;
-  if(workflow.qIndex >= QUESTIONS.length){
-    if(workflow.currentTable === "A"){
-      workflow.currentTable = "B";
-      workflow.qIndex = 0;
-      renderQuestion();
-    } else {
-      generatePrompt();
-      setStep(3);
-    }
-  } else {
-    renderQuestion();
-  }
+workflow.qIndex++;
+
+if(workflow.qIndex>=QUESTIONS.length){
+if(workflow.currentTable==="A"){
+workflow.currentTable="B";
+workflow.qIndex=0;
+renderQuestion();
+}else{
+generatePrompt();
+setStep(3);
+}
+}else renderQuestion();
 }
 
+document.getElementById("btnToQuestions").onclick=()=>{
+workflow.currentTable="A";
+workflow.qIndex=0;
+workflow.answersA={};
+workflow.answersB={};
+setStep(2);
+renderQuestion();
+};
+
+document.getElementById("btnBackToUpload").onclick=()=>setStep(1);
+
+document.getElementById("btnBackToQuestions").onclick=()=>{
+workflow.currentTable="B";
+workflow.qIndex=QUESTIONS.length-1;
+setStep(2);
+renderQuestion();
+};
+
+document.getElementById("btnToJson").onclick=()=>setStep(4);
+document.getElementById("btnBackToPrompt").onclick=()=>setStep(3);
+
 /* =========================================================
-   PROMPT GENERATOR (unchanged)
+   LLM-AUFTRAG
 ========================================================= */
+
 function generatePrompt(){
-  const A = workflow.tableA;
-  const B = workflow.tableB;
-  const ansA = workflow.answersA;
-  const ansB = workflow.answersB;
 
-  function tableBlock(label, tbl, ans){
-    const dataPreview = tbl.rows.map((r,i) => `  ${JSON.stringify(r)}`).join(",\n");
-    return `────────────────────────
-${label}
-────────────────────────
+const A=workflow.tableA;
+const B=workflow.tableB;
 
-METADATEN
-Datei: ${tbl.fileName}
-Typ: ${tbl.fileType}
-Zeilen: ${tbl.rowCount}
-Spalten: ${tbl.colCount}
+function block(name,tbl,ans){
+
+return`
+==============================
+${name}
+==============================
+
+DATEI: ${tbl.fileName}
+TYP: ${tbl.fileType}
+ZEILEN: ${tbl.rowCount}
+SPALTEN: ${tbl.colCount}
 
 SPALTEN:
-${tbl.headers.map(h => `[ ${h} ]`).join("\n")}
+${tbl.headers.join(", ")}
 
-BEISPIELWERTE (erste Zeilen):
-${tbl.rows.slice(0,3).map(r => JSON.stringify(r)).join("\n")}
+BENUTZERANGABEN:
+Tabellentyp: ${ans.table_type||"—"}
+Zeilenbedeutung: ${ans.row_meaning||"—"}
+Identifikationsfeld: ${ans.identifier||"—"}
+Datumsfeld: ${ans.date_field||"—"}
+Relevante Felder: ${(ans.relevant||[]).join(", ")||"—"}
+Zusatzinfo: ${ans.extra||"—"}
 
-LEERE SPALTEN: ${(tbl.analysis.emptyCols||[]).join(", ") || "keine"}
-
-MÖGLICHE DATUMSFELDER: ${(tbl.analysis.possibleDate||[]).join(", ") || "—"}
-MÖGLICHE NUMERISCHE FELDER: ${(tbl.analysis.possibleNum||[]).join(", ") || "—"}
-MÖGLICHE IDENTIFIKATIONSFELDER: ${(tbl.analysis.possibleId||[]).join(", ") || "—"}
-
-BENUTZERINFORMATION:
-Tabellentyp: ${ans.table_type || "—"}
-Zeilenbedeutung: ${ans.row_meaning || "—"}
-Identifikationsfeld: ${ans.identifier || "—"}
-Datumsfeld: ${ans.date_field || "KEIN DATUM"}
-Relevante Felder: ${(ans.relevant||[]).join(", ") || "—"}
-Zusatzinfo: ${ans.extra || "—"}
-
-SEMANTISCHE AUSWAHLEN:
-identifier_fields: ${ans.identifier ? JSON.stringify([ans.identifier]) : "[]"}
-date_fields: ${ans.date_field ? JSON.stringify([ans.date_field]) : "[]"}
-relevant_fields: ${JSON.stringify(ans.relevant||[])}
-
-DATEN (vollständig, Originalwerte):
-[
-${dataPreview}
-]
+ORIGINALDATEN:
+${JSON.stringify(tbl.rows,null,2)}
 `;
-  }
+}
 
-  const prompt = `DU BIST EIN DATENSTRUKTURIERUNGS- UND TABELLENANALYSESYSTEM.
+const prompt=`
+DU BIST EIN DATENSTRUKTURIERUNGSSYSTEM.
 
-AUFGABE:
-Analysiere die folgenden Tabellen zusammen mit den vom Benutzer bereitgestellten Informationen.
+DEINE AUFGABE IST AUSSCHLIESSLICH:
+Die beiden Tabellen strukturell zu analysieren und in das unten definierte
+BOOKING_RECON-JSON zu überführen.
 
-Erkenne und strukturiere:
-1. Tabellenstruktur
-2. Bedeutung der Spalten
-3. Datensatzgrenzen
-4. Identifikationsfelder
-5. Datentypen
-6. semantische Beziehungen
+WICHTIGE REGELN:
 
-WICHTIG:
-* Keine Zeile auslassen.
-* Keine Werte erfinden.
-* Keine Werte korrigieren.
-* Originalwerte erhalten.
-* Tabellen strikt getrennt halten.
-* Keine Buchungen zusammenführen.
-* Keine Buchungen entfernen.
-* Keine Buchungsfehler bewerten.
-* Keine Abweichungen berechnen.
-* Ausschließlich gültiges JSON ausgeben.
+1. KEINE ZEILE AUSLASSEN.
+2. KEINEN ORIGINALWERT KORRIGIEREN.
+3. KEINEN ORIGINALWERT ERFINDEN.
+4. Tabellen strikt getrennt halten.
+5. Keine Datensätze zusammenführen.
+6. Keine Datensätze entfernen.
+7. Keine Abweichungen berechnen.
+8. Keine Buchungsfehler beurteilen.
+9. Originalwerte müssen unter "data" erhalten bleiben.
+10. Semantische Informationen dürfen ergänzt werden, dürfen aber die
+    Originaldaten NICHT verändern.
+11. Wenn eine Klassifizierung nicht sicher ist, "UNBEKANNT" verwenden.
+12. KASSENABSCHLUSS ist kein normaler Buchungsvorgang.
+13. Bei KASSENABSCHLUSS:
+    record_type = "KASSENABSCHLUSS"
+14. Normale Vorgänge:
+    record_type = "VORGANG"
+15. status darf nur verwendet werden, wenn aus den Daten zuverlässig ableitbar.
+16. Fehlende Information nicht erfinden.
 
-${tableBlock("TABLE A", A, ansA)}
+FÜR TABLE A:
+- Quelle und Beschreibung übernehmen.
+- Jeden Datensatz mit A-000001, A-000002 usw. nummerieren.
 
-${tableBlock("TABLE B", B, ansB)}
+FÜR TABLE B:
+- Quelle und Beschreibung übernehmen.
+- Jeden Datensatz mit B-000001, B-000002 usw. nummerieren.
 
-AUSGABEFORMAT
+DATUM:
+Wenn ein Datum eindeutig vorhanden ist, als YYYY-MM-DD ausgeben.
+Wenn kein Datum vorhanden ist: null.
 
-Das LLM muss ausschließlich JSON zurückgeben:
+STATUS:
+Wenn nicht sicher bestimmbar: "UNBEKANNT".
+
+BEKANNTE ZDF-SEMANTIK:
+- FN / FTTH grundsätzlich AKTIV, sofern kein expliziter anderer Status existiert.
+- MF / CON mit blauem Marker = ERINNERUNG.
+- MF / CON mit gelbem oder orangem Marker = ZUKUNFT.
+- Gelb und Orange bedeuten dieselbe Kategorie.
+- KASSENABSCHLUSS niemals als normale Buchung behandeln.
+- Niemals fehlende Farben oder Zustände erraten.
+
+${block("TABLE A",A,workflow.answersA)}
+
+${block("TABLE B",B,workflow.answersB)}
+
+AUSGABE:
 
 {
   "version": "1.0",
   "dataset": "BOOKING_RECON",
-  "semantic_structure": {
-    "table_a": {
+  "tables": {
+    "TABLE_A": {
+      "source_type": "...",
       "description": "...",
-      "row_meaning": "...",
-      "identifier_fields": [],
-      "date_fields": [],
-      "relevant_fields": []
-    },
-    "table_b": {
-      "description": "...",
-      "row_meaning": "...",
-      "identifier_fields": [],
-      "date_fields": [],
-      "relevant_fields": []
-    },
-    "relationships": []
-  },
-  "tables": [
-    {
-      "table_id": "TABLE_A",
-      "name": "${A.fileName}",
       "records": [
         {
           "record_id": "A-000001",
-          "date": "YYYY-MM-DD oder null",
           "source_table": "TABLE_A",
-          "data": { ... Originalfelder ... }
+          "record_type": "VORGANG",
+          "status": "AKTIV",
+          "data": {
+            "...": "Originalwert"
+          }
         }
       ]
     },
-    {
-      "table_id": "TABLE_B",
-      "name": "${B.fileName}",
+    "TABLE_B": {
+      "source_type": "...",
+      "description": "...",
       "records": [
         {
           "record_id": "B-000001",
-          "date": "YYYY-MM-DD oder null",
           "source_table": "TABLE_B",
-          "data": { ... Originalfelder ... }
+          "record_type": "VORGANG",
+          "status": "AKTIV",
+          "data": {
+            "...": "Originalwert"
+          }
         }
       ]
     }
-  ]
-}
-
-Keine Erklärung außerhalb des JSON.
-Keine Markdown-Codeblöcke.
-Nur das JSON-Objekt.`;
-
-  document.getElementById("promptOutput").textContent = prompt;
-  document.getElementById("promptStatus").className = "status";
-  document.getElementById("promptStatus").textContent = "Bereit zum Kopieren.";
-}
-
-document.getElementById("btnCopyPrompt").onclick = async () => {
-  const text = document.getElementById("promptOutput").textContent;
-  const status = document.getElementById("promptStatus");
-  try{
-    await navigator.clipboard.writeText(text);
-    status.className = "status ok";
-    status.textContent = "✓ LLM-AUFTRAG KOPIERT";
-  }catch(e){
-    status.className = "status error";
-    status.textContent = "✕ Kopieren nicht möglich – manuell markieren.";
   }
+}
+
+AUSSCHLIESSLICH JSON.
+KEINE ERKLÄRUNG.
+KEINE MARKDOWN-CODEBLÖCKE.
+`;
+
+document.getElementById("promptOutput").textContent=prompt;
+}
+
+document.getElementById("btnCopyPrompt").onclick=async()=>{
+try{
+await navigator.clipboard.writeText(
+document.getElementById("promptOutput").textContent
+);
+document.getElementById("promptStatus").className="status ok";
+document.getElementById("promptStatus").textContent="✓ LLM-AUFTRAG KOPIERT";
+}catch{
+document.getElementById("promptStatus").className="status error";
+document.getElementById("promptStatus").textContent="Kopieren nicht möglich.";
+}
 };
 
 /* =========================================================
-   JSON VALIDATION + IMPORT
+   NEUER JSON-VALIDATOR
 ========================================================= */
+
 function validateImportPayload(payload){
-  if(!payload || typeof payload !== "object") throw new Error("Die Eingabe ist kein gültiges JSON-Objekt.");
-  if(payload.version === undefined) throw new Error("version fehlt.");
-  if(payload.dataset !== "BOOKING_RECON" && !(payload.dataset && payload.dataset.name === "BOOKING_RECON")){
-    throw new Error("dataset muss BOOKING_RECON sein.");
-  }
-  if(!payload.semantic_structure || typeof payload.semantic_structure !== "object"){
-    throw new Error("semantic_structure fehlt.");
-  }
-  if(!Array.isArray(payload.tables)) throw new Error("tables fehlt oder ist kein Array.");
-  if(payload.tables.length !== 2) throw new Error("Es werden genau zwei Tabellen benötigt.");
 
-  const expected = ["TABLE_A","TABLE_B"];
-  const seenIds = new Set();
+if(!payload||typeof payload!=="object")
+throw new Error("JSON ist kein Objekt.");
 
-  payload.tables.forEach((table, index) => {
-    if(!table || typeof table !== "object") throw new Error("Eine Tabelle ist ungültig.");
-    if(table.table_id !== expected[index]) throw new Error("Die Tabellen müssen als TABLE_A und TABLE_B in dieser Reihenfolge vorliegen.");
-    if(!Array.isArray(table.records)) throw new Error(table.table_id + " besitzt kein gültiges records-Array.");
+if(payload.version===undefined)
+throw new Error("version fehlt.");
 
-    table.records.forEach((record, recordIndex) => {
-      if(!record || typeof record !== "object"){
-        throw new Error("Ungültiger Datensatz in " + table.table_id + " an Position " + recordIndex + ".");
-      }
-      if(!record.record_id){
-        throw new Error(table.table_id + ".records[" + recordIndex + "] — record_id fehlt.");
-      }
-      const rid = String(record.record_id);
-      if(seenIds.has(rid)) throw new Error("Doppelte record_id: " + rid);
-      seenIds.add(rid);
-      if(record.source_table && record.source_table !== table.table_id){
-        throw new Error("source_table stimmt nicht mit table_id überein (" + table.table_id + ".records[" + recordIndex + "]).");
-      }
-      if(record.data !== undefined && (record.data === null || typeof record.data !== "object" || Array.isArray(record.data))){
-        throw new Error("data muss ein Objekt sein (" + table.table_id + ".records[" + recordIndex + "]).");
-      }
-    });
-  });
+if(payload.dataset!=="BOOKING_RECON")
+throw new Error("dataset muss BOOKING_RECON sein.");
+
+if(!payload.tables||typeof payload.tables!=="object"||
+Array.isArray(payload.tables))
+throw new Error(
+"tables muss ein Objekt mit TABLE_A und TABLE_B sein."
+);
+
+if(!payload.tables.TABLE_A)
+throw new Error("tables.TABLE_A fehlt.");
+
+if(!payload.tables.TABLE_B)
+throw new Error("tables.TABLE_B fehlt.");
+
+const ids=new Set();
+
+for(const id of ["TABLE_A","TABLE_B"]){
+
+const table=payload.tables[id];
+
+if(!Array.isArray(table.records))
+throw new Error(id+".records fehlt oder ist kein Array.");
+
+table.records.forEach((r,i)=>{
+
+if(!r||typeof r!=="object")
+throw new Error(`${id}.records[${i}] ist ungültig.`);
+
+if(!r.record_id)
+throw new Error(`${id}.records[${i}].record_id fehlt.`);
+
+if(ids.has(String(r.record_id)))
+throw new Error("Doppelte record_id: "+r.record_id);
+
+ids.add(String(r.record_id));
+
+if(r.source_table&&r.source_table!==id)
+throw new Error(
+`${r.record_id}: source_table stimmt nicht mit ${id} überein.`
+);
+
+if(!r.data||typeof r.data!=="object"||Array.isArray(r.data))
+throw new Error(`${r.record_id}: data muss ein Objekt sein.`);
+
+if(r.record_type!==undefined&&
+!["VORGANG","KASSENABSCHLUSS","UNBEKANNT"].includes(r.record_type))
+throw new Error(`${r.record_id}: unbekannter record_type.`);
+
+if(r.status!==undefined&&
+!["AKTIV","ZUKUNFT","ERINNERUNG","UNBEKANNT"].includes(r.status))
+throw new Error(`${r.record_id}: unbekannter status.`);
+});
 }
+
+return true;
+}
+
+/* =========================================================
+   IMPORT
+========================================================= */
 
 async function importJSON(payload){
-  await openDatabase();
-  validateImportPayload(payload);
-  const tables = payload.tables || (payload.dataset && payload.dataset.tables) || [];
-  const version = payload.version || "1.0";
-  await clearStore(STORE_RECORDS);
-  const transaction = database.transaction(STORE_RECORDS, "readwrite");
-  const store = transaction.objectStore(STORE_RECORDS);
-  let inserted = 0;
-  for(const table of tables){
-    for(const record of table.records){
-      store.put({
-        record_id: String(record.record_id),
-        source_table: table.table_id,
-        source_name: String(table.name || table.table_id),
-        date: record.date || null,
-        data: record.data && typeof record.data === "object" ? record.data : {},
-        imported_at: new Date().toISOString(),
-        dataset_version: String(version)
-      });
-      inserted++;
-    }
-  }
-  return new Promise((resolve,reject)=>{
-    transaction.oncomplete = () => resolve({ tables:2, records:inserted });
-    transaction.onerror = () => reject(transaction.error || new Error("Die Daten konnten nicht gespeichert werden."));
-    transaction.onabort = () => reject(transaction.error || new Error("Die Übernahme wurde abgebrochen."));
-  });
+
+validateImportPayload(payload);
+await openDatabase();
+await clearStore(STORE_RECORDS);
+
+const tx=database.transaction(STORE_RECORDS,"readwrite");
+const store=tx.objectStore(STORE_RECORDS);
+
+let count=0;
+
+for(const tableId of ["TABLE_A","TABLE_B"]){
+
+const table=payload.tables[tableId];
+
+for(const record of table.records){
+
+store.put({
+record_id:String(record.record_id),
+source_table:tableId,
+
+source_type:String(
+table.source_type||"UNBEKANNT"
+),
+
+source_description:String(
+table.description||""
+),
+
+record_type:String(
+record.record_type||"UNBEKANNT"
+),
+
+status:String(
+record.status||"UNBEKANNT"
+),
+
+date:extractDate(record),
+
+data:JSON.parse(JSON.stringify(record.data)),
+
+imported_at:new Date().toISOString(),
+dataset_version:String(payload.version)
+});
+
+count++;
+}
 }
 
-document.getElementById("btnValidateJson").onclick = () => {
-  const status = document.getElementById("jsonStatus");
-  const importBtn = document.getElementById("btnImportJson");
-  const savePolicyBtn = document.getElementById("btnSaveAsPolicy");
-  importBtn.classList.add("hidden");
-  savePolicyBtn.classList.add("hidden");
-  workflow.validatedPayload = null;
-  try{
-    const text = document.getElementById("jsonInput").value.trim();
-    if(!text) throw new Error("Bitte zuerst die JSON-Ausgabe einfügen.");
-    let json;
-    try{ json = JSON.parse(text); } catch(e){ throw new Error("Die Ausgabe ist kein gültiges JSON."); }
-    validateImportPayload(json);
-    const a = json.tables[0].records.length;
-    const b = json.tables[1].records.length;
-    status.className = "status ok";
-    status.innerHTML = `✓ JSON VALID<br>✓ TABLE A VALID (${a} records)<br>✓ TABLE B VALID (${b} records)<br>✓ ${(a+b).toLocaleString("de-DE")} RECORDS ERKANNT`;
-    workflow.validatedPayload = json;
-    importBtn.classList.remove("hidden");
-    if(workflow.tableA && workflow.tableB && workflow.answersA && workflow.answersB){
-      savePolicyBtn.classList.remove("hidden");
-    }
-  }catch(e){
-    status.className = "status error";
-    status.textContent = "✕ JSON ABGELEHNT\n\n" + e.message;
-  }
+return new Promise((resolve,reject)=>{
+tx.oncomplete=()=>resolve({records:count,tables:2});
+tx.onerror=()=>reject(tx.error);
+});
+}
+
+function extractDate(record){
+
+if(record.date)return record.date;
+
+const d=record.data||{};
+
+const candidates=[
+"datuм","datum","date","tagdatum","buchungsdatum"
+];
+
+for(const key of candidates){
+if(d[key])return normalizeDate(d[key]);
+}
+
+return null;
+}
+
+function normalizeDate(value){
+
+if(!value)return null;
+
+const s=String(value).trim();
+
+if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;
+
+let m=s.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
+
+if(m)
+return `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
+
+return null;
+}
+
+/* =========================================================
+   JSON UI
+========================================================= */
+
+document.getElementById("btnValidateJson").onclick=()=>{
+
+const status=document.getElementById("jsonStatus");
+const importBtn=document.getElementById("btnImportJson");
+
+importBtn.classList.add("hidden");
+workflow.validatedPayload=null;
+
+try{
+
+const text=document.getElementById("jsonInput").value.trim();
+
+if(!text)throw new Error("JSON fehlt.");
+
+const json=JSON.parse(text);
+
+validateImportPayload(json);
+
+const a=json.tables.TABLE_A.records.length;
+const b=json.tables.TABLE_B.records.length;
+
+workflow.validatedPayload=json;
+
+status.className="status ok";
+status.innerHTML=
+`✓ JSON GÜLTIG<br>
+✓ TABLE_A: ${a} RECORDS<br>
+✓ TABLE_B: ${b} RECORDS<br>
+✓ GESAMT: ${a+b} RECORDS`;
+
+importBtn.classList.remove("hidden");
+
+}catch(e){
+
+status.className="status error";
+status.textContent="✕ JSON ABGELEHNT\n\n"+e.message;
+}
 };
 
-document.getElementById("btnImportJson").onclick = async () => {
-  const status = document.getElementById("jsonStatus");
-  if(!workflow.validatedPayload) return;
-  try{
-    status.className = "status"; status.textContent = "IMPORTIERE …";
-    const result = await importJSON(workflow.validatedPayload);
-    await refresh();
-    status.className = "status ok";
-    status.textContent = "✓ " + result.records + " Datensätze aus " + result.tables + " Tabellen in IndexedDB gespeichert.";
-    setStep(5);
-    document.querySelectorAll(".nav").forEach(n => n.classList.remove("active"));
-    document.querySelector('.nav[data-view="database"]').classList.add("active");
-    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-    document.getElementById("view-database").classList.add("active");
-  }catch(e){
-    status.className = "status error";
-    status.textContent = "✕ " + e.message;
-  }
+document.getElementById("btnImportJson").onclick=async()=>{
+
+try{
+
+const result=await importJSON(workflow.validatedPayload);
+
+await refresh();
+
+const status=document.getElementById("jsonStatus");
+
+status.className="status ok";
+status.textContent=
+`✓ ${result.records} RECORDS IMPORTIERT`;
+
+document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));
+document.querySelector('[data-view="database"]').classList.add("active");
+
+document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
+document.getElementById("view-database").classList.add("active");
+
+}catch(e){
+
+document.getElementById("jsonStatus").className="status error";
+document.getElementById("jsonStatus").textContent="✕ "+e.message;
+}
 };
 
-document.getElementById("btnClearJson").onclick = () => {
-  document.getElementById("jsonInput").value = "";
-  document.getElementById("btnImportJson").classList.add("hidden");
-  document.getElementById("btnSaveAsPolicy").classList.add("hidden");
-  workflow.validatedPayload = null;
-  document.getElementById("jsonStatus").className = "status";
-  document.getElementById("jsonStatus").textContent = "JSON einfügen und validieren.";
-};
-
-document.getElementById("btnSaveAsPolicy").onclick = async () => {
-  const status = document.getElementById("jsonStatus");
-  try{
-    const raw = buildPolicyFromWorkflow();
-    const saved = await savePolicy(raw);
-    status.className = "status ok";
-    status.textContent = "✓ POLICY GESPEICHERT: " + saved.policy_id + " v" + saved.version;
-    await refreshPoliciesUI();
-  }catch(e){
-    status.className = "status error";
-    status.textContent = "✕ Policy-Fehler: " + e.message;
-  }
+document.getElementById("btnClearJson").onclick=()=>{
+document.getElementById("jsonInput").value="";
+document.getElementById("btnImportJson").classList.add("hidden");
+workflow.validatedPayload=null;
+document.getElementById("jsonStatus").className="status";
+document.getElementById("jsonStatus").textContent="JSON einfügen und validieren.";
 };
 
 /* =========================================================
-   REFRESH / RENDER
+   DATENBANK-ANSICHT
 ========================================================= */
-async function refresh(){
-  state = await readDatabase();
-  const a = state.records.filter(r => r.source_table === "TABLE_A");
-  const b = state.records.filter(r => r.source_table === "TABLE_B");
-  document.getElementById("tableACount").textContent = a.length;
-  document.getElementById("tableBCount").textContent = b.length;
-  document.getElementById("recordCount").textContent = state.records.length;
-  document.getElementById("differenceCount").textContent = state.differences.length;
-  renderDatabase();
-  await refreshPoliciesUI();
-}
 
-function esc(value){
-  return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
-}
-
-function formatData(data){
-  if(data === null || data === undefined) return "—";
-  if(typeof data === "object") return JSON.stringify(data);
-  return String(data);
+function esc(v){
+return String(v??"").replace(/[&<>"']/g,c=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",
+'"':"&quot;","'":"&#039;"
+}[c]));
 }
 
 function renderDatabase(){
-  const container = document.getElementById("databaseTable");
-  const search = document.getElementById("dbSearch").value.toLowerCase().trim();
-  if(currentTab === "differences"){ renderDifferences(container, search); return; }
-  const source = currentTab === "tableA" ? "TABLE_A" : "TABLE_B";
-  let rows = state.records.filter(r => r.source_table === source);
-  if(search) rows = rows.filter(r => JSON.stringify(r).toLowerCase().includes(search));
-  if(!rows.length){ container.innerHTML = `<div class="empty">KEINE DATENSÄTZE VORHANDEN</div>`; return; }
-  const keys = new Set();
-  rows.forEach(row => Object.keys(row.data || {}).forEach(k => keys.add(k)));
-  const columns = Array.from(keys);
-  let html = `<table><thead><tr><th>RECORD-ID</th><th>DATUM</th>${columns.map(k=>`<th>${esc(k.toUpperCase())}</th>`).join("")}</tr></thead><tbody>`;
-  rows.forEach(row => {
-    html += `<tr><td class="mono">${esc(row.record_id)}</td><td>${esc(row.date||"—")}</td>${columns.map(k=>`<td>${esc(formatData(row.data[k]))}</td>`).join("")}</tr>`;
-  });
-  html += `</tbody></table>`;
-  container.innerHTML = html;
+
+const container=document.getElementById("databaseTable");
+const search=document.getElementById("dbSearch").value.toLowerCase();
+
+if(currentTab==="differences"){
+renderDifferences(container,search);
+return;
 }
 
-function renderDifferences(container, search){
-  let rows = [...state.differences];
-  if(search) rows = rows.filter(r => JSON.stringify(r).toLowerCase().includes(search));
-  if(!rows.length){ container.innerHTML = `<div class="empty">KEINE ABWEICHUNGEN GEFUNDEN</div>`; return; }
-  let html = `<table><thead><tr><th>STATUS</th><th>ABGLEICH</th><th>FELD</th><th>TABELLE A</th><th>TABELLE B</th><th>DIFFERENZ</th></tr></thead><tbody>`;
-  rows.forEach(row => {
-    let statusClass = "warn";
-    if(row.status === "DIFFERENCE") statusClass = "bad";
-    if(row.status === "AMBIGUOUS_MATCH") statusClass = "ambiguous";
-    html += `<tr>
-      <td><span class="badge ${statusClass}">${esc(row.status)}</span></td>
-      <td class="mono">${esc(row.match_key)}</td>
-      <td>${esc(row.field)}</td>
-      <td>${esc(formatData(row.value_a))}</td>
-      <td>${esc(formatData(row.value_b))}</td>
-      <td class="${statusClass}">${esc(formatData(row.difference))}</td>
-    </tr>`;
-  });
-  html += `</tbody></table>`;
-  container.innerHTML = html;
+const source=currentTab==="tableA"?"TABLE_A":"TABLE_B";
+
+let rows=state.records.filter(x=>x.source_table===source);
+
+if(search)
+rows=rows.filter(x=>JSON.stringify(x).toLowerCase().includes(search));
+
+if(!rows.length){
+container.innerHTML=`<div class="empty">KEINE DATENSÄTZE</div>`;
+return;
+}
+
+const keys=new Set();
+
+rows.forEach(r=>{
+Object.keys(r.data||{}).forEach(k=>keys.add(k));
+});
+
+const columns=[...keys];
+
+let html=`
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>TYP</th>
+<th>STATUS</th>
+<th>DATUM</th>
+${columns.map(k=>`<th>${esc(k)}</th>`).join("")}
+</tr>
+</thead>
+<tbody>`;
+
+rows.forEach(r=>{
+
+const statusClass=
+r.status==="AKTIV"?"good":
+r.status==="ZUKUNFT"?"warn":
+r.status==="ERINNERUNG"?"ambiguous":
+"";
+
+html+=`
+<tr>
+<td class="mono">${esc(r.record_id)}</td>
+<td>${esc(r.record_type)}</td>
+<td class="${statusClass}">${esc(r.status)}</td>
+<td>${esc(r.date||"—")}</td>
+${columns.map(k=>`
+<td>${esc(r.data?.[k]??"")}</td>
+`).join("")}
+</tr>`;
+});
+
+html+=`</tbody></table>`;
+
+container.innerHTML=html;
+}
+
+function renderDifferences(container,search){
+
+let rows=[...state.differences];
+
+if(search)
+rows=rows.filter(x=>JSON.stringify(x).toLowerCase().includes(search));
+
+if(!rows.length){
+container.innerHTML=`<div class="empty">KEINE ERGEBNISSE</div>`;
+return;
+}
+
+container.innerHTML=`
+<table>
+<thead>
+<tr>
+<th>STATUS</th>
+<th>MATCH</th>
+<th>FELD</th>
+<th>A</th>
+<th>B</th>
+<th>DIFFERENZ</th>
+</tr>
+</thead>
+<tbody>
+${rows.map(r=>`
+<tr>
+<td><span class="badge">${esc(r.status)}</span></td>
+<td class="mono">${esc(r.match_key)}</td>
+<td>${esc(r.field)}</td>
+<td>${esc(r.value_a)}</td>
+<td>${esc(r.value_b)}</td>
+<td>${esc(r.difference)}</td>
+</tr>
+`).join("")}
+</tbody>
+</table>`;
 }
 
 /* =========================================================
-   POLICY UI
+   DETERMINISTISCHER ABGLEICH
 ========================================================= */
-async function refreshPoliciesUI(){
-  const list = await loadPolicies();
-  const container = document.getElementById("policyList");
-  const select = document.getElementById("policySelect");
 
-  // select
-  const current = select.value;
-  select.innerHTML = `<option value="">— manuelle Konfiguration —</option>`;
-  list.forEach(p => {
-    const opt = document.createElement("option");
-    opt.value = p.id;
-    opt.textContent = `${p.name}  ·  ${p.policy_id} v${p.version}`;
-    select.appendChild(opt);
-  });
-  if(current) select.value = current;
+function getField(record,field){
 
-  // list
-  if(!list.length){
-    container.innerHTML = `<div class="empty">NOCH KEINE POLICIES GESPEICHERT</div>`;
-    return;
-  }
-  container.innerHTML = list.map(p => {
-    const pol = p.policy || {};
-    const keys = (pol.match && pol.match.keys) ? pol.match.keys.join(", ") : "—";
-    const nums = (pol.match && pol.match.numeric_fields) ? pol.match.numeric_fields.join(", ") : "—";
-    return `
-      <div class="policy-card ${activePolicyId == p.id ? "active-policy" : ""}" data-id="${p.id}">
-        <div class="policy-meta">
-          <strong>${esc(p.name)}</strong><br>
-          <span class="ver">${esc(p.policy_id)} · v${esc(p.version)}</span><br>
-          <span class="st ${p.status==="draft"?"draft":""}">${esc(p.status||"active").toUpperCase()}</span><br>
-          MATCH: ${esc(keys)}<br>
-          VERGLEICH: ${esc(nums)}<br>
-          ${esc(p.created_at||"").slice(0,19).replace("T"," ")}
-        </div>
-        <div class="actions" style="margin:0">
-          <button class="btn cyan btn-use-policy" data-id="${p.id}">VERWENDEN</button>
-          <button class="btn secondary btn-del-policy" data-id="${p.id}">LÖSCHEN</button>
-        </div>
-      </div>`;
-  }).join("");
+if(record.data&&Object.prototype.hasOwnProperty.call(record.data,field))
+return record.data[field];
 
-  container.querySelectorAll(".btn-use-policy").forEach(btn => {
-    btn.onclick = () => {
-      const id = +btn.dataset.id;
-      applyPolicy(id);
-    };
-  });
-  container.querySelectorAll(".btn-del-policy").forEach(btn => {
-    btn.onclick = async () => {
-      if(!confirm("Policy wirklich löschen?")) return;
-      await deletePolicy(+btn.dataset.id);
-      await refreshPoliciesUI();
-      document.getElementById("policyStatus").className = "status ok";
-      document.getElementById("policyStatus").textContent = "✓ Policy gelöscht.";
-    };
-  });
+return undefined;
 }
 
-function applyPolicy(id){
-  const p = state.policies.find(x => x.id === id);
-  if(!p) return;
-  activePolicyId = id;
-  const pol = p.policy;
-  document.getElementById("matchKeys").value = (pol.match.keys || []).join(",");
-  document.getElementById("numericFields").value = (pol.match.numeric_fields || []).join(",");
-  document.getElementById("policySelect").value = id;
-  const preview = document.getElementById("policyPreview");
-  preview.className = "status ok";
-  preview.innerHTML = `✓ AKTIVE POLICY: <strong>${esc(p.name)}</strong> (${esc(p.policy_id)} v${esc(p.version)})<br>
-    MATCH: ${esc((pol.match.keys||[]).join(", "))}<br>
-    VERGLEICH: ${esc((pol.match.numeric_fields||[]).join(", "))}`;
-  refreshPoliciesUI();
+function normalizeKey(v){
+
+if(v===null||v===undefined)return null;
+
+const s=String(v).trim().toLowerCase();
+
+return s?s:null;
 }
 
-document.getElementById("policySelect").onchange = function(){
-  const id = this.value;
-  if(!id){
-    activePolicyId = null;
-    document.getElementById("policyPreview").className = "status";
-    document.getElementById("policyPreview").textContent = "Keine Policy gewählt. Manuelle Felder unten werden verwendet.";
-    refreshPoliciesUI();
-    return;
-  }
-  applyPolicy(+id);
-};
+function makeKey(record,fields){
 
-document.getElementById("btnCreatePolicyFromAnswers").onclick = async () => {
-  const status = document.getElementById("policyStatus");
-  try{
-    if(!workflow.tableA || !workflow.tableB){
-      throw new Error("Zuerst den Import-Workflow mit beiden Tabellen und Fragen durchlaufen.");
-    }
-    const raw = buildPolicyFromWorkflow();
-    const saved = await savePolicy(raw);
-    status.className = "status ok";
-    status.textContent = "✓ POLICY ERZEUGT UND GESPEICHERT: " + saved.policy_id + " v" + saved.version;
-    await refreshPoliciesUI();
-  }catch(e){
-    status.className = "status error";
-    status.textContent = "✕ " + e.message;
-  }
-};
+return fields.map(f=>normalizeKey(getField(record,f))).join("||");
+}
 
-document.getElementById("btnRefreshPolicies").onclick = () => refreshPoliciesUI();
+function completeKey(record,fields){
 
-/* =========================================================
-   COMPARE LOGIC (Executor) – gekapselt
-========================================================= */
-function getField(record, field){
-  if(record.data && Object.prototype.hasOwnProperty.call(record.data, field)) return record.data[field];
-  return undefined;
+return fields.every(f=>normalizeKey(getField(record,f))!==null);
 }
-function normalizeKey(value){
-  if(value === undefined || value === null) return null;
-  const normalized = String(value).trim().toLowerCase();
-  return normalized === "" ? null : normalized;
+
+function dateAllowed(record,from,to){
+
+if(!record.date)return true;
+
+if(from&&record.date<from)return false;
+if(to&&record.date>to)return false;
+
+return true;
 }
-function makeMatchKey(record, fields){
-  return fields.map(f => normalizeKey(getField(record, f))).join("||");
-}
-function hasCompleteMatchKey(record, fields){
-  return fields.every(f => normalizeKey(getField(record, f)) !== null);
-}
-function dateAllowed(record, from, to){
-  if(!record.date) return true;
-  if(from && record.date < from) return false;
-  if(to && record.date > to) return false;
-  return true;
-}
+
 function numeric(value){
-  if(typeof value === "number"){
-    return Number.isFinite(value) ? {state:"PRESENT",value} : {state:"INVALID",value:null};
-  }
-  if(value === null || value === undefined) return {state:"MISSING",value:null};
-  const raw = String(value).trim();
-  if(raw === "") return {state:"MISSING",value:null};
-  let text = raw.replace(/[€$£]/g,"").replace(/\s/g,"");
-  const hasComma = text.includes(","), hasDot = text.includes(".");
-  if(hasComma && hasDot){
-    const lastComma = text.lastIndexOf(","), lastDot = text.lastIndexOf(".");
-    if(lastComma > lastDot) text = text.replace(/\./g,"").replace(",",".");
-    else text = text.replace(/,/g,"");
-  } else if(hasComma) text = text.replace(",",".");
-  text = text.replace(/[^\d.-]/g,"");
-  if(text === "" || text === "-" || text === ".") return {state:"INVALID",value:null};
-  const number = Number(text);
-  return Number.isFinite(number) ? {state:"PRESENT",value:number} : {state:"INVALID",value:null};
+
+if(value===null||value===undefined||String(value).trim()==="")
+return {state:"MISSING",value:null};
+
+if(typeof value==="number")
+return Number.isFinite(value)
+?{state:"PRESENT",value}
+:{state:"INVALID",value:null};
+
+let s=String(value).trim()
+.replace(/[€$£]/g,"")
+.replace(/\s/g,"");
+
+if(s.includes(",")&&s.includes(".")){
+if(s.lastIndexOf(",")>s.lastIndexOf("."))
+s=s.replace(/\./g,"").replace(",",".");
+else
+s=s.replace(/,/g,"");
+}else if(s.includes(",")){
+s=s.replace(",",".");
 }
+
+s=s.replace(/[^\d.-]/g,"");
+
+const n=Number(s);
+
+return Number.isFinite(n)
+?{state:"PRESENT",value:n}
+:{state:"INVALID",value:null};
+}
+
 function createRunId(){
-  const now = new Date();
-  const iso = now.toISOString().replace(/[-:.TZ]/g,"");
-  if(typeof crypto !== "undefined" && crypto.randomUUID) return "RUN-" + iso + "-" + crypto.randomUUID().slice(0,8).toUpperCase();
-  return "RUN-" + iso;
+return "RUN-"+Date.now()+"-"+Math.random().toString(36).slice(2,8).toUpperCase();
 }
 
-/**
- * EXECUTOR
- * Führt eine (optionale) Policy aus.
- * Die eigentliche Vergleichslogik bleibt deterministisch und unverändert.
- */
-async function executePolicy(compiledPolicy){
-  // Policy steuert die Parameter – Executor entscheidet nichts neu
-  if(compiledPolicy && compiledPolicy.match){
-    if(Array.isArray(compiledPolicy.match.keys) && compiledPolicy.match.keys.length){
-      document.getElementById("matchKeys").value = compiledPolicy.match.keys.join(",");
-    }
-    if(Array.isArray(compiledPolicy.match.numeric_fields) && compiledPolicy.match.numeric_fields.length){
-      document.getElementById("numericFields").value = compiledPolicy.match.numeric_fields.join(",");
-    }
-  }
-  return compareTables(compiledPolicy);
+async function compareTables(){
+
+await openDatabase();
+
+const from=document.getElementById("dateFrom").value;
+const to=document.getElementById("dateTo").value;
+
+if(from&&to&&from>to)
+throw new Error("VON liegt nach BIS.");
+
+const matchFields=document.getElementById("matchKeys")
+.value.split(",").map(x=>x.trim()).filter(Boolean);
+
+const numericFields=document.getElementById("numericFields")
+.value.split(",").map(x=>x.trim()).filter(Boolean);
+
+if(!matchFields.length)
+throw new Error("Kein Abgleich-Feld.");
+
+const runId=createRunId();
+
+const excludedIds=new Set(
+state.records
+.filter(r=>r.record_type==="KASSENABSCHLUSS")
+.map(r=>r.record_id)
+);
+
+const A=state.records.filter(r=>
+r.source_table==="TABLE_A" &&
+!excludedIds.has(r.record_id) &&
+dateAllowed(r,from,to)
+);
+
+const B=state.records.filter(r=>
+r.source_table==="TABLE_B" &&
+!excludedIds.has(r.record_id) &&
+dateAllowed(r,from,to)
+);
+
+const mapB=new Map();
+
+B.forEach(r=>{
+if(!completeKey(r,matchFields))return;
+
+const k=makeKey(r,matchFields);
+
+if(!mapB.has(k))mapB.set(k,[]);
+mapB.get(k).push(r);
+});
+
+const mapA=new Map();
+
+A.forEach(r=>{
+if(!completeKey(r,matchFields))return;
+
+const k=makeKey(r,matchFields);
+
+if(!mapA.has(k))mapA.set(k,[]);
+mapA.get(k).push(r);
+});
+
+const differences=[];
+
+let comparisons=0;
+let ambiguous=0;
+let missingA=0;
+let missingB=0;
+let invalidKeys=0;
+
+function add(status,data={}){
+
+differences.push({
+difference_id:
+"DIFF-"+String(differences.length+1).padStart(6,"0"),
+run_id:runId,
+status,
+...data
+});
 }
 
-async function compareTables(activePolicy){
-  await openDatabase();
-  const from = document.getElementById("dateFrom").value;
-  const to = document.getElementById("dateTo").value;
-  if(from && to && from > to) throw new Error("Der Zeitraum ist ungültig: VON liegt nach BIS.");
-  const matchFields = document.getElementById("matchKeys").value.split(",").map(v=>v.trim()).filter(Boolean);
-  const numericFields = document.getElementById("numericFields").value.split(",").map(v=>v.trim()).filter(Boolean);
-  if(!matchFields.length) throw new Error("Mindestens ein Abgleich-Feld ist erforderlich.");
-  if(!numericFields.length) throw new Error("Mindestens ein Vergleichsfeld ist erforderlich.");
+for(const a of A){
 
-  const tableA = state.records.filter(r => r.source_table==="TABLE_A" && dateAllowed(r,from,to));
-  const tableB = state.records.filter(r => r.source_table==="TABLE_B" && dateAllowed(r,from,to));
+if(!completeKey(a,matchFields)){
 
-  const mapB = new Map();
-  tableB.forEach(record => {
-    if(!hasCompleteMatchKey(record, matchFields)) return;
-    const key = makeMatchKey(record, matchFields);
-    if(!mapB.has(key)) mapB.set(key,[]);
-    mapB.get(key).push(record);
-  });
-  const mapA = new Map();
-  tableA.forEach(record => {
-    if(!hasCompleteMatchKey(record, matchFields)) return;
-    const key = makeMatchKey(record, matchFields);
-    if(!mapA.has(key)) mapA.set(key,[]);
-    mapA.get(key).push(record);
-  });
+invalidKeys++;
 
-  const differences = [];
-  let comparisonCount=0, ambiguousCount=0, missingInACount=0, missingInBCount=0, invalidKeyCount=0;
-  const runId = createRunId();
+add("INVALID_MATCH_KEY",{
+match_key:makeKey(a,matchFields),
+field:"__match_key__",
+value_a:a.record_id,
+record_a:a.record_id
+});
 
-  function addDifference(row){
-    differences.push({ ...row, run_id: runId, sequence: differences.length+1 });
-  }
+continue;
+}
 
-  for(const recordA of tableA){
-    if(!hasCompleteMatchKey(recordA, matchFields)){
-      invalidKeyCount++;
-      addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"INVALID_MATCH_KEY", match_key:makeMatchKey(recordA,matchFields), field:"__match_key__", value_a:recordA.record_id, value_b:null, difference:null, record_a:recordA.record_id, record_b:null });
-      continue;
-    }
-    const key = makeMatchKey(recordA, matchFields);
-    const candidates = mapB.get(key) || [];
-    if(candidates.length === 0){
-      missingInBCount++;
-      addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"MISSING_IN_B", match_key:key, field:"__record__", value_a:recordA.record_id, value_b:null, difference:null, record_a:recordA.record_id, record_b:null });
-      continue;
-    }
-    if(candidates.length > 1){
-      ambiguousCount++;
-      addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"AMBIGUOUS_MATCH", match_key:key, field:"__record__", value_a:recordA.record_id, value_b:candidates.map(r=>r.record_id).join(", "), difference:null, record_a:recordA.record_id, record_b:candidates.map(r=>r.record_id) });
-      continue;
-    }
-    const recordB = candidates[0];
-    comparisonCount++;
-    for(const field of numericFields){
-      const valueA = numeric(getField(recordA, field));
-      const valueB = numeric(getField(recordB, field));
-      if(valueA.state==="MISSING" && valueB.state==="MISSING") continue;
-      if(valueA.state==="MISSING" || valueB.state==="MISSING"){
-        addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"VALUE_MISSING", match_key:key, field, value_a:valueA.state==="PRESENT"?valueA.value:null, value_b:valueB.state==="PRESENT"?valueB.value:null, difference:null, record_a:recordA.record_id, record_b:recordB.record_id });
-        continue;
-      }
-      if(valueA.state==="INVALID" || valueB.state==="INVALID"){
-        addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"VALUE_INVALID", match_key:key, field, value_a:getField(recordA,field), value_b:getField(recordB,field), difference:null, record_a:recordA.record_id, record_b:recordB.record_id });
-        continue;
-      }
-      const difference = valueA.value - valueB.value;
-      if(difference !== 0){
-        addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"DIFFERENCE", match_key:key, field, value_a:valueA.value, value_b:valueB.value, difference, record_a:recordA.record_id, record_b:recordB.record_id });
-      }
-    }
-  }
+const key=makeKey(a,matchFields);
+const candidates=mapB.get(key)||[];
 
-  for(const recordB of tableB){
-    if(!hasCompleteMatchKey(recordB, matchFields)) continue;
-    const key = makeMatchKey(recordB, matchFields);
-    const candidates = mapA.get(key) || [];
-    if(candidates.length === 0){
-      missingInACount++;
-      addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"MISSING_IN_A", match_key:key, field:"__record__", value_a:null, value_b:recordB.record_id, difference:null, record_a:null, record_b:recordB.record_id });
-    }
-  }
+if(!candidates.length){
 
-  const plan = {
-    version:"2.0",
-    operation:"COMPARE_TABLES",
-    execution:"DETERMINISTIC",
-    run_id:runId,
-    policy: activePolicy ? {
-      policy_id: activePolicy.policy_id,
-      version: activePolicy.version,
-      name: activePolicy.name
-    } : null,
-    period:{from:from||null,to:to||null},
-    input:{tableA:tableA.length,tableB:tableB.length},
-    matching:{
-      strategy:"EXACT",
-      fields:matchFields,
-      incomplete_key_policy:"INVALID_MATCH_KEY",
-      duplicate_match_policy:"AMBIGUOUS_MATCH",
-      missing_record_policy:"EXPLICIT_STATUS"
-    },
-    calculations:numericFields.map(f=>({field:f,operation:"A_MINUS_B",missing_value_policy:"DO_NOT_COERCE_TO_ZERO",invalid_value_policy:"VALUE_INVALID"})),
-    output:{type:"VALIDATED_DIFFERENCES",statuses:["DIFFERENCE","VALUE_MISSING","VALUE_INVALID","MISSING_IN_A","MISSING_IN_B","AMBIGUOUS_MATCH","INVALID_MATCH_KEY"]},
-    statistics:{
-      exact_matches:comparisonCount,
-      differences:differences.filter(r=>r.status==="DIFFERENCE").length,
-      missingValues:differences.filter(r=>r.status==="VALUE_MISSING").length,
-      invalidValues:differences.filter(r=>r.status==="VALUE_INVALID").length,
-      missingInA:missingInACount, missingInB:missingInBCount, ambiguousMatches:ambiguousCount, invalidMatchKeys:invalidKeyCount
-    }
-  };
+missingB++;
 
-  await clearStore(STORE_DIFFERENCES);
-  const transaction = database.transaction(STORE_DIFFERENCES,"readwrite");
-  const store = transaction.objectStore(STORE_DIFFERENCES);
-  differences.forEach(d => store.put(d));
+add("MISSING_IN_B",{
+match_key:key,
+field:"__record__",
+value_a:a.record_id,
+record_a:a.record_id
+});
 
-  return new Promise((resolve,reject)=>{
-    transaction.oncomplete = () => resolve({
-      runId, tableA:tableA.length, tableB:tableB.length, comparisons:comparisonCount,
-      differences:differences.length, ambiguous:ambiguousCount, missingInA:missingInACount,
-      missingInB:missingInBCount, invalidMatchKeys:invalidKeyCount, plan
-    });
-    transaction.onerror = () => reject(transaction.error || new Error("Ergebnis konnte nicht gespeichert werden."));
-    transaction.onabort = () => reject(transaction.error || new Error("Ergebnis-Speicherung wurde abgebrochen."));
-  });
+continue;
+}
+
+if(candidates.length>1){
+
+ambiguous++;
+
+add("AMBIGUOUS_MATCH",{
+match_key:key,
+field:"__record__",
+value_a:a.record_id,
+value_b:candidates.map(x=>x.record_id).join(", "),
+record_a:a.record_id,
+record_b:candidates.map(x=>x.record_id)
+});
+
+continue;
+}
+
+const b=candidates[0];
+
+comparisons++;
+
+numericFields.forEach(field=>{
+
+const va=numeric(getField(a,field));
+const vb=numeric(getField(b,field));
+
+if(va.state==="MISSING"&&vb.state==="MISSING")return;
+
+if(va.state==="MISSING"||vb.state==="MISSING"){
+
+add("VALUE_MISSING",{
+match_key:key,
+field,
+value_a:va.value,
+value_b:vb.value,
+record_a:a.record_id,
+record_b:b.record_id
+});
+
+return;
+}
+
+if(va.state==="INVALID"||vb.state==="INVALID"){
+
+add("VALUE_INVALID",{
+match_key:key,
+field,
+value_a:getField(a,field),
+value_b:getField(b,field),
+record_a:a.record_id,
+record_b:b.record_id
+});
+
+return;
+}
+
+const diff=va.value-vb.value;
+
+if(diff!==0){
+
+add("DIFFERENCE",{
+match_key:key,
+field,
+value_a:va.value,
+value_b:vb.value,
+difference:diff,
+record_a:a.record_id,
+record_b:b.record_id
+});
+}
+});
+}
+
+for(const b of B){
+
+if(!completeKey(b,matchFields))continue;
+
+const key=makeKey(b,matchFields);
+const candidates=mapA.get(key)||[];
+
+if(!candidates.length){
+
+missingA++;
+
+add("MISSING_IN_A",{
+match_key:key,
+field:"__record__",
+value_b:b.record_id,
+record_b:b.record_id
+});
+}
+}
+
+await clearStore(STORE_DIFFERENCES);
+
+const tx=database.transaction(STORE_DIFFERENCES,"readwrite");
+const store=tx.objectStore(STORE_DIFFERENCES);
+
+differences.forEach(x=>store.put(x));
+
+const result={
+runId,
+tableA:A.length,
+tableB:B.length,
+excluded:excludedIds.size,
+comparisons,
+differences:differences.length,
+ambiguous,
+missingA,
+missingB,
+invalidKeys,
+plan:{
+execution:"DETERMINISTIC",
+matching:{
+strategy:"EXACT",
+fields:matchFields,
+duplicate_policy:"AMBIGUOUS_MATCH"
+},
+excluded:{
+record_type:"KASSENABSCHLUSS",
+reason:"KEIN_NORMALER_BUCHUNGSVORGANG"
+},
+comparisonFields:numericFields,
+period:{from:from||null,to:to||null},
+statistics:{
+difference:differences.filter(x=>x.status==="DIFFERENCE").length,
+missing:differences.filter(x=>x.status==="VALUE_MISSING").length,
+invalid:differences.filter(x=>x.status==="VALUE_INVALID").length,
+missingA,
+missingB,
+ambiguous,
+invalidKeys
+}
+}
+};
+
+return new Promise((resolve,reject)=>{
+tx.oncomplete=()=>resolve(result);
+tx.onerror=()=>reject(tx.error);
+});
 }
 
 /* =========================================================
-   UI BINDINGS
+   POLICIES
 ========================================================= */
-document.querySelectorAll(".nav").forEach(button => {
-  button.onclick = function(){
-    document.querySelectorAll(".nav").forEach(i => i.classList.remove("active"));
-    button.classList.add("active");
-    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-    document.getElementById("view-" + button.dataset.view).classList.add("active");
-    if(button.dataset.view === "database") refresh();
-    if(button.dataset.view === "policies") refreshPoliciesUI();
-    if(button.dataset.view === "import") setStep(workflow.step);
-  };
+
+function renderPolicies(){
+
+const el=document.getElementById("policyList");
+
+if(!state.policies.length){
+el.innerHTML=`<div class="empty">NOCH KEINE POLICIES</div>`;
+return;
+}
+
+el.innerHTML=state.policies.map(p=>`
+<div class="policy-card">
+<div class="policy-meta">
+<strong>${esc(p.name||p.policy_id)}</strong><br>
+${esc(p.policy_id)} · v${esc(p.version)}<br>
+MATCH: ${esc((p.match?.keys||[]).join(", "))}<br>
+FELDER: ${esc((p.match?.numeric_fields||[]).join(", "))}
+</div>
+</div>
+`).join("");
+}
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+document.querySelectorAll(".nav").forEach(btn=>{
+btn.onclick=()=>{
+document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));
+btn.classList.add("active");
+
+document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
+document.getElementById("view-"+btn.dataset.view).classList.add("active");
+
+if(btn.dataset.view==="database")refresh();
+if(btn.dataset.view==="policies")refresh();
+};
 });
 
-document.querySelectorAll(".tab").forEach(button => {
-  button.onclick = function(){
-    document.querySelectorAll(".tab").forEach(i => i.classList.remove("active"));
-    button.classList.add("active");
-    currentTab = button.dataset.tab;
-    renderDatabase();
-  };
+document.querySelectorAll(".tab").forEach(btn=>{
+btn.onclick=()=>{
+document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+btn.classList.add("active");
+currentTab=btn.dataset.tab;
+renderDatabase();
+};
 });
 
-document.getElementById("dbSearch").oninput = renderDatabase;
+document.getElementById("dbSearch").oninput=renderDatabase;
 
-document.querySelectorAll(".examples button").forEach(button => {
-  button.onclick = function(){ document.getElementById("queryInput").value = button.dataset.query; };
-});
-
-document.getElementById("clearQuery").onclick = function(){
-  document.getElementById("queryInput").value = "";
-  document.getElementById("queryPlan").classList.add("hidden");
-  document.getElementById("queryResults").classList.add("hidden");
+document.getElementById("resetConfig").onclick=()=>{
+document.getElementById("dateFrom").value="";
+document.getElementById("dateTo").value="";
+document.getElementById("matchKeys").value="auftragsnummer";
+document.getElementById("numericFields").value="gesamt,gewinn,hw_bonus";
 };
 
-document.getElementById("resetConfig").onclick = function(){
-  document.getElementById("dateFrom").value = "";
-  document.getElementById("dateTo").value = "";
-  document.getElementById("matchKeys").value = "auftrag_id";
-  document.getElementById("numericFields").value = "menge,betrag";
-  activePolicyId = null;
-  document.getElementById("policySelect").value = "";
-  document.getElementById("policyPreview").className = "status";
-  document.getElementById("policyPreview").textContent = "Keine Policy gewählt. Manuelle Felder unten werden verwendet.";
+document.getElementById("runQuery").onclick=async()=>{
+
+const plan=document.getElementById("queryPlan");
+const results=document.getElementById("queryResults");
+
+try{
+
+await refresh();
+
+const r=await compareTables();
+
+plan.textContent=JSON.stringify(r.plan,null,2);
+plan.classList.remove("hidden");
+
+results.innerHTML=`
+<div class="card-head">
+<strong>ABGLEICH ERGEBNIS</strong>
+<span>DETERMINISTISCH</span>
+</div>
+
+<div class="card-body">
+
+<div class="stats">
+<div class="stat">
+<div class="stat-label">TABLE A</div>
+<div class="stat-value">${r.tableA}</div>
+</div>
+
+<div class="stat">
+<div class="stat-label">TABLE B</div>
+<div class="stat-value">${r.tableB}</div>
+</div>
+
+<div class="stat">
+<div class="stat-label">VERGLEICHE</div>
+<div class="stat-value">${r.comparisons}</div>
+</div>
+
+<div class="stat">
+<div class="stat-label">ERGEBNISSE</div>
+<div class="stat-value">${r.differences}</div>
+</div>
+
+<div class="stat">
+<div class="stat-label">AUSGESCHLOSSEN</div>
+<div class="stat-value">${r.excluded}</div>
+</div>
+</div>
+
+<div class="status ${r.differences?"warn":"ok"}">
+
+${r.differences
+?`⚠ ${r.differences} ERGEBNISSE`
+:`✓ KEINE ABWEICHUNGEN`}
+
+<br><br>
+
+RUN-ID: ${esc(r.runId)}<br>
+Fehlt in A: ${r.missingA}<br>
+Fehlt in B: ${r.missingB}<br>
+Mehrdeutig: ${r.ambiguous}<br>
+Ungültige Schlüssel: ${r.invalidKeys}<br>
+KASSENABSCHLÜSSE ausgeschlossen: ${r.excluded}
+
+</div>
+</div>`;
+
+results.classList.remove("hidden");
+
+await refresh();
+
+}catch(e){
+
+plan.textContent="FEHLER:\n\n"+e.message;
+plan.classList.remove("hidden");
+results.classList.add("hidden");
+}
 };
 
-document.getElementById("runQuery").onclick = async function(){
-  const planElement = document.getElementById("queryPlan");
-  const resultCard = document.getElementById("queryResults");
-  try{
-    await refresh();
-    let policy = null;
-    if(activePolicyId){
-      const p = state.policies.find(x => x.id === activePolicyId);
-      if(p) policy = p.policy;
-    }
-    const result = await executePolicy(policy);
-    planElement.textContent = JSON.stringify(result.plan, null, 2);
-    planElement.classList.remove("hidden");
-    const hasProblems = result.differences > 0;
-    resultCard.innerHTML = `
-      <div class="card-head"><strong>ERGEBNIS</strong><span>FESTE AUSFÜHRUNG</span></div>
-      <div class="card-body">
-        <div class="stats">
-          <div class="stat"><div class="stat-label">TABELLE A</div><div class="stat-value">${result.tableA}</div></div>
-          <div class="stat"><div class="stat-label">TABELLE B</div><div class="stat-value">${result.tableB}</div></div>
-          <div class="stat"><div class="stat-label">VERGLEICHE</div><div class="stat-value">${result.comparisons}</div></div>
-          <div class="stat"><div class="stat-label">ERGEBNISSE</div><div class="stat-value">${result.differences}</div></div>
-        </div>
-        <div class="status ${hasProblems?"warn":"ok"}">
-          ${!hasProblems ? "✓ KEINE ABWEICHUNGEN GEFUNDEN." : "⚠ " + result.differences + " ERGEBNISSE GEFUNDEN."}
-        </div>
-        <div class="status">
-          RUN-ID: ${esc(result.runId)}<br>
-          ${result.plan.policy ? "POLICY: " + esc(result.plan.policy.policy_id) + " v" + esc(result.plan.policy.version) + "<br>" : ""}
-          <br>
-          Eindeutige Matches: ${result.comparisons}<br>
-          Abweichungen: ${result.plan.statistics.differences}<br>
-          Fehlende Werte: ${result.plan.statistics.missingValues}<br>
-          Ungültige Werte: ${result.plan.statistics.invalidValues}<br>
-          Fehlt in A: ${result.missingInA}<br>
-          Fehlt in B: ${result.missingInB}<br>
-          Mehrdeutige Matches: ${result.ambiguous}<br>
-          Ungültige Match-Keys: ${result.invalidMatchKeys}
-        </div>
-      </div>`;
-    resultCard.classList.remove("hidden");
-    await refresh();
-  }catch(error){
-    planElement.textContent = "FEHLER:\n\n" + error.message;
-    planElement.classList.remove("hidden");
-    resultCard.classList.add("hidden");
-  }
-};
+document.getElementById("btnRefreshPolicies").onclick=refresh;
 
 /* =========================================================
    START
 ========================================================= */
-openDatabase().then(refresh).catch(error => {
-  console.error(error);
-  const status = document.getElementById("step1Status");
-  if(status){ status.className = "status error"; status.textContent = "DATENBANK FEHLER: " + error.message; }
+
+openDatabase()
+.then(refresh)
+.catch(e=>{
+console.error(e);
+document.getElementById("step1Status").className="status error";
+document.getElementById("step1Status").textContent=
+"DATENBANK FEHLER: "+e.message;
 });
+
 </script>
 </body>
 </html>
-```
