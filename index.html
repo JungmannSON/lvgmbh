@@ -1,12 +1,27 @@
+Ja. Ich habe den Ablauf jetzt konsequent auf Kundenbedienung ohne Fachfragen umgebaut.
+
+Der Kunde macht nur noch:
+
+1. Tabelle A hochladen → 2. Tabelle B hochladen → 3. Auftrag kopieren → LLM liefert JSON → 4. JSON einfügen → importieren → 5. Abgleich
+
+Die bisherigen Fragen sind vollständig entfernt. Die Anwendung erkennt Spalten, Zeilen, mögliche Datums-/Auftragsfelder und gibt diese Informationen automatisch an das LLM. Die ZDF-Semantik ist fest im Auftrag hinterlegt.
+
+Außerdem bleibt das neue Schema erhalten:
+
+"tables": {
+  "TABLE_A": {...},
+  "TABLE_B": {...}
+}
+
+Und KASSENABSCHLUSS wird beim deterministischen Abgleich automatisch ausgeschlossen.
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>LV GmbH — DATENBANK</title>
-
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-
 <style>
 :root{
 --bg:#05050a;
@@ -21,13 +36,11 @@
 --red:#ff3b6b;
 --orange:#ff9f1c;
 }
-
 *{
 box-sizing:border-box;
 margin:0;
 padding:0
 }
-
 body{
 background:
 radial-gradient(ellipse at 15% 0%,rgba(226,0,116,.06),transparent 55%),
@@ -40,7 +53,6 @@ color:var(--text);
 font-family:"Courier New",monospace;
 min-height:100vh
 }
-
 header{
 min-height:82px;
 padding:16px 22px;
@@ -55,35 +67,29 @@ top:0;
 z-index:100;
 box-shadow:0 0 28px rgba(226,0,116,.22)
 }
-
 .brand-main{
 font-weight:900;
 font-size:22px;
 color:#fff
 }
-
 .brand-sub{
 margin-top:5px;
 color:var(--cyan);
 font-size:10px;
 letter-spacing:3px
 }
-
 .brand-divider{
 color:var(--pink)
 }
-
 nav{
 display:flex;
 gap:8px;
 flex-wrap:wrap
 }
-
 button{
 cursor:pointer;
 font-family:inherit
 }
-
 .nav,.tab,.examples button{
 padding:11px 14px;
 background:#0a0a12;
@@ -93,24 +99,20 @@ font-weight:900;
 font-size:10px;
 letter-spacing:1px
 }
-
 .nav.active,.tab.active{
 background:var(--pink);
 color:#fff;
 border-color:var(--pink)
 }
-
 .nav:hover,.tab:hover{
 border-color:var(--cyan);
 color:var(--cyan)
 }
-
 .status-db{
 font-size:9px;
 color:#777;
 white-space:nowrap
 }
-
 .status-db span{
 display:inline-block;
 width:8px;
@@ -119,48 +121,40 @@ border-radius:50%;
 background:var(--acid);
 margin-right:5px
 }
-
 main{
 max-width:1150px;
 margin:auto;
 padding:26px 16px 90px
 }
-
 .view{
 display:none
 }
-
 .view.active{
 display:block
 }
-
 .head{
 margin-bottom:24px;
 padding-bottom:18px;
 border-bottom:1px solid #1e1e2e
 }
-
 .kicker{
 color:var(--pink);
 font-weight:900;
 font-size:11px;
 letter-spacing:4px
 }
-
 h1{
 margin-top:10px;
 font-size:clamp(30px,5.8vw,58px);
 line-height:.9;
 letter-spacing:-3px
 }
-
 .card{
 background:var(--panel);
 border:1px solid #222236;
 box-shadow:6px 6px #000;
 margin-bottom:20px
 }
-
 .card-head{
 padding:15px 18px;
 border-bottom:1px solid #1e1e2e;
@@ -171,18 +165,15 @@ font-weight:900;
 font-size:11px;
 color:var(--cyan)
 }
-
 .card-body{
 padding:18px
 }
-
 .actions{
 display:flex;
 gap:12px;
 margin-top:16px;
 flex-wrap:wrap
 }
-
 .btn{
 padding:14px 20px;
 background:var(--pink);
@@ -194,24 +185,20 @@ letter-spacing:1px;
 box-shadow:4px 4px #000;
 min-height:48px
 }
-
 .btn.cyan{
 background:var(--cyan);
 color:#000;
 border-color:var(--cyan)
 }
-
 .btn.secondary{
 background:#0a0a14;
 color:#ccc;
 border-color:#3a3a50
 }
-
 .btn:disabled{
 opacity:.4;
 cursor:not-allowed
 }
-
 .status{
 margin-top:16px;
 padding:14px;
@@ -221,22 +208,18 @@ background:#08080f;
 font-size:11px;
 line-height:1.5
 }
-
 .status.ok{
 color:var(--acid);
 border-color:var(--acid)
 }
-
 .status.error{
 color:var(--red);
 border-color:var(--red)
 }
-
 .status.warn{
 color:var(--orange);
 border-color:var(--orange)
 }
-
 .notice{
 padding:14px;
 border-left:3px solid var(--pink);
@@ -246,7 +229,6 @@ font-size:11px;
 line-height:1.55;
 margin-bottom:16px
 }
-
 textarea,
 .query-input,
 .search,
@@ -260,13 +242,11 @@ border:1px solid #2a2a3a;
 outline:none;
 font:11px monospace
 }
-
 textarea{
 min-height:280px;
 resize:vertical;
 color:var(--acid)
 }
-
 textarea:focus,
 .query-input:focus,
 .search:focus,
@@ -274,54 +254,45 @@ textarea:focus,
 .field select:focus{
 border-color:var(--cyan)
 }
-
 .stats{
 display:grid;
 grid-template-columns:repeat(5,1fr);
 gap:12px;
 margin-bottom:20px
 }
-
 .stat{
 padding:18px;
 background:#0a0a12;
 border:1px solid #222236
 }
-
 .stat-label{
 color:var(--muted);
 font-size:9px;
 letter-spacing:2px
 }
-
 .stat-value{
 margin-top:8px;
 font-size:30px;
 font-weight:900
 }
-
 .toolbar{
 display:flex;
 gap:8px;
 flex-wrap:wrap;
 margin-bottom:14px
 }
-
 .search{
 margin-left:auto;
 min-width:230px
 }
-
 .table-wrap{
 overflow:auto
 }
-
 table{
 width:100%;
 border-collapse:collapse;
 font-size:11px
 }
-
 th{
 padding:11px;
 text-align:left;
@@ -331,37 +302,29 @@ background:#08080f;
 border-bottom:2px solid var(--cyan);
 font-size:9px
 }
-
 td{
 padding:10px;
 border-bottom:1px solid #1a1a28;
 vertical-align:top
 }
-
 tr:hover{
 background:rgba(226,0,116,.04)
 }
-
 .mono{
 color:var(--cyan)
 }
-
 .good{
 color:var(--acid)
 }
-
 .bad{
 color:var(--red)
 }
-
 .warn{
 color:var(--pink)
 }
-
 .ambiguous{
 color:var(--orange)
 }
-
 .badge{
 display:inline-block;
 padding:4px 7px;
@@ -369,37 +332,31 @@ border:1px solid currentColor;
 font-size:8px;
 font-weight:900
 }
-
 .empty{
 padding:32px;
 text-align:center;
 color:var(--muted);
 font-size:11px
 }
-
 .hidden{
 display:none!important
 }
-
 .field-grid{
 display:grid;
 grid-template-columns:repeat(2,1fr);
 gap:14px
 }
-
 .field{
 display:flex;
 flex-direction:column;
 gap:7px
 }
-
 .field label{
 color:var(--muted);
 font-size:9px;
 letter-spacing:2px;
 font-weight:900
 }
-
 .plan{
 margin-top:20px;
 padding:16px;
@@ -410,73 +367,61 @@ font-size:10px;
 white-space:pre-wrap;
 overflow:auto
 }
-
 .upload-grid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:18px
 }
-
 .upload-card{
 background:var(--panel2);
 border:1px solid #222236;
 padding:22px;
 min-height:190px
 }
-
 .upload-card h3{
 font-size:17px;
 margin-bottom:5px
 }
-
 .upload-card .sub{
 color:var(--muted);
 font-size:10px;
 margin-bottom:15px
 }
-
 .upload-zone{
 border:2px dashed #33334a;
 padding:30px;
 text-align:center;
 cursor:pointer
 }
-
 .upload-zone:hover{
 border-color:var(--cyan)
 }
-
 .upload-zone input{
 display:none
 }
-
 .meta-box{
 margin-top:15px;
 font-size:10px;
 line-height:1.7
 }
-
 .col-tags{
 display:flex;
 gap:6px;
 flex-wrap:wrap;
 margin-top:8px
 }
-
 .col-tag{
 padding:5px 8px;
 border:1px solid #2a2a40;
 color:var(--cyan);
 font-size:9px
 }
-
 .stepper{
 display:flex;
 gap:8px;
 flex-wrap:wrap;
 margin:20px 0 28px
 }
-
 .step-item{
 padding:9px 12px;
 border:1px solid #2a2a40;
@@ -484,17 +429,14 @@ color:#555;
 font-size:9px;
 font-weight:900
 }
-
 .step-item.active{
 color:var(--cyan);
 border-color:var(--cyan)
 }
-
 .step-item.done{
 color:var(--pink);
 border-color:var(--pink)
 }
-
 .terminal{
 background:#020206;
 border:1px solid #222240;
@@ -507,7 +449,6 @@ overflow:auto;
 white-space:pre-wrap;
 word-break:break-word
 }
-
 .policy-card{
 background:#0a0a12;
 border:1px solid #2a2a40;
@@ -518,12 +459,10 @@ justify-content:space-between;
 gap:15px;
 flex-wrap:wrap
 }
-
 .policy-meta{
 font-size:10px;
 line-height:1.6
 }
-
 .auto-badge{
 display:inline-block;
 padding:5px 9px;
@@ -534,14 +473,12 @@ font-weight:900;
 letter-spacing:1px;
 margin-bottom:10px
 }
-
 .flow-box{
 display:grid;
 grid-template-columns:repeat(4,1fr);
 gap:10px;
 margin:18px 0
 }
-
 .flow-item{
 padding:14px;
 background:#08080f;
@@ -549,399 +486,254 @@ border:1px solid #25253a;
 font-size:9px;
 line-height:1.5
 }
-
 .flow-number{
 font-size:18px;
 font-weight:900;
 color:var(--pink);
 margin-bottom:6px
 }
-
 @media(max-width:900px){
 .stats{
 grid-template-columns:repeat(2,1fr)
 }
-
 .flow-box{
 grid-template-columns:repeat(2,1fr)
 }
 }
-
 @media(max-width:720px){
 header{
 flex-direction:column;
 align-items:flex-start
 }
-
 .upload-grid,
 .field-grid{
 grid-template-columns:1fr
 }
-
 .stats{
 grid-template-columns:1fr 1fr
 }
-
 .search{
 width:100%;
 margin-left:0
 }
 }
-
 @media(max-width:500px){
 .stats{
 grid-template-columns:1fr
 }
-
 .flow-box{
 grid-template-columns:1fr
 }
 }
 </style>
 </head>
-
 <body>
-
 <header>
-
 <div>
 <div class="brand-main">
 LV GmbH <span class="brand-divider">|</span> DATENBANK
 </div>
-
 <div class="brand-sub">
 BOOKING RECON // CYBERUNK
 </div>
 </div>
-
 <nav>
 <button class="nav active" data-view="import">↓</button>
 <button class="nav" data-view="database">▦</button>
 <button class="nav" data-view="query">⚡</button>
 <button class="nav" data-view="policies">▣</button>
 </nav>
-
 <div class="status-db">
 <span></span>INDEXEDDB LOCAL
 </div>
-
 </header>
-
 <main>
-
 <!-- =====================================================
      IMPORT
 ====================================================== -->
-
 <section id="view-import" class="view active">
-
 <div class="head">
 <div class="kicker">LOKALER WORKFLOW</div>
 <h1>TABELLEN<br>AUFBEREITEN</h1>
 </div>
-
 <div class="stepper">
-
 <div class="step-item active" data-step="1">
 01 TABELLEN
 </div>
-
 →
-
 <div class="step-item" data-step="2">
 02 LLM-AUFTRAG
 </div>
-
 →
-
 <div class="step-item" data-step="3">
 03 JSON
 </div>
-
 →
-
 <div class="step-item" data-step="4">
 04 ABGLEICH
 </div>
-
 </div>
-
-
 <!-- =====================================================
      STEP 1
 ====================================================== -->
-
 <div id="step1" class="step-panel">
-
 <div class="notice">
-
 <span class="auto-badge">AUTOMATISCHE ANALYSE</span>
-
 <br>
-
 Der Kunde muss keine Fachfragen beantworten.
-
 Einfach die beiden Tabellen hochladen.
 Die Anwendung erkennt automatisch Dateityp, Spalten,
 Zeilen, mögliche Datumsfelder, Auftragsnummern und
 weitere strukturelle Merkmale.
-
 </div>
-
-
 <div class="flow-box">
-
 <div class="flow-item">
 <div class="flow-number">01</div>
 Tabelle A hochladen
 </div>
-
 <div class="flow-item">
 <div class="flow-number">02</div>
 Tabelle B hochladen
 </div>
-
 <div class="flow-item">
 <div class="flow-number">03</div>
 LLM-Auftrag kopieren
 </div>
-
 <div class="flow-item">
 <div class="flow-number">04</div>
 JSON zurückgeben
 </div>
-
 </div>
-
-
 <div class="upload-grid">
-
 <div class="upload-card">
-
 <h3 style="color:var(--pink)">
 TABLE A
 </h3>
-
 <div class="sub">
 z.B. ZDF BAD URACH
 </div>
-
 <div class="upload-zone" id="zoneA">
-
 <strong>DATEI AUSWÄHLEN</strong>
-
 <br>
-
 <small>
 CSV · XLSX · XLS · TSV
 </small>
-
 <input
 id="fileA"
 type="file"
 accept=".csv,.xlsx,.xls,.tsv">
-
 </div>
-
 <div id="metaA" class="meta-box hidden"></div>
-
 </div>
-
-
 <div class="upload-card">
-
 <h3 style="color:var(--cyan)">
 TABLE B
 </h3>
-
 <div class="sub">
 z.B. SCHALTUNGSLISTE
 </div>
-
 <div class="upload-zone" id="zoneB">
-
 <strong>DATEI AUSWÄHLEN</strong>
-
 <br>
-
 <small>
 CSV · XLSX · XLS · TSV
 </small>
-
 <input
 id="fileB"
 type="file"
 accept=".csv,.xlsx,.xls,.tsv">
-
 </div>
-
 <div id="metaB" class="meta-box hidden"></div>
-
 </div>
-
 </div>
-
-
 <div class="actions">
-
 <button
 class="btn"
 id="btnToPrompt"
 disabled>
-
 LLM-AUFTRAG ERZEUGEN →
-
 </button>
-
 </div>
-
-
 <div id="step1Status" class="status">
-
 Beide Tabellen hochladen.
-
 </div>
-
 </div>
-
-
 <!-- =====================================================
      STEP 2
 ====================================================== -->
-
 <div id="step2" class="step-panel hidden">
-
 <div class="card">
-
 <div class="card-head">
-
 <strong>LLM-AUFTRAG</strong>
-
 <span>
 AUTOMATISCH ERZEUGT
 </span>
-
 </div>
-
-
 <div class="card-body">
-
 <div class="notice">
-
 Du musst hier nichts ausfüllen.
-
 Die Anwendung hat die Tabellen bereits analysiert
 und erstellt daraus einen vollständigen Auftrag für
 das LLM.
-
 Das LLM strukturiert die Daten.
 Der spätere Abgleich findet ausschließlich
 deterministisch in dieser Anwendung statt.
-
 </div>
-
-
 <div class="terminal" id="promptOutput"></div>
-
-
 <div class="actions">
-
 <button
 class="btn"
 id="btnCopyPrompt">
-
 📋 LLM-AUFTRAG KOPIEREN
-
 </button>
-
 <button
 class="btn secondary"
 id="btnBackToUpload">
-
 ← TABELLEN
-
 </button>
-
 </div>
-
-
 <div id="promptStatus" class="status">
-
 Bereit.
-
 </div>
-
 </div>
-
 </div>
-
-
 <div class="card">
-
 <div class="card-head">
 <strong>AUTOMATISCH ERKANNT</strong>
 <span>OHNE BENUTZERFRAGEN</span>
 </div>
-
 <div class="card-body">
-
 <div id="autoAnalysis" class="terminal"></div>
-
 </div>
-
 </div>
-
-
 <div class="actions">
-
 <button
 class="btn cyan"
 id="btnToJson">
-
 WEITER ZU JSON →
-
 </button>
-
 </div>
-
 </div>
-
-
 <!-- =====================================================
      STEP 3
 ====================================================== -->
-
 <div id="step3" class="step-panel hidden">
-
 <div class="card">
-
 <div class="card-head">
-
 <strong>LLM-JSON</strong>
-
 <span>
 VALIDIERUNG
 </span>
-
 </div>
-
-
 <div class="card-body">
-
 <div class="notice">
-
 LLM-Ausgabe hier einfügen.
-
 Die Anwendung akzeptiert ausschließlich das definierte
 BOOKING_RECON-Format.
-
 Originalwerte bleiben erhalten.
 Semantische Felder wie <strong>record_type</strong> und
 <strong>status</strong> werden getrennt gespeichert.
-
 </div>
-
-
 <textarea
 id="jsonInput"
 spellcheck="false"
@@ -961,536 +753,320 @@ placeholder='{
     }
   }
 }'></textarea>
-
-
 <div class="actions">
-
 <button
 class="btn"
 id="btnValidateJson">
-
 JSON VALIDIEREN
-
 </button>
-
 <button
 class="btn cyan hidden"
 id="btnImportJson">
-
 IN DATENBANK IMPORTIEREN
-
 </button>
-
 <button
 class="btn secondary"
 id="btnClearJson">
-
 CLEAR
-
 </button>
-
 </div>
-
-
 <div id="jsonStatus" class="status">
-
 JSON einfügen und validieren.
-
 </div>
-
 </div>
-
 </div>
-
-
 <div class="actions">
-
 <button
 class="btn secondary"
 id="btnBackToPrompt">
-
 ← LLM-AUFTRAG
-
 </button>
-
 </div>
-
 </div>
-
-
 <!-- =====================================================
      STEP 4
 ====================================================== -->
-
 <div id="step4" class="step-panel hidden">
-
 <div class="card">
-
 <div class="card-head">
-
 <strong>
 DATENBANK BEREIT
 </strong>
-
 <span>
 DETERMINISTISCH
 </span>
-
 </div>
-
-
 <div class="card-body">
-
 <div class="notice">
-
 Die Daten sind importiert.
-
 Der Kunde muss keine weitere Struktur oder
 Abgleichsregel festlegen.
-
 Die Anwendung verwendet die definierte
 BOOKING_RECON-Logik.
-
 KASSENABSCHLUSS wird automatisch aus dem normalen
 Buchungsvergleich ausgeschlossen.
-
 </div>
-
-
 <div class="stats">
-
 <div class="stat">
 <div class="stat-label">TABLE A</div>
 <div id="workflowCountA" class="stat-value">0</div>
 </div>
-
 <div class="stat">
 <div class="stat-label">TABLE B</div>
 <div id="workflowCountB" class="stat-value">0</div>
 </div>
-
 <div class="stat">
 <div class="stat-label">AUSGESCHLOSSEN</div>
 <div id="workflowExcluded" class="stat-value">0</div>
 </div>
-
 <div class="stat">
 <div class="stat-label">STATUS</div>
 <div class="stat-value">READY</div>
 </div>
-
 </div>
-
-
 <div class="actions">
-
 <button
 class="btn"
 id="btnRunWorkflow">
-
 ABGLEICH STARTEN →
-
 </button>
-
 <button
 class="btn secondary"
 id="btnOpenDatabase">
-
 DATENBANK ÖFFNEN
-
 </button>
-
 </div>
-
 <div id="workflowStatus" class="status">
-
 Bereit für den Abgleich.
-
 </div>
-
 </div>
-
 </div>
-
 </div>
-
 </section>
-
-
 <!-- =====================================================
      DATABASE
 ====================================================== -->
-
 <section id="view-database" class="view">
-
 <div class="head">
-
 <div class="kicker">
 GESPEICHERTE DATEN
 </div>
-
 <h1>
 DATENBANK
 </h1>
-
 </div>
-
-
 <div class="stats">
-
 <div class="stat">
 <div class="stat-label">TABLE A</div>
 <div id="tableACount" class="stat-value">0</div>
 </div>
-
 <div class="stat">
 <div class="stat-label">TABLE B</div>
 <div id="tableBCount" class="stat-value">0</div>
 </div>
-
 <div class="stat">
 <div class="stat-label">AKTIV</div>
 <div id="activeCount" class="stat-value">0</div>
 </div>
-
 <div class="stat">
 <div class="stat-label">AUSSORTIERT</div>
 <div id="excludedCount" class="stat-value">0</div>
 </div>
-
 <div class="stat">
 <div class="stat-label">ERGEBNISSE</div>
 <div id="differenceCount" class="stat-value">0</div>
 </div>
-
 </div>
-
-
 <div class="toolbar">
-
 <button
 class="tab active"
 data-tab="tableA">
-
 TABLE A
-
 </button>
-
 <button
 class="tab"
 data-tab="tableB">
-
 TABLE B
-
 </button>
-
 <button
 class="tab"
 data-tab="differences">
-
 ERGEBNISSE
-
 </button>
-
 <input
 id="dbSearch"
 class="search"
 placeholder="Datenbank durchsuchen...">
-
 </div>
-
-
 <div class="card">
-
 <div class="table-wrap">
-
 <div id="databaseTable"></div>
-
 </div>
-
 </div>
-
 </section>
-
-
 <!-- =====================================================
      QUERY
 ====================================================== -->
-
 <section id="view-query" class="view">
-
 <div class="head">
-
 <div class="kicker">
 DETERMINISTISCHER ABGLEICH
 </div>
-
 <h1>
 VALIDIERUNG
 </h1>
-
 </div>
-
-
 <div class="card">
-
 <div class="card-head">
-
 <strong>
 ABGLEICH
 </strong>
-
 <span>
 KEIN LLM ZUR LAUFZEIT
 </span>
-
 </div>
-
-
 <div class="card-body">
-
 <div class="notice">
-
 Das LLM strukturiert die Daten.
-
 Der Abgleich selbst erfolgt ausschließlich
 durch fest definierte Regeln.
-
 KASSENABSCHLUSS wird nicht als normale Buchung
 verglichen.
-
 Mehrfach vorhandene Auftragsnummern werden nicht
 automatisch als Fehler behandelt.
-
 </div>
-
-
 <div class="field-grid">
-
 <div class="field">
-
 <label>
 VON
 </label>
-
 <input
 id="dateFrom"
 type="date">
-
 </div>
-
-
 <div class="field">
-
 <label>
 BIS
 </label>
-
 <input
 id="dateTo"
 type="date">
-
 </div>
-
-
 <div class="field">
-
 <label>
 ABGLEICH-FELDER
 </label>
-
 <input
 id="matchKeys"
 value="auftragsnummer">
-
 </div>
-
-
 <div class="field">
-
 <label>
 VERGLEICHSFELDER
 </label>
-
 <input
 id="numericFields"
 value="gesamt,gewinn,hw_bonus">
-
 </div>
-
 </div>
-
-
 <div class="actions">
-
 <button
 id="runQuery"
 class="btn">
-
 ABGLEICH AUSFÜHREN
-
 </button>
-
 <button
 id="resetConfig"
 class="btn secondary">
-
 ZURÜCKSETZEN
-
 </button>
-
 </div>
-
 </div>
-
 </div>
-
-
 <div
 id="queryPlan"
 class="plan hidden">
 </div>
-
-
 <div
 id="queryResults"
 class="card hidden">
 </div>
-
 </section>
-
-
 <!-- =====================================================
      POLICIES
 ====================================================== -->
-
 <section id="view-policies" class="view">
-
 <div class="head">
-
 <div class="kicker">
 ABGLEICH-PROFILE
 </div>
-
 <h1>
 POLICIES
 </h1>
-
 </div>
-
-
 <div class="card">
-
 <div class="card-head">
-
 <strong>
 GESPEICHERTE POLICIES
 </strong>
-
 </div>
-
-
 <div class="card-body">
-
 <div class="notice">
-
 Eine Policy beschreibt einen festgelegten Ablauf.
 Der Executor führt diesen Ablauf deterministisch aus.
-
 </div>
-
-
 <div id="policyList"></div>
-
-
 <button
 class="btn secondary"
 id="btnRefreshPolicies">
-
 AKTUALISIEREN
-
 </button>
-
-
 <div
 id="policyStatus"
 class="status">
-
 Bereit.
-
 </div>
-
 </div>
-
 </div>
-
 </section>
-
 </main>
-
-
 <script>
-
 /* =========================================================
    DATENBANK
 ========================================================= */
-
 const DB_NAME="BOOKING_RECON_DB";
 const DB_VERSION=4;
-
 const STORE_RECORDS="records";
 const STORE_DIFFERENCES="differences";
 const STORE_POLICIES="policies";
-
 let database=null;
-
 let state={
 records:[],
 differences:[],
 policies:[]
 };
-
 let currentTab="tableA";
-
-
 const workflow={
-
 step:1,
-
 tableA:null,
-
 tableB:null,
-
 validatedPayload:null,
-
 lastImportResult:null
-
 };
-
-
 /* =========================================================
    INDEXEDDB
 ========================================================= */
-
 function openDatabase(){
-
 if(database)
 return Promise.resolve(database);
-
 return new Promise((resolve,reject)=>{
-
 const req=indexedDB.open(
 DB_NAME,
 DB_VERSION
 );
-
 req.onupgradeneeded=e=>{
-
 const db=e.target.result;
-
-
 if(!db.objectStoreNames.contains(STORE_RECORDS)){
-
 const s=db.createObjectStore(
 STORE_RECORDS,
 {
@@ -1498,42 +1074,31 @@ keyPath:"id",
 autoIncrement:true
 }
 );
-
 s.createIndex(
 "source_table",
 "source_table",
 {unique:false}
 );
-
 s.createIndex(
 "record_id",
 "record_id",
 {unique:false}
 );
-
 s.createIndex(
 "date",
 "date",
 {unique:false}
 );
-
 }
-
-
 if(!db.objectStoreNames.contains(STORE_DIFFERENCES)){
-
 db.createObjectStore(
 STORE_DIFFERENCES,
 {
 keyPath:"difference_id"
 }
 );
-
 }
-
-
 if(!db.objectStoreNames.contains(STORE_POLICIES)){
-
 const s=db.createObjectStore(
 STORE_POLICIES,
 {
@@ -1541,187 +1106,117 @@ keyPath:"id",
 autoIncrement:true
 }
 );
-
 s.createIndex(
 "policy_id",
 "policy_id",
 {unique:false}
 );
-
 }
-
 };
-
-
 req.onsuccess=()=>{
-
 database=req.result;
-
 database.onversionchange=()=>{
-
 database.close();
 database=null;
-
 };
-
 resolve(database);
-
 };
-
-
 req.onerror=()=>reject(req.error);
-
 });
-
 }
-
-
 function getAll(storeName){
-
 return new Promise((resolve,reject)=>{
-
 const tx=database.transaction(
 storeName,
 "readonly"
 );
-
 const req=
 tx.objectStore(storeName).getAll();
-
 req.onsuccess=()=>{
 resolve(req.result||[]);
 };
-
 req.onerror=()=>{
 reject(req.error);
 };
-
 });
-
 }
-
-
 function clearStore(name){
-
 return new Promise((resolve,reject)=>{
-
 const tx=
 database.transaction(
 name,
 "readwrite"
 );
-
 tx.objectStore(name).clear();
-
 tx.oncomplete=resolve;
-
 tx.onerror=()=>{
 reject(tx.error);
 };
-
 });
-
 }
-
-
 async function refresh(){
-
 await openDatabase();
-
 state.records=
 await getAll(STORE_RECORDS);
-
 state.differences=
 await getAll(STORE_DIFFERENCES);
-
 state.policies=
 await getAll(STORE_POLICIES);
-
-
 const a=
 state.records.filter(
 x=>x.source_table==="TABLE_A"
 );
-
 const b=
 state.records.filter(
 x=>x.source_table==="TABLE_B"
 );
-
-
 document.getElementById(
 "tableACount"
 ).textContent=a.length;
-
 document.getElementById(
 "tableBCount"
 ).textContent=b.length;
-
-
 const excluded=
 state.records.filter(
 x=>x.record_type==="KASSENABSCHLUSS"
 );
-
 document.getElementById(
 "excludedCount"
 ).textContent=
 excluded.length;
-
-
 document.getElementById(
 "activeCount"
 ).textContent=
 state.records.filter(
 x=>x.status==="AKTIV"
 ).length;
-
-
 document.getElementById(
 "differenceCount"
 ).textContent=
 state.differences.length;
-
-
 renderDatabase();
 renderPolicies();
-
 }
-
-
 /* =========================================================
    DATEIEN
 ========================================================= */
-
 function parseFile(file){
-
 return new Promise((resolve,reject)=>{
-
 const reader=new FileReader();
-
 const name=
 file.name.toLowerCase();
-
-
 reader.onload=e=>{
-
 try{
-
 let wb;
-
-
 if(
 name.endsWith(".csv")||
 name.endsWith(".tsv")
 ){
-
 const text=e.target.result;
-
 const delim=
 name.endsWith(".tsv")
 ?"\t"
 :",";
-
 wb=XLSX.read(
 text,
 {
@@ -1730,9 +1225,7 @@ FS:delim,
 raw:false
 }
 );
-
 }else{
-
 wb=XLSX.read(
 e.target.result,
 {
@@ -1740,16 +1233,11 @@ type:"array",
 cellDates:true
 }
 );
-
 }
-
-
 const sheet=
 wb.Sheets[
 wb.SheetNames[0]
 ];
-
-
 const raw=
 XLSX.utils.sheet_to_json(
 sheet,
@@ -1759,22 +1247,16 @@ defval:"",
 raw:false
 }
 );
-
-
 if(!raw.length)
 throw new Error(
 "Leere Tabelle."
 );
-
-
 const headers=
 raw[0].map(
 (x,i)=>
 String(x||"").trim()||
 "SPALTE_"+(i+1)
 );
-
-
 const rows=
 raw
 .slice(1)
@@ -1786,55 +1268,33 @@ String(x??"").trim()!==""
 )
 )
 .map(r=>{
-
 const obj={};
-
 headers.forEach(
 (h,i)=>{
-
 obj[h]=
 r[i]===undefined||
 r[i]===null
 ?""
 :String(r[i]).trim();
-
 });
-
 return obj;
-
 });
-
-
 resolve({
-
 fileName:file.name,
-
 fileType:
 file.name
 .split(".")
 .pop()
 .toUpperCase(),
-
 headers,
-
 rows,
-
 rowCount:rows.length,
-
 colCount:headers.length
-
 });
-
-
 }catch(err){
-
 reject(err);
-
 }
-
 };
-
-
 reader.onerror=()=>{
 reject(
 new Error(
@@ -1842,124 +1302,79 @@ new Error(
 )
 );
 };
-
-
 if(
 name.endsWith(".csv")||
 name.endsWith(".tsv")
 )
-
 reader.readAsText(file);
-
 else
-
 reader.readAsArrayBuffer(file);
-
 });
-
 }
-
-
 /* =========================================================
    AUTOMATISCHE TABELLENANALYSE
 ========================================================= */
-
 function analyzeTable(tbl){
-
 const possibleDate=[];
 const possibleNum=[];
 const possibleId=[];
 const emptyCols=[];
-
-
 tbl.headers.forEach(h=>{
-
 const values=
 tbl.rows
 .map(r=>r[h])
 .filter(Boolean);
-
-
 if(!values.length)
 emptyCols.push(h);
-
-
 let dates=0;
 let nums=0;
-
-
 values
 .slice(0,100)
 .forEach(v=>{
-
 const s=String(v).trim();
-
-
 if(
 /^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$/.test(s)||
 /^\d{4}-\d{2}-\d{2}/.test(s)||
 /^\d{1,2}\/\d{1,2}\/\d{2,4}$/.test(s)
 )
 dates++;
-
-
 if(
 /^-?[\d.,]+$/.test(
 s.replace(/\s/g,"")
 )
 )
 nums++;
-
 });
-
-
 if(
 values.length &&
 dates>values.length*.3
 )
 possibleDate.push(h);
-
-
 if(
 values.length &&
 nums>values.length*.5
 )
 possibleNum.push(h);
-
-
 if(
 /id|nr|nummer|auftrag|auftrags|vertrag|code|ref/i.test(h)
 )
 possibleId.push(h);
-
 });
-
-
 return{
-
 possibleDate,
 possibleNum,
 possibleId,
 emptyCols
-
 };
-
 }
-
-
 /* =========================================================
    AUTOMATISCHE ROLLEN-ERKENNUNG
 ========================================================= */
-
 function inferSourceType(tbl,which){
-
 const file=
 tbl.fileName.toLowerCase();
-
 const headers=
 tbl.headers.join(" ").toLowerCase();
-
-
 if(
 which==="A" &&
 (
@@ -1970,187 +1385,120 @@ which==="A" &&
 /verkäufer/.test(headers)
 )
 ){
-
 return "ZDF";
-
 }
-
-
 if(
 /schaltung/.test(file)||
 /schaltungsliste/.test(file)||
 /telekom/.test(file)
 ){
-
 return "TELEKOM_SYSTEMEXPORT";
-
 }
-
-
 if(
 /export/.test(file)
 ){
-
 return "SYSTEMEXPORT";
-
 }
-
-
 return which==="A"
 ?"ARBEITSTABELLE"
 :"SYSTEMEXPORT";
-
 }
-
-
 function inferDescription(tbl,which){
-
 const source=
 inferSourceType(tbl,which);
-
-
 if(source==="ZDF"){
-
 return "Manuell geführte Shop-Arbeitstabelle mit Vorgängen, Kassenabschlüssen und wirtschaftlichen Arbeitsinformationen.";
-
 }
-
-
 if(source==="TELEKOM_SYSTEMEXPORT"){
-
 return "Systemexport mit technischen beziehungsweise vertragsbezogenen Schaltungsinformationen.";
-
 }
-
-
 if(source==="SYSTEMEXPORT"){
-
 return "Exportierte Systemtabelle zur externen Kontrolle.";
-
 }
-
-
 return which==="A"
 ?"Arbeits- beziehungsweise Ursprungstabelle."
 :"Externe Kontrolltabelle.";
-
 }
-
-
 /* =========================================================
    META
 ========================================================= */
-
 function renderMeta(which,tbl){
-
 tbl.analysis=
 analyzeTable(tbl);
-
 tbl.sourceType=
 inferSourceType(
 tbl,
 which
 );
-
 tbl.description=
 inferDescription(
 tbl,
 which
 );
-
-
 const a=tbl.analysis;
-
 const el=
 document.getElementById(
 "meta"+which
 );
-
-
 el.innerHTML=`
-
 <div>
 DATEI:
 ${esc(tbl.fileName)}
 </div>
-
 <div>
 QUELLE:
 <span class="mono">
 ${esc(tbl.sourceType)}
 </span>
 </div>
-
 <div>
 ZEILEN:
 ${tbl.rowCount}
 </div>
-
 <div>
 SPALTEN:
 ${tbl.colCount}
 </div>
-
 <div>
 MÖGLICHE DATUMSFELDER:
 ${a.possibleDate.length
 ?a.possibleDate.map(esc).join(", ")
 :"keine eindeutige Erkennung"}
 </div>
-
 <div>
 MÖGLICHE IDENTIFIKATOREN:
 ${a.possibleId.length
 ?a.possibleId.map(esc).join(", ")
 :"keine eindeutige Erkennung"}
 </div>
-
 <div class="col-tags">
-
 ${tbl.headers
 .map(h=>
 `<span class="col-tag">${esc(h)}</span>`
 )
 .join("")}
-
 </div>
-
 `;
-
 el.classList.remove("hidden");
-
 }
-
-
 /* =========================================================
    DATEI HANDLING
 ========================================================= */
-
 async function handleFile(which,file){
-
 try{
-
 const tbl=
 await parseFile(file);
-
-
 if(which==="A")
 workflow.tableA=tbl;
 else
 workflow.tableB=tbl;
-
-
 renderMeta(
 which,
 tbl
 );
-
-
 document.getElementById(
 "step1Status"
 ).className="status ok";
-
-
 document.getElementById(
 "step1Status"
 ).textContent=
@@ -2158,8 +1506,6 @@ document.getElementById(
 " geladen: "+
 tbl.rowCount+
 " Zeilen. Automatische Analyse abgeschlossen.";
-
-
 document.getElementById(
 "btnToPrompt"
 ).disabled=
@@ -2167,466 +1513,294 @@ document.getElementById(
 workflow.tableA &&
 workflow.tableB
 );
-
-
 }catch(e){
-
 document.getElementById(
 "step1Status"
 ).className=
 "status error";
-
-
 document.getElementById(
 "step1Status"
 ).textContent=
 "✕ "+e.message;
-
 }
-
 }
-
-
 ["A","B"].forEach(w=>{
-
 const input=
 document.getElementById(
 "file"+w
 );
-
 const zone=
 document.getElementById(
 "zone"+w
 );
-
-
 zone.onclick=()=>{
 input.click();
 };
-
-
 input.onchange=e=>{
-
 if(e.target.files[0])
 handleFile(
 w,
 e.target.files[0]
 );
-
 };
-
-
 zone.ondragover=e=>{
-
 e.preventDefault();
-
 zone.style.borderColor=
 "var(--cyan)";
-
 };
-
-
 zone.ondragleave=()=>{
-
 zone.style.borderColor="";
-
 };
-
-
 zone.ondrop=e=>{
-
 e.preventDefault();
-
 zone.style.borderColor="";
-
 if(e.dataTransfer.files[0])
 handleFile(
 w,
 e.dataTransfer.files[0]
 );
-
 };
-
 });
-
-
 /* =========================================================
    WORKFLOW
 ========================================================= */
-
 function setStep(n){
-
 workflow.step=n;
-
-
 document.querySelectorAll(
 ".step-item"
 ).forEach(x=>{
-
 const s=
 Number(x.dataset.step);
-
 x.classList.remove(
 "active",
 "done"
 );
-
 if(s===n)
 x.classList.add("active");
-
 else if(s<n)
 x.classList.add("done");
-
 });
-
-
 document.querySelectorAll(
 ".step-panel"
 ).forEach(
 x=>x.classList.add("hidden")
 );
-
-
 document.getElementById(
 "step"+n
 )?.classList.remove(
 "hidden"
 );
-
 }
-
-
 /* =========================================================
    AUTOMATISCHE ANALYSE ANZEIGEN
 ========================================================= */
-
 function renderAutoAnalysis(){
-
 const A=workflow.tableA;
 const B=workflow.tableB;
-
-
 function block(name,tbl){
-
 const a=tbl.analysis;
-
 return `
-
 ==============================
 ${name}
 ==============================
-
 DATEI
 ${tbl.fileName}
-
 AUTOMATISCH ERKANNTE QUELLE
 ${tbl.sourceType}
-
 BESCHREIBUNG
 ${tbl.description}
-
 ZEILEN
 ${tbl.rowCount}
-
 SPALTEN
 ${tbl.colCount}
-
 MÖGLICHE DATUMSFELDER
 ${a.possibleDate.join(", ")||"keine eindeutige Erkennung"}
-
 MÖGLICHE IDENTIFIKATOREN
 ${a.possibleId.join(", ")||"keine eindeutige Erkennung"}
-
 MÖGLICHE NUMERISCHE FELDER
 ${a.possibleNum.join(", ")||"keine eindeutige Erkennung"}
-
 SPALTEN
 ${tbl.headers.join(", ")}
-
 `;
-
 }
-
-
 document.getElementById(
 "autoAnalysis"
 ).textContent=
 block("TABLE A",A)+
 block("TABLE B",B);
-
 }
-
-
 /* =========================================================
    LLM-AUFTRAG
 ========================================================= */
-
 function generatePrompt(){
-
 const A=workflow.tableA;
 const B=workflow.tableB;
-
-
 function block(name,tbl){
-
 return `
-
 ==============================
 ${name}
 ==============================
-
 DATEI:
 ${tbl.fileName}
-
 AUTOMATISCH ERKANNTE QUELLE:
 ${tbl.sourceType}
-
 BESCHREIBUNG:
 ${tbl.description}
-
 ZEILEN:
 ${tbl.rowCount}
-
 SPALTEN:
 ${tbl.colCount}
-
 SPALTEN:
 ${tbl.headers.join(", ")}
-
 AUTOMATISCH ERKANNTE DATUMSFELDER:
 ${tbl.analysis.possibleDate.join(", ")||"keine eindeutige Erkennung"}
-
 AUTOMATISCH ERKANNTE IDENTIFIKATOREN:
 ${tbl.analysis.possibleId.join(", ")||"keine eindeutige Erkennung"}
-
 AUTOMATISCH ERKANNTE NUMERISCHE FELDER:
 ${tbl.analysis.possibleNum.join(", ")||"keine eindeutige Erkennung"}
-
 ORIGINALDATEN:
 ${JSON.stringify(tbl.rows,null,2)}
-
 `;
-
 }
-
-
 const prompt=`
-
 DU BIST EIN DATENSTRUKTURIERUNGSSYSTEM.
-
 DIE ANWENDUNG HAT DEN BENUTZER NICHT NACH
 FACHLICHEN TABELLENFRAGEN GEFRAGT.
-
 DU MUSST DIE STRUKTUR AUSSCHLIESSLICH AUS
 DEN VORLIEGENDEN TABELLEN ERKENNEN.
-
 DEINE AUFGABE IST AUSSCHLIESSLICH:
-
 Die beiden Tabellen analysieren und in das
 BOOKING_RECON-JSON überführen.
-
 ==================================================
 ABSOLUTE REGELN
 ==================================================
-
 1. KEINE ZEILE AUSLASSEN.
-
 2. KEINEN ORIGINALWERT KORRIGIEREN.
-
 3. KEINEN ORIGINALWERT ERFINDEN.
-
 4. KEINE ZEILE LÖSCHEN.
-
 5. KEINE ZEILE MIT EINER ANDEREN ZEILE VERSCHMELZEN.
-
 6. TABLE_A und TABLE_B strikt getrennt halten.
-
 7. Die Reihenfolge der Originaldaten nicht als
    fachliche Bedeutung interpretieren.
-
 8. Mehrfach vorhandene Auftragsnummern sind NICHT
    automatisch Fehler.
-
 9. Eine Auftragsnummer darf in mehreren Datensätzen
    vorkommen.
-
 10. Verwandte oder zusätzliche Buchungen dürfen
     nicht zusammengeführt werden.
-
 11. Keine Abweichungen berechnen.
-
 12. Keine Buchungsfehler beurteilen.
-
 13. Keine Provisionen oder Gewinne neu berechnen.
-
 14. Originalwerte müssen vollständig unter
     "data" erhalten bleiben.
-
 15. Wenn eine semantische Klassifizierung nicht
     zuverlässig möglich ist:
     "UNBEKANNT" verwenden.
-
 16. Fehlende Informationen nicht erfinden.
-
 17. Keine Markdown-Codeblöcke ausgeben.
-
 18. Ausschließlich gültiges JSON ausgeben.
-
 ==================================================
 RECORD-TYP
 ==================================================
-
 Normale geschäftliche Zeile:
-
 "record_type": "VORGANG"
-
 Eindeutig erkennbare Kassenabschlusszeile:
-
 "record_type": "KASSENABSCHLUSS"
-
 Wenn nicht zuverlässig bestimmbar:
-
 "record_type": "UNBEKANNT"
-
 KASSENABSCHLUSS IST KEIN NORMALER BUCHUNGSVORGANG.
-
 Kassenabschlusszeilen dürfen deshalb später vom
 deterministischen Abgleich ausgeschlossen werden.
-
 ==================================================
 STATUS
 ==================================================
-
 Erlaubte Werte:
-
 AKTIV
 ZUKUNFT
 ERINNERUNG
 UNBEKANNT
-
 Wenn der Status nicht sicher aus den Daten
 abgeleitet werden kann:
-
 "UNBEKANNT"
-
 NIEMALS raten.
-
 ==================================================
 ZDF-SEMANTIK FÜR TABLE_A
 ==================================================
-
 Wenn TABLE_A eine ZDF-Arbeitstabelle ist,
 gelten zusätzlich folgende Regeln:
-
 ART FN:
 grundsätzlich AKTIV, sofern kein expliziter
 anderer Status vorhanden ist.
-
 ART FTTH:
 grundsätzlich AKTIV, sofern kein expliziter
 anderer Status vorhanden ist.
-
 ART MF oder CON:
-
 BLAUER MARKER:
 ERINNERUNG
-
 GELBER MARKER:
 ZUKUNFT
-
 ORANGER MARKER:
 ZUKUNFT
-
 WICHTIG:
-
 GELB UND ORANGE SIND SEMANTISCH DIESELBE
 KATEGORIE.
-
 Es darf keine getrennte Kategorie für Gelb
 und Orange erzeugt werden.
-
 Fehlt die Farbinformation oder ist sie nicht
 eindeutig erkennbar, darf sie nicht erfunden werden.
-
 Dann:
-
 "status": "UNBEKANNT"
-
 Wenn ein expliziter Status oder Hinweis in der
 Originalzeile vorhanden ist, darf dieser
 berücksichtigt werden.
-
 ==================================================
 DATUM
 ==================================================
-
 Originaldatum bleibt unverändert unter "data".
-
 Wenn ein Datum eindeutig erkannt werden kann,
 darf zusätzlich ein abgeleitetes Feld
-
 "normalized": {
   "date": "YYYY-MM-DD"
 }
-
 erzeugt werden.
-
 WICHTIG:
-
 "data" = ORIGINALDATEN
-
 "normalized" = ABGELEITETE DATEN
-
 Originalwerte niemals durch normalisierte Werte
 ersetzen.
-
 Wenn das Datum nicht eindeutig ist:
-
 "normalized": {
   "date": null
 }
-
 ==================================================
 IDENTIFIKATION
 ==================================================
-
 Erkenne mögliche Auftragsnummern, Vertragsnummern,
 Referenzen und andere Kennzeichen.
-
 ABER:
-
 Eine erkannte Auftragsnummer ist nicht automatisch
 ein eindeutiger Datensatzschlüssel.
-
 Keine Datensätze aufgrund einer gleichen Nummer
 zusammenführen.
-
 ==================================================
 TABLE A
 ==================================================
-
 Jeder Datensatz erhält:
-
 A-000001
 A-000002
 A-000003
 ...
-
 ==================================================
 TABLE B
 ==================================================
-
 Jeder Datensatz erhält:
-
 B-000001
 B-000002
 B-000003
 ...
-
 ==================================================
 AUSGABEFORMAT
 ==================================================
-
 {
   "version": "1.0",
   "dataset": "BOOKING_RECON",
@@ -2669,162 +1843,101 @@ AUSGABEFORMAT
     }
   }
 }
-
 ==================================================
 WICHTIG
 ==================================================
-
 "data" MUSS die Originaldaten vollständig erhalten.
-
 Keine Umbenennung der Originalspalten innerhalb
 von "data".
-
 Keine Korrektur von Tippfehlern.
-
 Keine Korrektur von Datumswerten.
-
 Keine Korrektur von Beträgen.
-
 Keine Korrektur von Auftragsnummern.
-
 Keine Interpretation als Fehler.
-
 Keine Zusammenfassung.
-
 Keine Auslassung.
-
 ==================================================
-
 ${block("TABLE A",A)}
-
 ${block("TABLE B",B)}
-
 AUSSCHLIESSLICH JSON.
 KEINE ERKLÄRUNG.
 KEINE MARKDOWN-CODEBLÖCKE.
-
 `;
-
-
 document.getElementById(
 "promptOutput"
 ).textContent=prompt;
-
-
 renderAutoAnalysis();
-
 }
-
-
 /* =========================================================
    BUTTON: LLM-AUFTRAG
 ========================================================= */
-
 document.getElementById(
 "btnToPrompt"
 ).onclick=()=>{
-
 if(
 !workflow.tableA||
 !workflow.tableB
 ){
-
 document.getElementById(
 "step1Status"
 ).className="status error";
-
 document.getElementById(
 "step1Status"
 ).textContent=
 "Bitte beide Tabellen hochladen.";
-
 return;
-
 }
-
-
 generatePrompt();
-
 setStep(2);
-
 };
-
-
 /* =========================================================
    PROMPT KOPIEREN
 ========================================================= */
-
 document.getElementById(
 "btnCopyPrompt"
 ).onclick=async()=>{
-
 try{
-
 await navigator.clipboard.writeText(
 document.getElementById(
 "promptOutput"
 ).textContent
 );
-
-
 document.getElementById(
 "promptStatus"
 ).className="status ok";
-
-
 document.getElementById(
 "promptStatus"
 ).textContent=
 "✓ LLM-AUFTRAG KOPIERT — JETZT IN DAS LLM EINFÜGEN";
-
-
 }catch{
-
 document.getElementById(
 "promptStatus"
 ).className="status error";
-
-
 document.getElementById(
 "promptStatus"
 ).textContent=
 "Kopieren nicht möglich.";
-
 }
-
 };
-
-
 /* =========================================================
    NAVIGATION WORKFLOW
 ========================================================= */
-
 document.getElementById(
 "btnBackToUpload"
 ).onclick=()=>setStep(1);
-
-
 document.getElementById(
 "btnToJson"
 ).onclick=()=>setStep(3);
-
-
 document.getElementById(
 "btnBackToPrompt"
 ).onclick=()=>{
-
 generatePrompt();
 setStep(2);
-
 };
-
-
 /* =========================================================
    JSON VALIDATOR
 ========================================================= */
-
 function validateImportPayload(payload){
-
 if(
 !payload||
 typeof payload!=="object"
@@ -2832,24 +1945,18 @@ typeof payload!=="object"
 throw new Error(
 "JSON ist kein Objekt."
 );
-
-
 if(
 payload.version===undefined
 )
 throw new Error(
 "version fehlt."
 );
-
-
 if(
 payload.dataset!=="BOOKING_RECON"
 )
 throw new Error(
 "dataset muss BOOKING_RECON sein."
 );
-
-
 if(
 !payload.tables||
 typeof payload.tables!=="object"||
@@ -2858,46 +1965,32 @@ Array.isArray(payload.tables)
 throw new Error(
 "tables muss ein Objekt mit TABLE_A und TABLE_B sein."
 );
-
-
 if(
 !payload.tables.TABLE_A
 )
 throw new Error(
 "tables.TABLE_A fehlt."
 );
-
-
 if(
 !payload.tables.TABLE_B
 )
 throw new Error(
 "tables.TABLE_B fehlt."
 );
-
-
 const ids=new Set();
-
-
 for(
 const id of ["TABLE_A","TABLE_B"]
 ){
-
 const table=
 payload.tables[id];
-
-
 if(
 !Array.isArray(table.records)
 )
 throw new Error(
 id+".records fehlt oder ist kein Array."
 );
-
-
 table.records.forEach(
 (r,i)=>{
-
 if(
 !r||
 typeof r!=="object"
@@ -2905,16 +1998,12 @@ typeof r!=="object"
 throw new Error(
 `${id}.records[${i}] ist ungültig.`
 );
-
-
 if(
 !r.record_id
 )
 throw new Error(
 `${id}.records[${i}].record_id fehlt.`
 );
-
-
 if(
 ids.has(
 String(r.record_id)
@@ -2924,13 +2013,9 @@ throw new Error(
 "Doppelte record_id: "+
 r.record_id
 );
-
-
 ids.add(
 String(r.record_id)
 );
-
-
 if(
 r.source_table &&
 r.source_table!==id
@@ -2938,8 +2023,6 @@ r.source_table!==id
 throw new Error(
 `${r.record_id}: source_table stimmt nicht mit ${id} überein.`
 );
-
-
 if(
 !r.data||
 typeof r.data!=="object"||
@@ -2948,8 +2031,6 @@ Array.isArray(r.data)
 throw new Error(
 `${r.record_id}: data muss ein Objekt sein.`
 );
-
-
 if(
 r.record_type!==undefined&&
 ![
@@ -2963,8 +2044,6 @@ r.record_type
 throw new Error(
 `${r.record_id}: unbekannter record_type.`
 );
-
-
 if(
 r.status!==undefined&&
 ![
@@ -2979,8 +2058,6 @@ r.status
 throw new Error(
 `${r.record_id}: unbekannter status.`
 );
-
-
 if(
 r.normalized!==undefined &&
 (
@@ -2991,58 +2068,33 @@ Array.isArray(r.normalized)
 throw new Error(
 `${r.record_id}: normalized muss ein Objekt sein.`
 );
-
 });
-
 }
-
-
 return true;
-
 }
-
-
 /* =========================================================
    DATUM
 ========================================================= */
-
 function normalizeDate(value){
-
 if(!value)
 return null;
-
-
 const s=
 String(value)
 .trim();
-
-
 if(
 /^\d{4}-\d{2}-\d{2}$/.test(s)
 )
 return s;
-
-
 let m=
 s.match(
 /^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/
 );
-
-
 if(m){
-
 return `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
-
 }
-
-
 return null;
-
 }
-
-
 function extractDate(record){
-
 if(
 record.normalized &&
 record.normalized.date
@@ -3050,12 +2102,8 @@ record.normalized.date
 return normalizeDate(
 record.normalized.date
 );
-
-
 const d=
 record.data||{};
-
-
 const candidates=[
 "datum",
 "date",
@@ -3064,145 +2112,101 @@ const candidates=[
 "schalttermin",
 "tagdatum"
 ];
-
-
 for(
 const key of candidates
 ){
-
 if(
 d[key]!==undefined &&
 d[key]!==null &&
 String(d[key]).trim()!==""
 ){
-
 const normalized=
 normalizeDate(
 d[key]
 );
-
 if(normalized)
 return normalized;
-
 }
-
 }
-
-
 for(
 const key of Object.keys(d)
 ){
-
 if(
 /datum|date/i.test(key)
 ){
-
 const normalized=
 normalizeDate(
 d[key]
 );
-
 if(normalized)
 return normalized;
-
 }
-
 }
-
-
 return null;
-
 }
-
-
 /* =========================================================
    JSON IMPORT
 ========================================================= */
-
 async function importJSON(payload){
-
 validateImportPayload(payload);
-
 await openDatabase();
-
 await clearStore(
 STORE_RECORDS
 );
-
-
 const tx=
 database.transaction(
 STORE_RECORDS,
 "readwrite"
 );
-
-
 const store=
 tx.objectStore(
 STORE_RECORDS
 );
-
-
 let count=0;
-
-
 for(
 const tableId of [
 "TABLE_A",
 "TABLE_B"
 ]
 ){
-
 const table=
 payload.tables[tableId];
-
-
 for(
 const record of table.records
 ){
-
 store.put({
-
 record_id:
 String(record.record_id),
-
 source_table:
 tableId,
-
 source_type:
 String(
 table.source_type||
 "UNBEKANNT"
 ),
-
 source_description:
 String(
 table.description||
 ""
 ),
-
 record_type:
 String(
 record.record_type||
 "UNBEKANNT"
 ),
-
 status:
 String(
 record.status||
 "UNBEKANNT"
 ),
-
 date:
 extractDate(record),
-
 data:
 JSON.parse(
 JSON.stringify(
 record.data
 )
 ),
-
 normalized:
 record.normalized
 ?
@@ -3212,120 +2216,73 @@ record.normalized
 )
 )
 :null,
-
 imported_at:
 new Date().toISOString(),
-
 dataset_version:
 String(
 payload.version
 )
-
 });
-
-
 count++;
-
 }
-
 }
-
-
 return new Promise(
 (resolve,reject)=>{
-
 tx.oncomplete=()=>resolve({
-
 records:count,
-
 tables:2
-
 });
-
-
 tx.onerror=()=>{
 reject(tx.error);
 };
-
 });
-
 }
-
-
 /* =========================================================
    JSON UI
 ========================================================= */
-
 document.getElementById(
 "btnValidateJson"
 ).onclick=()=>{
-
 const status=
 document.getElementById(
 "jsonStatus"
 );
-
 const importBtn=
 document.getElementById(
 "btnImportJson"
 );
-
-
 importBtn.classList.add(
 "hidden"
 );
-
 workflow.validatedPayload=null;
-
-
 try{
-
 const text=
 document.getElementById(
 "jsonInput"
 ).value.trim();
-
-
 if(!text)
 throw new Error(
 "JSON fehlt."
 );
-
-
 const json=
 JSON.parse(text);
-
-
 validateImportPayload(
 json
 );
-
-
 const a=
 json.tables.TABLE_A.records.length;
-
 const b=
 json.tables.TABLE_B.records.length;
-
-
 const aCash=
 json.tables.TABLE_A.records.filter(
 r=>r.record_type==="KASSENABSCHLUSS"
 ).length;
-
-
 const bCash=
 json.tables.TABLE_B.records.filter(
 r=>r.record_type==="KASSENABSCHLUSS"
 ).length;
-
-
 workflow.validatedPayload=json;
-
-
 status.className="status ok";
-
-
 status.innerHTML=
 `
 ✓ JSON GÜLTIG<br>
@@ -3334,250 +2291,159 @@ status.innerHTML=
 ✓ GESAMT: ${a+b} RECORDS<br>
 ✓ KASSENABSCHLUSS: ${aCash+bCash}
 `;
-
-
 importBtn.classList.remove(
 "hidden"
 );
-
-
 }catch(e){
-
 status.className=
 "status error";
-
-
 status.textContent=
 "✕ JSON ABGELEHNT\n\n"+
 e.message;
-
 }
-
 };
-
-
 document.getElementById(
 "btnImportJson"
 ).onclick=async()=>{
-
 try{
-
 const result=
 await importJSON(
 workflow.validatedPayload
 );
-
-
 await refresh();
-
-
 document.getElementById(
 "jsonStatus"
 ).className=
 "status ok";
-
-
 document.getElementById(
 "jsonStatus"
 ).textContent=
 `✓ ${result.records} RECORDS IMPORTIERT`;
-
-
 document.querySelectorAll(
 ".nav"
 ).forEach(
 x=>x.classList.remove("active")
 );
-
-
 document.querySelector(
 '[data-view="import"]'
 ).classList.add(
 "active"
 );
-
-
 document.querySelectorAll(
 ".view"
 ).forEach(
 x=>x.classList.remove("active")
 );
-
-
 document.getElementById(
 "view-import"
 ).classList.add("active");
-
-
 setStep(4);
-
-
 updateWorkflowReady();
-
-
 }catch(e){
-
 document.getElementById(
 "jsonStatus"
 ).className=
 "status error";
-
-
 document.getElementById(
 "jsonStatus"
 ).textContent=
 "✕ "+e.message;
-
 }
-
 };
-
-
 document.getElementById(
 "btnClearJson"
 ).onclick=()=>{
-
 document.getElementById(
 "jsonInput"
 ).value="";
-
-
 document.getElementById(
 "btnImportJson"
 ).classList.add(
 "hidden"
 );
-
-
 workflow.validatedPayload=null;
-
-
 document.getElementById(
 "jsonStatus"
 ).className="status";
-
-
 document.getElementById(
 "jsonStatus"
 ).textContent=
 "JSON einfügen und validieren.";
-
 };
-
-
 /* =========================================================
    WORKFLOW READY
 ========================================================= */
-
 async function updateWorkflowReady(){
-
 await refresh();
-
-
 const a=
 state.records.filter(
 r=>r.source_table==="TABLE_A"
 ).length;
-
-
 const b=
 state.records.filter(
 r=>r.source_table==="TABLE_B"
 ).length;
-
-
 const excluded=
 state.records.filter(
 r=>r.record_type==="KASSENABSCHLUSS"
 ).length;
-
-
 document.getElementById(
 "workflowCountA"
 ).textContent=a;
-
-
 document.getElementById(
 "workflowCountB"
 ).textContent=b;
-
-
 document.getElementById(
 "workflowExcluded"
 ).textContent=excluded;
-
 }
-
-
 /* =========================================================
    ESCAPE
 ========================================================= */
-
 function esc(v){
-
 return String(
 v??""
 ).replace(
 /[&<>"']/g,
 c=>({
-
 "&":"&amp;",
 "<":"&lt;",
 ">":"&gt;",
 '"':"&quot;",
 "'":"&#039;"
-
 }[c])
 );
-
 }
-
-
 /* =========================================================
    DATENBANK-ANSICHT
 ========================================================= */
-
 function renderDatabase(){
-
 const container=
 document.getElementById(
 "databaseTable"
 );
-
 const search=
 document.getElementById(
 "dbSearch"
 ).value.toLowerCase();
-
-
 if(
 currentTab==="differences"
 ){
-
 renderDifferences(
 container,
 search
 );
-
 return;
-
 }
-
-
 const source=
 currentTab==="tableA"
 ?"TABLE_A"
 :"TABLE_B";
-
-
 let rows=
 state.records.filter(
 x=>x.source_table===source
 );
-
-
 if(search){
-
 rows=
 rows.filter(
 x=>
@@ -3585,72 +2451,45 @@ JSON.stringify(x)
 .toLowerCase()
 .includes(search)
 );
-
 }
-
-
 if(!rows.length){
-
 container.innerHTML=
 `<div class="empty">
 KEINE DATENSÄTZE
 </div>`;
-
 return;
-
 }
-
-
 const keys=
 new Set();
-
-
 rows.forEach(
 r=>{
-
 Object.keys(
 r.data||{}
 ).forEach(
 k=>keys.add(k)
 );
-
 });
-
-
 const columns=
 [...keys];
-
-
 let html=`
-
 <table>
-
 <thead>
-
 <tr>
-
 <th>ID</th>
 <th>TYP</th>
 <th>STATUS</th>
 <th>DATUM</th>
-
 ${columns
 .map(
 k=>
 `<th>${esc(k)}</th>`
 )
 .join("")}
-
 </tr>
-
 </thead>
-
 <tbody>
 `;
-
-
 rows.forEach(r=>{
-
 const statusClass=
 r.status==="AKTIV"
 ?"good":
@@ -3659,34 +2498,24 @@ r.status==="ZUKUNFT"
 r.status==="ERINNERUNG"
 ?"ambiguous"
 :"";
-
-
 const typeClass=
 r.record_type==="KASSENABSCHLUSS"
 ?"ambiguous"
 :"";
-
-
 html+=`
-
 <tr>
-
 <td class="mono">
 ${esc(r.record_id)}
 </td>
-
 <td class="${typeClass}">
 ${esc(r.record_type)}
 </td>
-
 <td class="${statusClass}">
 ${esc(r.status)}
 </td>
-
 <td>
 ${esc(r.date||"—")}
 </td>
-
 ${columns
 .map(
 k=>
@@ -3695,40 +2524,26 @@ r.data?.[k]??""
 )}</td>`
 )
 .join("")}
-
 </tr>
 `;
-
 });
-
-
 html+=`
 </tbody>
 </table>
 `;
-
-
 container.innerHTML=
 html;
-
 }
-
-
 /* =========================================================
    ERGEBNISSE
 ========================================================= */
-
 function renderDifferences(
 container,
 search
 ){
-
 let rows=
 [...state.differences];
-
-
 if(search){
-
 rows=
 rows.filter(
 x=>
@@ -3736,96 +2551,64 @@ JSON.stringify(x)
 .toLowerCase()
 .includes(search)
 );
-
 }
-
-
 if(!rows.length){
-
 container.innerHTML=
 `<div class="empty">
 KEINE ERGEBNISSE
 </div>`;
-
 return;
-
 }
-
-
 container.innerHTML=`
-
 <table>
-
 <thead>
-
 <tr>
-
 <th>STATUS</th>
 <th>MATCH</th>
 <th>FELD</th>
 <th>A</th>
 <th>B</th>
 <th>DIFFERENZ</th>
-
 </tr>
-
 </thead>
-
 <tbody>
-
 ${rows.map(
 r=>`
-
 <tr>
-
 <td>
 <span class="badge">
 ${esc(r.status)}
 </span>
 </td>
-
 <td class="mono">
 ${esc(r.match_key)}
 </td>
-
 <td>
 ${esc(r.field)}
 </td>
-
 <td>
 ${esc(r.value_a)}
 </td>
-
 <td>
 ${esc(r.value_b)}
 </td>
-
 <td>
 ${esc(r.difference)}
 </td>
-
 </tr>
-
 `
 ).join("")}
-
 </tbody>
-
 </table>
 `;
-
 }
-
-
 /* =========================================================
    ABGLEICH
 ========================================================= */
-
 function getField(
 record,
 field
 ){
-
 if(
 record.data &&
 Object.prototype.hasOwnProperty.call(
@@ -3834,38 +2617,24 @@ field
 )
 )
 return record.data[field];
-
-
 return undefined;
-
 }
-
-
 function normalizeKey(v){
-
 if(
 v===null||
 v===undefined
 )
 return null;
-
-
 const s=
 String(v)
 .trim()
 .toLowerCase();
-
-
 return s?s:null;
-
 }
-
-
 function makeKey(
 record,
 fields
 ){
-
 return fields
 .map(
 f=>
@@ -3874,56 +2643,38 @@ getField(record,f)
 )
 )
 .join("||");
-
 }
-
-
 function completeKey(
 record,
 fields
 ){
-
 return fields.every(
 f=>
 normalizeKey(
 getField(record,f)
 )!==null
 );
-
 }
-
-
 function dateAllowed(
 record,
 from,
 to
 ){
-
 if(!record.date)
 return true;
-
-
 if(
 from &&
 record.date<from
 )
 return false;
-
-
 if(
 to &&
 record.date>to
 )
 return false;
-
-
 return true;
-
 }
-
-
 function numeric(value){
-
 if(
 value===null||
 value===undefined||
@@ -3933,8 +2684,6 @@ return{
 state:"MISSING",
 value:null
 };
-
-
 if(
 typeof value==="number"
 )
@@ -3947,8 +2696,6 @@ value
 state:"INVALID",
 value:null
 };
-
-
 let s=
 String(value)
 .trim()
@@ -3960,52 +2707,36 @@ String(value)
 /\s/g,
 ""
 );
-
-
 if(
 s.includes(",")&&
 s.includes(".")
 ){
-
 if(
 s.lastIndexOf(",")>
 s.lastIndexOf(".")
 ){
-
 s=
 s.replace(/\./g,"")
 .replace(",","."
 );
-
 }else{
-
 s=
 s.replace(/,/g,"");
-
 }
-
 }else if(
 s.includes(",")
 ){
-
 s=
 s.replace(",","."
 );
-
 }
-
-
 s=
 s.replace(
 /[^\d.-]/g,
 ""
 );
-
-
 const n=
 Number(s);
-
-
 return Number.isFinite(n)
 ?{
 state:"PRESENT",
@@ -4015,12 +2746,8 @@ value:n
 state:"INVALID",
 value:null
 };
-
 }
-
-
 function createRunId(){
-
 return "RUN-"+
 Date.now()+
 "-"+
@@ -4028,31 +2755,20 @@ Math.random()
 .toString(36)
 .slice(2,8)
 .toUpperCase();
-
 }
-
-
 /* =========================================================
    DETERMINISTISCHER VERGLEICH
 ========================================================= */
-
 async function compareTables(){
-
 await openDatabase();
-
-
 const from=
 document.getElementById(
 "dateFrom"
 ).value;
-
-
 const to=
 document.getElementById(
 "dateTo"
 ).value;
-
-
 if(
 from&&
 to&&
@@ -4061,8 +2777,6 @@ from>to
 throw new Error(
 "VON liegt nach BIS."
 );
-
-
 const matchFields=
 document.getElementById(
 "matchKeys"
@@ -4072,8 +2786,6 @@ document.getElementById(
 x=>x.trim()
 )
 .filter(Boolean);
-
-
 const numericFields=
 document.getElementById(
 "numericFields"
@@ -4083,18 +2795,12 @@ document.getElementById(
 x=>x.trim()
 )
 .filter(Boolean);
-
-
 if(!matchFields.length)
 throw new Error(
 "Kein Abgleich-Feld."
 );
-
-
 const runId=
 createRunId();
-
-
 const excludedIds=
 new Set(
 state.records
@@ -4107,8 +2813,6 @@ r.record_type===
 r=>r.record_id
 )
 );
-
-
 const A=
 state.records.filter(
 r=>
@@ -4122,8 +2826,6 @@ from,
 to
 )
 );
-
-
 const B=
 state.records.filter(
 r=>
@@ -4137,14 +2839,9 @@ from,
 to
 )
 );
-
-
 const mapB=
 new Map();
-
-
 B.forEach(r=>{
-
 if(
 !completeKey(
 r,
@@ -4152,30 +2849,18 @@ matchFields
 )
 )
 return;
-
-
 const k=
 makeKey(
 r,
 matchFields
 );
-
-
 if(!mapB.has(k))
 mapB.set(k,[]);
-
-
 mapB.get(k).push(r);
-
 });
-
-
 const mapA=
 new Map();
-
-
 A.forEach(r=>{
-
 if(
 !completeKey(
 r,
@@ -4183,41 +2868,26 @@ matchFields
 )
 )
 return;
-
-
 const k=
 makeKey(
 r,
 matchFields
 );
-
-
 if(!mapA.has(k))
 mapA.set(k,[]);
-
-
 mapA.get(k).push(r);
-
 });
-
-
 const differences=[];
-
-
 let comparisons=0;
 let ambiguous=0;
 let missingA=0;
 let missingB=0;
 let invalidKeys=0;
-
-
 function add(
 status,
 data={}
 ){
-
 differences.push({
-
 difference_id:
 "DIFF-"+
 String(
@@ -4226,162 +2896,100 @@ differences.length+1
 6,
 "0"
 ),
-
 run_id:runId,
-
 status,
-
 ...data
-
 });
-
 }
-
-
 /* ---------------------------------------------------------
    A -> B
 --------------------------------------------------------- */
-
 for(
 const a of A
 ){
-
 if(
 !completeKey(
 a,
 matchFields
 )
 ){
-
 invalidKeys++;
-
-
 add(
 "INVALID_MATCH_KEY",
 {
-
 match_key:
 makeKey(
 a,
 matchFields
 ),
-
 field:
 "__match_key__",
-
 value_a:
 a.record_id,
-
 record_a:
 a.record_id
-
 }
 );
-
-
 continue;
-
 }
-
-
 const key=
 makeKey(
 a,
 matchFields
 );
-
-
 const candidates=
 mapB.get(key)||[];
-
-
 if(!candidates.length){
-
 missingB++;
-
-
 add(
 "MISSING_IN_B",
 {
-
 match_key:key,
-
 field:
 "__record__",
-
 value_a:
 a.record_id,
-
 record_a:
 a.record_id
-
 }
 );
-
-
 continue;
-
 }
-
-
 /*
   WICHTIG:
-
   Mehrere Treffer sind keine automatische Differenz.
-
   Die Anwendung meldet sie als mehrdeutig.
 */
-
 if(
 candidates.length>1
 ){
-
 ambiguous++;
-
-
 add(
 "AMBIGUOUS_MATCH",
 {
-
 match_key:key,
-
 field:
 "__record__",
-
 value_a:
 a.record_id,
-
 value_b:
 candidates
 .map(x=>x.record_id)
 .join(", "),
-
 record_a:
 a.record_id,
-
 record_b:
 candidates
 .map(x=>x.record_id)
-
 }
 );
-
-
 continue;
-
 }
-
-
 const b=
 candidates[0];
-
-
 comparisons++;
-
-
 numericFields.forEach(
 field=>{
-
 const va=
 numeric(
 getField(
@@ -4389,8 +2997,6 @@ a,
 field
 )
 );
-
-
 const vb=
 numeric(
 getField(
@@ -4398,134 +3004,88 @@ b,
 field
 )
 );
-
-
 if(
 va.state==="MISSING"&&
 vb.state==="MISSING"
 )
 return;
-
-
 if(
 va.state==="MISSING"||
 vb.state==="MISSING"
 ){
-
 add(
 "VALUE_MISSING",
 {
-
 match_key:key,
-
 field,
-
 value_a:
 va.value,
-
 value_b:
 vb.value,
-
 record_a:
 a.record_id,
-
 record_b:
 b.record_id
-
 }
 );
-
 return;
-
 }
-
-
 if(
 va.state==="INVALID"||
 vb.state==="INVALID"
 ){
-
 add(
 "VALUE_INVALID",
 {
-
 match_key:key,
-
 field,
-
 value_a:
 getField(
 a,
 field
 ),
-
 value_b:
 getField(
 b,
 field
 ),
-
 record_a:
 a.record_id,
-
 record_b:
 b.record_id
-
 }
 );
-
 return;
-
 }
-
-
 const diff=
 va.value-vb.value;
-
-
 if(diff!==0){
-
 add(
 "DIFFERENCE",
 {
-
 match_key:key,
-
 field,
-
 value_a:
 va.value,
-
 value_b:
 vb.value,
-
 difference:diff,
-
 record_a:
 a.record_id,
-
 record_b:
 b.record_id
-
 }
 );
-
 }
-
 }
 );
-
 }
-
-
 /* ---------------------------------------------------------
    B -> A
 --------------------------------------------------------- */
-
 for(
 const b of B
 ){
-
 if(
 !completeKey(
 b,
@@ -4533,366 +3093,230 @@ matchFields
 )
 )
 continue;
-
-
 const key=
 makeKey(
 b,
 matchFields
 );
-
-
 const candidates=
 mapA.get(key)||[];
-
-
 if(
 !candidates.length
 ){
-
 missingA++;
-
-
 add(
 "MISSING_IN_A",
 {
-
 match_key:key,
-
 field:
 "__record__",
-
 value_b:
 b.record_id,
-
 record_b:
 b.record_id
-
 }
 );
-
 }
-
 }
-
-
 /* ---------------------------------------------------------
    SPEICHERN
 --------------------------------------------------------- */
-
 await clearStore(
 STORE_DIFFERENCES
 );
-
-
 const tx=
 database.transaction(
 STORE_DIFFERENCES,
 "readwrite"
 );
-
-
 const store=
 tx.objectStore(
 STORE_DIFFERENCES
 );
-
-
 differences.forEach(
 x=>store.put(x)
 );
-
-
 const result={
-
 runId,
-
 tableA:A.length,
-
 tableB:B.length,
-
 excluded:
 excludedIds.size,
-
 comparisons,
-
 differences:
 differences.length,
-
 ambiguous,
-
 missingA,
-
 missingB,
-
 invalidKeys,
-
 plan:{
-
 execution:
 "DETERMINISTIC",
-
 matching:{
-
 strategy:
 "EXACT",
-
 fields:
 matchFields,
-
 duplicate_policy:
 "AMBIGUOUS_MATCH"
-
 },
-
 excluded:{
-
 record_type:
 "KASSENABSCHLUSS",
-
 reason:
 "KEIN_NORMALER_BUCHUNGSVORGANG"
-
 },
-
 comparisonFields:
 numericFields,
-
 period:{
-
 from:
 from||null,
-
 to:
 to||null
-
 },
-
 statistics:{
-
 difference:
 differences.filter(
 x=>x.status==="DIFFERENCE"
 ).length,
-
 missing:
 differences.filter(
 x=>x.status==="VALUE_MISSING"
 ).length,
-
 invalid:
 differences.filter(
 x=>x.status==="VALUE_INVALID"
 ).length,
-
 missingA,
-
 missingB,
-
 ambiguous,
-
 invalidKeys
-
 }
-
 }
-
 };
-
-
 return new Promise(
 (resolve,reject)=>{
-
 tx.oncomplete=()=>{
 resolve(result);
 };
-
 tx.onerror=()=>{
 reject(tx.error);
 };
-
 });
-
 }
-
-
 /* =========================================================
    WORKFLOW ABGLEICH STARTEN
 ========================================================= */
-
 document.getElementById(
 "btnRunWorkflow"
 ).onclick=async()=>{
-
 try{
-
 const result=
 await compareTables();
-
-
 await refresh();
-
-
 const status=
 document.getElementById(
 "workflowStatus"
 );
-
-
 status.className=
 result.differences
 ?"status warn"
 :"status ok";
-
-
 status.innerHTML=
 result.differences
-
 ?`
 ⚠ ABGLEICH ABGESCHLOSSEN
-
 <br><br>
-
 ${result.differences}
 ERGEBNISSE GEFUNDEN
-
 <br><br>
-
 Fehlt in A:
 ${result.missingA}
-
 <br>
-
 Fehlt in B:
 ${result.missingB}
-
 <br>
-
 Mehrdeutig:
 ${result.ambiguous}
-
 <br>
-
 Ungültige Schlüssel:
 ${result.invalidKeys}
-
 <br>
-
 Kassenabschlüsse ausgeschlossen:
 ${result.excluded}
 `
-
 :`
 ✓ ABGLEICH ABGESCHLOSSEN
-
 <br><br>
-
 Keine Abweichungen gefunden.
-
 <br><br>
-
 Kassenabschlüsse ausgeschlossen:
 ${result.excluded}
 `;
-
-
 document.querySelectorAll(
 ".nav"
 ).forEach(
 x=>x.classList.remove("active")
 );
-
-
 document.querySelector(
 '[data-view="query"]'
 ).classList.add(
 "active"
 );
-
-
 document.querySelectorAll(
 ".view"
 ).forEach(
 x=>x.classList.remove("active")
 );
-
-
 document.getElementById(
 "view-query"
 ).classList.add("active");
-
-
 await showQueryResult(
 result
 );
-
-
 }catch(e){
-
 document.getElementById(
 "workflowStatus"
 ).className=
 "status error";
-
-
 document.getElementById(
 "workflowStatus"
 ).textContent=
 "✕ "+e.message;
-
 }
-
 };
-
-
 /* =========================================================
    QUERY ERGEBNIS ANZEIGEN
 ========================================================= */
-
 async function showQueryResult(r){
-
 const plan=
 document.getElementById(
 "queryPlan"
 );
-
 const results=
 document.getElementById(
 "queryResults"
 );
-
-
 plan.textContent=
 JSON.stringify(
 r.plan,
 null,
 2
 );
-
 plan.classList.remove(
 "hidden"
 );
-
-
 results.innerHTML=`
-
 <div class="card-head">
-
 <strong>
 ABGLEICH ERGEBNIS
 </strong>
-
 <span>
 DETERMINISTISCH
 </span>
-
 </div>
-
-
 <div class="card-body">
-
 <div class="stats">
-
 <div class="stat">
 <div class="stat-label">
 TABLE A
@@ -4901,8 +3325,6 @@ TABLE A
 ${r.tableA}
 </div>
 </div>
-
-
 <div class="stat">
 <div class="stat-label">
 TABLE B
@@ -4911,8 +3333,6 @@ TABLE B
 ${r.tableB}
 </div>
 </div>
-
-
 <div class="stat">
 <div class="stat-label">
 VERGLEICHE
@@ -4921,8 +3341,6 @@ VERGLEICHE
 ${r.comparisons}
 </div>
 </div>
-
-
 <div class="stat">
 <div class="stat-label">
 ERGEBNISSE
@@ -4931,8 +3349,6 @@ ERGEBNISSE
 ${r.differences}
 </div>
 </div>
-
-
 <div class="stat">
 <div class="stat-label">
 AUSGESCHLOSSEN
@@ -4941,378 +3357,245 @@ AUSGESCHLOSSEN
 ${r.excluded}
 </div>
 </div>
-
 </div>
-
-
 <div class="status ${
 r.differences
 ?"warn"
 :"ok"
 }">
-
 ${
 r.differences
 ?`⚠ ${r.differences} ERGEBNISSE`
 :`✓ KEINE ABWEICHUNGEN`
 }
-
 <br><br>
-
 RUN-ID:
 ${esc(r.runId)}
-
 <br>
-
 Fehlt in A:
 ${r.missingA}
-
 <br>
-
 Fehlt in B:
 ${r.missingB}
-
 <br>
-
 Mehrdeutig:
 ${r.ambiguous}
-
 <br>
-
 Ungültige Schlüssel:
 ${r.invalidKeys}
-
 <br>
-
 KASSENABSCHLÜSSE ausgeschlossen:
 ${r.excluded}
-
 </div>
-
 </div>
 `;
-
-
 results.classList.remove(
 "hidden"
 );
-
 }
-
-
 /* =========================================================
    POLICIES
 ========================================================= */
-
 function renderPolicies(){
-
 const el=
 document.getElementById(
 "policyList"
 );
-
-
 if(
 !state.policies.length
 ){
-
 el.innerHTML=
 `<div class="empty">
 NOCH KEINE POLICIES
 </div>`;
-
 return;
-
 }
-
-
 el.innerHTML=
 state.policies
 .map(
 p=>`
-
 <div class="policy-card">
-
 <div class="policy-meta">
-
 <strong>
 ${esc(
 p.name||
 p.policy_id
 )}
 </strong>
-
 <br>
-
 ${esc(p.policy_id)}
 ·
 v${esc(p.version)}
-
 <br>
-
 MATCH:
 ${esc(
 (p.match?.keys||[])
 .join(", ")
 )}
-
 <br>
-
 FELDER:
 ${esc(
 (p.match?.numeric_fields||[])
 .join(", ")
 )}
-
 </div>
-
 </div>
-
 `
 )
 .join("");
-
 }
-
-
 /* =========================================================
    NAVIGATION
 ========================================================= */
-
 document.querySelectorAll(
 ".nav"
 ).forEach(
 btn=>{
-
 btn.onclick=()=>{
-
 document.querySelectorAll(
 ".nav"
 ).forEach(
 x=>x.classList.remove("active")
 );
-
 btn.classList.add("active");
-
-
 document.querySelectorAll(
 ".view"
 ).forEach(
 x=>x.classList.remove("active")
 );
-
-
 document.getElementById(
 "view-"+btn.dataset.view
 ).classList.add("active");
-
-
 if(
 btn.dataset.view==="database"
 )
 refresh();
-
-
 if(
 btn.dataset.view==="policies"
 )
 refresh();
-
 };
-
 });
-
-
 document.querySelectorAll(
 ".tab"
 ).forEach(
 btn=>{
-
 btn.onclick=()=>{
-
 document.querySelectorAll(
 ".tab"
 ).forEach(
 x=>x.classList.remove("active")
 );
-
 btn.classList.add("active");
-
-
 currentTab=
 btn.dataset.tab;
-
-
 renderDatabase();
-
 };
-
 });
-
-
 document.getElementById(
 "dbSearch"
 ).oninput=
 renderDatabase;
-
-
 /* =========================================================
    QUERY MANUELL
 ========================================================= */
-
 document.getElementById(
 "resetConfig"
 ).onclick=()=>{
-
 document.getElementById(
 "dateFrom"
 ).value="";
-
-
 document.getElementById(
 "dateTo"
 ).value="";
-
-
 document.getElementById(
 "matchKeys"
 ).value=
 "auftragsnummer";
-
-
 document.getElementById(
 "numericFields"
 ).value=
 "gesamt,gewinn,hw_bonus";
-
 };
-
-
 document.getElementById(
 "runQuery"
 ).onclick=async()=>{
-
 const plan=
 document.getElementById(
 "queryPlan"
 );
-
 const results=
 document.getElementById(
 "queryResults"
 );
-
-
 try{
-
 await refresh();
-
-
 const r=
 await compareTables();
-
-
 await showQueryResult(
 r
 );
-
-
 }catch(e){
-
 plan.textContent=
 "FEHLER:\n\n"+
 e.message;
-
-
 plan.classList.remove(
 "hidden"
 );
-
-
 results.classList.add(
 "hidden"
 );
-
 }
-
 };
-
-
 document.getElementById(
 "btnRefreshPolicies"
 ).onclick=
 refresh;
-
-
 /* =========================================================
    DATENBANK ÖFFNEN
 ========================================================= */
-
 document.getElementById(
 "btnOpenDatabase"
 ).onclick=()=>{
-
 document.querySelectorAll(
 ".nav"
 ).forEach(
 x=>x.classList.remove("active")
 );
-
-
 document.querySelector(
 '[data-view="database"]'
 ).classList.add(
 "active"
 );
-
-
 document.querySelectorAll(
 ".view"
 ).forEach(
 x=>x.classList.remove("active")
 );
-
-
 document.getElementById(
 "view-database"
 ).classList.add("active");
-
-
 refresh();
-
 };
-
-
 /* =========================================================
    START
 ========================================================= */
-
 openDatabase()
-
 .then(
 refresh
 )
-
 .catch(e=>{
-
 console.error(e);
-
-
 document.getElementById(
 "step1Status"
 ).className=
 "status error";
-
-
 document.getElementById(
 "step1Status"
 ).textContent=
 "DATENBANK FEHLER: "+
 e.message;
-
 });
-
 </script>
-
 </body>
 </html>
