@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -7,221 +8,442 @@
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <style>
 :root{
-  --bg:#050505;
-  --panel:#0d0d10;
-  --panel2:#121217;
-  --line:#292930;
-  --text:#f5f5f5;
-  --muted:#777;
+  --bg:#030308;
+  --panel:#0a0a12;
+  --panel2:#0e0e18;
+  --line:#1f1f2e;
+  --text:#f0f0ff;
+  --muted:#6a6a8a;
   --acid:#d8ff00;
   --pink:#ff2aa8;
   --cyan:#00e5ff;
-  --red:#ff3b3b;
+  --red:#ff3b6b;
   --orange:#ff9f1c;
+  --violet:#b14cff;
+  --glow-pink:0 0 8px #ff2aa8, 0 0 18px rgba(255,42,168,.45);
+  --glow-cyan:0 0 8px #00e5ff, 0 0 18px rgba(0,229,255,.4);
+  --glow-acid:0 0 8px #d8ff00, 0 0 16px rgba(216,255,0,.35);
+  --glow-violet:0 0 8px #b14cff, 0 0 16px rgba(177,76,255,.35);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   background:
-    linear-gradient(rgba(216,255,0,.025) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(216,255,0,.025) 1px,transparent 1px),
+    radial-gradient(ellipse at 20% 0%, rgba(255,42,168,.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(0,229,255,.06) 0%, transparent 45%),
+    linear-gradient(rgba(216,255,0,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,.03) 1px, transparent 1px),
     var(--bg);
-  background-size:32px 32px;
+  background-size:100% 100%, 100% 100%, 40px 40px, 40px 40px;
   color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
+  font-family:"Courier New",Courier,monospace;
   min-height:100vh;
 }
 header{
-  min-height:76px;
-  padding:14px 20px;
+  min-height:82px;
+  padding:16px 22px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:16px;
-  border-bottom:2px solid var(--acid);
-  background:#050505;
+  border-bottom:2px solid var(--pink);
+  background:linear-gradient(180deg,#06060e 0%,#030308 100%);
+  box-shadow:0 0 24px rgba(255,42,168,.25), inset 0 -1px 0 rgba(0,229,255,.15);
   position:sticky;
   top:0;
   z-index:100;
 }
-.brand-main{font:900 20px monospace;letter-spacing:-1px}
-.brand-sub{margin-top:4px;color:var(--muted);font:9px monospace;letter-spacing:2px}
-.brand-divider{color:var(--pink)}
-nav{display:flex;gap:6px;flex-wrap:wrap}
+.brand-main{
+  font:900 22px monospace;
+  letter-spacing:-1px;
+  color:#fff;
+  text-shadow:0 0 10px rgba(255,42,168,.7), 0 0 20px rgba(255,42,168,.3);
+}
+.brand-sub{
+  margin-top:5px;
+  color:var(--cyan);
+  font:10px monospace;
+  letter-spacing:3px;
+  text-shadow:0 0 8px rgba(0,229,255,.5);
+}
+.brand-divider{color:var(--pink);text-shadow:var(--glow-pink)}
+nav{display:flex;gap:8px;flex-wrap:wrap}
 button{cursor:pointer;font-family:inherit}
 .nav{
-  padding:10px 12px;
-  background:#09090b;
-  color:#aaa;
-  border:1px solid var(--line);
-  font:900 10px monospace;
+  padding:11px 14px;
+  background:#080810;
+  color:#888;
+  border:1px solid #2a2a3a;
+  font:900 11px monospace;
   letter-spacing:1px;
+  transition:all .15s;
 }
+.nav:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:var(--glow-cyan)}
 .nav.active{
-  background:var(--acid);
+  background:var(--pink);
   color:#000;
-  border-color:var(--acid);
+  border-color:var(--pink);
   transform:skew(-6deg);
-  box-shadow:4px 4px 0 var(--pink);
+  box-shadow:4px 4px 0 var(--cyan), var(--glow-pink);
+  text-shadow:none;
 }
-.status-db{color:#888;font:9px monospace;white-space:nowrap}
+.status-db{color:#7a7a9a;font:9px monospace;white-space:nowrap}
 .status-db span{
-  display:inline-block;width:7px;height:7px;border-radius:50%;
-  background:var(--acid);box-shadow:0 0 10px var(--acid);margin-right:4px
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:var(--acid);box-shadow:0 0 12px var(--acid),0 0 4px #fff;margin-right:5px
 }
-main{max-width:1100px;margin:auto;padding:24px 16px 80px}
+main{max-width:1100px;margin:auto;padding:26px 16px 90px}
 .view{display:none}
 .view.active{display:block}
-.head{margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.kicker{color:var(--pink);font:900 10px monospace;letter-spacing:3px}
-h1{margin:8px 0 0;font:900 clamp(28px,5.5vw,56px)/.92 monospace;letter-spacing:-3px}
+.head{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid #1e1e2e}
+.kicker{
+  color:var(--pink);
+  font:900 11px monospace;
+  letter-spacing:4px;
+  text-shadow:0 0 10px rgba(255,42,168,.6);
+}
+h1{
+  margin:10px 0 0;
+  font:900 clamp(30px,5.8vw,58px)/.9 monospace;
+  letter-spacing:-3px;
+  color:#fff;
+  text-shadow:0 0 14px rgba(0,229,255,.4), 0 0 28px rgba(255,42,168,.2);
+}
 .card{
   background:var(--panel);
-  border:1px solid var(--line);
-  box-shadow:6px 6px 0 #000;
-  margin-bottom:18px;
+  border:1px solid #222236;
+  box-shadow:6px 6px 0 #000, 0 0 20px rgba(0,0,0,.5);
+  margin-bottom:20px;
+  position:relative;
+}
+.card::before{
+  content:"";
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--pink),var(--cyan),var(--acid));
+  opacity:.7;
 }
 .card-head{
-  padding:14px 16px;
-  border-bottom:1px solid var(--line);
+  padding:15px 18px;
+  border-bottom:1px solid #1e1e2e;
   display:flex;justify-content:space-between;align-items:center;gap:12px;
   font:900 11px monospace;
+  color:var(--cyan);
+  text-shadow:0 0 6px rgba(0,229,255,.4);
 }
-.card-body{padding:16px}
+.card-body{padding:18px}
 textarea{
-  width:100%;min-height:280px;resize:vertical;padding:14px;
-  background:#020202;color:var(--acid);border:1px solid #333;outline:none;
-  font:12px/1.45 monospace;
+  width:100%;min-height:280px;resize:vertical;padding:16px;
+  background:#010106;color:var(--acid);border:1px solid #2a2a40;outline:none;
+  font:12px/1.5 monospace;
+  box-shadow:inset 0 0 20px rgba(0,0,0,.6);
 }
 textarea.small{min-height:120px}
-textarea:focus{border-color:var(--acid);box-shadow:0 0 0 1px var(--acid)}
-.actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-.btn{
-  padding:13px 18px;background:var(--acid);color:#000;border:1px solid var(--acid);
-  font:900 11px monospace;letter-spacing:1px;box-shadow:4px 4px 0 #000;
-  min-height:44px;
+textarea:focus{
+  border-color:var(--acid);
+  box-shadow:inset 0 0 20px rgba(0,0,0,.6), 0 0 12px rgba(216,255,0,.25);
 }
+.actions{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.btn{
+  padding:14px 20px;
+  background:var(--acid);
+  color:#000;
+  border:1px solid var(--acid);
+  font:900 12px monospace;
+  letter-spacing:1.5px;
+  box-shadow:4px 4px 0 #000, var(--glow-acid);
+  min-height:48px;
+  transition:all .12s;
+}
+.btn:hover{filter:brightness(1.1)}
 .btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #000}
-.btn.secondary{background:#09090b;color:#fff;border-color:#444}
-.btn.pink{background:var(--pink);color:#000;border-color:var(--pink)}
-.btn.cyan{background:var(--cyan);color:#000;border-color:var(--cyan)}
-.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
-.status{margin-top:14px;padding:12px;border:1px solid var(--line);min-height:42px;font:11px monospace}
-.status.ok{color:var(--acid);border-color:var(--acid)}
-.status.error{color:var(--red);border-color:var(--red)}
-.status.warn{color:var(--pink);border-color:var(--pink)}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
-.stat{padding:16px;background:#09090b;border:1px solid var(--line)}
+.btn.secondary{
+  background:#0a0a14;
+  color:#ccc;
+  border-color:#3a3a50;
+  box-shadow:4px 4px 0 #000;
+}
+.btn.secondary:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:4px 4px 0 #000, var(--glow-cyan)}
+.btn.pink{
+  background:var(--pink);
+  color:#000;
+  border-color:var(--pink);
+  box-shadow:4px 4px 0 #000, var(--glow-pink);
+}
+.btn.cyan{
+  background:var(--cyan);
+  color:#000;
+  border-color:var(--cyan);
+  box-shadow:4px 4px 0 #000, var(--glow-cyan);
+}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;filter:none;box-shadow:4px 4px 0 #000}
+.status{
+  margin-top:16px;padding:14px;
+  border:1px solid #2a2a40;
+  min-height:46px;
+  font:12px monospace;
+  background:#06060e;
+}
+.status.ok{color:var(--acid);border-color:var(--acid);box-shadow:0 0 12px rgba(216,255,0,.2);text-shadow:0 0 6px rgba(216,255,0,.4)}
+.status.error{color:var(--red);border-color:var(--red);box-shadow:0 0 12px rgba(255,59,107,.25);text-shadow:0 0 6px rgba(255,59,107,.4)}
+.status.warn{color:var(--pink);border-color:var(--pink);box-shadow:0 0 12px rgba(255,42,168,.2)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat{
+  padding:18px;
+  background:#080810;
+  border:1px solid #222236;
+  box-shadow:0 0 15px rgba(0,0,0,.4);
+}
 .stat-label{color:var(--muted);font:9px monospace;letter-spacing:2px}
-.stat-value{margin-top:6px;font:900 32px monospace}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.tab{padding:10px 14px;background:#09090b;color:#888;border:1px solid var(--line);font:900 10px monospace}
-.tab.active{color:#000;background:var(--pink);border-color:var(--pink)}
-.search{margin-left:auto;min-width:200px;padding:10px 12px;background:#050505;color:#fff;border:1px solid var(--line);outline:none;font:11px monospace}
-.search:focus{border-color:var(--cyan)}
+.stat-value{
+  margin-top:8px;
+  font:900 34px monospace;
+  color:#fff;
+  text-shadow:0 0 12px rgba(0,229,255,.5);
+}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{
+  padding:11px 15px;
+  background:#080810;
+  color:#777;
+  border:1px solid #2a2a3a;
+  font:900 10px monospace;
+  transition:all .12s;
+}
+.tab:hover{border-color:var(--cyan);color:var(--cyan)}
+.tab.active{
+  color:#000;
+  background:var(--pink);
+  border-color:var(--pink);
+  box-shadow:0 0 14px rgba(255,42,168,.5);
+}
+.search{
+  margin-left:auto;min-width:200px;padding:11px 13px;
+  background:#05050c;color:#fff;border:1px solid #2a2a3a;outline:none;font:11px monospace;
+}
+.search:focus{border-color:var(--cyan);box-shadow:0 0 10px rgba(0,229,255,.25)}
 .table-wrap{overflow:auto;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{padding:11px 9px;text-align:left;white-space:nowrap;color:var(--acid);background:#050505;border-bottom:2px solid var(--acid);font:900 9px monospace;letter-spacing:1px}
-td{padding:11px 9px;border-bottom:1px solid #202025}
-tr:hover{background:rgba(216,255,0,.04)}
-.mono{color:var(--cyan);font-family:monospace}
+th{
+  padding:12px 10px;text-align:left;white-space:nowrap;
+  color:var(--acid);background:#05050c;
+  border-bottom:2px solid var(--acid);
+  font:900 9px monospace;letter-spacing:1px;
+  text-shadow:0 0 6px rgba(216,255,0,.4);
+}
+td{padding:12px 10px;border-bottom:1px solid #1a1a28}
+tr:hover{background:rgba(255,42,168,.05)}
+.mono{color:var(--cyan);font-family:monospace;text-shadow:0 0 5px rgba(0,229,255,.3)}
 .good{color:var(--acid)}.bad{color:var(--red)}.warn{color:var(--pink)}.info{color:var(--cyan)}.ambiguous{color:var(--orange)}
-.query-input{width:100%;padding:14px;background:#030303;color:#fff;border:1px solid var(--line);outline:none;font:12px monospace}
-.query-input:focus{border-color:var(--cyan)}
-.examples{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
-.examples button{padding:8px 11px;color:#999;background:#09090b;border:1px solid var(--line);font:9px monospace}
-.examples button:hover{color:var(--cyan);border-color:var(--cyan)}
-.plan{margin-top:18px;padding:14px;color:var(--cyan);background:#020202;border:1px solid var(--cyan);font:11px monospace;overflow:auto;white-space:pre-wrap}
-.field-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.field{display:flex;flex-direction:column;gap:6px}
+.query-input{
+  width:100%;padding:15px;
+  background:#03030a;color:#fff;border:1px solid #2a2a3a;outline:none;font:12px monospace;
+}
+.query-input:focus{border-color:var(--cyan);box-shadow:0 0 12px rgba(0,229,255,.2)}
+.examples{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.examples button{
+  padding:9px 12px;color:#888;background:#080810;border:1px solid #2a2a3a;font:9px monospace;
+  transition:all .12s;
+}
+.examples button:hover{color:var(--cyan);border-color:var(--cyan);box-shadow:var(--glow-cyan)}
+.plan{
+  margin-top:20px;padding:16px;
+  color:var(--cyan);background:#010106;
+  border:1px solid var(--cyan);
+  font:11px monospace;overflow:auto;white-space:pre-wrap;
+  box-shadow:0 0 18px rgba(0,229,255,.15);
+}
+.field-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.field{display:flex;flex-direction:column;gap:7px}
 .field label{color:var(--muted);font:900 9px monospace;letter-spacing:2px}
-.field input,.field select{width:100%;padding:11px 12px;background:#050505;color:#fff;border:1px solid var(--line);outline:none;font:11px monospace}
-.field input:focus,.field select:focus{border-color:var(--cyan)}
-.notice{padding:13px;border-left:3px solid var(--acid);background:#09090b;color:#aaa;font:11px/1.5 monospace;margin-bottom:14px}
-.badge{display:inline-block;padding:4px 7px;border:1px solid var(--line);font:900 8px monospace;letter-spacing:1px}
-.badge.good{border-color:var(--acid)}.badge.bad{border-color:var(--red)}.badge.warn{border-color:var(--pink)}.badge.ambiguous{border-color:var(--orange)}
-.empty{padding:28px;text-align:center;color:var(--muted);font:11px monospace}
+.field input,.field select{
+  width:100%;padding:12px 13px;
+  background:#05050c;color:#fff;border:1px solid #2a2a3a;outline:none;font:11px monospace;
+}
+.field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:0 0 10px rgba(0,229,255,.2)}
+.notice{
+  padding:14px;
+  border-left:3px solid var(--pink);
+  background:#080810;
+  color:#9a9ab0;
+  font:11px/1.55 monospace;
+  margin-bottom:16px;
+  box-shadow:inset 0 0 20px rgba(255,42,168,.04);
+}
+.badge{display:inline-block;padding:4px 8px;border:1px solid #333;font:900 8px monospace;letter-spacing:1px}
+.badge.good{border-color:var(--acid);color:var(--acid);box-shadow:0 0 8px rgba(216,255,0,.3)}
+.badge.bad{border-color:var(--red);color:var(--red);box-shadow:0 0 8px rgba(255,59,107,.3)}
+.badge.warn{border-color:var(--pink);color:var(--pink)}
+.badge.ambiguous{border-color:var(--orange);color:var(--orange)}
+.empty{padding:32px;text-align:center;color:var(--muted);font:12px monospace}
 .hidden{display:none!important}
 
-/* STEPPER */
+/* STEPPER — neon strip */
 .stepper{
-  display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 26px;align-items:center;
-  font:900 10px monospace;letter-spacing:1px;
+  display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 28px;align-items:center;
+  font:900 10px monospace;letter-spacing:1.5px;
 }
 .step-item{
-  padding:8px 11px;border:1px solid var(--line);background:#09090b;color:#666;
+  padding:10px 13px;
+  border:1px solid #2a2a40;
+  background:#080810;
+  color:#555;
   white-space:nowrap;
+  transition:all .15s;
 }
 .step-item.active{
-  background:var(--acid);color:#000;border-color:var(--acid);
-  box-shadow:3px 3px 0 var(--pink);
+  background:transparent;
+  color:var(--acid);
+  border-color:var(--acid);
+  box-shadow:0 0 14px rgba(216,255,0,.45), inset 0 0 12px rgba(216,255,0,.08);
+  text-shadow:0 0 8px rgba(216,255,0,.7);
 }
-.step-item.done{color:var(--cyan);border-color:var(--cyan)}
-.step-arrow{color:#444;font-size:12px}
+.step-item.done{
+  color:var(--cyan);
+  border-color:var(--cyan);
+  box-shadow:0 0 10px rgba(0,229,255,.25);
+  text-shadow:0 0 6px rgba(0,229,255,.5);
+}
+.step-arrow{color:#333;font-size:13px}
 
-/* UPLOAD CARDS */
-.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+/* UPLOAD */
+.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media(max-width:720px){.upload-grid{grid-template-columns:1fr}}
 .upload-card{
-  background:var(--panel2);border:1px solid var(--line);padding:20px;
-  box-shadow:5px 5px 0 #000;min-height:180px;display:flex;flex-direction:column;
+  background:var(--panel2);
+  border:1px solid #222236;
+  padding:22px;
+  box-shadow:5px 5px 0 #000, 0 0 20px rgba(0,0,0,.4);
+  min-height:190px;
+  display:flex;flex-direction:column;
+  position:relative;
 }
-.upload-card h3{font:900 16px monospace;letter-spacing:1px;margin-bottom:4px}
-.upload-card .sub{color:var(--muted);font:10px monospace;margin-bottom:16px}
+.upload-card::after{
+  content:"";
+  position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--pink),var(--cyan),transparent);
+  opacity:.5;
+}
+.upload-card h3{
+  font:900 17px monospace;letter-spacing:2px;margin-bottom:4px;
+  color:#fff;text-shadow:0 0 10px rgba(255,42,168,.5);
+}
+.upload-card .sub{color:var(--muted);font:10px monospace;margin-bottom:16px;letter-spacing:1px}
 .upload-zone{
-  flex:1;border:2px dashed #333;display:flex;align-items:center;justify-content:center;
-  padding:20px;cursor:pointer;transition:border-color .15s;
+  flex:1;border:2px dashed #33334a;
+  display:flex;align-items:center;justify-content:center;
+  padding:22px;cursor:pointer;transition:all .15s;
+  background:rgba(0,0,0,.25);
 }
-.upload-zone:hover,.upload-zone.drag{border-color:var(--acid)}
+.upload-zone:hover,.upload-zone.drag{
+  border-color:var(--pink);
+  box-shadow:inset 0 0 20px rgba(255,42,168,.08), 0 0 16px rgba(255,42,168,.15);
+  color:var(--pink);
+}
 .upload-zone input{display:none}
-.meta-box{margin-top:14px;font:11px monospace;line-height:1.6}
+.meta-box{margin-top:16px;font:11px monospace;line-height:1.7}
 .meta-box .label{color:var(--muted)}
-.col-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.col-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
 .col-tag{
-  padding:5px 9px;border:1px solid var(--line);background:#050505;
-  font:900 10px monospace;color:var(--cyan);
+  padding:6px 10px;
+  border:1px solid #2a2a40;
+  background:#05050c;
+  font:900 10px monospace;
+  color:var(--cyan);
+  box-shadow:0 0 8px rgba(0,229,255,.15);
 }
 
 /* QUESTIONS */
 .question-box{
-  background:#09090b;border:1px solid var(--line);padding:22px 18px;
-  box-shadow:5px 5px 0 #000;margin-bottom:16px;
-  animation:fadeIn .25s ease;
+  background:#080810;
+  border:1px solid #2a2a40;
+  padding:24px 20px;
+  box-shadow:6px 6px 0 #000, 0 0 24px rgba(255,42,168,.08);
+  margin-bottom:18px;
+  animation:fadeIn .28s ease;
+  position:relative;
 }
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.q-num{color:var(--pink);font:900 10px monospace;letter-spacing:2px;margin-bottom:8px}
-.q-title{font:900 18px monospace;margin-bottom:18px;letter-spacing:-.5px}
-.q-options{display:flex;flex-direction:column;gap:10px}
+.question-box::before{
+  content:"";
+  position:absolute;top:0;left:0;width:3px;height:100%;
+  background:linear-gradient(180deg,var(--pink),var(--cyan));
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.q-num{
+  color:var(--pink);
+  font:900 11px monospace;
+  letter-spacing:3px;
+  margin-bottom:10px;
+  text-shadow:0 0 8px rgba(255,42,168,.6);
+}
+.q-title{
+  font:900 19px monospace;
+  margin-bottom:20px;
+  letter-spacing:-.5px;
+  color:#fff;
+  text-shadow:0 0 12px rgba(0,229,255,.25);
+}
+.q-options{display:flex;flex-direction:column;gap:11px}
 .q-btn{
-  padding:14px 16px;background:#050505;border:1px solid var(--line);color:#ddd;
-  font:900 12px monospace;text-align:left;min-height:48px;
+  padding:15px 18px;
+  background:#05050c;
+  border:1px solid #2a2a3a;
+  color:#ccc;
+  font:900 13px monospace;
+  text-align:left;
+  min-height:52px;
   box-shadow:3px 3px 0 #000;
+  transition:all .12s;
 }
-.q-btn:hover,.q-btn.selected{border-color:var(--acid);color:var(--acid);background:#0a0a08}
-.q-btn.multi.selected{background:rgba(216,255,0,.12)}
-.q-suggest{margin-bottom:12px;padding:10px;border:1px solid var(--orange);color:var(--orange);font:11px monospace}
-.q-text{width:100%;min-height:90px;padding:12px;background:#020202;border:1px solid #333;color:#fff;font:12px monospace;resize:vertical}
-.progress-mini{color:var(--muted);font:10px monospace;margin-bottom:10px}
+.q-btn:hover,.q-btn.selected{
+  border-color:var(--acid);
+  color:var(--acid);
+  background:#0a0a10;
+  box-shadow:3px 3px 0 #000, 0 0 14px rgba(216,255,0,.25);
+  text-shadow:0 0 6px rgba(216,255,0,.4);
+}
+.q-btn.multi.selected{
+  background:rgba(216,255,0,.1);
+  border-color:var(--acid);
+}
+.q-suggest{
+  margin-bottom:14px;padding:12px;
+  border:1px solid var(--orange);
+  color:var(--orange);
+  font:11px monospace;
+  box-shadow:0 0 12px rgba(255,159,28,.15);
+}
+.q-text{
+  width:100%;min-height:95px;padding:14px;
+  background:#010106;border:1px solid #2a2a40;color:#fff;
+  font:12px monospace;resize:vertical;
+}
+.progress-mini{color:var(--muted);font:11px monospace;margin-bottom:12px;letter-spacing:1px}
 
 /* PROMPT / JSON */
 .terminal{
-  background:#010101;border:1px solid #222;padding:14px;font:12px/1.4 monospace;
-  color:var(--acid);max-height:420px;overflow:auto;white-space:pre-wrap;word-break:break-all;
+  background:#000005;
+  border:1px solid #222240;
+  padding:16px;
+  font:12px/1.45 monospace;
+  color:var(--acid);
+  max-height:420px;overflow:auto;white-space:pre-wrap;word-break:break-all;
+  box-shadow:inset 0 0 30px rgba(0,0,0,.7), 0 0 15px rgba(216,255,0,.08);
+  text-shadow:0 0 4px rgba(216,255,0,.3);
 }
-.step-hint{margin-top:12px;color:#888;font:11px monospace;line-height:1.5}
+.step-hint{margin-top:14px;color:#7a7a9a;font:11px monospace;line-height:1.55}
 
 @media(max-width:950px){
   header{flex-direction:column;align-items:flex-start}
   nav{width:100%;overflow:auto}
-  .status-db{position:absolute;right:14px;top:18px}
+  .status-db{position:absolute;right:14px;top:20px}
   .stats{grid-template-columns:repeat(2,1fr)}
   .field-grid{grid-template-columns:1fr}
   .search{width:100%;margin-left:0}
-  main{padding:16px 12px 70px}
+  main{padding:18px 12px 80px}
 }
 @media(max-width:600px){
   .stats{grid-template-columns:1fr}
   .stepper{font-size:9px}
-  .step-item{padding:7px 8px}
+  .step-item{padding:8px 9px}
 }
 </style>
 </head>
@@ -242,9 +464,6 @@ tr:hover{background:rgba(216,255,0,.04)}
 
 <main>
 
-<!-- =====================================================
-     WORKFLOW IMPORT
-===================================================== -->
 <section id="view-import" class="view active">
 
   <div class="head">
@@ -264,7 +483,6 @@ tr:hover{background:rgba(216,255,0,.04)}
     <div class="step-item" data-step="5">05 ABGLEICH</div>
   </div>
 
-  <!-- STEP 1: UPLOAD -->
   <div id="step1" class="step-panel">
     <div class="upload-grid">
       <div class="upload-card" id="cardA">
@@ -272,8 +490,8 @@ tr:hover{background:rgba(216,255,0,.04)}
         <div class="sub">Erste Tabelle</div>
         <div class="upload-zone" id="zoneA" onclick="document.getElementById('fileA').click()">
           <div>
-            <div style="font:900 12px monospace;margin-bottom:6px">DATEI AUSWÄHLEN</div>
-            <div style="font:10px monospace;color:#666">CSV · XLSX · XLS · TSV</div>
+            <div style="font:900 13px monospace;margin-bottom:6px;letter-spacing:1px">DATEI AUSWÄHLEN</div>
+            <div style="font:10px monospace;color:#555">CSV · XLSX · XLS · TSV</div>
           </div>
           <input type="file" id="fileA" accept=".csv,.xlsx,.xls,.tsv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
         </div>
@@ -284,8 +502,8 @@ tr:hover{background:rgba(216,255,0,.04)}
         <div class="sub">Zweite Tabelle</div>
         <div class="upload-zone" id="zoneB" onclick="document.getElementById('fileB').click()">
           <div>
-            <div style="font:900 12px monospace;margin-bottom:6px">DATEI AUSWÄHLEN</div>
-            <div style="font:10px monospace;color:#666">CSV · XLSX · XLS · TSV</div>
+            <div style="font:900 13px monospace;margin-bottom:6px;letter-spacing:1px">DATEI AUSWÄHLEN</div>
+            <div style="font:10px monospace;color:#555">CSV · XLSX · XLS · TSV</div>
           </div>
           <input type="file" id="fileB" accept=".csv,.xlsx,.xls,.tsv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
         </div>
@@ -298,7 +516,6 @@ tr:hover{background:rgba(216,255,0,.04)}
     <div id="step1Status" class="status">Beide Tabellen hochladen.</div>
   </div>
 
-  <!-- STEP 2: QUESTIONS -->
   <div id="step2" class="step-panel hidden">
     <div class="progress-mini" id="qProgress"></div>
     <div id="questionContainer"></div>
@@ -307,7 +524,6 @@ tr:hover{background:rgba(216,255,0,.04)}
     </div>
   </div>
 
-  <!-- STEP 3: LLM PROMPT -->
   <div id="step3" class="step-panel hidden">
     <div class="card">
       <div class="card-head"><strong>LLM-AUFTRAG</strong><span>GENERATED</span></div>
@@ -327,7 +543,6 @@ tr:hover{background:rgba(216,255,0,.04)}
     </div>
   </div>
 
-  <!-- STEP 4: JSON -->
   <div id="step4" class="step-panel hidden">
     <div class="card">
       <div class="card-head"><strong>LLM-JSON</strong><span>VALIDIERUNG</span></div>
@@ -348,9 +563,6 @@ tr:hover{background:rgba(216,255,0,.04)}
 
 </section>
 
-<!-- =====================================================
-     DATENBANK
-===================================================== -->
 <section id="view-database" class="view">
   <div class="head">
     <div class="kicker">GESPEICHERTE DATEN</div>
@@ -371,9 +583,6 @@ tr:hover{background:rgba(216,255,0,.04)}
   <div class="card"><div class="table-wrap"><div id="databaseTable"></div></div></div>
 </section>
 
-<!-- =====================================================
-     ABGLEICH
-===================================================== -->
 <section id="view-query" class="view">
   <div class="head">
     <div class="kicker">ABGLEICH</div>
@@ -414,18 +623,12 @@ tr:hover{background:rgba(216,255,0,.04)}
 </main>
 
 <script>
-/* =========================================================
-   DATABASE
-========================================================= */
 const DB_NAME = "BOOKING_RECON_DB";
 const DB_VERSION = 1;
 const STORE_RECORDS = "records";
 const STORE_DIFFERENCES = "differences";
 let database = null;
 
-/* =========================================================
-   STATE
-========================================================= */
 let state = { records: [], differences: [] };
 let currentTab = "tableA";
 
@@ -441,46 +644,14 @@ const workflow = {
 };
 
 const QUESTIONS = [
-  {
-    id: "table_type",
-    title: "WAS IST DAS FÜR EINE TABELLE?",
-    type: "single",
-    options: ["KASSENAUFTRÄGE", "VERTRAGSBUCHUNGEN", "SONSTIGES"]
-  },
-  {
-    id: "row_meaning",
-    title: "WAS BEDEUTET EINE ZEILE?",
-    type: "single",
-    options: ["EIN AUFTRAG", "EINE POSITION", "EINE BUCHUNG", "SONSTIGES"]
-  },
-  {
-    id: "identifier",
-    title: "WELCHE SPALTE IDENTIFIZIERT DEN VORGANG?",
-    type: "columns",
-    allowNone: false
-  },
-  {
-    id: "date_field",
-    title: "WELCHE SPALTE ENTHÄLT DAS DATUM?",
-    type: "columns",
-    allowNone: true
-  },
-  {
-    id: "relevant",
-    title: "WELCHE SPALTEN SIND FÜR DEN SPÄTEREN ABGLEICH RELEVANT?",
-    type: "multi"
-  },
-  {
-    id: "extra",
-    title: "GIBT ES NOCH EINE WICHTIGE INFORMATION?",
-    type: "text",
-    placeholder: "z.B. Vorgang entspricht dem Auftrag aus Tabelle A."
-  }
+  { id: "table_type", title: "WAS IST DAS FÜR EINE TABELLE?", type: "single", options: ["KASSENAUFTRÄGE", "VERTRAGSBUCHUNGEN", "SONSTIGES"] },
+  { id: "row_meaning", title: "WAS BEDEUTET EINE ZEILE?", type: "single", options: ["EIN AUFTRAG", "EINE POSITION", "EINE BUCHUNG", "SONSTIGES"] },
+  { id: "identifier", title: "WELCHE SPALTE IDENTIFIZIERT DEN VORGANG?", type: "columns", allowNone: false },
+  { id: "date_field", title: "WELCHE SPALTE ENTHÄLT DAS DATUM?", type: "columns", allowNone: true },
+  { id: "relevant", title: "WELCHE SPALTEN SIND FÜR DEN SPÄTEREN ABGLEICH RELEVANT?", type: "multi" },
+  { id: "extra", title: "GIBT ES NOCH EINE WICHTIGE INFORMATION?", type: "text", placeholder: "z.B. Vorgang entspricht dem Auftrag aus Tabelle A." }
 ];
 
-/* =========================================================
-   OPEN DATABASE
-========================================================= */
 function openDatabase(){
   if(database) return Promise.resolve(database);
   return new Promise((resolve,reject)=>{
@@ -530,9 +701,6 @@ function clearStore(storeName){
   });
 }
 
-/* =========================================================
-   FILE PARSE + ANALYZE
-========================================================= */
 function parseFile(file){
   return new Promise((resolve,reject)=>{
     const reader = new FileReader();
@@ -542,7 +710,7 @@ function parseFile(file){
         let workbook;
         if(name.endsWith(".csv") || name.endsWith(".tsv") || file.type.includes("csv") || file.type.includes("tab")){
           const text = e.target.result;
-          const delim = name.endsWith(".tsv") || text.indexOf("\t") > -1 && text.indexOf("\t") < text.indexOf(",") ? "\t" : ",";
+          const delim = name.endsWith(".tsv") || (text.indexOf("\t") > -1 && text.indexOf("\t") < text.indexOf(",")) ? "\t" : ",";
           workbook = XLSX.read(text, { type:"string", FS:delim, raw:false });
         } else {
           workbook = XLSX.read(e.target.result, { type:"array", cellDates:true });
@@ -607,9 +775,6 @@ function renderMeta(which, tbl){
   el.classList.remove("hidden");
 }
 
-/* =========================================================
-   UPLOAD HANDLERS
-========================================================= */
 async function handleFile(which, file){
   const status = document.getElementById("step1Status");
   try{
@@ -627,8 +792,7 @@ async function handleFile(which, file){
 }
 
 function checkReady(){
-  const btn = document.getElementById("btnToQuestions");
-  btn.disabled = !(workflow.tableA && workflow.tableB);
+  document.getElementById("btnToQuestions").disabled = !(workflow.tableA && workflow.tableB);
 }
 
 ["A","B"].forEach(w => {
@@ -643,9 +807,6 @@ function checkReady(){
   });
 });
 
-/* =========================================================
-   STEPPER UI
-========================================================= */
 function setStep(n){
   workflow.step = n;
   document.querySelectorAll(".step-item").forEach(el => {
@@ -667,7 +828,6 @@ document.getElementById("btnToQuestions").onclick = () => {
   setStep(2);
   renderQuestion();
 };
-
 document.getElementById("btnBackToUpload").onclick = () => setStep(1);
 document.getElementById("btnBackToQuestions").onclick = () => {
   workflow.currentTable = "B";
@@ -678,15 +838,8 @@ document.getElementById("btnBackToQuestions").onclick = () => {
 document.getElementById("btnToJson").onclick = () => setStep(4);
 document.getElementById("btnBackToPrompt").onclick = () => setStep(3);
 
-/* =========================================================
-   QUESTIONS
-========================================================= */
-function getCurrentAnswers(){
-  return workflow.currentTable === "A" ? workflow.answersA : workflow.answersB;
-}
-function getCurrentTable(){
-  return workflow.currentTable === "A" ? workflow.tableA : workflow.tableB;
-}
+function getCurrentAnswers(){ return workflow.currentTable === "A" ? workflow.answersA : workflow.answersB; }
+function getCurrentTable(){ return workflow.currentTable === "A" ? workflow.tableA : workflow.tableB; }
 
 function renderQuestion(){
   const container = document.getElementById("questionContainer");
@@ -702,9 +855,7 @@ function renderQuestion(){
 
   if(q.type === "single"){
     html += `<div class="q-options">`;
-    q.options.forEach(opt => {
-      html += `<button class="q-btn" data-val="${esc(opt)}">${esc(opt)}</button>`;
-    });
+    q.options.forEach(opt => { html += `<button class="q-btn" data-val="${esc(opt)}">${esc(opt)}</button>`; });
     html += `</div>`;
   }
   else if(q.type === "columns"){
@@ -716,9 +867,7 @@ function renderQuestion(){
       html += `<div class="q-suggest">MÖGLICHES DATUMSFELD ERKANNT: ${analysis.possibleDate.map(x=>esc(x)).join(", ")}</div>`;
     }
     html += `<div class="q-options">`;
-    tbl.headers.forEach(h => {
-      html += `<button class="q-btn" data-val="${esc(h)}">${esc(h)}</button>`;
-    });
+    tbl.headers.forEach(h => { html += `<button class="q-btn" data-val="${esc(h)}">${esc(h)}</button>`; });
     if(q.allowNone) html += `<button class="q-btn" data-val="__NONE__">[ KEIN DATUM ]</button>`;
     html += `</div>`;
   }
@@ -794,9 +943,6 @@ function nextQuestion(){
   }
 }
 
-/* =========================================================
-   PROMPT GENERATOR
-========================================================= */
 function generatePrompt(){
   const A = workflow.tableA;
   const B = workflow.tableB;
@@ -804,9 +950,7 @@ function generatePrompt(){
   const ansB = workflow.answersB;
 
   function tableBlock(label, tbl, ans){
-    const dataPreview = tbl.rows.map((r,i) => {
-      return `  ${JSON.stringify(r)}`;
-    }).join(",\n");
+    const dataPreview = tbl.rows.map((r,i) => `  ${JSON.stringify(r)}`).join(",\n");
     return `────────────────────────
 ${label}
 ────────────────────────
@@ -952,9 +1096,6 @@ document.getElementById("btnCopyPrompt").onclick = async () => {
   }
 };
 
-/* =========================================================
-   JSON VALIDATION + IMPORT (adapted to new schema)
-========================================================= */
 function validateImportPayload(payload){
   if(!payload || typeof payload !== "object") throw new Error("Die Eingabe ist kein gültiges JSON-Objekt.");
   if(payload.version === undefined) throw new Error("version fehlt.");
@@ -998,17 +1139,12 @@ function validateImportPayload(payload){
 async function importJSON(payload){
   await openDatabase();
   validateImportPayload(payload);
-
-  // Support both new and legacy shape
   const tables = payload.tables || (payload.dataset && payload.dataset.tables) || [];
   const version = payload.version || "1.0";
-
   await clearStore(STORE_RECORDS);
-
   const transaction = database.transaction(STORE_RECORDS, "readwrite");
   const store = transaction.objectStore(STORE_RECORDS);
   let inserted = 0;
-
   for(const table of tables){
     for(const record of table.records){
       store.put({
@@ -1023,7 +1159,6 @@ async function importJSON(payload){
       inserted++;
     }
   }
-
   return new Promise((resolve,reject)=>{
     transaction.oncomplete = () => resolve({ tables:2, records:inserted });
     transaction.onerror = () => reject(transaction.error || new Error("Die Daten konnten nicht gespeichert werden."));
@@ -1063,7 +1198,6 @@ document.getElementById("btnImportJson").onclick = async () => {
     await refresh();
     status.className = "status ok";
     status.textContent = "✓ " + result.records + " Datensätze aus " + result.tables + " Tabellen in IndexedDB gespeichert.";
-    // jump to abgleich step indicator
     setStep(5);
     document.querySelectorAll(".nav").forEach(n => n.classList.remove("active"));
     document.querySelector('.nav[data-view="database"]').classList.add("active");
@@ -1083,9 +1217,6 @@ document.getElementById("btnClearJson").onclick = () => {
   document.getElementById("jsonStatus").textContent = "JSON einfügen und validieren.";
 };
 
-/* =========================================================
-   REFRESH / RENDER (unchanged logic)
-========================================================= */
 async function refresh(){
   state = await readDatabase();
   const a = state.records.filter(r => r.source_table === "TABLE_A");
@@ -1148,9 +1279,6 @@ function renderDifferences(container, search){
   container.innerHTML = html;
 }
 
-/* =========================================================
-   COMPARE LOGIC (fully preserved)
-========================================================= */
 function getField(record, field){
   if(record.data && Object.prototype.hasOwnProperty.call(record.data, field)) return record.data[field];
   return undefined;
@@ -1315,9 +1443,6 @@ async function compareTables(){
   });
 }
 
-/* =========================================================
-   UI BINDINGS (nav, tabs, query …)
-========================================================= */
 document.querySelectorAll(".nav").forEach(button => {
   button.onclick = function(){
     document.querySelectorAll(".nav").forEach(i => i.classList.remove("active"));
@@ -1399,9 +1524,6 @@ document.getElementById("runQuery").onclick = async function(){
   }
 };
 
-/* =========================================================
-   START
-========================================================= */
 openDatabase().then(refresh).catch(error => {
   console.error(error);
   const status = document.getElementById("step1Status");
@@ -1410,3 +1532,4 @@ openDatabase().then(refresh).catch(error => {
 </script>
 </body>
 </html>
+```
