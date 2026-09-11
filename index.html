@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>LV GmbH | Datenbank</title>
-
+<title>LV GmbH | Datenbank + AIE</title>
 <style>
 :root{
   --bg:#050505;
@@ -18,9 +17,7 @@
   --cyan:#00e5ff;
   --red:#ff3b3b;
 }
-
 *{box-sizing:border-box}
-
 body{
   margin:0;
   background:
@@ -31,7 +28,11 @@ body{
   color:var(--text);
   font-family:Arial,Helvetica,sans-serif;
 }
-
+button,
+textarea,
+input{
+  font-family:inherit;
+}
 header{
   min-height:82px;
   padding:14px 24px;
@@ -43,30 +44,25 @@ header{
   background:#050505;
   position:sticky;
   top:0;
-  z-index:10;
+  z-index:100;
 }
-
 .brand-main{
   font:900 22px monospace;
   letter-spacing:-1px;
 }
-
 .brand-main .slash{
   color:var(--pink);
 }
-
 .brand-sub{
   margin-top:5px;
   color:var(--muted);
   font:9px monospace;
   letter-spacing:3px;
 }
-
 nav{
   display:flex;
   gap:8px;
 }
-
 .nav{
   padding:10px 14px;
   background:#09090b;
@@ -74,8 +70,8 @@ nav{
   border:1px solid var(--line);
   font:900 10px monospace;
   letter-spacing:1px;
+  cursor:pointer;
 }
-
 .nav.active{
   background:var(--acid);
   color:#000;
@@ -83,13 +79,11 @@ nav{
   transform:skew(-6deg);
   box-shadow:4px 4px 0 var(--pink);
 }
-
 .status-db{
   color:#888;
   font:9px monospace;
   white-space:nowrap;
 }
-
 .status-db span{
   display:inline-block;
   width:7px;
@@ -98,51 +92,42 @@ nav{
   background:var(--acid);
   box-shadow:0 0 10px var(--acid);
 }
-
 main{
   max-width:1400px;
   margin:auto;
-  padding:30px 24px 80px;
+  padding:30px 24px 100px;
 }
-
 .view{display:none}
 .view.active{display:block}
-
 .head{
   margin-bottom:25px;
   padding-bottom:18px;
   border-bottom:1px solid var(--line);
 }
-
 .kicker{
   color:var(--pink);
   font:900 10px monospace;
   letter-spacing:3px;
 }
-
 h1{
   margin:8px 0 0;
   font:900 clamp(34px,6vw,70px)/.9 monospace;
   letter-spacing:-4px;
 }
-
 .intro{
   max-width:760px;
   margin-top:18px;
   color:#999;
   font:12px/1.6 monospace;
 }
-
 .card{
   background:var(--panel);
   border:1px solid var(--line);
   box-shadow:6px 6px 0 #000;
 }
-
 .card + .card{
   margin-top:20px;
 }
-
 .card-head{
   padding:15px;
   border-bottom:1px solid var(--line);
@@ -151,22 +136,18 @@ h1{
   gap:20px;
   font:900 11px monospace;
 }
-
 .card-head span{
   color:var(--muted);
 }
-
 .card-body{
   padding:18px;
 }
-
 .step{
   display:flex;
   align-items:center;
   gap:12px;
   margin-bottom:15px;
 }
-
 .step-number{
   width:32px;
   height:32px;
@@ -178,17 +159,14 @@ h1{
   font:900 13px monospace;
   flex:none;
 }
-
 .step-title{
   font:900 13px monospace;
 }
-
 .step-sub{
   margin-top:3px;
   color:var(--muted);
   font:10px monospace;
 }
-
 .notice{
   padding:14px;
   border-left:3px solid var(--acid);
@@ -197,11 +175,9 @@ h1{
   font:11px/1.5 monospace;
   margin-bottom:15px;
 }
-
 .notice strong{
   color:var(--acid);
 }
-
 textarea{
   width:100%;
   min-height:300px;
@@ -213,23 +189,19 @@ textarea{
   outline:none;
   font:13px/1.5 monospace;
 }
-
 textarea:focus{
   border-color:var(--acid);
   box-shadow:0 0 0 1px var(--acid);
 }
-
 textarea.output{
   color:var(--cyan);
 }
-
 .actions{
   display:flex;
   gap:10px;
   margin-top:15px;
   flex-wrap:wrap;
 }
-
 .btn{
   padding:12px 18px;
   background:var(--acid);
@@ -238,35 +210,30 @@ textarea.output{
   font:900 11px monospace;
   letter-spacing:1px;
   box-shadow:4px 4px 0 #000;
+  cursor:pointer;
 }
-
 .btn:hover{
   filter:brightness(1.08);
 }
-
 .btn.secondary{
   background:#09090b;
   color:#fff;
   border-color:#444;
 }
-
 .btn.pink{
   background:var(--pink);
   color:#000;
   border-color:var(--pink);
 }
-
 .btn.cyan{
   background:var(--cyan);
   color:#000;
   border-color:var(--cyan);
 }
-
 .btn:disabled{
   opacity:.35;
   cursor:not-allowed;
 }
-
 .status{
   margin-top:16px;
   padding:13px;
@@ -274,67 +241,57 @@ textarea.output{
   min-height:43px;
   font:11px monospace;
 }
-
 .status.ok{
   color:var(--acid);
   border-color:var(--acid);
 }
-
 .status.error{
   color:var(--red);
   border-color:var(--red);
 }
-
 .status.warn{
   color:var(--pink);
   border-color:var(--pink);
 }
-
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:12px;
   margin-bottom:20px;
 }
-
 .stat{
   padding:18px;
   background:#09090b;
   border:1px solid var(--line);
 }
-
 .stat-label{
   color:var(--muted);
   font:9px monospace;
   letter-spacing:2px;
 }
-
 .stat-value{
   margin-top:8px;
   font:900 36px monospace;
 }
-
 .toolbar{
   display:flex;
   gap:8px;
   flex-wrap:wrap;
   margin-bottom:14px;
 }
-
 .tab{
   padding:10px 14px;
   background:#09090b;
   color:#888;
   border:1px solid var(--line);
   font:900 10px monospace;
+  cursor:pointer;
 }
-
 .tab.active{
   color:#000;
   background:var(--pink);
   border-color:var(--pink);
 }
-
 .search{
   margin-left:auto;
   min-width:260px;
@@ -345,17 +302,14 @@ textarea.output{
   outline:none;
   font:11px monospace;
 }
-
 .table-wrap{
   overflow:auto;
 }
-
 table{
   width:100%;
   border-collapse:collapse;
   font-size:12px;
 }
-
 th{
   padding:12px 10px;
   text-align:left;
@@ -366,49 +320,40 @@ th{
   font:900 9px monospace;
   letter-spacing:1px;
 }
-
 td{
   padding:12px 10px;
   border-bottom:1px solid #202025;
 }
-
 tr:hover{
   background:rgba(216,255,0,.04);
 }
-
 .mono{
   color:var(--cyan);
   font-family:monospace;
 }
-
 .good{color:var(--acid)}
 .bad{color:var(--red)}
 .warn{color:var(--pink)}
 .info{color:var(--cyan)}
-
 .empty{
   padding:40px;
   text-align:center;
   color:var(--muted);
   font:11px monospace;
 }
-
 .hidden{
   display:none!important;
 }
-
 .divider{
   height:1px;
   background:var(--line);
   margin:25px 0;
 }
-
 .arrow{
   color:var(--pink);
   font:900 20px monospace;
   margin:0 6px;
 }
-
 .flow{
   display:flex;
   align-items:center;
@@ -416,7 +361,6 @@ tr:hover{
   gap:5px;
   margin-bottom:22px;
 }
-
 .flow-item{
   padding:8px 10px;
   border:1px solid var(--line);
@@ -424,281 +368,527 @@ tr:hover{
   color:#888;
   font:900 9px monospace;
 }
-
 .flow-item.active{
   color:var(--acid);
   border-color:var(--acid);
 }
-
+/* =========================================================
+   AIE
+========================================================= */
+.aie-bar{
+  margin-bottom:24px;
+  border:1px solid var(--cyan);
+  background:
+    linear-gradient(90deg,
+      rgba(0,229,255,.08),
+      rgba(255,42,168,.04),
+      rgba(216,255,0,.03));
+  box-shadow:5px 5px 0 #000;
+}
+.aie-bar-inner{
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  flex-wrap:wrap;
+}
+.aie-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font:900 13px monospace;
+}
+.aie-orb{
+  width:13px;
+  height:13px;
+  border-radius:50%;
+  background:var(--cyan);
+  box-shadow:
+    0 0 8px var(--cyan),
+    0 0 20px rgba(0,229,255,.5);
+}
+.aie-description{
+  color:#888;
+  font:10px monospace;
+}
+.aie-capture-btn{
+  background:var(--cyan);
+  color:#000;
+  border:1px solid var(--cyan);
+  padding:11px 15px;
+  font:900 10px monospace;
+  cursor:pointer;
+  box-shadow:4px 4px 0 #000;
+}
+.aie-capture-btn.active{
+  background:var(--pink);
+  border-color:var(--pink);
+}
+.aie-capture-btn:hover{
+  filter:brightness(1.1);
+}
+/* =========================================================
+   AIE SELECTION OVERLAY
+========================================================= */
+#aieOverlay{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:none;
+  cursor:crosshair;
+  background:rgba(0,0,0,.10);
+  touch-action:none;
+}
+#aieOverlay.active{
+  display:block;
+}
+#aieSelection{
+  position:absolute;
+  display:none;
+  border:2px solid var(--cyan);
+  background:rgba(0,229,255,.08);
+  box-shadow:
+    0 0 0 1px rgba(0,229,255,.25),
+    0 0 30px rgba(0,229,255,.12);
+  pointer-events:none;
+}
+#aieSelection.visible{
+  display:block;
+}
+.selection-label{
+  position:absolute;
+  left:-2px;
+  top:-27px;
+  padding:6px 9px;
+  background:var(--cyan);
+  color:#000;
+  font:900 9px monospace;
+  white-space:nowrap;
+}
+.selection-size{
+  position:absolute;
+  right:-2px;
+  bottom:-25px;
+  padding:5px 7px;
+  background:#000;
+  color:var(--cyan);
+  border:1px solid var(--cyan);
+  font:9px monospace;
+}
+.aie-instruction{
+  position:fixed;
+  left:50%;
+  top:25px;
+  transform:translateX(-50%);
+  padding:11px 17px;
+  background:#050505;
+  border:1px solid var(--cyan);
+  color:var(--cyan);
+  font:900 10px monospace;
+  box-shadow:5px 5px 0 #000;
+  pointer-events:none;
+}
+/* =========================================================
+   AIE RESULT PANEL
+========================================================= */
+#aiePanel{
+  display:none;
+  margin-top:20px;
+  border:1px solid var(--cyan);
+  background:#070709;
+}
+#aiePanel.visible{
+  display:block;
+}
+.aie-panel-head{
+  padding:14px 16px;
+  border-bottom:1px solid var(--cyan);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+}
+.aie-panel-title{
+  color:var(--cyan);
+  font:900 12px monospace;
+}
+.aie-panel-id{
+  color:#666;
+  font:9px monospace;
+}
+.aie-stats{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  border-bottom:1px solid var(--line);
+}
+.aie-stat{
+  padding:13px;
+  border-right:1px solid var(--line);
+}
+.aie-stat-label{
+  color:#666;
+  font:8px monospace;
+}
+.aie-stat-value{
+  margin-top:6px;
+  color:var(--acid);
+  font:900 20px monospace;
+}
+.aie-panel-body{
+  padding:16px;
+}
+.aie-json{
+  width:100%;
+  min-height:500px;
+  max-height:750px;
+  color:var(--cyan);
+  background:#020202;
+  border:1px solid #222;
+  padding:16px;
+  font:11px/1.5 monospace;
+  resize:vertical;
+}
+.aie-section{
+  margin-bottom:15px;
+}
+.aie-section-title{
+  color:var(--pink);
+  font:900 9px monospace;
+  letter-spacing:2px;
+  margin-bottom:8px;
+}
+.aie-summary{
+  padding:13px;
+  border:1px solid var(--line);
+  background:#09090b;
+  color:#aaa;
+  font:10px/1.6 monospace;
+}
+/* =========================================================
+   CAPTURED ELEMENT HIGHLIGHT
+========================================================= */
+.aie-captured-target{
+  outline:2px dashed var(--cyan)!important;
+  outline-offset:2px!important;
+}
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 @media(max-width:950px){
-
   header{
     flex-direction:column;
     align-items:flex-start;
   }
-
   nav{
     width:100%;
     overflow:auto;
   }
-
   .status-db{
     position:absolute;
     right:15px;
     top:20px;
   }
-
   .stats{
     grid-template-columns:repeat(2,1fr);
   }
-
+  .aie-stats{
+    grid-template-columns:repeat(3,1fr);
+  }
   main{
     padding:20px 12px;
   }
-
   .search{
     width:100%;
     margin-left:0;
   }
 }
-
 @media(max-width:600px){
-
   .stats{
     grid-template-columns:1fr;
   }
-
+  .aie-stats{
+    grid-template-columns:repeat(2,1fr);
+  }
   .flow{
     align-items:flex-start;
     flex-direction:column;
   }
-
   .arrow{
     transform:rotate(90deg);
+  }
+  .aie-bar-inner{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .aie-capture-btn{
+    width:100%;
   }
 }
 </style>
 </head>
-
 <body>
-
+<!-- =====================================================
+     AIE GLOBAL SELECTION OVERLAY
+===================================================== -->
+<div id="aieOverlay">
+  <div class="aie-instruction">
+    AIE / BEREICH MARKIEREN — ZIEHE MIT MAUS ODER FINGER
+  </div>
+  <div id="aieSelection">
+    <div class="selection-label">
+      AIE CONTEXT CAPTURE
+    </div>
+    <div class="selection-size">
+      0 × 0
+    </div>
+  </div>
+</div>
 <header>
-
   <div>
     <div class="brand-main">
       LV GmbH <span class="slash">|</span> Datenbank
     </div>
-
     <div class="brand-sub">
-      DATENABGLEICH — VALIDIERUNG
+      DATENABGLEICH — VALIDIERUNG — AIE CONTEXT
     </div>
   </div>
-
   <nav>
-
     <button class="nav active" data-view="import">
       DATENABGLEICH
     </button>
-
     <button class="nav" data-view="database">
       DATENBANK
     </button>
-
   </nav>
-
   <div class="status-db">
     <span></span>
     LOKAL GESPEICHERT
   </div>
-
 </header>
-
-
 <main>
-
-
+<!-- =====================================================
+     AIE BAR
+===================================================== -->
+<div class="aie-bar">
+  <div class="aie-bar-inner">
+    <div>
+      <div class="aie-title">
+        <span class="aie-orb"></span>
+        AIE / VISUAL CONTEXT CAPTURE
+      </div>
+      <div class="aie-description">
+        Bereich markieren → Inhalt + Struktur + Funktion → JSON
+      </div>
+    </div>
+    <button
+      id="aieStart"
+      class="aie-capture-btn">
+      ⦿ BEREICH ERFASSEN
+    </button>
+  </div>
+</div>
+<!-- =====================================================
+     AIE RESULT
+===================================================== -->
+<div id="aiePanel">
+  <div class="aie-panel-head">
+    <div class="aie-panel-title">
+      AIE / CAPTURED CONTEXT
+    </div>
+    <div
+      id="aieCaptureId"
+      class="aie-panel-id">
+      CAP-000000
+    </div>
+  </div>
+  <div class="aie-stats">
+    <div class="aie-stat">
+      <div class="aie-stat-label">ELEMENTE</div>
+      <div id="aieElements" class="aie-stat-value">0</div>
+    </div>
+    <div class="aie-stat">
+      <div class="aie-stat-label">TEXT</div>
+      <div id="aieTextCount" class="aie-stat-value">0</div>
+    </div>
+    <div class="aie-stat">
+      <div class="aie-stat-label">BUTTONS</div>
+      <div id="aieButtons" class="aie-stat-value">0</div>
+    </div>
+    <div class="aie-stat">
+      <div class="aie-stat-label">LINKS</div>
+      <div id="aieLinks" class="aie-stat-value">0</div>
+    </div>
+    <div class="aie-stat">
+      <div class="aie-stat-label">INPUTS</div>
+      <div id="aieInputs" class="aie-stat-value">0</div>
+    </div>
+    <div class="aie-stat">
+      <div class="aie-stat-label">TABELLEN</div>
+      <div id="aieTables" class="aie-stat-value">0</div>
+    </div>
+  </div>
+  <div class="aie-panel-body">
+    <div class="aie-section">
+      <div class="aie-section-title">
+        ERFASSTER KONTEXT
+      </div>
+      <div
+        id="aieSummary"
+        class="aie-summary">
+        —
+      </div>
+    </div>
+    <div class="aie-section">
+      <div class="aie-section-title">
+        JSON / CONTEXT PAYLOAD
+      </div>
+      <textarea
+        id="aieJson"
+        class="aie-json"
+        spellcheck="false"
+        readonly></textarea>
+    </div>
+    <div class="actions">
+      <button
+        id="aieCopy"
+        class="btn cyan">
+        → JSON KOPIEREN
+      </button>
+      <button
+        id="aieDownload"
+        class="btn pink">
+        ↓ JSON SPEICHERN
+      </button>
+      <button
+        id="aieClose"
+        class="btn secondary">
+        SCHLIESSEN
+      </button>
+    </div>
+    <div
+      id="aieStatus"
+      class="status">
+      Context bereit.
+    </div>
+  </div>
+</div>
 <!-- =====================================================
      DATENABGLEICH
 ===================================================== -->
-
 <section id="view-import" class="view active">
-
   <div class="head">
-
     <div class="kicker">
       LV GMBH / DATENABGLEICH
     </div>
-
     <h1>
       Daten prüfen.<br>
       Unterschiede finden.
     </h1>
-
     <div class="intro">
       Du brauchst keine technischen Kenntnisse.
       Folge einfach den drei Schritten und füge die jeweiligen
       Daten an der markierten Stelle ein.
     </div>
-
   </div>
-
-
   <div class="flow">
-
     <div class="flow-item active">
       01 DATEN
     </div>
-
     <div class="arrow">→</div>
-
     <div class="flow-item">
       02 GPT
     </div>
-
     <div class="arrow">→</div>
-
     <div class="flow-item">
       03 ERGEBNIS
     </div>
-
     <div class="arrow">→</div>
-
     <div class="flow-item">
       04 DATENBANK
     </div>
-
   </div>
-
-
-  <!-- ===================================================
-       SCHRITT 1
-  ==================================================== -->
-
   <div class="card">
-
     <div class="card-head">
       <strong>01 / DATEN EINFÜGEN</strong>
       <span>DEINE AUSGANGSDATEN</span>
     </div>
-
     <div class="card-body">
-
       <div class="step">
-
         <div class="step-number">1</div>
-
         <div>
           <div class="step-title">
             Tabellen bei GPT hochladen
           </div>
-
           <div class="step-sub">
             Lade die beiden zu vergleichenden Tabellen bei GPT hoch.
           </div>
         </div>
-
       </div>
-
       <div class="notice">
         <strong>Wichtig:</strong>
         Die Tabellen werden von GPT nur ausgelesen.
         Die Originalwerte sollen erhalten bleiben.
       </div>
-
       <button
         id="copyPrompt"
         class="btn pink">
         → ANWEISUNG FÜR GPT KOPIEREN
       </button>
-
       <div
         id="promptStatus"
         class="status">
         Anweisung bereit.
       </div>
-
     </div>
-
   </div>
-
-
-  <!-- ===================================================
-       SCHRITT 2
-  ==================================================== -->
-
   <div class="card">
-
     <div class="card-head">
       <strong>02 / GPT-ERGEBNIS</strong>
       <span>HIER EINFÜGEN</span>
     </div>
-
     <div class="card-body">
-
       <div class="step">
-
         <div class="step-number">2</div>
-
         <div>
           <div class="step-title">
             Ausgabe von GPT einfügen
           </div>
-
           <div class="step-sub">
             Kopiere die Antwort von GPT und füge sie hier ein.
           </div>
-
         </div>
-
       </div>
-
 <textarea
   id="jsonInput"
   class="output"
   spellcheck="false"
   placeholder="→ Ausgabe von GPT hier einfügen ..."></textarea>
-
       <div class="actions">
-
         <button
           id="importBtn"
           class="btn">
           → DATEN ÜBERNEHMEN
         </button>
-
         <button
           id="clearJson"
           class="btn secondary">
           CLEAR
         </button>
-
       </div>
-
       <div
         id="importStatus"
         class="status">
         Noch keine Daten eingefügt.
       </div>
-
     </div>
-
   </div>
-
-
-  <!-- ===================================================
-       GPT ANWEISUNG
-  ==================================================== -->
-
-  <textarea
-    id="promptText"
-    class="hidden"
-    readonly>
-DU bist ein Datenextraktionsassistent.
-
+<textarea
+  id="promptText"
+  class="hidden"
+  readonly>DU bist ein Datenextraktionsassistent.
 Ich gebe dir zwei Tabellen mit Buchungsdaten aus Telekomshops.
-
 Deine Aufgabe:
-
 1. Lies beide Tabellen vollständig.
 2. Halte die beiden Tabellen getrennt.
 3. Übernimm jede vorhandene Zeile.
@@ -711,11 +901,8 @@ Deine Aufgabe:
 10. Übernimm alle relevanten vorhandenen Spalten.
 11. Vergib für jeden Datensatz eine eindeutige record_id.
 12. Kennzeichne immer die ursprüngliche Tabelle.
-
 Gib ausschließlich gültiges JSON zurück.
-
 FORMAT:
-
 {
   "version":"1.0",
   "dataset":{
@@ -748,165 +935,87 @@ FORMAT:
     ]
   }
 }
-
-Keine Erklärung vor oder nach dem JSON.
-  </textarea>
-
-
+Keine Erklärung vor oder nach dem JSON.</textarea>
 </section>
-
-
 <!-- =====================================================
      DATENBANK
 ===================================================== -->
-
 <section id="view-database" class="view">
-
   <div class="head">
-
     <div class="kicker">
       LV GMBH / DATENBANK
     </div>
-
     <h1>
       DATENBANK
     </h1>
-
     <div class="intro">
       Hier werden die übernommenen Datensätze angezeigt.
     </div>
-
   </div>
-
-
   <div class="stats">
-
     <div class="stat">
-      <div class="stat-label">
-        TABELLE A
-      </div>
-      <div id="tableACount" class="stat-value">
-        0
-      </div>
+      <div class="stat-label">TABELLE A</div>
+      <div id="tableACount" class="stat-value">0</div>
     </div>
-
     <div class="stat">
-      <div class="stat-label">
-        TABELLE B
-      </div>
-      <div id="tableBCount" class="stat-value">
-        0
-      </div>
+      <div class="stat-label">TABELLE B</div>
+      <div id="tableBCount" class="stat-value">0</div>
     </div>
-
     <div class="stat">
-      <div class="stat-label">
-        GESAMT
-      </div>
-      <div id="recordCount" class="stat-value">
-        0
-      </div>
+      <div class="stat-label">GESAMT</div>
+      <div id="recordCount" class="stat-value">0</div>
     </div>
-
     <div class="stat">
-      <div class="stat-label">
-        ABWEICHUNGEN
-      </div>
-      <div id="differenceCount" class="stat-value">
-        0
-      </div>
+      <div class="stat-label">ABWEICHUNGEN</div>
+      <div id="differenceCount" class="stat-value">0</div>
     </div>
-
   </div>
-
-
   <div class="toolbar">
-
-    <button
-      class="tab active"
-      data-tab="tableA">
+    <button class="tab active" data-tab="tableA">
       TABELLE A
     </button>
-
-    <button
-      class="tab"
-      data-tab="tableB">
+    <button class="tab" data-tab="tableB">
       TABELLE B
     </button>
-
-    <button
-      class="tab"
-      data-tab="differences">
+    <button class="tab" data-tab="differences">
       ABWEICHUNGEN
     </button>
-
     <input
       id="dbSearch"
       class="search"
       placeholder="Daten durchsuchen...">
-
   </div>
-
-
   <div class="card">
-
     <div class="table-wrap">
       <div id="databaseTable"></div>
     </div>
-
   </div>
-
 </section>
-
 </main>
-
-
 <script>
-
 /* =========================================================
    DATABASE
 ========================================================= */
-
 const DB_NAME = "LV_GMBH_BOOKING_DB";
 const DB_VERSION = 1;
-
 const STORE_RECORDS = "records";
 const STORE_DIFFERENCES = "differences";
-
 let database = null;
-
 let state = {
   records:[],
   differences:[]
 };
-
 let currentTab = "tableA";
-
-
-/* =========================================================
-   DATABASE OPEN
-========================================================= */
-
 function openDatabase(){
-
   if(database){
     return Promise.resolve(database);
   }
-
   return new Promise((resolve,reject)=>{
-
     const request =
-      indexedDB.open(
-        DB_NAME,
-        DB_VERSION
-      );
-
+      indexedDB.open(DB_NAME,DB_VERSION);
     request.onupgradeneeded = event => {
-
       const db = event.target.result;
-
       if(!db.objectStoreNames.contains(STORE_RECORDS)){
-
         const store =
           db.createObjectStore(
             STORE_RECORDS,
@@ -915,28 +1024,23 @@ function openDatabase(){
               autoIncrement:true
             }
           );
-
         store.createIndex(
           "source_table",
           "source_table",
           {unique:false}
         );
-
         store.createIndex(
           "record_id",
           "record_id",
           {unique:false}
         );
-
         store.createIndex(
           "date",
           "date",
           {unique:false}
         );
       }
-
       if(!db.objectStoreNames.contains(STORE_DIFFERENCES)){
-
         db.createObjectStore(
           STORE_DIFFERENCES,
           {
@@ -944,298 +1048,140 @@ function openDatabase(){
           }
         );
       }
-
     };
-
     request.onsuccess = () => {
-
       database = request.result;
-
       resolve(database);
-
     };
-
-    request.onerror = () => {
-
+    request.onerror = () =>
       reject(
         request.error ||
-        new Error(
-          "Datenbank konnte nicht geöffnet werden."
-        )
+        new Error("Datenbank konnte nicht geöffnet werden.")
       );
-
-    };
-
   });
-
 }
-
-
-/* =========================================================
-   GET ALL
-========================================================= */
-
 function getAll(storeName){
-
   return new Promise((resolve,reject)=>{
-
     const tx =
       database.transaction(
         storeName,
         "readonly"
       );
-
     const request =
-      tx.objectStore(
-        storeName
-      ).getAll();
-
+      tx.objectStore(storeName).getAll();
     request.onsuccess =
-      () => resolve(
-        request.result || []
-      );
-
+      () => resolve(request.result || []);
     request.onerror =
-      () => reject(
-        request.error
-      );
-
+      () => reject(request.error);
   });
-
 }
-
-
-/* =========================================================
-   REFRESH
-========================================================= */
-
 async function refresh(){
-
   await openDatabase();
-
   state = {
-
     records:
-      await getAll(
-        STORE_RECORDS
-      ),
-
+      await getAll(STORE_RECORDS),
     differences:
-      await getAll(
-        STORE_DIFFERENCES
-      )
-
+      await getAll(STORE_DIFFERENCES)
   };
-
   const a =
     state.records.filter(
-      r =>
-        r.source_table === "TABLE_A"
+      r => r.source_table === "TABLE_A"
     );
-
   const b =
     state.records.filter(
-      r =>
-        r.source_table === "TABLE_B"
+      r => r.source_table === "TABLE_B"
     );
-
-  document.getElementById(
-    "tableACount"
-  ).textContent = a.length;
-
-  document.getElementById(
-    "tableBCount"
-  ).textContent = b.length;
-
-  document.getElementById(
-    "recordCount"
-  ).textContent =
-    state.records.length;
-
-  document.getElementById(
-    "differenceCount"
-  ).textContent =
-    state.differences.length;
-
+  document.getElementById("tableACount").textContent = a.length;
+  document.getElementById("tableBCount").textContent = b.length;
+  document.getElementById("recordCount").textContent = state.records.length;
+  document.getElementById("differenceCount").textContent = state.differences.length;
   renderDatabase();
-
 }
-
-
-/* =========================================================
-   IMPORT
-========================================================= */
-
 async function importJSON(payload){
-
   await openDatabase();
-
   if(
     !payload ||
     !payload.dataset ||
-    !Array.isArray(
-      payload.dataset.tables
-    )
+    !Array.isArray(payload.dataset.tables)
   ){
-
     throw new Error(
       "Die GPT-Ausgabe besitzt nicht das erwartete Format."
     );
-
   }
-
-  const tables =
-    payload.dataset.tables;
-
+  const tables = payload.dataset.tables;
   if(tables.length !== 2){
-
     throw new Error(
       "Es müssen genau zwei Tabellen vorhanden sein."
     );
-
   }
-
   let total = 0;
-
-  /*
-   * Erst alten Bestand löschen.
-   * Dadurch bleibt ein neuer Import
-   * ein klarer neuer Datenbestand.
-   */
-
   await new Promise((resolve,reject)=>{
-
     const tx =
       database.transaction(
         STORE_RECORDS,
         "readwrite"
       );
-
-    tx.objectStore(
-      STORE_RECORDS
-    ).clear();
-
+    tx.objectStore(STORE_RECORDS).clear();
     tx.oncomplete = resolve;
-
-    tx.onerror = () =>
-      reject(tx.error);
-
+    tx.onerror = () => reject(tx.error);
   });
-
-
   const transaction =
     database.transaction(
       STORE_RECORDS,
       "readwrite"
     );
-
   const store =
-    transaction.objectStore(
-      STORE_RECORDS
-    );
-
-
+    transaction.objectStore(STORE_RECORDS);
   for(const table of tables){
-
     if(
       !table.table_id ||
-      !Array.isArray(
-        table.records
-      )
+      !Array.isArray(table.records)
     ){
-
       throw new Error(
         "Eine Tabelle besitzt keine gültige Struktur."
       );
-
     }
-
     for(const record of table.records){
-
-      if(
-        !record ||
-        !record.record_id
-      ){
+      if(!record || !record.record_id){
         continue;
       }
-
       store.put({
-
-        record_id:
-          String(
-            record.record_id
-          ),
-
-        source_table:
-          String(
-            table.table_id
-          ),
-
-        source_name:
-          String(
-            table.name ||
-            table.table_id
-          ),
-
-        date:
-          record.date ||
-          null,
-
+        record_id:String(record.record_id),
+        source_table:String(table.table_id),
+        source_name:String(
+          table.name || table.table_id
+        ),
+        date:record.date || null,
         data:
           record.data &&
           typeof record.data === "object"
             ? record.data
             : {},
-
-        imported_at:
-          new Date().toISOString()
-
+        imported_at:new Date().toISOString()
       });
-
       total++;
-
     }
-
   }
-
   return new Promise((resolve,reject)=>{
-
     transaction.oncomplete =
       () => resolve({
         tables:tables.length,
         records:total
       });
-
     transaction.onerror =
       () => reject(
         transaction.error ||
-        new Error(
-          "Speichern fehlgeschlagen."
-        )
+        new Error("Speichern fehlgeschlagen.")
       );
-
     transaction.onabort =
       () => reject(
         transaction.error ||
-        new Error(
-          "Speichern wurde abgebrochen."
-        )
+        new Error("Speichern wurde abgebrochen.")
       );
-
   });
-
 }
-
-
-/* =========================================================
-   ESCAPE
-========================================================= */
-
 function esc(value){
-
-  return String(
-    value ?? ""
-  ).replace(
+  return String(value ?? "").replace(
     /[&<>"']/g,
     char => ({
       "&":"&amp;",
@@ -1245,58 +1191,25 @@ function esc(value){
       "'":"&#039;"
     })[char]
   );
-
 }
-
-
-/* =========================================================
-   FORMAT
-========================================================= */
-
 function formatData(value){
-
-  if(
-    value === null ||
-    value === undefined
-  ){
+  if(value === null || value === undefined){
     return "—";
   }
-
   if(typeof value === "object"){
-
-    return JSON.stringify(
-      value
-    );
-
+    return JSON.stringify(value);
   }
-
   return String(value);
-
 }
-
-
-/* =========================================================
-   RENDER DATABASE
-========================================================= */
-
 function renderDatabase(){
-
   const container =
-    document.getElementById(
-      "databaseTable"
-    );
-
+    document.getElementById("databaseTable");
   const search =
-    document.getElementById(
-      "dbSearch"
-    )
-    .value
-    .toLowerCase()
-    .trim();
-
-
+    document.getElementById("dbSearch")
+      .value
+      .toLowerCase()
+      .trim();
   if(currentTab === "differences"){
-
     const rows =
       state.differences.filter(
         row =>
@@ -1305,18 +1218,13 @@ function renderDatabase(){
             .toLowerCase()
             .includes(search)
       );
-
     if(!rows.length){
-
       container.innerHTML =
         `<div class="empty">
           KEINE ABWEICHUNGEN VORHANDEN
         </div>`;
-
       return;
-
     }
-
     let html = `
       <table>
         <thead>
@@ -1331,68 +1239,35 @@ function renderDatabase(){
         </thead>
         <tbody>
     `;
-
     rows.forEach(row => {
-
       html += `
         <tr>
-
-          <td class="warn">
-            ${esc(row.status)}
-          </td>
-
-          <td class="mono">
-            ${esc(row.match_key)}
-          </td>
-
-          <td>
-            ${esc(row.field)}
-          </td>
-
-          <td>
-            ${esc(formatData(row.value_a))}
-          </td>
-
-          <td>
-            ${esc(formatData(row.value_b))}
-          </td>
-
-          <td class="bad">
-            ${esc(formatData(row.difference))}
-          </td>
-
+          <td class="warn">${esc(row.status)}</td>
+          <td class="mono">${esc(row.match_key)}</td>
+          <td>${esc(row.field)}</td>
+          <td>${esc(formatData(row.value_a))}</td>
+          <td>${esc(formatData(row.value_b))}</td>
+          <td class="bad">${esc(formatData(row.difference))}</td>
         </tr>
       `;
-
     });
-
     html += `
         </tbody>
       </table>
     `;
-
     container.innerHTML = html;
-
     return;
-
   }
-
-
   const source =
     currentTab === "tableA"
       ? "TABLE_A"
       : "TABLE_B";
-
-
   let rows =
     state.records.filter(
       record =>
         record.source_table === source
     );
-
-
   if(search){
-
     rows =
       rows.filter(
         record =>
@@ -1400,394 +1275,1332 @@ function renderDatabase(){
             .toLowerCase()
             .includes(search)
       );
-
   }
-
-
   if(!rows.length){
-
     container.innerHTML =
       `<div class="empty">
         NOCH KEINE DATENSÄTZE GESPEICHERT
       </div>`;
-
     return;
-
   }
-
-
   const keys = new Set();
-
   rows.forEach(row => {
-
-    Object.keys(
-      row.data || {}
-    ).forEach(
-      key =>
-        keys.add(key)
-    );
-
+    Object.keys(row.data || {})
+      .forEach(key => keys.add(key));
   });
-
-
-  const columns =
-    Array.from(keys);
-
-
+  const columns = Array.from(keys);
   let html = `
     <table>
-
       <thead>
-
         <tr>
-
           <th>RECORD-ID</th>
           <th>DATUM</th>
-
           ${columns.map(
             key =>
-              `<th>${esc(
-                key.toUpperCase()
-              )}</th>`
+              `<th>${esc(key.toUpperCase())}</th>`
           ).join("")}
-
         </tr>
-
       </thead>
-
       <tbody>
   `;
-
-
   rows.forEach(row => {
-
     html += `
       <tr>
-
         <td class="mono">
           ${esc(row.record_id)}
         </td>
-
         <td>
           ${esc(row.date || "—")}
         </td>
-
         ${columns.map(
           key =>
             `<td>${esc(
-              formatData(
-                row.data[key]
-              )
+              formatData(row.data[key])
             )}</td>`
         ).join("")}
-
       </tr>
     `;
-
   });
-
-
   html += `
       </tbody>
     </table>
   `;
-
-
   container.innerHTML = html;
-
 }
-
-
 /* =========================================================
-   COPY GPT INSTRUCTION
+   GPT PROMPT
 ========================================================= */
-
-document
-  .getElementById("copyPrompt")
-  .onclick =
-  async function(){
-
-    try{
-
-      await navigator.clipboard.writeText(
-        document.getElementById(
-          "promptText"
-        ).value
-      );
-
-      const status =
-        document.getElementById(
-          "promptStatus"
-        );
-
-      status.className =
-        "status ok";
-
-      status.textContent =
-        "✓ KOPIERT — Jetzt Tabellen bei GPT hochladen.";
-
-    }
-    catch(error){
-
-      const status =
-        document.getElementById(
-          "promptStatus"
-        );
-
-      status.className =
-        "status error";
-
-      status.textContent =
-        "✕ Kopieren nicht möglich.";
-
-    }
-
-  };
-
-
-/* =========================================================
-   IMPORT BUTTON
-========================================================= */
-
-document
-  .getElementById("importBtn")
-  .onclick =
-  async function(){
-
+document.getElementById("copyPrompt").onclick =
+async function(){
+  try{
+    await navigator.clipboard.writeText(
+      document.getElementById("promptText").value
+    );
     const status =
-      document.getElementById(
-        "importStatus"
-      );
-
-    try{
-
-      const text =
-        document.getElementById(
-          "jsonInput"
-        )
+      document.getElementById("promptStatus");
+    status.className = "status ok";
+    status.textContent =
+      "✓ KOPIERT — Jetzt Tabellen bei GPT hochladen.";
+  }
+  catch(error){
+    const status =
+      document.getElementById("promptStatus");
+    status.className = "status error";
+    status.textContent =
+      "✕ Kopieren nicht möglich.";
+  }
+};
+/* =========================================================
+   IMPORT
+========================================================= */
+document.getElementById("importBtn").onclick =
+async function(){
+  const status =
+    document.getElementById("importStatus");
+  try{
+    const text =
+      document.getElementById("jsonInput")
         .value
         .trim();
-
-
-      if(!text){
-
-        throw new Error(
-          "Bitte zuerst die Ausgabe von GPT einfügen."
-        );
-
-      }
-
-
-      let json;
-
-      try{
-
-        json =
-          JSON.parse(text);
-
-      }
-      catch(error){
-
-        throw new Error(
-          "Die eingefügte Ausgabe ist kein gültiges JSON."
-        );
-
-      }
-
-
-      status.className =
-        "status";
-
-      status.textContent =
-        "→ PRÜFE DATEN ...";
-
-
-      const result =
-        await importJSON(json);
-
-
-      await refresh();
-
-
-      status.className =
-        "status ok";
-
-      status.textContent =
-        "✓ " +
-        result.records +
-        " DATENSÄTZE ÜBERNOMMEN UND GESPEICHERT.";
-
-
+    if(!text){
+      throw new Error(
+        "Bitte zuerst die Ausgabe von GPT einfügen."
+      );
+    }
+    let json;
+    try{
+      json = JSON.parse(text);
     }
     catch(error){
-
-      console.error(error);
-
-      status.className =
-        "status error";
-
-      status.textContent =
-        "✕ " +
-        error.message;
-
-    }
-
-  };
-
-
-/* =========================================================
-   CLEAR
-========================================================= */
-
-document
-  .getElementById("clearJson")
-  .onclick =
-  function(){
-
-    document.getElementById(
-      "jsonInput"
-    ).value = "";
-
-    const status =
-      document.getElementById(
-        "importStatus"
+      throw new Error(
+        "Die eingefügte Ausgabe ist kein gültiges JSON."
       );
-
-    status.className =
-      "status";
-
+    }
+    status.className = "status";
+    status.textContent = "→ PRÜFE DATEN ...";
+    const result =
+      await importJSON(json);
+    await refresh();
+    status.className = "status ok";
     status.textContent =
-      "Noch keine Daten eingefügt.";
-
-  };
-
-
+      "✓ " +
+      result.records +
+      " DATENSÄTZE ÜBERNOMMEN UND GESPEICHERT.";
+  }
+  catch(error){
+    console.error(error);
+    status.className = "status error";
+    status.textContent =
+      "✕ " + error.message;
+  }
+};
+document.getElementById("clearJson").onclick =
+function(){
+  document.getElementById("jsonInput").value = "";
+  const status =
+    document.getElementById("importStatus");
+  status.className = "status";
+  status.textContent =
+    "Noch keine Daten eingefügt.";
+};
 /* =========================================================
    NAVIGATION
 ========================================================= */
-
-document
-  .querySelectorAll(".nav")
-  .forEach(button => {
-
-    button.onclick = function(){
-
-      document
-        .querySelectorAll(".nav")
-        .forEach(
-          item =>
-            item.classList.remove(
-              "active"
-            )
-        );
-
-      button.classList.add(
-        "active"
+document.querySelectorAll(".nav").forEach(button => {
+  button.onclick = function(){
+    document
+      .querySelectorAll(".nav")
+      .forEach(item =>
+        item.classList.remove("active")
       );
-
-
-      document
-        .querySelectorAll(".view")
-        .forEach(
-          view =>
-            view.classList.remove(
-              "active"
-            )
-        );
-
-
-      document
-        .getElementById(
-          "view-" +
-          button.dataset.view
-        )
-        .classList.add(
-          "active"
-        );
-
-
-      if(
-        button.dataset.view ===
-        "database"
-      ){
-
-        refresh();
-
-      }
-
-    };
-
-  });
-
-
+    button.classList.add("active");
+    document
+      .querySelectorAll(".view")
+      .forEach(view =>
+        view.classList.remove("active")
+      );
+    document
+      .getElementById(
+        "view-" + button.dataset.view
+      )
+      .classList.add("active");
+    if(button.dataset.view === "database"){
+      refresh();
+    }
+  };
+});
 /* =========================================================
    DATABASE TABS
 ========================================================= */
-
-document
-  .querySelectorAll(".tab")
-  .forEach(button => {
-
-    button.onclick = function(){
-
-      document
-        .querySelectorAll(".tab")
-        .forEach(
-          item =>
-            item.classList.remove(
-              "active"
-            )
-        );
-
-      button.classList.add(
-        "active"
+document.querySelectorAll(".tab").forEach(button => {
+  button.onclick = function(){
+    document
+      .querySelectorAll(".tab")
+      .forEach(item =>
+        item.classList.remove("active")
       );
-
-      currentTab =
-        button.dataset.tab;
-
-      renderDatabase();
-
-    };
-
-  });
-
-
+    button.classList.add("active");
+    currentTab = button.dataset.tab;
+    renderDatabase();
+  };
+});
+document.getElementById("dbSearch").oninput =
+renderDatabase;
 /* =========================================================
-   SEARCH
+   AIE CONTEXT ENGINE
 ========================================================= */
-
-document
-  .getElementById("dbSearch")
-  .oninput =
-  renderDatabase;
-
-
+/*
+ * Jede Erfassung bekommt eine fortlaufende ID.
+ */
+let aieCaptureCounter =
+  Number(
+    localStorage.getItem(
+      "LV_AIE_CAPTURE_COUNTER"
+    ) || 0
+  );
+function nextAieId(){
+  aieCaptureCounter++;
+  localStorage.setItem(
+    "LV_AIE_CAPTURE_COUNTER",
+    String(aieCaptureCounter)
+  );
+  return (
+    "CAP-" +
+    String(aieCaptureCounter)
+      .padStart(6,"0")
+  );
+}
+/*
+ * Element sichtbar?
+ */
+function isVisible(element){
+  if(!(element instanceof Element)){
+    return false;
+  }
+  const style =
+    getComputedStyle(element);
+  const rect =
+    element.getBoundingClientRect();
+  return (
+    style.display !== "none" &&
+    style.visibility !== "hidden" &&
+    Number(style.opacity) !== 0 &&
+    rect.width > 0 &&
+    rect.height > 0
+  );
+}
+/*
+ * Rechteck eines Elements.
+ */
+function getRect(element){
+  const r =
+    element.getBoundingClientRect();
+  return {
+    x:Number(r.x.toFixed(2)),
+    y:Number(r.y.toFixed(2)),
+    top:Number(r.top.toFixed(2)),
+    right:Number(r.right.toFixed(2)),
+    bottom:Number(r.bottom.toFixed(2)),
+    left:Number(r.left.toFixed(2)),
+    width:Number(r.width.toFixed(2)),
+    height:Number(r.height.toFixed(2))
+  };
+}
+/*
+ * Nur relevante Attribute.
+ */
+function getAttributes(element){
+  const result = {};
+  for(const attr of Array.from(element.attributes)){
+    result[attr.name] = attr.value;
+  }
+  return result;
+}
+/*
+ * Berechnete visuelle Eigenschaften.
+ */
+function getVisual(element){
+  const style =
+    getComputedStyle(element);
+  return {
+    display:style.display,
+    visibility:style.visibility,
+    opacity:style.opacity,
+    position:style.position,
+    zIndex:style.zIndex,
+    width:style.width,
+    height:style.height,
+    color:style.color,
+    backgroundColor:style.backgroundColor,
+    borderColor:style.borderColor,
+    borderWidth:style.borderWidth,
+    borderStyle:style.borderStyle,
+    borderRadius:style.borderRadius,
+    fontFamily:style.fontFamily,
+    fontSize:style.fontSize,
+    fontWeight:style.fontWeight,
+    lineHeight:style.lineHeight,
+    letterSpacing:style.letterSpacing,
+    textAlign:style.textAlign,
+    padding:style.padding,
+    margin:style.margin,
+    boxShadow:style.boxShadow,
+    cursor:style.cursor,
+    overflow:style.overflow,
+    flexDirection:style.flexDirection,
+    justifyContent:style.justifyContent,
+    alignItems:style.alignItems,
+    gridTemplateColumns:style.gridTemplateColumns
+  };
+}
+/*
+ * Funktionelle Eigenschaften.
+ */
+function getInteraction(element){
+  const tag =
+    element.tagName.toLowerCase();
+  const result = {
+    interactive:false,
+    type:null,
+    role:
+      element.getAttribute("role"),
+    action:null,
+    href:null,
+    target:null,
+    disabled:
+      "disabled" in element
+        ? Boolean(element.disabled)
+        : false,
+    value:
+      "value" in element
+        ? String(element.value ?? "")
+        : null,
+    placeholder:
+      element.getAttribute("placeholder"),
+    ariaLabel:
+      element.getAttribute("aria-label"),
+    tabIndex:
+      element.tabIndex >= 0
+        ? element.tabIndex
+        : null
+  };
+  if(
+    tag === "button" ||
+    tag === "a" ||
+    tag === "input" ||
+    tag === "textarea" ||
+    tag === "select" ||
+    tag === "option" ||
+    tag === "summary"
+  ){
+    result.interactive = true;
+  }
+  if(
+    element.onclick ||
+    element.onchange ||
+    element.oninput ||
+    element.onsubmit ||
+    element.onmousedown ||
+    element.onmouseup
+  ){
+    result.interactive = true;
+    result.action = "DOM_EVENT_HANDLER";
+  }
+  if(tag === "button"){
+    result.type =
+      element.getAttribute("type") || "button";
+  }
+  if(tag === "a"){
+    result.type = "link";
+    result.href = element.href || null;
+    result.target =
+      element.getAttribute("target");
+  }
+  if(tag === "input"){
+    result.type =
+      element.getAttribute("type") || "text";
+  }
+  if(
+    result.interactive &&
+    !result.action
+  ){
+    if(tag === "button"){
+      result.action = "CLICK";
+    }
+    else if(tag === "a"){
+      result.action = "NAVIGATE";
+    }
+    else if(
+      tag === "input" ||
+      tag === "textarea"
+    ){
+      result.action = "EDIT";
+    }
+    else if(tag === "select"){
+      result.action = "SELECT";
+    }
+  }
+  return result;
+}
+/*
+ * Elementtyp semantisch bestimmen.
+ */
+function getSemanticType(element){
+  const tag =
+    element.tagName.toLowerCase();
+  if(/^h[1-6]$/.test(tag)){
+    return "heading";
+  }
+  if(tag === "button"){
+    return "button";
+  }
+  if(tag === "a"){
+    return "link";
+  }
+  if(
+    tag === "input" ||
+    tag === "textarea" ||
+    tag === "select"
+  ){
+    return "form_control";
+  }
+  if(tag === "table"){
+    return "table";
+  }
+  if(tag === "tr"){
+    return "table_row";
+  }
+  if(tag === "td" || tag === "th"){
+    return "table_cell";
+  }
+  if(tag === "img"){
+    return "image";
+  }
+  if(tag === "nav"){
+    return "navigation";
+  }
+  if(
+    tag === "main" ||
+    tag === "section" ||
+    tag === "article" ||
+    tag === "aside"
+  ){
+    return "container";
+  }
+  if(tag === "p"){
+    return "paragraph";
+  }
+  if(tag === "label"){
+    return "label";
+  }
+  if(tag === "li"){
+    return "list_item";
+  }
+  return "element";
+}
+/*
+ * Kurzer sichtbarer Text.
+ */
+function getOwnText(element){
+  let text = "";
+  for(const node of element.childNodes){
+    if(node.nodeType === Node.TEXT_NODE){
+      text += " " + node.nodeValue;
+    }
+  }
+  return text
+    .replace(/\s+/g," ")
+    .trim();
+}
+/*
+ * DOM-Pfad erzeugen.
+ */
+function getDomPath(element){
+  const path = [];
+  let current = element;
+  while(
+    current &&
+    current.nodeType === Node.ELEMENT_NODE &&
+    current !== document.body
+  ){
+    let index = 1;
+    let sibling =
+      current.previousElementSibling;
+    while(sibling){
+      if(
+        sibling.tagName ===
+        current.tagName
+      ){
+        index++;
+      }
+      sibling =
+        sibling.previousElementSibling;
+    }
+    path.unshift(
+      current.tagName.toLowerCase() +
+      "[" +
+      index +
+      "]"
+    );
+    current = current.parentElement;
+  }
+  return "body > " + path.join(" > ");
+}
+/*
+ * Element vollständig beschreiben.
+ */
+function describeElement(
+  element,
+  index,
+  selectionRect
+){
+  const rect =
+    getRect(element);
+  const interaction =
+    getInteraction(element);
+  const semantic =
+    getSemanticType(element);
+  const text =
+    (element.innerText || "")
+      .replace(/\s+/g," ")
+      .trim()
+      .slice(0,5000);
+  const intersects =
+    !(
+      rect.right < selectionRect.left ||
+      rect.left > selectionRect.right ||
+      rect.bottom < selectionRect.top ||
+      rect.top > selectionRect.bottom
+    );
+  return {
+    index:index,
+    tag:
+      element.tagName.toLowerCase(),
+    semantic_type:
+      semantic,
+    id:
+      element.id || null,
+    classes:
+      Array.from(element.classList),
+    attributes:
+      getAttributes(element),
+    own_text:
+      getOwnText(element),
+    visible_text:
+      text,
+    rect:rect,
+    relative_to_selection:{
+      x:Number(
+        (rect.x-selectionRect.left)
+          .toFixed(2)
+      ),
+      y:Number(
+        (rect.y-selectionRect.top)
+          .toFixed(2)
+      ),
+      width:rect.width,
+      height:rect.height
+    },
+    visible:
+      isVisible(element),
+    intersects_selection:
+      intersects,
+    visual:
+      getVisual(element),
+    interaction:
+      interaction,
+    semantic:{
+      role:
+        element.getAttribute("role"),
+      aria_label:
+        element.getAttribute("aria-label"),
+      title:
+        element.getAttribute("title"),
+      name:
+        element.getAttribute("name"),
+      data_attributes:
+        Array.from(element.attributes)
+          .filter(a =>
+            a.name.startsWith("data-")
+          )
+          .reduce(
+            (obj,a)=>{
+              obj[a.name]=a.value;
+              return obj;
+            },
+            {}
+          )
+    },
+    image:
+      element.tagName.toLowerCase() === "img"
+        ? {
+            src:element.currentSrc || element.src || null,
+            alt:element.alt || null,
+            naturalWidth:element.naturalWidth,
+            naturalHeight:element.naturalHeight
+          }
+        : null,
+    dom_path:
+      getDomPath(element)
+  };
+}
+/*
+ * Tabellen gesondert erfassen.
+ */
+function captureTables(root){
+  const tables =
+    Array.from(
+      root.querySelectorAll("table")
+    );
+  return tables.map((table,index)=>{
+    const rows =
+      Array.from(
+        table.querySelectorAll("tr")
+      );
+    return {
+      table_index:index,
+      id:
+        table.id || null,
+      caption:
+        table.querySelector("caption")
+          ?.innerText
+          .trim() || null,
+      headers:
+        Array.from(
+          table.querySelectorAll("thead th")
+        ).map(
+          cell =>
+            cell.innerText
+              .replace(/\s+/g," ")
+              .trim()
+        ),
+      row_count:rows.length,
+      rows:
+        rows.map((row,rowIndex)=>({
+          index:rowIndex,
+          cells:
+            Array.from(
+              row.querySelectorAll("th,td")
+            ).map(cell=>({
+              tag:
+                cell.tagName.toLowerCase(),
+              text:
+                cell.innerText
+                  .replace(/\s+/g," ")
+                  .trim(),
+              colspan:
+                Number(cell.colSpan || 1),
+              rowspan:
+                Number(cell.rowSpan || 1)
+            }))
+        }))
+    };
+  });
+}
+/*
+ * Buttons.
+ */
+function captureButtons(root){
+  return Array.from(
+    root.querySelectorAll(
+      "button,[role='button'],input[type='button'],input[type='submit']"
+    )
+  ).map((button,index)=>({
+    index:index,
+    text:
+      (
+        button.innerText ||
+        button.value ||
+        button.getAttribute("aria-label") ||
+        ""
+      )
+      .replace(/\s+/g," ")
+      .trim(),
+    id:
+      button.id || null,
+    classes:
+      Array.from(button.classList),
+    disabled:
+      Boolean(button.disabled),
+    type:
+      button.getAttribute("type"),
+    action:
+      button.onclick
+        ? "CLICK / DOM HANDLER"
+        : "CLICK",
+    rect:
+      getRect(button),
+    dom_path:
+      getDomPath(button)
+  }));
+}
+/*
+ * Links.
+ */
+function captureLinks(root){
+  return Array.from(
+    root.querySelectorAll("a")
+  ).map((link,index)=>({
+    index:index,
+    text:
+      link.innerText
+        .replace(/\s+/g," ")
+        .trim(),
+    href:
+      link.href || null,
+    target:
+      link.target || null,
+    id:
+      link.id || null,
+    rect:
+      getRect(link),
+    dom_path:
+      getDomPath(link)
+  }));
+}
+/*
+ * Formularelemente.
+ */
+function captureInputs(root){
+  return Array.from(
+    root.querySelectorAll(
+      "input,textarea,select"
+    )
+  ).map((input,index)=>({
+    index:index,
+    tag:
+      input.tagName.toLowerCase(),
+    type:
+      input.getAttribute("type") || null,
+    name:
+      input.getAttribute("name") || null,
+    id:
+      input.id || null,
+    value:
+      "value" in input
+        ? input.value
+        : null,
+    placeholder:
+      input.getAttribute("placeholder"),
+    required:
+      Boolean(input.required),
+    disabled:
+      Boolean(input.disabled),
+    checked:
+      "checked" in input
+        ? Boolean(input.checked)
+        : null,
+    rect:
+      getRect(input),
+    dom_path:
+      getDomPath(input)
+  }));
+}
+/*
+ * Hauptfunktion:
+ * markierten Bereich komplett erfassen.
+ */
+function captureContext(
+  selectionRect
+){
+  const captureId =
+    nextAieId();
+  /*
+   * Wir betrachten body als visuellen Kontext,
+   * wählen aber nur Elemente aus, die die
+   * Markierung schneiden.
+   */
+  const allElements =
+    Array.from(
+      document.body.querySelectorAll("*")
+    )
+    .filter(
+      element =>
+        !element.closest("#aieOverlay") &&
+        !element.closest("#aiePanel") &&
+        !element.closest(".aie-bar")
+    );
+  const elements =
+    allElements
+      .filter(element => {
+        const rect =
+          getRect(element);
+        return !(
+          rect.right < selectionRect.left ||
+          rect.left > selectionRect.right ||
+          rect.bottom < selectionRect.top ||
+          rect.top > selectionRect.bottom
+        );
+      });
+  const described =
+    elements.map(
+      (element,index) =>
+        describeElement(
+          element,
+          index,
+          selectionRect
+        )
+    );
+  const textParts =
+    elements
+      .filter(isVisible)
+      .map(
+        element =>
+          element.innerText || ""
+      )
+      .filter(Boolean);
+  const completeText =
+    Array.from(
+      new Set(
+        textParts
+          .join("\n")
+          .split("\n")
+          .map(
+            text =>
+              text
+                .replace(/\s+/g," ")
+                .trim()
+          )
+          .filter(Boolean)
+      )
+    )
+    .join("\n");
+  const rootElements =
+    elements.filter(
+      element =>
+        !element.parentElement ||
+        !elements.includes(
+          element.parentElement
+        )
+    );
+  const payload = {
+    schema_version:"1.0",
+    capture:{
+      id:captureId,
+      timestamp:
+        new Date().toISOString(),
+      source:
+        "LV_GMBH_AIE_CONTEXT_CAPTURE",
+      url:
+        location.href,
+      title:
+        document.title,
+      viewport:{
+        width:window.innerWidth,
+        height:window.innerHeight,
+        devicePixelRatio:
+          window.devicePixelRatio
+      },
+      selection:{
+        x:Number(selectionRect.left.toFixed(2)),
+        y:Number(selectionRect.top.toFixed(2)),
+        width:Number(selectionRect.width.toFixed(2)),
+        height:Number(selectionRect.height.toFixed(2)),
+        right:Number(selectionRect.right.toFixed(2)),
+        bottom:Number(selectionRect.bottom.toFixed(2))
+      }
+    },
+    semantic:{
+      text:completeText,
+      text_length:completeText.length,
+      root_elements:
+        rootElements.map(
+          element =>
+            element.tagName.toLowerCase()
+        ),
+      visible_element_count:
+        described.filter(
+          e => e.visible
+        ).length,
+      element_count:
+        described.length
+    },
+    interaction:{
+      buttons:
+        captureButtons(
+          document.body
+        ).filter(button =>
+          !(
+            button.rect.right < selectionRect.left ||
+            button.rect.left > selectionRect.right ||
+            button.rect.bottom < selectionRect.top ||
+            button.rect.top > selectionRect.bottom
+          )
+        ),
+      links:
+        captureLinks(
+          document.body
+        ).filter(link =>
+          !(
+            link.rect.right < selectionRect.left ||
+            link.rect.left > selectionRect.right ||
+            link.rect.bottom < selectionRect.top ||
+            link.rect.top > selectionRect.bottom
+          )
+        ),
+      inputs:
+        captureInputs(
+          document.body
+        ).filter(input =>
+          !(
+            input.rect.right < selectionRect.left ||
+            input.rect.left > selectionRect.right ||
+            input.rect.bottom < selectionRect.top ||
+            input.rect.top > selectionRect.bottom
+          )
+        )
+    },
+    tables:
+      captureTables(document.body)
+        .filter(table => {
+          const element =
+            document.querySelector(
+              "table:nth-of-type(" +
+              (table.table_index + 1) +
+              ")"
+            );
+          if(!element){
+            return false;
+          }
+          const rect =
+            getRect(element);
+          return !(
+            rect.right < selectionRect.left ||
+            rect.left > selectionRect.right ||
+            rect.bottom < selectionRect.top ||
+            rect.top > selectionRect.bottom
+          );
+        }),
+    visual:{
+      selection_box:{
+        x:selectionRect.left,
+        y:selectionRect.top,
+        width:selectionRect.width,
+        height:selectionRect.height
+      },
+      scroll:{
+        x:window.scrollX,
+        y:window.scrollY
+      },
+      selected_elements:
+        described.map(
+          element => ({
+            tag:element.tag,
+            rect:element.rect,
+            visual:element.visual
+          })
+        )
+    },
+    elements:described,
+    statistics:{
+      total_elements:
+        described.length,
+      visible_elements:
+        described.filter(
+          e => e.visible
+        ).length,
+      buttons:
+        described.filter(
+          e =>
+            e.semantic_type === "button"
+        ).length,
+      links:
+        described.filter(
+          e =>
+            e.semantic_type === "link"
+        ).length,
+      inputs:
+        described.filter(
+          e =>
+            e.semantic_type === "form_control"
+        ).length,
+      images:
+        described.filter(
+          e =>
+            e.semantic_type === "image"
+        ).length,
+      headings:
+        described.filter(
+          e =>
+            e.semantic_type === "heading"
+        ).length,
+      tables:
+        described.filter(
+          e =>
+            e.semantic_type === "table"
+        ).length
+    },
+    raw_dom:
+      elements.length
+        ? elements
+            .filter(
+              element =>
+                element.parentElement ===
+                document.body ||
+                !elements.includes(
+                  element.parentElement
+                )
+            )
+            .map(
+              element =>
+                element.outerHTML
+            )
+        : []
+  };
+  return payload;
+}
+/* =========================================================
+   AIE SELECTION UI
+========================================================= */
+const aieOverlay =
+  document.getElementById("aieOverlay");
+const aieSelection =
+  document.getElementById("aieSelection");
+let aieSelecting = false;
+let aieStartX = 0;
+let aieStartY = 0;
+function activateAIE(){
+  aieOverlay.classList.add("active");
+  aieSelection.classList.remove("visible");
+  document.body.style.overflow = "hidden";
+}
+function deactivateAIE(){
+  aieOverlay.classList.remove("active");
+  aieSelecting = false;
+  document.body.style.overflow = "";
+}
+function updateSelection(
+  x,
+  y
+){
+  const left =
+    Math.min(aieStartX,x);
+  const top =
+    Math.min(aieStartY,y);
+  const right =
+    Math.max(aieStartX,x);
+  const bottom =
+    Math.max(aieStartY,y);
+  const width =
+    right-left;
+  const height =
+    bottom-top;
+  aieSelection.style.left =
+    left + "px";
+  aieSelection.style.top =
+    top + "px";
+  aieSelection.style.width =
+    width + "px";
+  aieSelection.style.height =
+    height + "px";
+  aieSelection
+    .querySelector(".selection-size")
+    .textContent =
+      Math.round(width) +
+      " × " +
+      Math.round(height);
+  aieSelection.classList.add(
+    "visible"
+  );
+  return {
+    left,
+    top,
+    right,
+    bottom,
+    width,
+    height
+  };
+}
+function finishAIE(
+  x,
+  y
+){
+  if(!aieSelecting){
+    return;
+  }
+  aieSelecting = false;
+  const rect =
+    updateSelection(x,y);
+  /*
+   * Sehr kleine Markierungen ignorieren.
+   */
+  if(
+    rect.width < 10 ||
+    rect.height < 10
+  ){
+    deactivateAIE();
+    return;
+  }
+  deactivateAIE();
+  setTimeout(()=>{
+    try{
+      const payload =
+        captureContext(rect);
+      showAIEResult(payload);
+    }
+    catch(error){
+      console.error(
+        "AIE capture error:",
+        error
+      );
+      alert(
+        "AIE-Erfassung fehlgeschlagen: " +
+        error.message
+      );
+    }
+  },50);
+}
+aieOverlay.addEventListener(
+  "pointerdown",
+  event => {
+    event.preventDefault();
+    aieSelecting = true;
+    aieStartX =
+      event.clientX;
+    aieStartY =
+      event.clientY;
+    aieSelection.style.left =
+      aieStartX + "px";
+    aieSelection.style.top =
+      aieStartY + "px";
+    aieSelection.style.width = "0px";
+    aieSelection.style.height = "0px";
+    aieSelection.classList.add(
+      "visible"
+    );
+    try{
+      aieOverlay.setPointerCapture(
+        event.pointerId
+      );
+    }
+    catch(error){}
+  },
+  {passive:false}
+);
+aieOverlay.addEventListener(
+  "pointermove",
+  event => {
+    if(!aieSelecting){
+      return;
+    }
+    event.preventDefault();
+    updateSelection(
+      event.clientX,
+      event.clientY
+    );
+  },
+  {passive:false}
+);
+aieOverlay.addEventListener(
+  "pointerup",
+  event => {
+    event.preventDefault();
+    finishAIE(
+      event.clientX,
+      event.clientY
+    );
+  },
+  {passive:false}
+);
+aieOverlay.addEventListener(
+  "pointercancel",
+  event => {
+    deactivateAIE();
+  }
+);
+/* =========================================================
+   AIE RESULT
+========================================================= */
+let lastAIEPayload = null;
+function showAIEResult(payload){
+  lastAIEPayload = payload;
+  const panel =
+    document.getElementById("aiePanel");
+  panel.classList.add("visible");
+  document.getElementById(
+    "aieCaptureId"
+  ).textContent =
+    payload.capture.id;
+  document.getElementById(
+    "aieElements"
+  ).textContent =
+    payload.statistics.total_elements;
+  document.getElementById(
+    "aieTextCount"
+  ).textContent =
+    payload.semantic.text_length;
+  document.getElementById(
+    "aieButtons"
+  ).textContent =
+    payload.statistics.buttons;
+  document.getElementById(
+    "aieLinks"
+  ).textContent =
+    payload.statistics.links;
+  document.getElementById(
+    "aieInputs"
+  ).textContent =
+    payload.statistics.inputs;
+  document.getElementById(
+    "aieTables"
+  ).textContent =
+    payload.statistics.tables;
+  const text =
+    payload.semantic.text;
+  document.getElementById(
+    "aieSummary"
+  ).textContent =
+    text
+      ? text.slice(0,3000)
+      : "Kein sichtbarer Text im markierten Bereich.";
+  document.getElementById(
+    "aieJson"
+  ).value =
+    JSON.stringify(
+      payload,
+      null,
+      2
+    );
+  const status =
+    document.getElementById(
+      "aieStatus"
+    );
+  status.className =
+    "status ok";
+  status.textContent =
+    "✓ CONTEXT ERFASST — " +
+    payload.statistics.total_elements +
+    " Elemente analysiert.";
+  panel.scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}
+/* =========================================================
+   AIE COPY
+========================================================= */
+document.getElementById("aieCopy").onclick =
+async function(){
+  if(!lastAIEPayload){
+    return;
+  }
+  const json =
+    JSON.stringify(
+      lastAIEPayload,
+      null,
+      2
+    );
+  try{
+    await navigator.clipboard.writeText(
+      json
+    );
+    const status =
+      document.getElementById(
+        "aieStatus"
+      );
+    status.className =
+      "status ok";
+    status.textContent =
+      "✓ JSON KOPIERT — Context kann jetzt an GPT übergeben werden.";
+  }
+  catch(error){
+    const area =
+      document.getElementById(
+        "aieJson"
+      );
+    area.focus();
+    area.select();
+    const status =
+      document.getElementById(
+        "aieStatus"
+      );
+    status.className =
+      "status warn";
+    status.textContent =
+      "JSON markiert — bitte manuell kopieren.";
+  }
+};
+/* =========================================================
+   AIE DOWNLOAD
+========================================================= */
+document.getElementById("aieDownload").onclick =
+function(){
+  if(!lastAIEPayload){
+    return;
+  }
+  const json =
+    JSON.stringify(
+      lastAIEPayload,
+      null,
+      2
+    );
+  const blob =
+    new Blob(
+      [json],
+      {
+        type:"application/json"
+      }
+    );
+  const url =
+    URL.createObjectURL(blob);
+  const link =
+    document.createElement("a");
+  link.href = url;
+  link.download =
+    lastAIEPayload.capture.id +
+    ".json";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+};
+/* =========================================================
+   AIE CLOSE
+========================================================= */
+document.getElementById("aieClose").onclick =
+function(){
+  document
+    .getElementById("aiePanel")
+    .classList.remove("visible");
+};
+/* =========================================================
+   AIE START
+========================================================= */
+document.getElementById("aieStart").onclick =
+function(){
+  activateAIE();
+};
+/* =========================================================
+   ESC = CANCEL AIE
+========================================================= */
+document.addEventListener(
+  "keydown",
+  event => {
+    if(
+      event.key === "Escape" &&
+      aieOverlay.classList.contains("active")
+    ){
+      deactivateAIE();
+    }
+  }
+);
 /* =========================================================
    START
 ========================================================= */
-
 openDatabase()
   .then(refresh)
   .catch(error => {
-
     console.error(error);
-
     const status =
       document.getElementById(
         "importStatus"
       );
-
     status.className =
       "status error";
-
     status.textContent =
       "DATABASE FEHLER: " +
       error.message;
-
   });
-
 </script>
-
 </body>
 </html>
