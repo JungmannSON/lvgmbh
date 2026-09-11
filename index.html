@@ -1,11 +1,14 @@
-```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>LV GmbH — DATENBANK</title>
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+<title>LV GmbH — ZDF ABGLEICH</title>
+
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+
 <style>
 :root{
   --bg:#05050a;
@@ -13,1528 +16,4630 @@
   --panel2:#10101a;
   --line:#222233;
   --text:#f2f2f7;
-  --muted:#7a7a90;
-  --acid:#00e5a0;
+  --muted:#77778b;
+
   --pink:#e20074;
   --cyan:#00c8ff;
-  --red:#ff3b6b;
+  --acid:#00e5a0;
   --orange:#ff9f1c;
+  --red:#ff3b6b;
   --violet:#a855f7;
-  --glow-pink:0 0 10px rgba(226,0,116,.55), 0 0 22px rgba(226,0,116,.25);
-  --glow-cyan:0 0 10px rgba(0,200,255,.45), 0 0 20px rgba(0,200,255,.2);
-  --glow-acid:0 0 8px rgba(0,229,160,.4), 0 0 16px rgba(0,229,160,.18);
+
+  --glow-pink:
+    0 0 10px rgba(226,0,116,.55),
+    0 0 22px rgba(226,0,116,.25);
+
+  --glow-cyan:
+    0 0 10px rgba(0,200,255,.45),
+    0 0 20px rgba(0,200,255,.2);
+
+  --glow-acid:
+    0 0 10px rgba(0,229,160,.4),
+    0 0 20px rgba(0,229,160,.18);
 }
-*{box-sizing:border-box;margin:0;padding:0}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
 body{
-  background:
-    radial-gradient(ellipse at 15% 0%, rgba(226,0,116,.06) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 100%, rgba(0,200,255,.05) 0%, transparent 50%),
-    linear-gradient(rgba(0,200,255,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(226,0,116,.02) 1px, transparent 1px),
-    var(--bg);
-  background-size:100% 100%, 100% 100%, 42px 42px, 42px 42px;
-  color:var(--text);
-  font-family:"Courier New",Courier,monospace;
   min-height:100vh;
+  background:
+    radial-gradient(
+      ellipse at 15% 0%,
+      rgba(226,0,116,.06),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at 85% 100%,
+      rgba(0,200,255,.05),
+      transparent 50%
+    ),
+    linear-gradient(
+      rgba(0,200,255,.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(226,0,116,.02) 1px,
+      transparent 1px
+    ),
+    var(--bg);
+
+  background-size:
+    100% 100%,
+    100% 100%,
+    42px 42px,
+    42px 42px;
+
+  color:var(--text);
+  font-family:"Courier New",monospace;
 }
+
+button,
+input,
+textarea,
+select{
+  font-family:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+/* HEADER */
+
 header{
   min-height:82px;
   padding:16px 22px;
+
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:16px;
+
   border-bottom:2px solid var(--pink);
-  background:linear-gradient(180deg,#08080f 0%,#05050a 100%);
-  box-shadow:0 0 28px rgba(226,0,116,.22), inset 0 -1px 0 rgba(0,200,255,.12);
+
+  background:
+    linear-gradient(
+      180deg,
+      #08080f 0%,
+      #05050a 100%
+    );
+
+  box-shadow:
+    0 0 28px rgba(226,0,116,.22),
+    inset 0 -1px 0 rgba(0,200,255,.12);
+
   position:sticky;
   top:0;
   z-index:100;
 }
+
 .brand-main{
-  font:900 22px monospace;
+  font-weight:900;
+  font-size:22px;
   letter-spacing:-1px;
-  color:#fff;
-  text-shadow:0 0 12px rgba(226,0,116,.55);
 }
+
 .brand-sub{
   margin-top:5px;
   color:var(--cyan);
-  font:10px monospace;
+  font-size:10px;
   letter-spacing:3px;
-  text-shadow:0 0 8px rgba(0,200,255,.4);
 }
-.brand-divider{color:var(--pink);text-shadow:var(--glow-pink)}
-nav{display:flex;gap:8px;flex-wrap:wrap}
-button{cursor:pointer;font-family:inherit}
+
+.brand-divider{
+  color:var(--pink);
+}
+
+nav{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
 .nav{
-  padding:11px 14px;
+  padding:11px 15px;
   background:#0a0a12;
   color:#888;
+
   border:1px solid #2a2a3a;
-  font:900 11px monospace;
-  letter-spacing:1px;
-  transition:all .15s;
+
+  font-weight:900;
+  font-size:11px;
+
+  transition:.15s;
 }
-.nav:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:var(--glow-cyan)}
+
+.nav:hover{
+  color:var(--cyan);
+  border-color:var(--cyan);
+  box-shadow:var(--glow-cyan);
+}
+
 .nav.active{
   background:var(--pink);
   color:#fff;
   border-color:var(--pink);
-  transform:skew(-6deg);
-  box-shadow:4px 4px 0 #000, var(--glow-pink);
+  box-shadow:4px 4px 0 #000,var(--glow-pink);
 }
-.status-db{color:#7a7a9a;font:9px monospace;white-space:nowrap}
+
+.status-db{
+  color:#77778f;
+  font-size:9px;
+  white-space:nowrap;
+}
+
 .status-db span{
-  display:inline-block;width:8px;height:8px;border-radius:50%;
-  background:var(--acid);box-shadow:0 0 12px var(--acid);margin-right:5px
+  display:inline-block;
+
+  width:8px;
+  height:8px;
+
+  margin-right:5px;
+
+  border-radius:50%;
+
+  background:var(--acid);
+  box-shadow:0 0 12px var(--acid);
 }
-main{max-width:1100px;margin:auto;padding:26px 16px 90px}
-.view{display:none}
-.view.active{display:block}
-.head{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid #1e1e2e}
+
+/* MAIN */
+
+main{
+  max-width:1150px;
+  margin:auto;
+  padding:28px 16px 90px;
+}
+
+.view{
+  display:none;
+}
+
+.view.active{
+  display:block;
+}
+
+.head{
+  margin-bottom:24px;
+  padding-bottom:18px;
+  border-bottom:1px solid #1e1e2e;
+}
+
 .kicker{
   color:var(--pink);
-  font:900 11px monospace;
+  font-weight:900;
+  font-size:11px;
   letter-spacing:4px;
-  text-shadow:0 0 10px rgba(226,0,116,.5);
 }
+
 h1{
-  margin:10px 0 0;
-  font:900 clamp(30px,5.8vw,58px)/.9 monospace;
+  margin-top:10px;
+
+  font-weight:900;
+  font-size:clamp(32px,6vw,60px);
+  line-height:.9;
+
   letter-spacing:-3px;
-  color:#fff;
-  text-shadow:0 0 16px rgba(0,200,255,.25);
 }
+
+/* CARDS */
+
 .card{
-  background:var(--panel);
-  border:1px solid #222236;
-  box-shadow:6px 6px 0 #000, 0 0 24px rgba(0,0,0,.45);
-  margin-bottom:20px;
   position:relative;
+
+  margin-bottom:20px;
+
+  background:var(--panel);
+
+  border:1px solid #222236;
+
+  box-shadow:
+    6px 6px 0 #000,
+    0 0 24px rgba(0,0,0,.45);
 }
+
 .card::before{
   content:"";
-  position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--pink),var(--cyan));
-  opacity:.75;
+
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+
+  height:2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--pink),
+      var(--cyan)
+    );
 }
+
 .card-head{
   padding:15px 18px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+
   border-bottom:1px solid #1e1e2e;
-  display:flex;justify-content:space-between;align-items:center;gap:12px;
-  font:900 11px monospace;
+
   color:var(--cyan);
-  text-shadow:0 0 6px rgba(0,200,255,.35);
+
+  font-weight:900;
+  font-size:11px;
 }
-.card-body{padding:18px}
-textarea{
-  width:100%;min-height:280px;resize:vertical;padding:16px;
-  background:#030308;color:var(--acid);border:1px solid #2a2a40;outline:none;
-  font:12px/1.5 monospace;
-  box-shadow:inset 0 0 24px rgba(0,0,0,.55);
+
+.card-body{
+  padding:18px;
 }
-textarea:focus{
-  border-color:var(--cyan);
-  box-shadow:inset 0 0 24px rgba(0,0,0,.55), 0 0 14px rgba(0,200,255,.2);
+
+/* NOTICE */
+
+.notice{
+  padding:15px;
+
+  margin-bottom:16px;
+
+  border-left:3px solid var(--pink);
+
+  background:#0a0a12;
+
+  color:#9a9ab0;
+
+  font-size:11px;
+  line-height:1.55;
 }
-.actions{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+
+/* BUTTONS */
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+
+  margin-top:16px;
+}
+
 .btn{
-  padding:14px 20px;
-  background:var(--pink);
-  color:#fff;
-  border:1px solid var(--pink);
-  font:900 12px monospace;
-  letter-spacing:1.5px;
-  box-shadow:4px 4px 0 #000, var(--glow-pink);
   min-height:48px;
-  transition:all .12s;
-}
-.btn:hover{filter:brightness(1.08)}
-.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #000}
-.btn.secondary{
-  background:#0a0a14;
-  color:#ccc;
-  border-color:#3a3a50;
-  box-shadow:4px 4px 0 #000;
-}
-.btn.secondary:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:4px 4px 0 #000, var(--glow-cyan)}
-.btn.pink{
+
+  padding:14px 20px;
+
   background:var(--pink);
   color:#fff;
-  border-color:var(--pink);
-  box-shadow:4px 4px 0 #000, var(--glow-pink);
+
+  border:1px solid var(--pink);
+
+  font-weight:900;
+  font-size:11px;
+  letter-spacing:1.3px;
+
+  box-shadow:
+    4px 4px 0 #000,
+    var(--glow-pink);
 }
+
 .btn.cyan{
   background:var(--cyan);
   color:#000;
   border-color:var(--cyan);
-  box-shadow:4px 4px 0 #000, var(--glow-cyan);
+
+  box-shadow:
+    4px 4px 0 #000,
+    var(--glow-cyan);
 }
-.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;filter:none;box-shadow:4px 4px 0 #000}
+
+.btn.secondary{
+  background:#0a0a14;
+  color:#ccc;
+
+  border-color:#3a3a50;
+
+  box-shadow:4px 4px 0 #000;
+}
+
+.btn:disabled{
+  opacity:.4;
+  cursor:not-allowed;
+}
+
+/* STATUS */
+
 .status{
-  margin-top:16px;padding:14px;
-  border:1px solid #2a2a40;
-  min-height:46px;
-  font:12px monospace;
-  background:#08080f;
-}
-.status.ok{color:var(--acid);border-color:var(--acid);box-shadow:0 0 12px rgba(0,229,160,.18)}
-.status.error{color:var(--red);border-color:var(--red);box-shadow:0 0 12px rgba(255,59,107,.22)}
-.status.warn{color:var(--pink);border-color:var(--pink);box-shadow:0 0 12px rgba(226,0,116,.18)}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-.stat{
-  padding:18px;
-  background:#0a0a12;
-  border:1px solid #222236;
-  box-shadow:0 0 16px rgba(0,0,0,.35);
-}
-.stat-label{color:var(--muted);font:9px monospace;letter-spacing:2px}
-.stat-value{
-  margin-top:8px;
-  font:900 34px monospace;
-  color:#fff;
-  text-shadow:0 0 12px rgba(0,200,255,.35);
-}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.tab{
-  padding:11px 15px;
-  background:#0a0a12;
-  color:#777;
-  border:1px solid #2a2a3a;
-  font:900 10px monospace;
-  transition:all .12s;
-}
-.tab:hover{border-color:var(--cyan);color:var(--cyan)}
-.tab.active{
-  color:#fff;
-  background:var(--pink);
-  border-color:var(--pink);
-  box-shadow:0 0 14px rgba(226,0,116,.4);
-}
-.search{
-  margin-left:auto;min-width:200px;padding:11px 13px;
-  background:#08080f;color:#fff;border:1px solid #2a2a3a;outline:none;font:11px monospace;
-}
-.search:focus{border-color:var(--cyan);box-shadow:0 0 10px rgba(0,200,255,.2)}
-.table-wrap{overflow:auto;-webkit-overflow-scrolling:touch}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th{
-  padding:12px 10px;text-align:left;white-space:nowrap;
-  color:var(--cyan);background:#08080f;
-  border-bottom:2px solid var(--cyan);
-  font:900 9px monospace;letter-spacing:1px;
-}
-td{padding:12px 10px;border-bottom:1px solid #1a1a28}
-tr:hover{background:rgba(226,0,116,.04)}
-.mono{color:var(--cyan);font-family:monospace}
-.good{color:var(--acid)}.bad{color:var(--red)}.warn{color:var(--pink)}.info{color:var(--cyan)}.ambiguous{color:var(--orange)}
-.query-input{
-  width:100%;padding:15px;
-  background:#030308;color:#fff;border:1px solid #2a2a3a;outline:none;font:12px monospace;
-}
-.query-input:focus{border-color:var(--cyan);box-shadow:0 0 12px rgba(0,200,255,.18)}
-.examples{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.examples button{
-  padding:9px 12px;color:#888;background:#0a0a12;border:1px solid #2a2a3a;font:9px monospace;
-  transition:all .12s;
-}
-.examples button:hover{color:var(--cyan);border-color:var(--cyan);box-shadow:var(--glow-cyan)}
-.plan{
-  margin-top:20px;padding:16px;
-  color:var(--cyan);background:#030308;
-  border:1px solid var(--cyan);
-  font:11px monospace;overflow:auto;white-space:pre-wrap;
-  box-shadow:0 0 16px rgba(0,200,255,.12);
-}
-.field-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.field{display:flex;flex-direction:column;gap:7px}
-.field label{color:var(--muted);font:900 9px monospace;letter-spacing:2px}
-.field input,.field select{
-  width:100%;padding:12px 13px;
-  background:#08080f;color:#fff;border:1px solid #2a2a3a;outline:none;font:11px monospace;
-}
-.field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:0 0 10px rgba(0,200,255,.18)}
-.notice{
+  margin-top:16px;
   padding:14px;
-  border-left:3px solid var(--pink);
-  background:#0a0a12;
-  color:#9a9ab0;
-  font:11px/1.55 monospace;
-  margin-bottom:16px;
+
+  min-height:46px;
+
+  background:#08080f;
+
+  border:1px solid #2a2a40;
+
+  font-size:11px;
+  line-height:1.55;
 }
-.badge{display:inline-block;padding:4px 8px;border:1px solid #333;font:900 8px monospace;letter-spacing:1px}
-.badge.good{border-color:var(--acid);color:var(--acid)}
-.badge.bad{border-color:var(--red);color:var(--red)}
-.badge.warn{border-color:var(--pink);color:var(--pink)}
-.badge.ambiguous{border-color:var(--orange);color:var(--orange)}
-.empty{padding:32px;text-align:center;color:var(--muted);font:12px monospace}
-.hidden{display:none!important}
+
+.status.ok{
+  color:var(--acid);
+  border-color:var(--acid);
+}
+
+.status.error{
+  color:var(--red);
+  border-color:var(--red);
+}
+
+.status.warn{
+  color:var(--orange);
+  border-color:var(--orange);
+}
+
+/* UPLOAD */
+
+.upload-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.upload-card{
+  min-height:240px;
+
+  padding:22px;
+
+  display:flex;
+  flex-direction:column;
+
+  background:var(--panel2);
+
+  border:1px solid #222236;
+
+  box-shadow:
+    5px 5px 0 #000,
+    0 0 20px rgba(0,0,0,.4);
+}
+
+.upload-card h3{
+  margin-bottom:5px;
+
+  font-size:18px;
+  letter-spacing:2px;
+}
+
+.upload-card .sub{
+  margin-bottom:16px;
+
+  color:var(--muted);
+
+  font-size:10px;
+}
+
+#cardA h3{
+  color:var(--pink);
+}
+
+#cardB h3{
+  color:var(--cyan);
+}
+
+.upload-zone{
+  flex:1;
+
+  min-height:120px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:2px dashed #33334a;
+
+  padding:22px;
+
+  cursor:pointer;
+
+  text-align:center;
+
+  background:rgba(0,0,0,.22);
+
+  transition:.15s;
+}
+
+.upload-zone:hover,
+.upload-zone.drag{
+  border-color:var(--pink);
+}
+
+#cardB .upload-zone:hover,
+#cardB .upload-zone.drag{
+  border-color:var(--cyan);
+}
+
+.upload-zone input{
+  display:none;
+}
+
+.meta-box{
+  margin-top:16px;
+
+  font-size:11px;
+  line-height:1.7;
+}
+
+.meta-box .label{
+  color:var(--muted);
+}
+
+.col-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+
+  margin-top:10px;
+}
+
+.col-tag{
+  padding:6px 10px;
+
+  background:#08080f;
+
+  border:1px solid #2a2a40;
+
+  color:var(--cyan);
+
+  font-size:9px;
+  font-weight:900;
+}
 
 /* STEPPER */
+
 .stepper{
-  display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 28px;align-items:center;
-  font:900 10px monospace;letter-spacing:1.5px;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px;
+
+  margin:20px 0 28px;
+
+  font-weight:900;
+  font-size:9px;
 }
+
 .step-item{
   padding:10px 13px;
-  border:1px solid #2a2a40;
+
   background:#0a0a12;
+
+  border:1px solid #2a2a40;
+
   color:#555;
-  white-space:nowrap;
-  transition:all .15s;
 }
+
 .step-item.active{
-  background:transparent;
   color:var(--cyan);
   border-color:var(--cyan);
   box-shadow:0 0 14px rgba(0,200,255,.35);
-  text-shadow:0 0 8px rgba(0,200,255,.5);
 }
+
 .step-item.done{
   color:var(--pink);
   border-color:var(--pink);
-  box-shadow:0 0 10px rgba(226,0,116,.2);
 }
-.step-arrow{color:#333;font-size:13px}
 
-/* UPLOAD */
-.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:720px){.upload-grid{grid-template-columns:1fr}}
-.upload-card{
-  background:var(--panel2);
-  border:1px solid #222236;
-  padding:22px;
-  box-shadow:5px 5px 0 #000, 0 0 20px rgba(0,0,0,.4);
-  min-height:190px;
-  display:flex;flex-direction:column;
-  position:relative;
+.step-arrow{
+  color:#333;
 }
-.upload-card::after{
-  content:"";
-  position:absolute;bottom:0;left:0;right:0;height:2px;
-  opacity:.7;
-}
-#cardA::after{
-  background:linear-gradient(90deg,transparent,var(--pink),transparent);
-}
-#cardB::after{
-  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
-}
-.upload-card h3{
-  font:900 17px monospace;letter-spacing:2px;margin-bottom:4px;
-  color:#fff;
-}
-#cardA h3{
-  color:var(--pink);
-  text-shadow:0 0 12px rgba(226,0,116,.6);
-}
-#cardB h3{
-  color:var(--cyan);
-  text-shadow:0 0 12px rgba(0,200,255,.55);
-}
-.upload-card .sub{color:var(--muted);font:10px monospace;margin-bottom:16px;letter-spacing:1px}
-.upload-zone{
-  flex:1;border:2px dashed #33334a;
-  display:flex;align-items:center;justify-content:center;
-  padding:22px;cursor:pointer;transition:all .15s;
-  background:rgba(0,0,0,.22);
-}
-.upload-zone:hover,.upload-zone.drag{
-  border-color:var(--pink);
-  box-shadow:inset 0 0 20px rgba(226,0,116,.06), 0 0 14px rgba(226,0,116,.12);
-}
-#cardB .upload-zone:hover,#cardB .upload-zone.drag{
-  border-color:var(--cyan);
-  box-shadow:inset 0 0 20px rgba(0,200,255,.06), 0 0 14px rgba(0,200,255,.12);
-}
-.upload-zone input{display:none}
-.meta-box{margin-top:16px;font:11px monospace;line-height:1.7}
-.meta-box .label{color:var(--muted)}
-.col-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-.col-tag{
-  padding:6px 10px;
-  border:1px solid #2a2a40;
-  background:#08080f;
-  font:900 10px monospace;
-  color:var(--cyan);
+
+.hidden{
+  display:none!important;
 }
 
 /* QUESTIONS */
+
 .question-box{
-  background:#0a0a12;
-  border:1px solid #2a2a40;
-  padding:24px 20px;
-  box-shadow:6px 6px 0 #000, 0 0 24px rgba(0,0,0,.35);
-  margin-bottom:18px;
-  animation:fadeIn .28s ease;
   position:relative;
+
+  margin-bottom:18px;
+  padding:24px 20px;
+
+  background:#0a0a12;
+
+  border:1px solid #2a2a40;
+
+  box-shadow:
+    6px 6px 0 #000,
+    0 0 24px rgba(0,0,0,.35);
 }
-.question-box::before{
-  content:"";
-  position:absolute;top:0;left:0;width:3px;height:100%;
-  background:linear-gradient(180deg,var(--pink),var(--cyan));
-}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
 .q-num{
-  color:var(--pink);
-  font:900 11px monospace;
-  letter-spacing:3px;
   margin-bottom:10px;
-  text-shadow:0 0 8px rgba(226,0,116,.5);
+
+  color:var(--pink);
+
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:3px;
 }
+
 .q-title{
-  font:900 19px monospace;
   margin-bottom:20px;
-  letter-spacing:-.5px;
+
   color:#fff;
+
+  font-size:19px;
+  font-weight:900;
 }
-.q-options{display:flex;flex-direction:column;gap:11px}
+
+.q-options{
+  display:flex;
+  flex-direction:column;
+  gap:11px;
+}
+
 .q-btn{
-  padding:15px 18px;
-  background:#08080f;
-  border:1px solid #2a2a3a;
-  color:#ccc;
-  font:900 13px monospace;
-  text-align:left;
   min-height:52px;
-  box-shadow:3px 3px 0 #000;
-  transition:all .12s;
+
+  padding:15px 18px;
+
+  background:#08080f;
+
+  border:1px solid #2a2a3a;
+
+  color:#ccc;
+
+  text-align:left;
+
+  font-weight:900;
+  font-size:12px;
 }
-.q-btn:hover,.q-btn.selected{
-  border-color:var(--cyan);
+
+.q-btn:hover,
+.q-btn.selected{
   color:var(--cyan);
+  border-color:var(--cyan);
   background:#0c0c16;
-  box-shadow:3px 3px 0 #000, 0 0 12px rgba(0,200,255,.2);
 }
-.q-btn.multi.selected{
-  background:rgba(0,200,255,.08);
+
+.q-suggest{
+  margin-bottom:14px;
+  padding:12px;
+
+  border:1px solid var(--orange);
+
+  color:var(--orange);
+
+  font-size:11px;
+}
+
+/* TERMINAL */
+
+.terminal{
+  max-height:450px;
+  overflow:auto;
+
+  padding:16px;
+
+  background:#020206;
+
+  border:1px solid #222240;
+
+  color:var(--acid);
+
+  font-size:11px;
+  line-height:1.5;
+
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+textarea{
+  width:100%;
+  min-height:280px;
+
+  padding:16px;
+
+  background:#030308;
+
+  border:1px solid #2a2a40;
+
+  color:var(--acid);
+
+  outline:none;
+
+  font-size:11px;
+  line-height:1.5;
+}
+
+textarea:focus,
+input:focus{
   border-color:var(--cyan);
 }
-.q-suggest{
-  margin-bottom:14px;padding:12px;
-  border:1px solid var(--orange);
-  color:var(--orange);
-  font:11px monospace;
-}
-.q-text{
-  width:100%;min-height:95px;padding:14px;
-  background:#030308;border:1px solid #2a2a40;color:#fff;
-  font:12px monospace;resize:vertical;
-}
-.progress-mini{color:var(--muted);font:11px monospace;margin-bottom:12px;letter-spacing:1px}
 
-/* PROMPT / JSON */
-.terminal{
-  background:#020206;
-  border:1px solid #222240;
-  padding:16px;
-  font:12px/1.45 monospace;
+/* STATS */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+
+  margin-bottom:20px;
+}
+
+.stat{
+  padding:18px;
+
+  background:#0a0a12;
+
+  border:1px solid #222236;
+}
+
+.stat-label{
+  color:var(--muted);
+
+  font-size:9px;
+  letter-spacing:2px;
+}
+
+.stat-value{
+  margin-top:8px;
+
+  color:#fff;
+
+  font-size:32px;
+  font-weight:900;
+}
+
+/* TABLE */
+
+.toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+
+  margin-bottom:14px;
+}
+
+.tab{
+  padding:11px 15px;
+
+  background:#0a0a12;
+
+  border:1px solid #2a2a3a;
+
+  color:#777;
+
+  font-size:9px;
+  font-weight:900;
+}
+
+.tab.active{
+  color:#fff;
+
+  background:var(--pink);
+
+  border-color:var(--pink);
+}
+
+.search{
+  flex:1;
+
+  min-width:220px;
+
+  padding:11px;
+
+  background:#08080f;
+
+  border:1px solid #2a2a3a;
+
+  color:#fff;
+
+  outline:none;
+}
+
+.table-wrap{
+  overflow:auto;
+}
+
+table{
+  width:100%;
+
+  border-collapse:collapse;
+
+  font-size:11px;
+}
+
+th{
+  padding:12px 10px;
+
+  background:#08080f;
+
+  color:var(--cyan);
+
+  border-bottom:2px solid var(--cyan);
+
+  text-align:left;
+
+  white-space:nowrap;
+}
+
+td{
+  padding:11px 10px;
+
+  border-bottom:1px solid #1a1a28;
+
+  white-space:nowrap;
+}
+
+tr:hover{
+  background:rgba(226,0,116,.04);
+}
+
+/* BADGES */
+
+.badge{
+  display:inline-block;
+
+  padding:4px 8px;
+
+  border:1px solid;
+
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.badge.active{
   color:var(--acid);
-  max-height:420px;overflow:auto;white-space:pre-wrap;word-break:break-all;
-  box-shadow:inset 0 0 30px rgba(0,0,0,.6);
+  border-color:var(--acid);
 }
-.step-hint{margin-top:14px;color:#7a7a9a;font:11px monospace;line-height:1.55}
 
-@media(max-width:950px){
-  header{flex-direction:column;align-items:flex-start}
-  nav{width:100%;overflow:auto}
-  .status-db{position:absolute;right:14px;top:20px}
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .field-grid{grid-template-columns:1fr}
-  .search{width:100%;margin-left:0}
-  main{padding:18px 12px 80px}
+.badge.future{
+  color:var(--orange);
+  border-color:var(--orange);
 }
+
+.badge.reminder{
+  color:var(--cyan);
+  border-color:var(--cyan);
+}
+
+.badge.diff{
+  color:var(--red);
+  border-color:var(--red);
+}
+
+.badge.missing{
+  color:var(--pink);
+  border-color:var(--pink);
+}
+
+.badge.ambiguous{
+  color:var(--orange);
+  border-color:var(--orange);
+}
+
+.mono{
+  color:var(--cyan);
+  font-family:monospace;
+}
+
+.empty{
+  padding:35px;
+
+  text-align:center;
+
+  color:var(--muted);
+
+  font-size:11px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+  header{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .upload-grid{
+    grid-template-columns:1fr;
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
 @media(max-width:600px){
-  .stats{grid-template-columns:1fr}
-  .stepper{font-size:9px}
-  .step-item{padding:8px 9px}
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  main{
+    padding:18px 12px 70px;
+  }
 }
 </style>
 </head>
+
 <body>
 
 <header>
+
   <div>
-    <div class="brand-main">LV GmbH <span class="brand-divider">|</span> DATENBANK</div>
-    <div class="brand-sub">IntelliData // KI-gestützter Datenabgleich // Datenbank</div>
+    <div class="brand-main">
+      LV GmbH <span class="brand-divider">|</span> ZDF ABGLEICH
+    </div>
+
+    <div class="brand-sub">
+      SHOP-DATEN // TELEKOM-EXPORT // DETERMINISTISCHER ABGLEICH
+    </div>
   </div>
+
   <nav>
     <button class="nav active" data-view="import">↓</button>
     <button class="nav" data-view="database">▦</button>
     <button class="nav" data-view="query">⚡</button>
   </nav>
-  <div class="status-db"><span></span>INDEXEDDB LOCAL</div>
+
+  <div class="status-db">
+    <span></span>INDEXEDDB LOCAL
+  </div>
+
 </header>
 
+
 <main>
+
+<!-- =========================================================
+     IMPORT
+========================================================= -->
 
 <section id="view-import" class="view active">
 
   <div class="head">
-    <div class="kicker">LOKALER WORKFLOW</div>
-    <h1>TABELLEN<br>AUFBEREITEN</h1>
+    <div class="kicker">OPERATIVER DATENABGLEICH</div>
+
+    <h1>
+      ZDF<br>
+      ↕<br>
+      EXPORT
+    </h1>
   </div>
 
-  <div class="stepper" id="stepper">
-    <div class="step-item active" data-step="1">01 TABELLEN</div>
+
+  <div class="stepper">
+
+    <div class="step-item active" data-step="1">
+      01 QUELLEN
+    </div>
+
     <span class="step-arrow">→</span>
-    <div class="step-item" data-step="2">02 FRAGEN</div>
+
+    <div class="step-item" data-step="2">
+      02 BEDEUTUNG
+    </div>
+
     <span class="step-arrow">→</span>
-    <div class="step-item" data-step="3">03 LLM-AUFTRAG</div>
+
+    <div class="step-item" data-step="3">
+      03 LLM-AUFTRAG
+    </div>
+
     <span class="step-arrow">→</span>
-    <div class="step-item" data-step="4">04 JSON</div>
+
+    <div class="step-item" data-step="4">
+      04 JSON
+    </div>
+
     <span class="step-arrow">→</span>
-    <div class="step-item" data-step="5">05 ABGLEICH</div>
+
+    <div class="step-item" data-step="5">
+      05 ABGLEICH
+    </div>
+
   </div>
 
-  <div id="step1" class="step-panel">
+
+  <!-- =====================================================
+       STEP 1
+  ====================================================== -->
+
+  <div id="step1">
+
+    <div class="notice">
+
+      <strong>ZWEI VERSCHIEDENE WAHRHEITEN</strong><br><br>
+
+      <b>ZDF</b> = vom Shop geführte operative Arbeitsdatei.
+      Sie enthält Verkäufe, Mitarbeiter, wirtschaftliche Werte,
+      Kassen-/Provisionsinformationen und zukünftige Vorgänge.<br><br>
+
+      <b>EXPORT</b> = technischer Nachweis des Telekom-Systems.
+      Er zeigt, welche Vorgänge tatsächlich im System aktiviert
+      bzw. vorhanden sind.
+
+    </div>
+
+
     <div class="upload-grid">
+
+      <!-- ZDF -->
+
       <div class="upload-card" id="cardA">
-        <h3>TABLE A</h3>
-        <div class="sub">Erste Tabelle</div>
-        <div class="upload-zone" id="zoneA" onclick="document.getElementById('fileA').click()">
-          <div>
-            <div style="font:900 13px monospace;margin-bottom:6px;letter-spacing:1px">DATEI AUSWÄHLEN</div>
-            <div style="font:10px monospace;color:#555">CSV · XLSX · XLS · TSV</div>
-          </div>
-          <input type="file" id="fileA" accept=".csv,.xlsx,.xls,.tsv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
+
+        <h3>ZDF</h3>
+
+        <div class="sub">
+          SHOP-ARBEITSDATEI
         </div>
-        <div class="meta-box hidden" id="metaA"></div>
+
+        <div
+          class="upload-zone"
+          id="zoneA"
+        >
+
+          <div>
+            <div style="
+              font-weight:900;
+              font-size:13px;
+              margin-bottom:6px;
+            ">
+              ZDF AUSWÄHLEN
+            </div>
+
+            <div style="
+              color:#555;
+              font-size:10px;
+            ">
+              XLSX · XLS · CSV
+            </div>
+          </div>
+
+          <input
+            type="file"
+            id="fileA"
+            accept=".csv,.xlsx,.xls,.tsv"
+          >
+
+        </div>
+
+        <div
+          class="meta-box hidden"
+          id="metaA"
+        ></div>
+
       </div>
+
+
+      <!-- EXPORT -->
+
       <div class="upload-card" id="cardB">
-        <h3>TABLE B</h3>
-        <div class="sub">Zweite Tabelle</div>
-        <div class="upload-zone" id="zoneB" onclick="document.getElementById('fileB').click()">
+
+        <h3>TELEKOM EXPORT</h3>
+
+        <div class="sub">
+          SYSTEM-NACHWEIS
+        </div>
+
+        <div
+          class="upload-zone"
+          id="zoneB"
+        >
+
           <div>
-            <div style="font:900 13px monospace;margin-bottom:6px;letter-spacing:1px">DATEI AUSWÄHLEN</div>
-            <div style="font:10px monospace;color:#555">CSV · XLSX · XLS · TSV</div>
+            <div style="
+              font-weight:900;
+              font-size:13px;
+              margin-bottom:6px;
+            ">
+              EXPORT AUSWÄHLEN
+            </div>
+
+            <div style="
+              color:#555;
+              font-size:10px;
+            ">
+              XLSX · XLS · CSV
+            </div>
           </div>
-          <input type="file" id="fileB" accept=".csv,.xlsx,.xls,.tsv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
+
+          <input
+            type="file"
+            id="fileB"
+            accept=".csv,.xlsx,.xls,.tsv"
+          >
+
         </div>
-        <div class="meta-box hidden" id="metaB"></div>
+
+        <div
+          class="meta-box hidden"
+          id="metaB"
+        ></div>
+
       </div>
+
     </div>
+
+
     <div class="actions">
-      <button class="btn" id="btnToQuestions" disabled>WEITER ZU FRAGEN →</button>
+
+      <button
+        class="btn"
+        id="btnToQuestions"
+        disabled
+      >
+        WEITER →
+      </button>
+
     </div>
-    <div id="step1Status" class="status">Beide Tabellen hochladen.</div>
+
+
+    <div
+      id="step1Status"
+      class="status"
+    >
+      ZDF und Telekom-Export laden.
+    </div>
+
   </div>
 
-  <div id="step2" class="step-panel hidden">
-    <div class="progress-mini" id="qProgress"></div>
+
+  <!-- =====================================================
+       STEP 2
+  ====================================================== -->
+
+  <div id="step2" class="hidden">
+
+    <div class="notice">
+
+      Der Kunde muss nicht erklären, wie Excel technisch
+      funktioniert.
+
+      Er erklärt nur, <strong>was die ZDF für ihn bedeutet</strong>.
+      Daraus wird später die strukturierte Datenbeschreibung.
+
+    </div>
+
     <div id="questionContainer"></div>
-    <div class="actions">
-      <button class="btn secondary" id="btnBackToUpload">← ZURÜCK</button>
-    </div>
+
   </div>
 
-  <div id="step3" class="step-panel hidden">
+
+  <!-- =====================================================
+       STEP 3
+  ====================================================== -->
+
+  <div id="step3" class="hidden">
+
     <div class="card">
-      <div class="card-head"><strong>LLM-AUFTRAG</strong><span>GENERATED</span></div>
-      <div class="card-body">
-        <div class="notice">Der Auftrag enthält Struktur, Benutzerantworten und die vollständigen Originaldaten. Kein Abgleich, keine Korrekturen.</div>
-        <div class="terminal" id="promptOutput"></div>
-        <div class="actions">
-          <button class="btn pink" id="btnCopyPrompt">📋 LLM-AUFTRAG KOPIEREN</button>
-          <button class="btn secondary" id="btnBackToQuestions">← FRAGEN</button>
-        </div>
-        <div id="promptStatus" class="status">Bereit zum Kopieren.</div>
-        <div class="step-hint">Öffne Grok oder ChatGPT, füge den Auftrag ein und kopiere anschließend die JSON-Antwort zurück hierher.</div>
+
+      <div class="card-head">
+        <strong>LLM-AUFTRAG</strong>
+        <span>STRUKTURIERUNG</span>
       </div>
+
+      <div class="card-body">
+
+        <div class="notice">
+
+          Das LLM interpretiert die Tabellenstruktur und
+          erzeugt ausschließlich strukturierte JSON-Daten.
+
+          <br><br>
+
+          <strong>
+            Es führt keinen Abgleich aus.
+          </strong>
+
+          <br><br>
+
+          Insbesondere wird die Farbe nicht als fachliche
+          Wahrheit übernommen:
+
+          <br><br>
+
+          GELB = ORANGE = <b>ZUKUNFT</b>
+
+          <br>
+
+          BLAU bei MF/CON = <b>ERINNERUNG</b>
+
+          <br>
+
+          aktiv = <b>AKTIV</b>
+
+        </div>
+
+
+        <div
+          class="terminal"
+          id="promptOutput"
+        ></div>
+
+
+        <div class="actions">
+
+          <button
+            class="btn"
+            id="btnCopyPrompt"
+          >
+            📋 LLM-AUFTRAG KOPIEREN
+          </button>
+
+          <button
+            class="btn secondary"
+            id="btnBackQuestions"
+          >
+            ← ZURÜCK
+          </button>
+
+        </div>
+
+
+        <div
+          class="status"
+          id="promptStatus"
+        >
+          Bereit.
+        </div>
+
+      </div>
+
     </div>
+
+
     <div class="actions">
-      <button class="btn" id="btnToJson">WEITER ZU JSON →</button>
+
+      <button
+        class="btn"
+        id="btnToJson"
+      >
+        WEITER ZU JSON →
+      </button>
+
     </div>
+
   </div>
 
-  <div id="step4" class="step-panel hidden">
+
+  <!-- =====================================================
+       STEP 4
+  ====================================================== -->
+
+  <div id="step4" class="hidden">
+
     <div class="card">
-      <div class="card-head"><strong>LLM-JSON</strong><span>VALIDIERUNG</span></div>
-      <div class="card-body">
-        <textarea id="jsonInput" spellcheck="false" placeholder="LLM-JSON HIER EINFÜGEN"></textarea>
-        <div class="actions">
-          <button class="btn" id="btnValidateJson">JSON VALIDIEREN</button>
-          <button class="btn cyan hidden" id="btnImportJson">IN DATENBANK IMPORTIEREN</button>
-          <button class="btn secondary" id="btnClearJson">CLEAR</button>
-        </div>
-        <div id="jsonStatus" class="status">JSON einfügen und validieren.</div>
+
+      <div class="card-head">
+        <strong>LLM-JSON</strong>
+        <span>VALIDIERUNG</span>
       </div>
+
+      <div class="card-body">
+
+        <textarea
+          id="jsonInput"
+          spellcheck="false"
+          placeholder="JSON HIER EINFÜGEN"
+        ></textarea>
+
+
+        <div class="actions">
+
+          <button
+            class="btn"
+            id="btnValidateJson"
+          >
+            JSON VALIDIEREN
+          </button>
+
+          <button
+            class="btn cyan hidden"
+            id="btnImportJson"
+          >
+            DATEN ÜBERNEHMEN
+          </button>
+
+        </div>
+
+
+        <div
+          class="status"
+          id="jsonStatus"
+        >
+          JSON einfügen und validieren.
+        </div>
+
+      </div>
+
     </div>
+
+
     <div class="actions">
-      <button class="btn secondary" id="btnBackToPrompt">← LLM-AUFTRAG</button>
+
+      <button
+        class="btn secondary"
+        id="btnBackPrompt"
+      >
+        ← LLM-AUFTRAG
+      </button>
+
     </div>
+
   </div>
 
 </section>
 
-<section id="view-database" class="view">
+
+<!-- =========================================================
+     DATABASE
+========================================================= -->
+
+<section
+  id="view-database"
+  class="view"
+>
+
   <div class="head">
-    <div class="kicker">GESPEICHERTE DATEN</div>
-    <h1>DATENBANK</h1>
+
+    <div class="kicker">
+      STRUKTURIERTE DATEN
+    </div>
+
+    <h1>
+      DATENBESTAND
+    </h1>
+
   </div>
+
+
   <div class="stats">
-    <div class="stat"><div class="stat-label">TABELLE A</div><div id="tableACount" class="stat-value">0</div></div>
-    <div class="stat"><div class="stat-label">TABELLE B</div><div id="tableBCount" class="stat-value">0</div></div>
-    <div class="stat"><div class="stat-label">GESAMT</div><div id="recordCount" class="stat-value">0</div></div>
-    <div class="stat"><div class="stat-label">ABWEICHUNGEN</div><div id="differenceCount" class="stat-value">0</div></div>
+
+    <div class="stat">
+      <div class="stat-label">
+        ZDF
+      </div>
+
+      <div
+        id="countA"
+        class="stat-value"
+      >
+        0
+      </div>
+    </div>
+
+
+    <div class="stat">
+
+      <div class="stat-label">
+        EXPORT
+      </div>
+
+      <div
+        id="countB"
+        class="stat-value"
+      >
+        0
+      </div>
+
+    </div>
+
+
+    <div class="stat">
+
+      <div class="stat-label">
+        AKTIV
+      </div>
+
+      <div
+        id="countActive"
+        class="stat-value"
+      >
+        0
+      </div>
+
+    </div>
+
+
+    <div class="stat">
+
+      <div class="stat-label">
+        ZUKUNFT
+      </div>
+
+      <div
+        id="countFuture"
+        class="stat-value"
+      >
+        0
+      </div>
+
+    </div>
+
   </div>
+
+
   <div class="toolbar">
-    <button class="tab active" data-tab="tableA">TABELLE A</button>
-    <button class="tab" data-tab="tableB">TABELLE B</button>
-    <button class="tab" data-tab="differences">ABWEICHUNGEN</button>
-    <input id="dbSearch" class="search" placeholder="Datenbank durchsuchen...">
+
+    <button
+      class="tab active"
+      data-tab="A"
+    >
+      ZDF
+    </button>
+
+    <button
+      class="tab"
+      data-tab="B"
+    >
+      EXPORT
+    </button>
+
+    <button
+      class="tab"
+      data-tab="DIFF"
+    >
+      ABWEICHUNGEN
+    </button>
+
+    <input
+      id="dbSearch"
+      class="search"
+      placeholder="Daten durchsuchen..."
+    >
+
   </div>
-  <div class="card"><div class="table-wrap"><div id="databaseTable"></div></div></div>
+
+
+  <div class="card">
+
+    <div class="table-wrap">
+
+      <div id="databaseTable"></div>
+
+    </div>
+
+  </div>
+
 </section>
 
-<section id="view-query" class="view">
+
+<!-- =========================================================
+     QUERY
+========================================================= -->
+
+<section
+  id="view-query"
+  class="view"
+>
+
   <div class="head">
-    <div class="kicker">ABGLEICH</div>
-    <h1>VALIDIERUNG</h1>
-  </div>
-  <div class="card">
-    <div class="card-head"><strong>ABGLEICH</strong><span>DETERMINISTISCH</span></div>
-    <div class="card-body">
-      <div class="notice">Die eigentliche Ausführung verwendet ausschließlich die unten festgelegte Vergleichskonfiguration. Der Text im Anfragefeld wird nicht interpretiert und erzeugt keine versteckten Entscheidungen.</div>
-      <input id="queryInput" class="query-input" placeholder="Beschreibung der Vergleichsanfrage...">
-      <div class="examples">
-        <button data-query="Vergleiche Tabelle A und Tabelle B und zeige alle Abweichungen.">ALLE ABWEICHUNGEN</button>
-        <button data-query="Vergleiche Tabelle A und Tabelle B für den gewählten Zeitraum.">ZEITRAUM</button>
-        <button data-query="Vergleiche die relevanten Buchungswerte aus Tabelle A und Tabelle B.">BUCHUNGEN</button>
-      </div>
-      <div class="actions">
-        <button id="runQuery" class="btn">AUSFÜHREN</button>
-        <button id="clearQuery" class="btn secondary">CLEAR</button>
-      </div>
+
+    <div class="kicker">
+      DETERMINISTISCHE AUSFÜHRUNG
     </div>
+
+    <h1>
+      ABGLEICH
+    </h1>
+
   </div>
+
+
   <div class="card">
-    <div class="card-head"><strong>VERGLEICHSKONFIGURATION</strong><span>EXPLIZITE REGELN</span></div>
+
+    <div class="card-head">
+
+      <strong>
+        VERGLEICH
+      </strong>
+
+      <span>
+        KEIN LLM
+      </span>
+
+    </div>
+
+
     <div class="card-body">
+
+      <div class="notice">
+
+        Ab diesem Punkt wird kein natürlichsprachlicher Auftrag
+        interpretiert.
+
+        <br><br>
+
+        Der Abgleich basiert ausschließlich auf den
+        festgelegten Regeln.
+
+      </div>
+
+
       <div class="field-grid">
-        <div class="field"><label>VON</label><input id="dateFrom" type="date"></div>
-        <div class="field"><label>BIS</label><input id="dateTo" type="date"></div>
-        <div class="field"><label>ABGLEICH ÜBER</label><input id="matchKeys" value="auftrag_id" placeholder="z.B. auftrag_id, vertrags_id"></div>
-        <div class="field"><label>ZU VERGLEICHEN</label><input id="numericFields" value="menge,betrag" placeholder="z.B. menge,betrag"></div>
+
+        <div class="field">
+          <label>ABGLEICHFELD</label>
+
+          <input
+            id="matchField"
+            value="auftrag_id"
+          >
+        </div>
+
+
+        <div class="field">
+          <label>VERGLEICHSFELDER</label>
+
+          <input
+            id="compareFields"
+            value="menge,betrag"
+          >
+        </div>
+
+
+        <div class="field">
+          <label>VON</label>
+
+          <input
+            id="dateFrom"
+            type="date"
+          >
+        </div>
+
+
+        <div class="field">
+          <label>BIS</label>
+
+          <input
+            id="dateTo"
+            type="date"
+          >
+        </div>
+
       </div>
-      <div class="actions"><button id="resetConfig" class="btn secondary">ZURÜCKSETZEN</button></div>
+
+
+      <div class="actions">
+
+        <button
+          class="btn"
+          id="runCompare"
+        >
+          ABGLEICH AUSFÜHREN
+        </button>
+
+        <button
+          class="btn secondary"
+          id="resetCompare"
+        >
+          ZURÜCKSETZEN
+        </button>
+
+      </div>
+
     </div>
+
   </div>
-  <div id="queryPlan" class="plan hidden"></div>
-  <div id="queryResults" class="card hidden" style="margin-top:20px"></div>
+
+
+  <div
+    id="queryPlan"
+    class="card hidden"
+  ></div>
+
+
+  <div
+    id="queryResult"
+    class="card hidden"
+  ></div>
+
 </section>
 
 </main>
 
-<script>
-const DB_NAME = "BOOKING_RECON_DB";
-const DB_VERSION = 1;
-const STORE_RECORDS = "records";
-const STORE_DIFFERENCES = "differences";
-let database = null;
 
-let state = { records: [], differences: [] };
-let currentTab = "tableA";
+<script>
+
+/* =========================================================
+   DATENBANK
+========================================================= */
+
+const DB_NAME = "LV_GMBH_ZDF_RECON";
+const DB_VERSION = 1;
+
+let db = null;
+
+let records = [];
+let differences = [];
+
+let currentTab = "A";
+
+
+/* =========================================================
+   WORKFLOW
+========================================================= */
 
 const workflow = {
-  step: 1,
-  tableA: null,
-  tableB: null,
-  answersA: {},
-  answersB: {},
-  currentTable: "A",
-  qIndex: 0,
-  validatedPayload: null
+
+  step:1,
+
+  tableA:null,
+  tableB:null,
+
+  answersA:{},
+  answersB:{},
+
+  currentTable:"A",
+  qIndex:0,
+
+  validated:null
+
 };
+
+
+/* =========================================================
+   FRAGEN
+========================================================= */
 
 const QUESTIONS = [
-  { id: "table_type", title: "WAS IST DAS FÜR EINE TABELLE?", type: "single", options: ["KASSENAUFTRÄGE", "VERTRAGSBUCHUNGEN", "SONSTIGES"] },
-  { id: "row_meaning", title: "WAS BEDEUTET EINE ZEILE?", type: "single", options: ["EIN AUFTRAG", "EINE POSITION", "EINE BUCHUNG", "SONSTIGES"] },
-  { id: "identifier", title: "WELCHE SPALTE IDENTIFIZIERT DEN VORGANG?", type: "columns", allowNone: false },
-  { id: "date_field", title: "WELCHE SPALTE ENTHÄLT DAS DATUM?", type: "columns", allowNone: true },
-  { id: "relevant", title: "WELCHE SPALTEN SIND FÜR DEN SPÄTEREN ABGLEICH RELEVANT?", type: "multi" },
-  { id: "extra", title: "GIBT ES NOCH EINE WICHTIGE INFORMATION?", type: "text", placeholder: "z.B. Vorgang entspricht dem Auftrag aus Tabelle A." }
+
+  {
+    id:"type",
+    title:"WAS IST DIESE TABELLE FÜR DEN KUNDEN?",
+    type:"single",
+
+    options:[
+      "SHOP-ARBEITSDATEI / ZDF",
+      "TELEKOM-SYSTEMEXPORT",
+      "SONSTIGES"
+    ]
+  },
+
+
+  {
+    id:"row",
+    title:"WAS BEDEUTET EINE ZEILE?",
+    type:"single",
+
+    options:[
+      "EIN VORGANG",
+      "EINE POSITION",
+      "EINE BUCHUNG",
+      "EINE KASSENZEILE",
+      "SONSTIGES"
+    ]
+  },
+
+
+  {
+    id:"identifier",
+    title:"WELCHE SPALTE IDENTIFIZIERT DEN VORGANG?",
+    type:"columns"
+  },
+
+
+  {
+    id:"date",
+    title:"WELCHE SPALTE ENTHÄLT DAS DATUM?",
+    type:"columns",
+    optional:true
+  },
+
+
+  {
+    id:"relevant",
+    title:"WELCHE SPALTEN SIND FÜR DEN ABGLEICH RELEVANT?",
+    type:"multi"
+  },
+
+
+  {
+    id:"status",
+    title:"WIE SOLL DER STATUS AUS DER ZDF ABGELEITET WERDEN?",
+    type:"status"
+  },
+
+
+  {
+    id:"extra",
+    title:"GIBT ES NOCH EINE BESONDERE REGEL?",
+    type:"text"
+  }
+
 ];
 
-function openDatabase(){
-  if(database) return Promise.resolve(database);
+
+/* =========================================================
+   INDEXED DB
+========================================================= */
+
+function openDB(){
+
+  if(db)
+    return Promise.resolve(db);
+
   return new Promise((resolve,reject)=>{
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onupgradeneeded = event => {
-      const db = event.target.result;
-      if(!db.objectStoreNames.contains(STORE_RECORDS)){
-        const store = db.createObjectStore(STORE_RECORDS, { keyPath:"id", autoIncrement:true });
-        store.createIndex("source_table","source_table",{unique:false});
-        store.createIndex("record_id","record_id",{unique:false});
-        store.createIndex("date","date",{unique:false});
+
+    const req =
+      indexedDB.open(
+        DB_NAME,
+        DB_VERSION
+      );
+
+
+    req.onupgradeneeded = e => {
+
+      const d = e.target.result;
+
+
+      if(!d.objectStoreNames.contains("records")){
+
+        const store =
+          d.createObjectStore(
+            "records",
+            {
+              keyPath:"id",
+              autoIncrement:true
+            }
+          );
+
+        store.createIndex(
+          "source",
+          "source",
+          {unique:false}
+        );
+
+        store.createIndex(
+          "status",
+          "status",
+          {unique:false}
+        );
+
       }
-      if(!db.objectStoreNames.contains(STORE_DIFFERENCES)){
-        db.createObjectStore(STORE_DIFFERENCES, { keyPath:"difference_id" });
+
+
+      if(!d.objectStoreNames.contains("differences")){
+
+        d.createObjectStore(
+          "differences",
+          {
+            keyPath:"difference_id"
+          }
+        );
+
       }
+
     };
-    request.onsuccess = () => {
-      database = request.result;
-      database.onversionchange = () => { database.close(); database = null; };
-      resolve(database);
+
+
+    req.onsuccess = () => {
+
+      db = req.result;
+
+      resolve(db);
+
     };
-    request.onerror = () => reject(request.error || new Error("IndexedDB konnte nicht geöffnet werden."));
+
+
+    req.onerror = () =>
+      reject(req.error);
+
   });
+
 }
+
 
 function getAll(storeName){
+
   return new Promise((resolve,reject)=>{
-    const tx = database.transaction(storeName,"readonly");
-    const request = tx.objectStore(storeName).getAll();
-    request.onsuccess = () => resolve(request.result || []);
-    request.onerror = () => reject(request.error);
+
+    const tx =
+      db.transaction(
+        storeName,
+        "readonly"
+      );
+
+    const req =
+      tx.objectStore(storeName).getAll();
+
+    req.onsuccess =
+      () => resolve(req.result || []);
+
+    req.onerror =
+      () => reject(req.error);
+
   });
+
 }
 
-async function readDatabase(){
-  await openDatabase();
-  return { records: await getAll(STORE_RECORDS), differences: await getAll(STORE_DIFFERENCES) };
-}
-
-function clearStore(storeName){
-  return new Promise((resolve,reject)=>{
-    const tx = database.transaction(storeName,"readwrite");
-    tx.objectStore(storeName).clear();
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-    tx.onabort = () => reject(tx.error || new Error("Transaktion abgebrochen."));
-  });
-}
-
-function parseFile(file){
-  return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    const name = file.name.toLowerCase();
-    reader.onload = e => {
-      try{
-        let workbook;
-        if(name.endsWith(".csv") || name.endsWith(".tsv") || file.type.includes("csv") || file.type.includes("tab")){
-          const text = e.target.result;
-          const delim = name.endsWith(".tsv") || (text.indexOf("\t") > -1 && text.indexOf("\t") < text.indexOf(",")) ? "\t" : ",";
-          workbook = XLSX.read(text, { type:"string", FS:delim, raw:false });
-        } else {
-          workbook = XLSX.read(e.target.result, { type:"array", cellDates:true });
-        }
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const json = XLSX.utils.sheet_to_json(sheet, { header:1, defval:"", raw:false });
-        if(!json.length) throw new Error("Leere Tabelle");
-        const headers = json[0].map(h => String(h || "").trim() || "SPALTE");
-        const rows = json.slice(1).filter(r => r.some(c => String(c).trim() !== ""));
-        const data = rows.map(r => {
-          const obj = {};
-          headers.forEach((h,i) => { obj[h] = r[i] !== undefined && r[i] !== null ? String(r[i]).trim() : ""; });
-          return obj;
-        });
-        resolve({ fileName: file.name, fileType: file.name.split(".").pop().toUpperCase(), headers, rows: data, rowCount: data.length, colCount: headers.length });
-      }catch(err){ reject(err); }
-    };
-    reader.onerror = () => reject(new Error("Datei konnte nicht gelesen werden."));
-    if(name.endsWith(".csv") || name.endsWith(".tsv")) reader.readAsText(file);
-    else reader.readAsArrayBuffer(file);
-  });
-}
-
-function analyzeTable(tbl){
-  const samples = {};
-  const emptyCols = [];
-  const types = {};
-  const possibleDate = [];
-  const possibleNum = [];
-  const possibleId = [];
-  tbl.headers.forEach(h => {
-    const vals = tbl.rows.map(r => r[h]).filter(v => v !== "");
-    samples[h] = vals.slice(0,3);
-    if(vals.length === 0) emptyCols.push(h);
-    let numCount = 0, dateCount = 0;
-    vals.slice(0,50).forEach(v => {
-      if(/^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$/.test(v) || /^\d{4}-\d{2}-\d{2}/.test(v)) dateCount++;
-      if(/^-?[\d.,]+$/.test(v.replace(/\s/g,""))) numCount++;
-    });
-    if(dateCount > vals.length * 0.4) possibleDate.push(h);
-    if(numCount > vals.length * 0.5) possibleNum.push(h);
-    const low = h.toLowerCase();
-    if(/id|nr|nummer|auftrag|vertrag|key|code|ref/.test(low)) possibleId.push(h);
-    types[h] = dateCount > numCount ? "date-like" : numCount > vals.length*0.4 ? "numeric-like" : "text";
-  });
-  return { samples, emptyCols, types, possibleDate, possibleNum, possibleId };
-}
-
-function renderMeta(which, tbl){
-  const el = document.getElementById("meta" + which);
-  const a = analyzeTable(tbl);
-  tbl.analysis = a;
-  el.innerHTML = `
-    <div><span class="label">DATEI</span> ${esc(tbl.fileName)}</div>
-    <div><span class="label">TYP</span> ${esc(tbl.fileType)}</div>
-    <div><span class="label">ZEILEN</span> ${tbl.rowCount.toLocaleString("de-DE")}</div>
-    <div><span class="label">SPALTEN</span> ${tbl.colCount}</div>
-    <div style="margin-top:8px"><span class="label">GEFUNDENE SPALTEN</span></div>
-    <div class="col-tags">${tbl.headers.map(h => `<span class="col-tag">${esc(h)}</span>`).join("")}</div>
-  `;
-  el.classList.remove("hidden");
-}
-
-async function handleFile(which, file){
-  const status = document.getElementById("step1Status");
-  try{
-    status.className = "status"; status.textContent = "Analysiere " + file.name + " …";
-    const tbl = await parseFile(file);
-    if(which === "A") workflow.tableA = tbl; else workflow.tableB = tbl;
-    renderMeta(which, tbl);
-    status.className = "status ok";
-    status.textContent = "TABLE " + which + " geladen: " + tbl.rowCount + " Zeilen, " + tbl.colCount + " Spalten.";
-    checkReady();
-  }catch(e){
-    status.className = "status error";
-    status.textContent = "✕ " + e.message;
-  }
-}
-
-function checkReady(){
-  document.getElementById("btnToQuestions").disabled = !(workflow.tableA && workflow.tableB);
-}
-
-["A","B"].forEach(w => {
-  const input = document.getElementById("file" + w);
-  const zone = document.getElementById("zone" + w);
-  input.addEventListener("change", e => { if(e.target.files[0]) handleFile(w, e.target.files[0]); });
-  zone.addEventListener("dragover", e => { e.preventDefault(); zone.classList.add("drag"); });
-  zone.addEventListener("dragleave", () => zone.classList.remove("drag"));
-  zone.addEventListener("drop", e => {
-    e.preventDefault(); zone.classList.remove("drag");
-    if(e.dataTransfer.files[0]) handleFile(w, e.dataTransfer.files[0]);
-  });
-});
-
-function setStep(n){
-  workflow.step = n;
-  document.querySelectorAll(".step-item").forEach(el => {
-    const s = +el.dataset.step;
-    el.classList.remove("active","done");
-    if(s === n) el.classList.add("active");
-    else if(s < n) el.classList.add("done");
-  });
-  document.querySelectorAll(".step-panel").forEach(p => p.classList.add("hidden"));
-  const panel = document.getElementById("step" + n);
-  if(panel) panel.classList.remove("hidden");
-}
-
-document.getElementById("btnToQuestions").onclick = () => {
-  workflow.currentTable = "A";
-  workflow.qIndex = 0;
-  workflow.answersA = {};
-  workflow.answersB = {};
-  setStep(2);
-  renderQuestion();
-};
-document.getElementById("btnBackToUpload").onclick = () => setStep(1);
-document.getElementById("btnBackToQuestions").onclick = () => {
-  workflow.currentTable = "B";
-  workflow.qIndex = QUESTIONS.length - 1;
-  setStep(2);
-  renderQuestion();
-};
-document.getElementById("btnToJson").onclick = () => setStep(4);
-document.getElementById("btnBackToPrompt").onclick = () => setStep(3);
-
-function getCurrentAnswers(){ return workflow.currentTable === "A" ? workflow.answersA : workflow.answersB; }
-function getCurrentTable(){ return workflow.currentTable === "A" ? workflow.tableA : workflow.tableB; }
-
-function renderQuestion(){
-  const container = document.getElementById("questionContainer");
-  const progress = document.getElementById("qProgress");
-  const tbl = getCurrentTable();
-  const answers = getCurrentAnswers();
-  const q = QUESTIONS[workflow.qIndex];
-  const totalQ = QUESTIONS.length * 2;
-  const done = (workflow.currentTable === "A" ? 0 : QUESTIONS.length) + workflow.qIndex;
-  progress.textContent = `TABLE ${workflow.currentTable} · FRAGE ${workflow.qIndex + 1}/${QUESTIONS.length} · GESAMT ${done + 1}/${totalQ}`;
-
-  let html = `<div class="question-box"><div class="q-num">QUESTION ${String(workflow.qIndex + 1).padStart(2,"0")} — TABLE ${workflow.currentTable}</div><div class="q-title">${q.title}</div>`;
-
-  if(q.type === "single"){
-    html += `<div class="q-options">`;
-    q.options.forEach(opt => { html += `<button class="q-btn" data-val="${esc(opt)}">${esc(opt)}</button>`; });
-    html += `</div>`;
-  }
-  else if(q.type === "columns"){
-    const analysis = tbl.analysis || {};
-    if(q.id === "identifier" && analysis.possibleId && analysis.possibleId.length){
-      html += `<div class="q-suggest">MÖGLICHES IDENTIFIKATIONSFELD ERKANNT: ${analysis.possibleId.map(x=>esc(x)).join(", ")}</div>`;
-    }
-    if(q.id === "date_field" && analysis.possibleDate && analysis.possibleDate.length){
-      html += `<div class="q-suggest">MÖGLICHES DATUMSFELD ERKANNT: ${analysis.possibleDate.map(x=>esc(x)).join(", ")}</div>`;
-    }
-    html += `<div class="q-options">`;
-    tbl.headers.forEach(h => { html += `<button class="q-btn" data-val="${esc(h)}">${esc(h)}</button>`; });
-    if(q.allowNone) html += `<button class="q-btn" data-val="__NONE__">[ KEIN DATUM ]</button>`;
-    html += `</div>`;
-  }
-  else if(q.type === "multi"){
-    html += `<div class="q-options" id="multiOpts">`;
-    tbl.headers.forEach(h => {
-      const checked = (answers.relevant || []).includes(h);
-      html += `<button class="q-btn multi ${checked?"selected":""}" data-val="${esc(h)}">${checked?"[x]":"[ ]"} ${esc(h)}</button>`;
-    });
-    html += `</div><div class="actions" style="margin-top:16px"><button class="btn" id="btnMultiNext">WEITER</button></div>`;
-  }
-  else if(q.type === "text"){
-    html += `<textarea class="q-text" id="extraText" placeholder="${esc(q.placeholder||"")}">${esc(answers.extra||"")}</textarea>`;
-    html += `<div class="actions" style="margin-top:14px">
-      <button class="btn" id="btnTextNext">WEITER</button>
-      <button class="btn secondary" id="btnTextSkip">NICHTS WEITERES</button>
-    </div>`;
-  }
-  html += `</div>`;
-  container.innerHTML = html;
-
-  if(q.type === "single" || q.type === "columns"){
-    container.querySelectorAll(".q-btn").forEach(btn => {
-      btn.onclick = () => {
-        const val = btn.dataset.val;
-        if(q.id === "table_type") answers.table_type = val;
-        if(q.id === "row_meaning") answers.row_meaning = val;
-        if(q.id === "identifier") answers.identifier = val === "__NONE__" ? null : val;
-        if(q.id === "date_field") answers.date_field = val === "__NONE__" ? null : val;
-        nextQuestion();
-      };
-    });
-  }
-  if(q.type === "multi"){
-    const selected = new Set(answers.relevant || []);
-    container.querySelectorAll(".q-btn.multi").forEach(btn => {
-      btn.onclick = () => {
-        const v = btn.dataset.val;
-        if(selected.has(v)){ selected.delete(v); btn.classList.remove("selected"); btn.textContent = "[ ] " + v; }
-        else { selected.add(v); btn.classList.add("selected"); btn.textContent = "[x] " + v; }
-      };
-    });
-    document.getElementById("btnMultiNext").onclick = () => {
-      answers.relevant = Array.from(selected);
-      nextQuestion();
-    };
-  }
-  if(q.type === "text"){
-    document.getElementById("btnTextNext").onclick = () => {
-      answers.extra = document.getElementById("extraText").value.trim();
-      nextQuestion();
-    };
-    document.getElementById("btnTextSkip").onclick = () => {
-      answers.extra = "";
-      nextQuestion();
-    };
-  }
-}
-
-function nextQuestion(){
-  workflow.qIndex++;
-  if(workflow.qIndex >= QUESTIONS.length){
-    if(workflow.currentTable === "A"){
-      workflow.currentTable = "B";
-      workflow.qIndex = 0;
-      renderQuestion();
-    } else {
-      generatePrompt();
-      setStep(3);
-    }
-  } else {
-    renderQuestion();
-  }
-}
-
-function generatePrompt(){
-  const A = workflow.tableA;
-  const B = workflow.tableB;
-  const ansA = workflow.answersA;
-  const ansB = workflow.answersB;
-
-  function tableBlock(label, tbl, ans){
-    const dataPreview = tbl.rows.map((r,i) => `  ${JSON.stringify(r)}`).join(",\n");
-    return `────────────────────────
-${label}
-────────────────────────
-
-METADATEN
-Datei: ${tbl.fileName}
-Typ: ${tbl.fileType}
-Zeilen: ${tbl.rowCount}
-Spalten: ${tbl.colCount}
-
-SPALTEN:
-${tbl.headers.map(h => `[ ${h} ]`).join("\n")}
-
-BEISPIELWERTE (erste Zeilen):
-${tbl.rows.slice(0,3).map(r => JSON.stringify(r)).join("\n")}
-
-LEERE SPALTEN: ${(tbl.analysis.emptyCols||[]).join(", ") || "keine"}
-
-MÖGLICHE DATUMSFELDER: ${(tbl.analysis.possibleDate||[]).join(", ") || "—"}
-MÖGLICHE NUMERISCHE FELDER: ${(tbl.analysis.possibleNum||[]).join(", ") || "—"}
-MÖGLICHE IDENTIFIKATIONSFELDER: ${(tbl.analysis.possibleId||[]).join(", ") || "—"}
-
-BENUTZERINFORMATION:
-Tabellentyp: ${ans.table_type || "—"}
-Zeilenbedeutung: ${ans.row_meaning || "—"}
-Identifikationsfeld: ${ans.identifier || "—"}
-Datumsfeld: ${ans.date_field || "KEIN DATUM"}
-Relevante Felder: ${(ans.relevant||[]).join(", ") || "—"}
-Zusatzinfo: ${ans.extra || "—"}
-
-SEMANTISCHE AUSWAHLEN:
-identifier_fields: ${ans.identifier ? JSON.stringify([ans.identifier]) : "[]"}
-date_fields: ${ans.date_field ? JSON.stringify([ans.date_field]) : "[]"}
-relevant_fields: ${JSON.stringify(ans.relevant||[])}
-
-DATEN (vollständig, Originalwerte):
-[
-${dataPreview}
-]
-`;
-  }
-
-  const prompt = `DU BIST EIN DATENSTRUKTURIERUNGS- UND TABELLENANALYSESYSTEM.
-
-AUFGABE:
-Analysiere die folgenden Tabellen zusammen mit den vom Benutzer bereitgestellten Informationen.
-
-Erkenne und strukturiere:
-1. Tabellenstruktur
-2. Bedeutung der Spalten
-3. Datensatzgrenzen
-4. Identifikationsfelder
-5. Datentypen
-6. semantische Beziehungen
-
-WICHTIG:
-* Keine Zeile auslassen.
-* Keine Werte erfinden.
-* Keine Werte korrigieren.
-* Originalwerte erhalten.
-* Tabellen strikt getrennt halten.
-* Keine Buchungen zusammenführen.
-* Keine Buchungen entfernen.
-* Keine Buchungsfehler bewerten.
-* Keine Abweichungen berechnen.
-* Ausschließlich gültiges JSON ausgeben.
-
-${tableBlock("TABLE A", A, ansA)}
-
-${tableBlock("TABLE B", B, ansB)}
-
-AUSGABEFORMAT
-
-Das LLM muss ausschließlich JSON zurückgeben:
-
-{
-  "version": "1.0",
-  "dataset": "BOOKING_RECON",
-  "semantic_structure": {
-    "table_a": {
-      "description": "...",
-      "row_meaning": "...",
-      "identifier_fields": [],
-      "date_fields": [],
-      "relevant_fields": []
-    },
-    "table_b": {
-      "description": "...",
-      "row_meaning": "...",
-      "identifier_fields": [],
-      "date_fields": [],
-      "relevant_fields": []
-    },
-    "relationships": []
-  },
-  "tables": [
-    {
-      "table_id": "TABLE_A",
-      "name": "${A.fileName}",
-      "records": [
-        {
-          "record_id": "A-000001",
-          "date": "YYYY-MM-DD oder null",
-          "source_table": "TABLE_A",
-          "data": { ... Originalfelder ... }
-        }
-      ]
-    },
-    {
-      "table_id": "TABLE_B",
-      "name": "${B.fileName}",
-      "records": [
-        {
-          "record_id": "B-000001",
-          "date": "YYYY-MM-DD oder null",
-          "source_table": "TABLE_B",
-          "data": { ... Originalfelder ... }
-        }
-      ]
-    }
-  ]
-}
-
-Keine Erklärung außerhalb des JSON.
-Keine Markdown-Codeblöcke.
-Nur das JSON-Objekt.`;
-
-  document.getElementById("promptOutput").textContent = prompt;
-  document.getElementById("promptStatus").className = "status";
-  document.getElementById("promptStatus").textContent = "Bereit zum Kopieren.";
-}
-
-document.getElementById("btnCopyPrompt").onclick = async () => {
-  const text = document.getElementById("promptOutput").textContent;
-  const status = document.getElementById("promptStatus");
-  try{
-    await navigator.clipboard.writeText(text);
-    status.className = "status ok";
-    status.textContent = "✓ LLM-AUFTRAG KOPIERT";
-  }catch(e){
-    status.className = "status error";
-    status.textContent = "✕ Kopieren nicht möglich – manuell markieren.";
-  }
-};
-
-function validateImportPayload(payload){
-  if(!payload || typeof payload !== "object") throw new Error("Die Eingabe ist kein gültiges JSON-Objekt.");
-  if(payload.version === undefined) throw new Error("version fehlt.");
-  if(payload.dataset !== "BOOKING_RECON" && !(payload.dataset && payload.dataset.name === "BOOKING_RECON")){
-    throw new Error("dataset muss BOOKING_RECON sein.");
-  }
-  if(!payload.semantic_structure || typeof payload.semantic_structure !== "object"){
-    throw new Error("semantic_structure fehlt.");
-  }
-  if(!Array.isArray(payload.tables)) throw new Error("tables fehlt oder ist kein Array.");
-  if(payload.tables.length !== 2) throw new Error("Es werden genau zwei Tabellen benötigt.");
-
-  const expected = ["TABLE_A","TABLE_B"];
-  const seenIds = new Set();
-
-  payload.tables.forEach((table, index) => {
-    if(!table || typeof table !== "object") throw new Error("Eine Tabelle ist ungültig.");
-    if(table.table_id !== expected[index]) throw new Error("Die Tabellen müssen als TABLE_A und TABLE_B in dieser Reihenfolge vorliegen.");
-    if(!Array.isArray(table.records)) throw new Error(table.table_id + " besitzt kein gültiges records-Array.");
-
-    table.records.forEach((record, recordIndex) => {
-      if(!record || typeof record !== "object"){
-        throw new Error("Ungültiger Datensatz in " + table.table_id + " an Position " + recordIndex + ".");
-      }
-      if(!record.record_id){
-        throw new Error(table.table_id + ".records[" + recordIndex + "] — record_id fehlt.");
-      }
-      const rid = String(record.record_id);
-      if(seenIds.has(rid)) throw new Error("Doppelte record_id: " + rid);
-      seenIds.add(rid);
-      if(record.source_table && record.source_table !== table.table_id){
-        throw new Error("source_table stimmt nicht mit table_id überein (" + table.table_id + ".records[" + recordIndex + "]).");
-      }
-      if(record.data !== undefined && (record.data === null || typeof record.data !== "object" || Array.isArray(record.data))){
-        throw new Error("data muss ein Objekt sein (" + table.table_id + ".records[" + recordIndex + "]).");
-      }
-    });
-  });
-}
-
-async function importJSON(payload){
-  await openDatabase();
-  validateImportPayload(payload);
-  const tables = payload.tables || (payload.dataset && payload.dataset.tables) || [];
-  const version = payload.version || "1.0";
-  await clearStore(STORE_RECORDS);
-  const transaction = database.transaction(STORE_RECORDS, "readwrite");
-  const store = transaction.objectStore(STORE_RECORDS);
-  let inserted = 0;
-  for(const table of tables){
-    for(const record of table.records){
-      store.put({
-        record_id: String(record.record_id),
-        source_table: table.table_id,
-        source_name: String(table.name || table.table_id),
-        date: record.date || null,
-        data: record.data && typeof record.data === "object" ? record.data : {},
-        imported_at: new Date().toISOString(),
-        dataset_version: String(version)
-      });
-      inserted++;
-    }
-  }
-  return new Promise((resolve,reject)=>{
-    transaction.oncomplete = () => resolve({ tables:2, records:inserted });
-    transaction.onerror = () => reject(transaction.error || new Error("Die Daten konnten nicht gespeichert werden."));
-    transaction.onabort = () => reject(transaction.error || new Error("Die Übernahme wurde abgebrochen."));
-  });
-}
-
-document.getElementById("btnValidateJson").onclick = () => {
-  const status = document.getElementById("jsonStatus");
-  const importBtn = document.getElementById("btnImportJson");
-  importBtn.classList.add("hidden");
-  workflow.validatedPayload = null;
-  try{
-    const text = document.getElementById("jsonInput").value.trim();
-    if(!text) throw new Error("Bitte zuerst die JSON-Ausgabe einfügen.");
-    let json;
-    try{ json = JSON.parse(text); } catch(e){ throw new Error("Die Ausgabe ist kein gültiges JSON."); }
-    validateImportPayload(json);
-    const a = json.tables[0].records.length;
-    const b = json.tables[1].records.length;
-    status.className = "status ok";
-    status.innerHTML = `✓ JSON VALID<br>✓ TABLE A VALID (${a} records)<br>✓ TABLE B VALID (${b} records)<br>✓ ${(a+b).toLocaleString("de-DE")} RECORDS ERKANNT`;
-    workflow.validatedPayload = json;
-    importBtn.classList.remove("hidden");
-  }catch(e){
-    status.className = "status error";
-    status.textContent = "✕ JSON ABGELEHNT\n\n" + e.message;
-  }
-};
-
-document.getElementById("btnImportJson").onclick = async () => {
-  const status = document.getElementById("jsonStatus");
-  if(!workflow.validatedPayload) return;
-  try{
-    status.className = "status"; status.textContent = "IMPORTIERE …";
-    const result = await importJSON(workflow.validatedPayload);
-    await refresh();
-    status.className = "status ok";
-    status.textContent = "✓ " + result.records + " Datensätze aus " + result.tables + " Tabellen in IndexedDB gespeichert.";
-    setStep(5);
-    document.querySelectorAll(".nav").forEach(n => n.classList.remove("active"));
-    document.querySelector('.nav[data-view="database"]').classList.add("active");
-    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-    document.getElementById("view-database").classList.add("active");
-  }catch(e){
-    status.className = "status error";
-    status.textContent = "✕ " + e.message;
-  }
-};
-
-document.getElementById("btnClearJson").onclick = () => {
-  document.getElementById("jsonInput").value = "";
-  document.getElementById("btnImportJson").classList.add("hidden");
-  workflow.validatedPayload = null;
-  document.getElementById("jsonStatus").className = "status";
-  document.getElementById("jsonStatus").textContent = "JSON einfügen und validieren.";
-};
 
 async function refresh(){
-  state = await readDatabase();
-  const a = state.records.filter(r => r.source_table === "TABLE_A");
-  const b = state.records.filter(r => r.source_table === "TABLE_B");
-  document.getElementById("tableACount").textContent = a.length;
-  document.getElementById("tableBCount").textContent = b.length;
-  document.getElementById("recordCount").textContent = state.records.length;
-  document.getElementById("differenceCount").textContent = state.differences.length;
+
+  await openDB();
+
+  records =
+    await getAll("records");
+
+  differences =
+    await getAll("differences");
+
   renderDatabase();
+
+  updateStats();
+
 }
 
-function esc(value){
-  return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
-}
 
-function formatData(data){
-  if(data === null || data === undefined) return "—";
-  if(typeof data === "object") return JSON.stringify(data);
-  return String(data);
-}
+/* =========================================================
+   DATEIEN
+========================================================= */
 
-function renderDatabase(){
-  const container = document.getElementById("databaseTable");
-  const search = document.getElementById("dbSearch").value.toLowerCase().trim();
-  if(currentTab === "differences"){ renderDifferences(container, search); return; }
-  const source = currentTab === "tableA" ? "TABLE_A" : "TABLE_B";
-  let rows = state.records.filter(r => r.source_table === source);
-  if(search) rows = rows.filter(r => JSON.stringify(r).toLowerCase().includes(search));
-  if(!rows.length){ container.innerHTML = `<div class="empty">KEINE DATENSÄTZE VORHANDEN</div>`; return; }
-  const keys = new Set();
-  rows.forEach(row => Object.keys(row.data || {}).forEach(k => keys.add(k)));
-  const columns = Array.from(keys);
-  let html = `<table><thead><tr><th>RECORD-ID</th><th>DATUM</th>${columns.map(k=>`<th>${esc(k.toUpperCase())}</th>`).join("")}</tr></thead><tbody>`;
-  rows.forEach(row => {
-    html += `<tr><td class="mono">${esc(row.record_id)}</td><td>${esc(row.date||"—")}</td>${columns.map(k=>`<td>${esc(formatData(row.data[k]))}</td>`).join("")}</tr>`;
-  });
-  html += `</tbody></table>`;
-  container.innerHTML = html;
-}
-
-function renderDifferences(container, search){
-  let rows = [...state.differences];
-  if(search) rows = rows.filter(r => JSON.stringify(r).toLowerCase().includes(search));
-  if(!rows.length){ container.innerHTML = `<div class="empty">KEINE ABWEICHUNGEN GEFUNDEN</div>`; return; }
-  let html = `<table><thead><tr><th>STATUS</th><th>ABGLEICH</th><th>FELD</th><th>TABELLE A</th><th>TABELLE B</th><th>DIFFERENZ</th></tr></thead><tbody>`;
-  rows.forEach(row => {
-    let statusClass = "warn";
-    if(row.status === "DIFFERENCE") statusClass = "bad";
-    if(row.status === "AMBIGUOUS_MATCH") statusClass = "ambiguous";
-    html += `<tr>
-      <td><span class="badge ${statusClass}">${esc(row.status)}</span></td>
-      <td class="mono">${esc(row.match_key)}</td>
-      <td>${esc(row.field)}</td>
-      <td>${esc(formatData(row.value_a))}</td>
-      <td>${esc(formatData(row.value_b))}</td>
-      <td class="${statusClass}">${esc(formatData(row.difference))}</td>
-    </tr>`;
-  });
-  html += `</tbody></table>`;
-  container.innerHTML = html;
-}
-
-function getField(record, field){
-  if(record.data && Object.prototype.hasOwnProperty.call(record.data, field)) return record.data[field];
-  return undefined;
-}
-function normalizeKey(value){
-  if(value === undefined || value === null) return null;
-  const normalized = String(value).trim().toLowerCase();
-  return normalized === "" ? null : normalized;
-}
-function makeMatchKey(record, fields){
-  return fields.map(f => normalizeKey(getField(record, f))).join("||");
-}
-function hasCompleteMatchKey(record, fields){
-  return fields.every(f => normalizeKey(getField(record, f)) !== null);
-}
-function dateAllowed(record, from, to){
-  if(!record.date) return true;
-  if(from && record.date < from) return false;
-  if(to && record.date > to) return false;
-  return true;
-}
-function numeric(value){
-  if(typeof value === "number"){
-    return Number.isFinite(value) ? {state:"PRESENT",value} : {state:"INVALID",value:null};
-  }
-  if(value === null || value === undefined) return {state:"MISSING",value:null};
-  const raw = String(value).trim();
-  if(raw === "") return {state:"MISSING",value:null};
-  let text = raw.replace(/[€$£]/g,"").replace(/\s/g,"");
-  const hasComma = text.includes(","), hasDot = text.includes(".");
-  if(hasComma && hasDot){
-    const lastComma = text.lastIndexOf(","), lastDot = text.lastIndexOf(".");
-    if(lastComma > lastDot) text = text.replace(/\./g,"").replace(",",".");
-    else text = text.replace(/,/g,"");
-  } else if(hasComma) text = text.replace(",",".");
-  text = text.replace(/[^\d.-]/g,"");
-  if(text === "" || text === "-" || text === ".") return {state:"INVALID",value:null};
-  const number = Number(text);
-  return Number.isFinite(number) ? {state:"PRESENT",value:number} : {state:"INVALID",value:null};
-}
-function createRunId(){
-  const now = new Date();
-  const iso = now.toISOString().replace(/[-:.TZ]/g,"");
-  if(typeof crypto !== "undefined" && crypto.randomUUID) return "RUN-" + iso + "-" + crypto.randomUUID().slice(0,8).toUpperCase();
-  return "RUN-" + iso;
-}
-
-async function compareTables(){
-  await openDatabase();
-  const from = document.getElementById("dateFrom").value;
-  const to = document.getElementById("dateTo").value;
-  if(from && to && from > to) throw new Error("Der Zeitraum ist ungültig: VON liegt nach BIS.");
-  const matchFields = document.getElementById("matchKeys").value.split(",").map(v=>v.trim()).filter(Boolean);
-  const numericFields = document.getElementById("numericFields").value.split(",").map(v=>v.trim()).filter(Boolean);
-  if(!matchFields.length) throw new Error("Mindestens ein Abgleich-Feld ist erforderlich.");
-  if(!numericFields.length) throw new Error("Mindestens ein Vergleichsfeld ist erforderlich.");
-
-  const tableA = state.records.filter(r => r.source_table==="TABLE_A" && dateAllowed(r,from,to));
-  const tableB = state.records.filter(r => r.source_table==="TABLE_B" && dateAllowed(r,from,to));
-
-  const mapB = new Map();
-  tableB.forEach(record => {
-    if(!hasCompleteMatchKey(record, matchFields)) return;
-    const key = makeMatchKey(record, matchFields);
-    if(!mapB.has(key)) mapB.set(key,[]);
-    mapB.get(key).push(record);
-  });
-  const mapA = new Map();
-  tableA.forEach(record => {
-    if(!hasCompleteMatchKey(record, matchFields)) return;
-    const key = makeMatchKey(record, matchFields);
-    if(!mapA.has(key)) mapA.set(key,[]);
-    mapA.get(key).push(record);
-  });
-
-  const differences = [];
-  let comparisonCount=0, ambiguousCount=0, missingInACount=0, missingInBCount=0, invalidKeyCount=0;
-  const runId = createRunId();
-
-  function addDifference(row){
-    differences.push({ ...row, run_id: runId, sequence: differences.length+1 });
-  }
-
-  for(const recordA of tableA){
-    if(!hasCompleteMatchKey(recordA, matchFields)){
-      invalidKeyCount++;
-      addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"INVALID_MATCH_KEY", match_key:makeMatchKey(recordA,matchFields), field:"__match_key__", value_a:recordA.record_id, value_b:null, difference:null, record_a:recordA.record_id, record_b:null });
-      continue;
-    }
-    const key = makeMatchKey(recordA, matchFields);
-    const candidates = mapB.get(key) || [];
-    if(candidates.length === 0){
-      missingInBCount++;
-      addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"MISSING_IN_B", match_key:key, field:"__record__", value_a:recordA.record_id, value_b:null, difference:null, record_a:recordA.record_id, record_b:null });
-      continue;
-    }
-    if(candidates.length > 1){
-      ambiguousCount++;
-      addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"AMBIGUOUS_MATCH", match_key:key, field:"__record__", value_a:recordA.record_id, value_b:candidates.map(r=>r.record_id).join(", "), difference:null, record_a:recordA.record_id, record_b:candidates.map(r=>r.record_id) });
-      continue;
-    }
-    const recordB = candidates[0];
-    comparisonCount++;
-    for(const field of numericFields){
-      const valueA = numeric(getField(recordA, field));
-      const valueB = numeric(getField(recordB, field));
-      if(valueA.state==="MISSING" && valueB.state==="MISSING") continue;
-      if(valueA.state==="MISSING" || valueB.state==="MISSING"){
-        addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"VALUE_MISSING", match_key:key, field, value_a:valueA.state==="PRESENT"?valueA.value:null, value_b:valueB.state==="PRESENT"?valueB.value:null, difference:null, record_a:recordA.record_id, record_b:recordB.record_id });
-        continue;
-      }
-      if(valueA.state==="INVALID" || valueB.state==="INVALID"){
-        addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"VALUE_INVALID", match_key:key, field, value_a:getField(recordA,field), value_b:getField(recordB,field), difference:null, record_a:recordA.record_id, record_b:recordB.record_id });
-        continue;
-      }
-      const difference = valueA.value - valueB.value;
-      if(difference !== 0){
-        addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"DIFFERENCE", match_key:key, field, value_a:valueA.value, value_b:valueB.value, difference, record_a:recordA.record_id, record_b:recordB.record_id });
-      }
-    }
-  }
-
-  for(const recordB of tableB){
-    if(!hasCompleteMatchKey(recordB, matchFields)) continue;
-    const key = makeMatchKey(recordB, matchFields);
-    const candidates = mapA.get(key) || [];
-    if(candidates.length === 0){
-      missingInACount++;
-      addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"MISSING_IN_A", match_key:key, field:"__record__", value_a:null, value_b:recordB.record_id, difference:null, record_a:null, record_b:recordB.record_id });
-    }
-  }
-
-  const plan = {
-    version:"2.0", operation:"COMPARE_TABLES", execution:"DETERMINISTIC", run_id:runId,
-    period:{from:from||null,to:to||null},
-    input:{tableA:tableA.length,tableB:tableB.length},
-    matching:{strategy:"EXACT",fields:matchFields,incomplete_key_policy:"INVALID_MATCH_KEY",duplicate_match_policy:"AMBIGUOUS_MATCH",missing_record_policy:"EXPLICIT_STATUS"},
-    calculations:numericFields.map(f=>({field:f,operation:"A_MINUS_B",missing_value_policy:"DO_NOT_COERCE_TO_ZERO",invalid_value_policy:"VALUE_INVALID"})),
-    output:{type:"VALIDATED_DIFFERENCES",statuses:["DIFFERENCE","VALUE_MISSING","VALUE_INVALID","MISSING_IN_A","MISSING_IN_B","AMBIGUOUS_MATCH","INVALID_MATCH_KEY"]},
-    statistics:{
-      exact_matches:comparisonCount,
-      differences:differences.filter(r=>r.status==="DIFFERENCE").length,
-      missingValues:differences.filter(r=>r.status==="VALUE_MISSING").length,
-      invalidValues:differences.filter(r=>r.status==="VALUE_INVALID").length,
-      missingInA:missingInACount, missingInB:missingInBCount, ambiguousMatches:ambiguousCount, invalidMatchKeys:invalidKeyCount
-    }
-  };
-
-  await clearStore(STORE_DIFFERENCES);
-  const transaction = database.transaction(STORE_DIFFERENCES,"readwrite");
-  const store = transaction.objectStore(STORE_DIFFERENCES);
-  differences.forEach(d => store.put(d));
+function parseFile(file){
 
   return new Promise((resolve,reject)=>{
-    transaction.oncomplete = () => resolve({
-      runId, tableA:tableA.length, tableB:tableB.length, comparisons:comparisonCount,
-      differences:differences.length, ambiguous:ambiguousCount, missingInA:missingInACount,
-      missingInB:missingInBCount, invalidMatchKeys:invalidKeyCount, plan
-    });
-    transaction.onerror = () => reject(transaction.error || new Error("Ergebnis konnte nicht gespeichert werden."));
-    transaction.onabort = () => reject(transaction.error || new Error("Ergebnis-Speicherung wurde abgebrochen."));
+
+    const reader =
+      new FileReader();
+
+    const name =
+      file.name.toLowerCase();
+
+
+    reader.onload = e => {
+
+      try{
+
+        let workbook;
+
+
+        if(
+          name.endsWith(".csv") ||
+          name.endsWith(".tsv")
+        ){
+
+          const text =
+            e.target.result;
+
+          const delimiter =
+            name.endsWith(".tsv")
+              ? "\t"
+              : ",";
+
+          workbook =
+            XLSX.read(
+              text,
+              {
+                type:"string",
+                FS:delimiter,
+                raw:false
+              }
+            );
+
+        }
+        else{
+
+          workbook =
+            XLSX.read(
+              e.target.result,
+              {
+                type:"array",
+                cellDates:true
+              }
+            );
+
+        }
+
+
+        const sheet =
+          workbook.Sheets[
+            workbook.SheetNames[0]
+          ];
+
+
+        const rows =
+          XLSX.utils.sheet_to_json(
+            sheet,
+            {
+              header:1,
+              defval:"",
+              raw:false
+            }
+          );
+
+
+        if(!rows.length)
+          throw new Error(
+            "Tabelle ist leer."
+          );
+
+
+        const headers =
+          rows[0].map(
+            (v,i) =>
+              String(v || "").trim() ||
+              "SPALTE_" + (i+1)
+          );
+
+
+        const data =
+          rows
+          .slice(1)
+          .filter(row =>
+            row.some(
+              cell =>
+                String(cell ?? "").trim() !== ""
+            )
+          )
+          .map(row=>{
+
+            const obj = {};
+
+            headers.forEach(
+              (header,index)=>{
+
+                obj[header] =
+                  String(
+                    row[index] ?? ""
+                  ).trim();
+
+              }
+            );
+
+            return obj;
+
+          });
+
+
+        resolve({
+
+          fileName:file.name,
+
+          type:
+            file.name
+              .split(".")
+              .pop()
+              .toUpperCase(),
+
+          headers,
+
+          rows:data,
+
+          rowCount:data.length,
+
+          colCount:headers.length
+
+        });
+
+      }
+      catch(err){
+
+        reject(err);
+
+      }
+
+    };
+
+
+    reader.onerror = () =>
+      reject(
+        new Error(
+          "Datei konnte nicht gelesen werden."
+        )
+      );
+
+
+    if(
+      name.endsWith(".csv") ||
+      name.endsWith(".tsv")
+    )
+      reader.readAsText(file);
+    else
+      reader.readAsArrayBuffer(file);
+
   });
+
 }
 
-document.querySelectorAll(".nav").forEach(button => {
-  button.onclick = function(){
-    document.querySelectorAll(".nav").forEach(i => i.classList.remove("active"));
-    button.classList.add("active");
-    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-    document.getElementById("view-" + button.dataset.view).classList.add("active");
-    if(button.dataset.view === "database") refresh();
-    if(button.dataset.view === "import") setStep(workflow.step);
+
+/* =========================================================
+   TABELLENANALYSE
+========================================================= */
+
+function analyzeTable(tbl){
+
+  const possibleId = [];
+  const possibleDate = [];
+  const possibleNumber = [];
+
+  tbl.headers.forEach(header=>{
+
+    const values =
+      tbl.rows
+        .map(r=>r[header])
+        .filter(Boolean);
+
+
+    const low =
+      header.toLowerCase();
+
+
+    if(
+      /auftrag|auftrags|vertrag|vertrags|imei|freifeld|nummer|nr|id|ref/.test(low)
+    )
+      possibleId.push(header);
+
+
+    let dates = 0;
+    let nums = 0;
+
+
+    values.slice(0,100).forEach(value=>{
+
+      const v =
+        String(value).trim();
+
+
+      if(
+        /^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$/.test(v) ||
+        /^\d{4}-\d{2}-\d{2}/.test(v)
+      )
+        dates++;
+
+
+      if(
+        /^-?[\d.,]+$/.test(
+          v.replace(/\s/g,"")
+        )
+      )
+        nums++;
+
+    });
+
+
+    if(
+      values.length &&
+      dates / values.length > .4
+    )
+      possibleDate.push(header);
+
+
+    if(
+      values.length &&
+      nums / values.length > .5
+    )
+      possibleNumber.push(header);
+
+  });
+
+
+  tbl.analysis = {
+
+    possibleId,
+    possibleDate,
+    possibleNumber
+
   };
-});
 
-document.querySelectorAll(".tab").forEach(button => {
-  button.onclick = function(){
-    document.querySelectorAll(".tab").forEach(i => i.classList.remove("active"));
-    button.classList.add("active");
-    currentTab = button.dataset.tab;
-    renderDatabase();
-  };
-});
 
-document.getElementById("dbSearch").oninput = renderDatabase;
+  return tbl;
 
-document.querySelectorAll(".examples button").forEach(button => {
-  button.onclick = function(){ document.getElementById("queryInput").value = button.dataset.query; };
-});
+}
 
-document.getElementById("clearQuery").onclick = function(){
-  document.getElementById("queryInput").value = "";
-  document.getElementById("queryPlan").classList.add("hidden");
-  document.getElementById("queryResults").classList.add("hidden");
-};
 
-document.getElementById("resetConfig").onclick = function(){
-  document.getElementById("dateFrom").value = "";
-  document.getElementById("dateTo").value = "";
-  document.getElementById("matchKeys").value = "auftrag_id";
-  document.getElementById("numericFields").value = "menge,betrag";
-};
+/* =========================================================
+   META
+========================================================= */
 
-document.getElementById("runQuery").onclick = async function(){
-  const planElement = document.getElementById("queryPlan");
-  const resultCard = document.getElementById("queryResults");
+function renderMeta(which,tbl){
+
+  analyzeTable(tbl);
+
+  const el =
+    document.getElementById(
+      "meta" + which
+    );
+
+
+  el.innerHTML = `
+
+    <div>
+      <span class="label">DATEI</span>
+      ${esc(tbl.fileName)}
+    </div>
+
+    <div>
+      <span class="label">ZEILEN</span>
+      ${tbl.rowCount}
+    </div>
+
+    <div>
+      <span class="label">SPALTEN</span>
+      ${tbl.colCount}
+    </div>
+
+    <div style="margin-top:8px">
+      <span class="label">
+        SPALTEN
+      </span>
+    </div>
+
+    <div class="col-tags">
+
+      ${tbl.headers
+        .map(h =>
+          `<span class="col-tag">
+             ${esc(h)}
+           </span>`
+        )
+        .join("")}
+
+    </div>
+
+  `;
+
+
+  el.classList.remove(
+    "hidden"
+  );
+
+}
+
+
+/* =========================================================
+   UPLOAD
+========================================================= */
+
+async function handleFile(which,file){
+
+  const status =
+    document.getElementById(
+      "step1Status"
+    );
+
+
   try{
-    await refresh();
-    const result = await compareTables();
-    planElement.textContent = JSON.stringify(result.plan, null, 2);
-    planElement.classList.remove("hidden");
-    const hasProblems = result.differences > 0;
-    resultCard.innerHTML = `
-      <div class="card-head"><strong>ERGEBNIS</strong><span>FESTE AUSFÜHRUNG</span></div>
-      <div class="card-body">
-        <div class="stats">
-          <div class="stat"><div class="stat-label">TABELLE A</div><div class="stat-value">${result.tableA}</div></div>
-          <div class="stat"><div class="stat-label">TABELLE B</div><div class="stat-value">${result.tableB}</div></div>
-          <div class="stat"><div class="stat-label">VERGLEICHE</div><div class="stat-value">${result.comparisons}</div></div>
-          <div class="stat"><div class="stat-label">ERGEBNISSE</div><div class="stat-value">${result.differences}</div></div>
-        </div>
-        <div class="status ${hasProblems?"warn":"ok"}">
-          ${!hasProblems ? "✓ KEINE ABWEICHUNGEN GEFUNDEN." : "⚠ " + result.differences + " ERGEBNISSE GEFUNDEN."}
-        </div>
-        <div class="status">
-          RUN-ID: ${esc(result.runId)}<br><br>
-          Eindeutige Matches: ${result.comparisons}<br>
-          Abweichungen: ${result.plan.statistics.differences}<br>
-          Fehlende Werte: ${result.plan.statistics.missingValues}<br>
-          Ungültige Werte: ${result.plan.statistics.invalidValues}<br>
-          Fehlt in A: ${result.missingInA}<br>
-          Fehlt in B: ${result.missingInB}<br>
-          Mehrdeutige Matches: ${result.ambiguous}<br>
-          Ungültige Match-Keys: ${result.invalidMatchKeys}
-        </div>
-      </div>`;
-    resultCard.classList.remove("hidden");
-    await refresh();
-  }catch(error){
-    planElement.textContent = "FEHLER:\n\n" + error.message;
-    planElement.classList.remove("hidden");
-    resultCard.classList.add("hidden");
+
+    status.className =
+      "status";
+
+    status.textContent =
+      "Analysiere " +
+      file.name +
+      " …";
+
+
+    const table =
+      await parseFile(file);
+
+
+    if(which === "A")
+      workflow.tableA = table;
+    else
+      workflow.tableB = table;
+
+
+    renderMeta(
+      which,
+      table
+    );
+
+
+    status.className =
+      "status ok";
+
+    status.textContent =
+      which === "A"
+        ? "ZDF geladen."
+        : "Telekom-Export geladen.";
+
+
+    checkReady();
+
   }
+  catch(error){
+
+    status.className =
+      "status error";
+
+    status.textContent =
+      "✕ " + error.message;
+
+  }
+
+}
+
+
+["A","B"].forEach(which=>{
+
+  const input =
+    document.getElementById(
+      "file" + which
+    );
+
+  const zone =
+    document.getElementById(
+      "zone" + which
+    );
+
+
+  zone.onclick =
+    () => input.click();
+
+
+  input.onchange =
+    e => {
+
+      if(e.target.files[0])
+        handleFile(
+          which,
+          e.target.files[0]
+        );
+
+    };
+
+
+  zone.ondragover =
+    e => {
+
+      e.preventDefault();
+
+      zone.classList.add(
+        "drag"
+      );
+
+    };
+
+
+  zone.ondragleave =
+    () =>
+      zone.classList.remove(
+        "drag"
+      );
+
+
+  zone.ondrop =
+    e => {
+
+      e.preventDefault();
+
+      zone.classList.remove(
+        "drag"
+      );
+
+
+      if(e.dataTransfer.files[0])
+        handleFile(
+          which,
+          e.dataTransfer.files[0]
+        );
+
+    };
+
+});
+
+
+function checkReady(){
+
+  document.getElementById(
+    "btnToQuestions"
+  ).disabled =
+    !(
+      workflow.tableA &&
+      workflow.tableB
+    );
+
+}
+
+
+/* =========================================================
+   STEPS
+========================================================= */
+
+function setStep(step){
+
+  workflow.step =
+    step;
+
+
+  document
+    .querySelectorAll(
+      ".step-item"
+    )
+    .forEach(el=>{
+
+      const s =
+        Number(el.dataset.step);
+
+      el.classList.remove(
+        "active",
+        "done"
+      );
+
+
+      if(s === step)
+        el.classList.add(
+          "active"
+        );
+
+      else if(s < step)
+        el.classList.add(
+          "done"
+        );
+
+    });
+
+
+  [
+    1,
+    2,
+    3,
+    4
+  ].forEach(s=>{
+
+    const el =
+      document.getElementById(
+        "step" + s
+      );
+
+    if(el)
+      el.classList.toggle(
+        "hidden",
+        s !== step
+      );
+
+  });
+
+}
+
+
+/* =========================================================
+   FRAGEN
+========================================================= */
+
+function answers(){
+
+  return workflow.currentTable === "A"
+    ? workflow.answersA
+    : workflow.answersB;
+
+}
+
+
+function currentTable(){
+
+  return workflow.currentTable === "A"
+    ? workflow.tableA
+    : workflow.tableB;
+
+}
+
+
+function renderQuestion(){
+
+  const container =
+    document.getElementById(
+      "questionContainer"
+    );
+
+
+  const tbl =
+    currentTable();
+
+  const ans =
+    answers();
+
+  const q =
+    QUESTIONS[
+      workflow.qIndex
+    ];
+
+
+  let html = `
+
+    <div class="question-box">
+
+      <div class="q-num">
+        TABLE ${workflow.currentTable}
+        ·
+        FRAGE ${workflow.qIndex+1}
+        /
+        ${QUESTIONS.length}
+      </div>
+
+      <div class="q-title">
+        ${esc(q.title)}
+      </div>
+
+  `;
+
+
+  if(q.type === "single"){
+
+    html += `
+      <div class="q-options">
+    `;
+
+
+    q.options.forEach(option=>{
+
+      html += `
+        <button
+          class="q-btn"
+          data-value="${esc(option)}"
+        >
+          ${esc(option)}
+        </button>
+      `;
+
+    });
+
+
+    html += `
+      </div>
+    `;
+
+  }
+
+
+  if(q.type === "columns"){
+
+    const suggestions =
+      q.id === "identifier"
+        ? tbl.analysis.possibleId
+        : tbl.analysis.possibleDate;
+
+
+    if(suggestions?.length){
+
+      html += `
+
+        <div class="q-suggest">
+
+          ERKANNTE MÖGLICHE FELDER:
+
+          ${suggestions
+            .map(esc)
+            .join(", ")}
+
+        </div>
+
+      `;
+
+    }
+
+
+    html += `
+      <div class="q-options">
+    `;
+
+
+    tbl.headers.forEach(header=>{
+
+      html += `
+
+        <button
+          class="q-btn"
+          data-value="${esc(header)}"
+        >
+          ${esc(header)}
+        </button>
+
+      `;
+
+    });
+
+
+    if(q.optional){
+
+      html += `
+
+        <button
+          class="q-btn"
+          data-value="__NONE__"
+        >
+          [ KEIN FELD ]
+        </button>
+
+      `;
+
+    }
+
+
+    html += `
+      </div>
+    `;
+
+  }
+
+
+  if(q.type === "multi"){
+
+    html += `
+      <div class="q-options">
+    `;
+
+
+    tbl.headers.forEach(header=>{
+
+      const selected =
+        (ans.relevant || [])
+          .includes(header);
+
+
+      html += `
+
+        <button
+          class="q-btn multi
+            ${selected ? "selected" : ""}"
+          data-value="${esc(header)}"
+        >
+          ${selected ? "[x]" : "[ ]"}
+          ${esc(header)}
+        </button>
+
+      `;
+
+    });
+
+
+    html += `
+      </div>
+
+      <div class="actions">
+
+        <button
+          class="btn"
+          id="multiNext"
+        >
+          WEITER →
+        </button>
+
+      </div>
+    `;
+
+  }
+
+
+  if(q.type === "status"){
+
+    html += `
+
+      <div class="notice">
+
+        Für die ZDF wird die Statuslogik
+        explizit festgelegt.
+
+        <br><br>
+
+        <b>FN / FTTH</b>
+        → AKTIV
+
+        <br><br>
+
+        <b>MF / CON + BLAU</b>
+        → ERINNERUNG
+
+        <br><br>
+
+        <b>MF / CON + GELB</b>
+        → ZUKUNFT
+
+        <br>
+
+        <b>MF / CON + ORANGE</b>
+        → ZUKUNFT
+
+        <br><br>
+
+        Gelb und Orange sind technisch
+        derselbe Status.
+
+      </div>
+
+      <div class="q-options">
+
+        <button
+          class="q-btn"
+          data-value="FIXED_STATUS_RULE"
+        >
+          DIESE REGEL VERWENDEN
+        </button>
+
+      </div>
+
+    `;
+
+  }
+
+
+  if(q.type === "text"){
+
+    html += `
+
+      <textarea
+        id="extra"
+        style="
+          width:100%;
+          min-height:110px;
+          background:#030308;
+          color:#fff;
+          border:1px solid #2a2a40;
+          padding:14px;
+        "
+        placeholder="z.B. Kassenabschluss-Zeilen dürfen nicht als Vorgänge gelten."
+      >${esc(ans.extra || "")}</textarea>
+
+      <div class="actions">
+
+        <button
+          class="btn"
+          id="textNext"
+        >
+          WEITER →
+        </button>
+
+      </div>
+
+    `;
+
+  }
+
+
+  html += `
+    </div>
+  `;
+
+
+  container.innerHTML =
+    html;
+
+
+  /* EVENTS */
+
+
+  if(
+    q.type === "single" ||
+    q.type === "columns" ||
+    q.type === "status"
+  ){
+
+    container
+      .querySelectorAll(
+        ".q-btn"
+      )
+      .forEach(button=>{
+
+        button.onclick = () => {
+
+          const value =
+            button.dataset.value;
+
+
+          if(q.id === "type")
+            ans.type = value;
+
+          if(q.id === "row")
+            ans.row = value;
+
+          if(q.id === "identifier")
+            ans.identifier =
+              value === "__NONE__"
+                ? null
+                : value;
+
+          if(q.id === "date")
+            ans.date =
+              value === "__NONE__"
+                ? null
+                : value;
+
+          if(q.id === "status")
+            ans.statusRule =
+              value;
+
+
+          nextQuestion();
+
+        };
+
+      });
+
+  }
+
+
+  if(q.type === "multi"){
+
+    const selected =
+      new Set(
+        ans.relevant || []
+      );
+
+
+    container
+      .querySelectorAll(
+        ".multi"
+      )
+      .forEach(button=>{
+
+        button.onclick = () => {
+
+          const value =
+            button.dataset.value;
+
+
+          if(selected.has(value)){
+
+            selected.delete(value);
+
+            button.classList.remove(
+              "selected"
+            );
+
+            button.textContent =
+              "[ ] " + value;
+
+          }
+          else{
+
+            selected.add(value);
+
+            button.classList.add(
+              "selected"
+            );
+
+            button.textContent =
+              "[x] " + value;
+
+          }
+
+        };
+
+      });
+
+
+    document.getElementById(
+      "multiNext"
+    ).onclick = () => {
+
+      ans.relevant =
+        Array.from(
+          selected
+        );
+
+      nextQuestion();
+
+    };
+
+  }
+
+
+  if(q.type === "text"){
+
+    document.getElementById(
+      "textNext"
+    ).onclick = () => {
+
+      ans.extra =
+        document.getElementById(
+          "extra"
+        ).value.trim();
+
+      nextQuestion();
+
+    };
+
+  }
+
+}
+
+
+function nextQuestion(){
+
+  workflow.qIndex++;
+
+
+  if(
+    workflow.qIndex >=
+    QUESTIONS.length
+  ){
+
+    if(
+      workflow.currentTable === "A"
+    ){
+
+      workflow.currentTable =
+        "B";
+
+      workflow.qIndex =
+        0;
+
+      renderQuestion();
+
+    }
+    else{
+
+      generatePrompt();
+
+      setStep(3);
+
+    }
+
+  }
+  else{
+
+    renderQuestion();
+
+  }
+
+}
+
+
+/* =========================================================
+   LLM PROMPT
+========================================================= */
+
+function generatePrompt(){
+
+  const A =
+    workflow.tableA;
+
+  const B =
+    workflow.tableB;
+
+
+  const ansA =
+    workflow.answersA;
+
+  const ansB =
+    workflow.answersB;
+
+
+  function block(
+    label,
+    table,
+    ans
+  ){
+
+    return `
+
+==============================
+${label}
+==============================
+
+DATEI
+${table.fileName}
+
+ZEILEN
+${table.rowCount}
+
+SPALTEN
+${table.colCount}
+
+SPALTENLISTE
+${JSON.stringify(table.headers)}
+
+BENUTZERBEDEUTUNG
+${JSON.stringify(ans,null,2)}
+
+ANALYSE
+${JSON.stringify(table.analysis,null,2)}
+
+ORIGINALDATEN
+${JSON.stringify(table.rows)}
+
+`;
+
+  }
+
+
+  const prompt = `
+
+DU BIST EIN DATENSTRUKTURIERUNGSSYSTEM.
+
+DEINE AUFGABE IST NICHT DER ABGLEICH.
+
+DU STRUKTURIERST DIE BEIDEN
+QUELLTABELLEN SO, DASS EIN
+DETERMINISTISCHES PROGRAMM
+ANSCHLIESSEND MIT DEN DATEN
+ARBEITEN KANN.
+
+REGELN:
+
+1. KEINE ZEILE AUSLASSEN.
+
+2. KEINEN WERT ERFINDEN.
+
+3. KEINEN WERT KORRIGIEREN.
+
+4. ORIGINALWERTE IN data ERHALTEN.
+
+5. TABLE_A UND TABLE_B
+   STRIKT GETRENNT HALTEN.
+
+6. KEINE ABWEICHUNGEN BERECHNEN.
+
+7. KEINE BUCHUNGEN BEWERTEN.
+
+8. KEINE PROVISION BERECHNEN.
+
+9. KEINE KASSENWERTE VERÄNDERN.
+
+10. FARBEN NICHT ALS EIGENSTÄNDIGE
+    GESCHÄFTSLOGIK SPEICHERN.
+
+ZDF-STATUSREGEL:
+
+FN / FTTH
+→ AKTIV
+
+MF / CON + BLAU
+→ ERINNERUNG
+
+MF / CON + GELB
+→ ZUKUNFT
+
+MF / CON + ORANGE
+→ ZUKUNFT
+
+GELB UND ORANGE SIND
+FACHLICH IDENTISCH.
+
+DIE FARBE IST NUR DIE
+VISUELLE DARSTELLUNG DES STATUS.
+
+KASSENABSCHLUSS-ZEILEN SIND KEINE
+NORMALEN VORGÄNGE.
+
+WENN DIE QUELLTABELLE EINE
+SOLCHE ZEILE ERKENNEN LÄSST,
+MUSS SIE ALS TYPE
+"KASSENABSCHLUSS" MARKIERT WERDEN.
+
+NICHT ALS VERKAUF VERSCHMELZEN.
+
+${block(
+  "TABLE_A — ZDF",
+  A,
+  ansA
+)}
+
+${block(
+  "TABLE_B — TELEKOM EXPORT",
+  B,
+  ansB
+)}
+
+
+AUSGABE:
+
+{
+  "version":"2.0",
+  "dataset":"LV_ZDF_RECON",
+
+  "semantic_structure":{
+
+    "table_a":{
+      "role":"SHOP_OPERATIVE",
+      "description":"Vom Shop geführte ZDF",
+      "identifier_fields":[],
+      "date_fields":[],
+      "relevant_fields":[]
+    },
+
+    "table_b":{
+      "role":"SYSTEM_EXPORT",
+      "description":"Telekom Systemexport",
+      "identifier_fields":[],
+      "date_fields":[],
+      "relevant_fields":[]
+    },
+
+    "status_policy":{
+      "FN_FTTH":"AKTIV",
+      "MF_CON_BLUE":"ERINNERUNG",
+      "MF_CON_YELLOW":"ZUKUNFT",
+      "MF_CON_ORANGE":"ZUKUNFT",
+      "yellow_equals_orange":true
+    }
+
+  },
+
+  "tables":[
+
+    {
+      "table_id":"TABLE_A",
+      "name":"${esc(A.fileName)}",
+
+      "records":[
+
+        {
+          "record_id":"A-000001",
+          "record_type":"VORGANG",
+          "status":"AKTIV",
+          "date":null,
+          "source_table":"TABLE_A",
+          "data":{}
+        }
+
+      ]
+
+    },
+
+    {
+      "table_id":"TABLE_B",
+      "name":"${esc(B.fileName)}",
+
+      "records":[
+
+        {
+          "record_id":"B-000001",
+          "record_type":"VORGANG",
+          "status":"AKTIV",
+          "date":null,
+          "source_table":"TABLE_B",
+          "data":{}
+        }
+
+      ]
+
+    }
+
+  ]
+
+}
+
+AUSSCHLIESSLICH JSON.
+KEINE ERKLÄRUNG.
+KEINE MARKDOWN-CODEBLÖCKE.
+`;
+
+
+  document.getElementById(
+    "promptOutput"
+  ).textContent =
+    prompt;
+
+}
+
+
+/* =========================================================
+   JSON VALIDIERUNG
+========================================================= */
+
+function validatePayload(payload){
+
+  if(!payload ||
+     typeof payload !== "object")
+    throw new Error(
+      "JSON-Objekt erwartet."
+    );
+
+
+  if(
+    payload.dataset !==
+    "LV_ZDF_RECON"
+  )
+    throw new Error(
+      "Falsches Dataset."
+    );
+
+
+  if(
+    !Array.isArray(
+      payload.tables
+    )
+  )
+    throw new Error(
+      "tables fehlt."
+    );
+
+
+  if(
+    payload.tables.length !== 2
+  )
+    throw new Error(
+      "Genau zwei Tabellen erforderlich."
+    );
+
+
+  const ids =
+    ["TABLE_A","TABLE_B"];
+
+
+  const seen =
+    new Set();
+
+
+  payload.tables.forEach(
+    (table,index)=>{
+
+      if(
+        table.table_id !==
+        ids[index]
+      )
+        throw new Error(
+          "Tabellenreihenfolge ungültig."
+        );
+
+
+      if(
+        !Array.isArray(
+          table.records
+        )
+      )
+        throw new Error(
+          table.table_id +
+          " records fehlt."
+        );
+
+
+      table.records.forEach(
+        record=>{
+
+          if(!record.record_id)
+            throw new Error(
+              "record_id fehlt."
+            );
+
+
+          if(
+            seen.has(
+              record.record_id
+            )
+          )
+            throw new Error(
+              "Doppelte record_id: " +
+              record.record_id
+            );
+
+
+          seen.add(
+            record.record_id
+          );
+
+
+          if(
+            record.source_table &&
+            record.source_table !==
+            table.table_id
+          )
+            throw new Error(
+              "source_table falsch."
+            );
+
+
+          if(
+            record.data === null ||
+            Array.isArray(record.data)
+          )
+            throw new Error(
+              "data muss Objekt sein."
+            );
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   IMPORT
+========================================================= */
+
+async function importPayload(payload){
+
+  validatePayload(
+    payload
+  );
+
+
+  await openDB();
+
+
+  const clearTx =
+    db.transaction(
+      "records",
+      "readwrite"
+    );
+
+  clearTx
+    .objectStore("records")
+    .clear();
+
+
+  await new Promise(
+    (resolve,reject)=>{
+
+      clearTx.oncomplete =
+        resolve;
+
+      clearTx.onerror =
+        () =>
+          reject(
+            clearTx.error
+          );
+
+    }
+  );
+
+
+  const tx =
+    db.transaction(
+      "records",
+      "readwrite"
+    );
+
+
+  const store =
+    tx.objectStore(
+      "records"
+    );
+
+
+  let count = 0;
+
+
+  payload.tables
+    .forEach(table=>{
+
+      table.records
+        .forEach(record=>{
+
+          store.put({
+
+            record_id:
+              String(
+                record.record_id
+              ),
+
+            source:
+              table.table_id,
+
+            source_name:
+              table.name || "",
+
+            record_type:
+              record.record_type ||
+              "VORGANG",
+
+            status:
+              record.status ||
+              "AKTIV",
+
+            date:
+              record.date ||
+              null,
+
+            data:
+              record.data || {},
+
+            dataset_version:
+              payload.version,
+
+            imported_at:
+              new Date().toISOString()
+
+          });
+
+
+          count++;
+
+        });
+
+    });
+
+
+  return new Promise(
+    (resolve,reject)=>{
+
+      tx.oncomplete =
+        () =>
+          resolve(count);
+
+      tx.onerror =
+        () =>
+          reject(tx.error);
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function statusClass(status){
+
+  if(status === "AKTIV")
+    return "active";
+
+  if(status === "ZUKUNFT")
+    return "future";
+
+  if(status === "ERINNERUNG")
+    return "reminder";
+
+  return "";
+
+}
+
+
+/* =========================================================
+   DATABASE RENDER
+========================================================= */
+
+function updateStats(){
+
+  const A =
+    records.filter(
+      r => r.source === "TABLE_A"
+    );
+
+  const B =
+    records.filter(
+      r => r.source === "TABLE_B"
+    );
+
+
+  document.getElementById(
+    "countA"
+  ).textContent =
+    A.length;
+
+
+  document.getElementById(
+    "countB"
+  ).textContent =
+    B.length;
+
+
+  document.getElementById(
+    "countActive"
+  ).textContent =
+    records.filter(
+      r => r.status === "AKTIV"
+    ).length;
+
+
+  document.getElementById(
+    "countFuture"
+  ).textContent =
+    records.filter(
+      r => r.status === "ZUKUNFT"
+    ).length;
+
+}
+
+
+function renderDatabase(){
+
+  const container =
+    document.getElementById(
+      "databaseTable"
+    );
+
+
+  const search =
+    document.getElementById(
+      "dbSearch"
+    )
+    .value
+    .toLowerCase()
+    .trim();
+
+
+  if(currentTab === "DIFF"){
+
+    renderDifferences(
+      container,
+      search
+    );
+
+    return;
+
+  }
+
+
+  let rows =
+    records.filter(
+      r =>
+        r.source ===
+        "TABLE_" +
+        currentTab
+    );
+
+
+  if(search){
+
+    rows =
+      rows.filter(
+        row =>
+          JSON.stringify(row)
+            .toLowerCase()
+            .includes(search)
+      );
+
+  }
+
+
+  if(!rows.length){
+
+    container.innerHTML =
+      `<div class="empty">
+        KEINE DATEN
+       </div>`;
+
+    return;
+
+  }
+
+
+  const keys =
+    new Set();
+
+
+  rows.forEach(
+    row => {
+
+      Object.keys(
+        row.data || {}
+      )
+      .forEach(
+        key =>
+          keys.add(key)
+      );
+
+    }
+  );
+
+
+  const columns =
+    Array.from(keys);
+
+
+  let html = `
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>RECORD</th>
+          <th>STATUS</th>
+          <th>DATUM</th>
+
+          ${columns
+            .map(
+              c =>
+                `<th>
+                  ${esc(c)}
+                </th>`
+            )
+            .join("")}
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+  `;
+
+
+  rows.forEach(row=>{
+
+    html += `
+
+      <tr>
+
+        <td class="mono">
+          ${esc(row.record_id)}
+        </td>
+
+        <td>
+
+          <span
+            class="badge ${statusClass(row.status)}"
+          >
+            ${esc(row.status)}
+          </span>
+
+        </td>
+
+        <td>
+          ${esc(row.date || "—")}
+        </td>
+
+        ${columns
+          .map(
+            key =>
+              `<td>
+                ${esc(
+                  row.data?.[key] ?? ""
+                )}
+              </td>`
+          )
+          .join("")}
+
+      </tr>
+
+    `;
+
+  });
+
+
+  html += `
+      </tbody>
+    </table>
+  `;
+
+
+  container.innerHTML =
+    html;
+
+}
+
+
+/* =========================================================
+   DETERMINISTISCHER ABGLEICH
+========================================================= */
+
+function getField(record,field){
+
+  if(
+    record.data &&
+    Object.prototype.hasOwnProperty.call(
+      record.data,
+      field
+    )
+  )
+    return record.data[field];
+
+
+  return undefined;
+
+}
+
+
+function normalize(value){
+
+  if(
+    value === undefined ||
+    value === null
+  )
+    return null;
+
+
+  const result =
+    String(value)
+      .trim()
+      .toLowerCase();
+
+
+  return result === ""
+    ? null
+    : result;
+
+}
+
+
+function numeric(value){
+
+  if(
+    value === undefined ||
+    value === null ||
+    String(value).trim() === ""
+  )
+    return null;
+
+
+  let text =
+    String(value)
+      .trim()
+      .replace(/[€$£]/g,"")
+      .replace(/\s/g,"");
+
+
+  if(
+    text.includes(",") &&
+    text.includes(".")
+  ){
+
+    if(
+      text.lastIndexOf(",") >
+      text.lastIndexOf(".")
+    ){
+
+      text =
+        text
+          .replace(/\./g,"")
+          .replace(",",".");
+    }
+    else{
+
+      text =
+        text.replace(/,/g,"");
+
+    }
+
+  }
+  else if(
+    text.includes(",")
+  ){
+
+    text =
+      text.replace(",",".");
+  }
+
+
+  text =
+    text.replace(
+      /[^\d.-]/g,
+      ""
+    );
+
+
+  const n =
+    Number(text);
+
+
+  return Number.isFinite(n)
+    ? n
+    : null;
+
+}
+
+
+async function compare(){
+
+  await openDB();
+
+
+  const matchField =
+    document.getElementById(
+      "matchField"
+    )
+    .value
+    .trim();
+
+
+  const compareFields =
+    document.getElementById(
+      "compareFields"
+    )
+    .value
+    .split(",")
+    .map(x=>x.trim())
+    .filter(Boolean);
+
+
+  if(!matchField)
+    throw new Error(
+      "Abgleichfeld fehlt."
+    );
+
+
+  if(!compareFields.length)
+    throw new Error(
+      "Vergleichsfelder fehlen."
+    );
+
+
+  const from =
+    document.getElementById(
+      "dateFrom"
+    ).value;
+
+
+  const to =
+    document.getElementById(
+      "dateTo"
+    ).value;
+
+
+  if(from && to && from > to)
+    throw new Error(
+      "Ungültiger Zeitraum."
+    );
+
+
+  const A =
+    records.filter(
+      r =>
+        r.source === "TABLE_A" &&
+        r.status === "AKTIV"
+    );
+
+
+  const B =
+    records.filter(
+      r =>
+        r.source === "TABLE_B"
+    );
+
+
+  const mapB =
+    new Map();
+
+
+  B.forEach(record=>{
+
+    const key =
+      normalize(
+        getField(
+          record,
+          matchField
+        )
+      );
+
+
+    if(key === null)
+      return;
+
+
+    if(!mapB.has(key))
+      mapB.set(key,[]);
+
+
+    mapB
+      .get(key)
+      .push(record);
+
+  });
+
+
+  const result = [];
+
+
+  A.forEach(recordA=>{
+
+    const key =
+      normalize(
+        getField(
+          recordA,
+          matchField
+        )
+      );
+
+
+    if(key === null){
+
+      result.push({
+
+        status:
+          "INVALID_MATCH_KEY",
+
+        record_a:
+          recordA.record_id,
+
+        record_b:null
+
+      });
+
+      return;
+
+    }
+
+
+    const matches =
+      mapB.get(key) || [];
+
+
+    if(!matches.length){
+
+      result.push({
+
+        status:
+          "MISSING_IN_EXPORT",
+
+        match_key:key,
+
+        record_a:
+          recordA.record_id,
+
+        record_b:null
+
+      });
+
+      return;
+
+    }
+
+
+    if(matches.length > 1){
+
+      result.push({
+
+        status:
+          "AMBIGUOUS_MATCH",
+
+        match_key:key,
+
+        record_a:
+          recordA.record_id,
+
+        record_b:
+          matches.map(
+            x=>x.record_id
+          )
+
+      });
+
+      return;
+
+    }
+
+
+    const recordB =
+      matches[0];
+
+
+    compareFields
+      .forEach(field=>{
+
+        const a =
+          numeric(
+            getField(
+              recordA,
+              field
+            )
+          );
+
+
+        const b =
+          numeric(
+            getField(
+              recordB,
+              field
+            )
+          );
+
+
+        if(a === null && b === null)
+          return;
+
+
+        if(a === null || b === null){
+
+          result.push({
+
+            status:
+              "VALUE_MISSING",
+
+            field,
+
+            value_a:a,
+
+            value_b:b,
+
+            record_a:
+              recordA.record_id,
+
+            record_b:
+              recordB.record_id
+
+          });
+
+          return;
+
+        }
+
+
+        if(a !== b){
+
+          result.push({
+
+            status:
+              "DIFFERENCE",
+
+            field,
+
+            value_a:a,
+
+            value_b:b,
+
+            difference:
+              a - b,
+
+            record_a:
+              recordA.record_id,
+
+            record_b:
+              recordB.record_id
+
+          });
+
+        }
+
+      });
+
+  });
+
+
+  await openDB();
+
+
+  const tx =
+    db.transaction(
+      "differences",
+      "readwrite"
+    );
+
+
+  tx.objectStore(
+    "differences"
+  ).clear();
+
+
+  result.forEach(
+    (row,index)=>{
+
+      tx.objectStore(
+        "differences"
+      ).put({
+
+        difference_id:
+          "DIFF-" +
+          String(index+1)
+            .padStart(6,"0"),
+
+        ...row
+
+      });
+
+    }
+  );
+
+
+  return new Promise(
+    (resolve,reject)=>{
+
+      tx.oncomplete =
+        () =>
+          resolve(result);
+
+      tx.onerror =
+        () =>
+          reject(tx.error);
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   DIFFERENZEN
+========================================================= */
+
+function renderDifferences(
+  container,
+  search
+){
+
+  let rows =
+    differences;
+
+
+  if(search){
+
+    rows =
+      rows.filter(
+        row =>
+          JSON.stringify(row)
+            .toLowerCase()
+            .includes(search)
+      );
+
+  }
+
+
+  if(!rows.length){
+
+    container.innerHTML =
+      `<div class="empty">
+        KEINE ABWEICHUNGEN
+       </div>`;
+
+    return;
+
+  }
+
+
+  let html = `
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>STATUS</th>
+          <th>FELD</th>
+          <th>ZDF</th>
+          <th>EXPORT</th>
+          <th>DIFFERENZ</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+  `;
+
+
+  rows.forEach(row=>{
+
+    html += `
+
+      <tr>
+
+        <td>
+
+          <span
+            class="badge ${
+              row.status === "DIFFERENCE"
+                ? "diff"
+                : row.status === "AMBIGUOUS_MATCH"
+                  ? "ambiguous"
+                  : "missing"
+            }"
+          >
+            ${esc(row.status)}
+          </span>
+
+        </td>
+
+        <td>
+          ${esc(row.field || "—")}
+        </td>
+
+        <td>
+          ${esc(row.value_a ?? "—")}
+        </td>
+
+        <td>
+          ${esc(row.value_b ?? "—")}
+        </td>
+
+        <td>
+          ${esc(row.difference ?? "—")}
+        </td>
+
+      </tr>
+
+    `;
+
+  });
+
+
+  html += `
+      </tbody>
+    </table>
+  `;
+
+
+  container.innerHTML =
+    html;
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+document
+  .querySelectorAll(".nav")
+  .forEach(button=>{
+
+    button.onclick = () => {
+
+      document
+        .querySelectorAll(".nav")
+        .forEach(
+          b =>
+            b.classList.remove(
+              "active"
+            )
+        );
+
+
+      button.classList.add(
+        "active"
+      );
+
+
+      document
+        .querySelectorAll(".view")
+        .forEach(
+          view =>
+            view.classList.remove(
+              "active"
+            )
+        );
+
+
+      document
+        .getElementById(
+          "view-" +
+          button.dataset.view
+        )
+        .classList.add(
+          "active"
+        );
+
+
+      if(
+        button.dataset.view ===
+        "database"
+      )
+        refresh();
+
+    };
+
+  });
+
+
+/* =========================================================
+   TABS
+========================================================= */
+
+document
+  .querySelectorAll(".tab")
+  .forEach(button=>{
+
+    button.onclick = () => {
+
+      document
+        .querySelectorAll(".tab")
+        .forEach(
+          b =>
+            b.classList.remove(
+              "active"
+            )
+        );
+
+
+      button.classList.add(
+        "active"
+      );
+
+
+      currentTab =
+        button.dataset.tab;
+
+
+      renderDatabase();
+
+    };
+
+  });
+
+
+document.getElementById(
+  "dbSearch"
+).oninput =
+  renderDatabase;
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+document.getElementById(
+  "btnToQuestions"
+).onclick = () => {
+
+  workflow.currentTable =
+    "A";
+
+  workflow.qIndex =
+    0;
+
+  workflow.answersA = {};
+  workflow.answersB = {};
+
+  setStep(2);
+
+  renderQuestion();
+
 };
 
-openDatabase().then(refresh).catch(error => {
-  console.error(error);
-  const status = document.getElementById("step1Status");
-  if(status){ status.className = "status error"; status.textContent = "DATENBANK FEHLER: " + error.message; }
-});
+
+document.getElementById(
+  "btnBackQuestions"
+).onclick = () =>
+  setStep(2);
+
+
+document.getElementById(
+  "btnToJson"
+).onclick = () =>
+  setStep(4);
+
+
+document.getElementById(
+  "btnBackPrompt"
+).onclick = () =>
+  setStep(3);
+
+
+/* =========================================================
+   COPY
+========================================================= */
+
+document.getElementById(
+  "btnCopyPrompt"
+).onclick =
+async () => {
+
+  try{
+
+    await navigator.clipboard.writeText(
+      document.getElementById(
+        "promptOutput"
+      ).textContent
+    );
+
+
+    const status =
+      document.getElementById(
+        "promptStatus"
+      );
+
+
+    status.className =
+      "status ok";
+
+    status.textContent =
+      "✓ LLM-AUFTRAG KOPIERT";
+
+  }
+  catch(error){
+
+    alert(
+      "Kopieren nicht möglich."
+    );
+
+  }
+
+};
+
+
+/* =========================================================
+   JSON
+========================================================= */
+
+document.getElementById(
+  "btnValidateJson"
+).onclick = () => {
+
+  const status =
+    document.getElementById(
+      "jsonStatus"
+    );
+
+  const button =
+    document.getElementById(
+      "btnImportJson"
+    );
+
+
+  button.classList.add(
+    "hidden"
+  );
+
+
+  try{
+
+    const json =
+      JSON.parse(
+        document.getElementById(
+          "jsonInput"
+        ).value
+      );
+
+
+    validatePayload(
+      json
+    );
+
+
+    workflow.validated =
+      json;
+
+
+    const count =
+      json.tables.reduce(
+        (sum,t) =>
+          sum + t.records.length,
+        0
+      );
+
+
+    status.className =
+      "status ok";
+
+    status.textContent =
+      "✓ JSON GÜLTIG — " +
+      count +
+      " DATENSÄTZE ERKANNT";
+
+
+    button.classList.remove(
+      "hidden"
+    );
+
+  }
+  catch(error){
+
+    status.className =
+      "status error";
+
+    status.textContent =
+      "✕ JSON ABGELEHNT — " +
+      error.message;
+
+  }
+
+};
+
+
+document.getElementById(
+  "btnImportJson"
+).onclick =
+async () => {
+
+  try{
+
+    const count =
+      await importPayload(
+        workflow.validated
+      );
+
+
+    await refresh();
+
+
+    document
+      .querySelectorAll(".nav")
+      .forEach(
+        b =>
+          b.classList.remove(
+            "active"
+          )
+      );
+
+
+    document
+      .querySelector(
+        '[data-view="database"]'
+      )
+      .classList.add(
+        "active"
+      );
+
+
+    document
+      .querySelectorAll(".view")
+      .forEach(
+        v =>
+          v.classList.remove(
+            "active"
+          )
+      );
+
+
+    document
+      .getElementById(
+        "view-database"
+      )
+      .classList.add(
+        "active"
+      );
+
+
+    alert(
+      count +
+      " Datensätze übernommen."
+    );
+
+  }
+  catch(error){
+
+    alert(
+      error.message
+    );
+
+  }
+
+};
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+document.getElementById(
+  "resetCompare"
+).onclick = () => {
+
+  document.getElementById(
+    "matchField"
+  ).value =
+    "auftrag_id";
+
+
+  document.getElementById(
+    "compareFields"
+  ).value =
+    "menge,betrag";
+
+
+  document.getElementById(
+    "dateFrom"
+  ).value =
+    "";
+
+
+  document.getElementById(
+    "dateTo"
+  ).value =
+    "";
+
+};
+
+
+/* =========================================================
+   RUN
+========================================================= */
+
+document.getElementById(
+  "runCompare"
+).onclick =
+async () => {
+
+  const plan =
+    document.getElementById(
+      "queryPlan"
+    );
+
+
+  const result =
+    document.getElementById(
+      "queryResult"
+    );
+
+
+  try{
+
+    const rows =
+      await compare();
+
+
+    await refresh();
+
+
+    plan.classList.remove(
+      "hidden"
+    );
+
+
+    plan.innerHTML = `
+
+      <div class="card-head">
+        AUSFÜHRUNGSPLAN
+      </div>
+
+      <div class="card-body">
+
+        <pre style="
+          white-space:pre-wrap;
+          color:var(--cyan);
+        ">${esc(
+          JSON.stringify(
+            {
+              execution:
+                "DETERMINISTIC",
+
+              source:
+                "ZDF + TELEKOM_EXPORT",
+
+              status_policy:{
+                yellow:"ZUKUNFT",
+                orange:"ZUKUNFT",
+                blue:"ERINNERUNG"
+              },
+
+              results:
+                rows.length
+
+            },
+            null,
+            2
+          )
+        )}</pre>
+
+      </div>
+
+    `;
+
+
+    result.classList.remove(
+      "hidden"
+    );
+
+
+    result.innerHTML = `
+
+      <div class="card-head">
+        ABGLEICHERGEBNIS
+      </div>
+
+      <div class="card-body">
+
+        <div class="stats">
+
+          <div class="stat">
+
+            <div class="stat-label">
+              ERGEBNISSE
+            </div>
+
+            <div class="stat-value">
+              ${rows.length}
+            </div>
+
+          </div>
+
+          <div class="stat">
+
+            <div class="stat-label">
+              ABWEICHUNGEN
+            </div>
+
+            <div class="stat-value">
+              ${
+                rows.filter(
+                  r =>
+                    r.status ===
+                    "DIFFERENCE"
+                ).length
+              }
+            </div>
+
+          </div>
+
+          <div class="stat">
+
+            <div class="stat-label">
+              FEHLT IM EXPORT
+            </div>
+
+            <div class="stat-value">
+              ${
+                rows.filter(
+                  r =>
+                    r.status ===
+                    "MISSING_IN_EXPORT"
+                ).length
+              }
+            </div>
+
+          </div>
+
+          <div class="stat">
+
+            <div class="stat-label">
+              MEHRDEUTIG
+            </div>
+
+            <div class="stat-value">
+              ${
+                rows.filter(
+                  r =>
+                    r.status ===
+                    "AMBIGUOUS_MATCH"
+                ).length
+              }
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="status ${
+          rows.length
+            ? "warn"
+            : "ok"
+        }">
+
+          ${
+            rows.length
+              ? "⚠ " +
+                rows.length +
+                " Prüfergebnisse."
+              : "✓ Keine Abweichungen."
+          }
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+  catch(error){
+
+    plan.classList.remove(
+      "hidden"
+    );
+
+
+    plan.innerHTML =
+      `<div class="card-body status error">
+        ✕ ${esc(error.message)}
+       </div>`;
+
+  }
+
+};
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function esc(value){
+
+  return String(
+    value ?? ""
+  ).replace(
+    /[&<>"']/g,
+    char =>
+      ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+      })[char]
+  );
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+openDB()
+  .then(
+    refresh
+  )
+  .catch(
+    console.error
+  );
+
 </script>
+
 </body>
 </html>
-```
