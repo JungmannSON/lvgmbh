@@ -1,1394 +1,1965 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>LV BOOKING CONTROL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LV GmbH — DATENBANK</title>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <style>
 :root{
-  --bg:#050505;
-  --panel:#0d0d0d;
-  --panel2:#131313;
-  --line:#292929;
-  --acid:#d8ff00;
-  --cyan:#00e5ff;
-  --pink:#ff2aa8;
-  --green:#4ade80;
-  --red:#ff4d6d;
-  --orange:#ffb020;
-  --text:#f2f2f2;
-  --muted:#888;
+  --bg:#05050a;
+  --panel:#0c0c14;
+  --panel2:#10101a;
+  --line:#222233;
+  --text:#f2f2f7;
+  --muted:#7a7a90;
+  --acid:#00e5a0;
+  --pink:#e20074;
+  --cyan:#00c8ff;
+  --red:#ff3b6b;
+  --orange:#ff9f1c;
+  --violet:#a855f7;
+  --glow-pink:0 0 10px rgba(226,0,116,.55), 0 0 22px rgba(226,0,116,.25);
+  --glow-cyan:0 0 10px rgba(0,200,255,.45), 0 0 20px rgba(0,200,255,.2);
+  --glow-acid:0 0 8px rgba(0,229,160,.4), 0 0 16px rgba(0,229,160,.18);
 }
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-html,body{
-  margin:0;
-  padding:0;
-  min-height:100%;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-}
+*{box-sizing:border-box;margin:0;padding:0}
 body{
-  overflow-x:hidden;
-}
-button,input,select,textarea{
-  font:inherit;
-}
-button{
-  cursor:pointer;
-}
-.app{
+  background:
+    radial-gradient(ellipse at 15% 0%, rgba(226,0,116,.06) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 100%, rgba(0,200,255,.05) 0%, transparent 50%),
+    linear-gradient(rgba(0,200,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(226,0,116,.02) 1px, transparent 1px),
+    var(--bg);
+  background-size:100% 100%, 100% 100%, 42px 42px, 42px 42px;
+  color:var(--text);
+  font-family:"Courier New",Courier,monospace;
   min-height:100vh;
 }
-/* HEADER */
-.header{
-  height:68px;
-  border-bottom:1px solid var(--line);
+header{
+  min-height:82px;
+  padding:16px 22px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 22px;
+  gap:16px;
+  border-bottom:2px solid var(--pink);
+  background:linear-gradient(180deg,#08080f 0%,#05050a 100%);
+  box-shadow:0 0 28px rgba(226,0,116,.22), inset 0 -1px 0 rgba(0,200,255,.12);
   position:sticky;
   top:0;
   z-index:100;
-  background:rgba(5,5,5,.96);
-  backdrop-filter:blur(12px);
 }
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-.logo{
-  width:34px;
-  height:34px;
-  border:2px solid var(--acid);
-  display:grid;
-  place-items:center;
-  color:var(--acid);
-  font-weight:900;
-  font-size:13px;
-}
-.brand-title{
-  font-weight:900;
-  letter-spacing:2px;
+.brand-main{
+  font:900 22px monospace;
+  letter-spacing:-1px;
+  color:#fff;
+  text-shadow:0 0 12px rgba(226,0,116,.55);
 }
 .brand-sub{
-  color:var(--muted);
-  font-size:10px;
-  letter-spacing:1px;
-  margin-top:2px;
+  margin-top:5px;
+  color:var(--cyan);
+  font:10px monospace;
+  letter-spacing:3px;
+  text-shadow:0 0 8px rgba(0,200,255,.4);
 }
-.system-status{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:11px;
-  color:var(--muted);
-}
-.status-dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:var(--green);
-  box-shadow:0 0 12px rgba(74,222,128,.8);
-}
-/* NAV */
+.brand-divider{color:var(--pink);text-shadow:var(--glow-pink)}
+nav{display:flex;gap:8px;flex-wrap:wrap}
+button{cursor:pointer;font-family:inherit}
 .nav{
-  display:flex;
-  gap:4px;
-  padding:10px 18px;
-  border-bottom:1px solid var(--line);
-  overflow-x:auto;
-  background:#080808;
-}
-.nav button{
-  border:1px solid transparent;
-  background:transparent;
+  padding:11px 14px;
+  background:#0a0a12;
   color:#888;
-  padding:9px 13px;
-  font-size:11px;
-  letter-spacing:.8px;
-  white-space:nowrap;
+  border:1px solid #2a2a3a;
+  font:900 11px monospace;
+  letter-spacing:1px;
+  transition:all .15s;
 }
-.nav button:hover{
+.nav:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:var(--glow-cyan)}
+.nav.active{
+  background:var(--pink);
   color:#fff;
+  border-color:var(--pink);
+  transform:skew(-6deg);
+  box-shadow:4px 4px 0 #000, var(--glow-pink);
 }
-.nav button.active{
-  color:var(--acid);
-  border-color:#394000;
-  background:#151800;
+.status-db{color:#7a7a9a;font:9px monospace;white-space:nowrap}
+.status-db span{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:var(--acid);box-shadow:0 0 12px var(--acid);margin-right:5px
 }
-/* GENERAL */
-main{
-  max-width:1500px;
-  margin:auto;
-  padding:24px;
-}
-.view{
-  display:none;
-}
-.view.active{
-  display:block;
-}
-.page-head{
-  display:flex;
-  justify-content:space-between;
-  gap:20px;
-  align-items:flex-end;
-  margin-bottom:24px;
-}
+main{max-width:1100px;margin:auto;padding:26px 16px 90px}
+.view{display:none}
+.view.active{display:block}
+.head{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid #1e1e2e}
 .kicker{
-  color:var(--acid);
-  font-size:10px;
-  letter-spacing:2px;
-  font-weight:bold;
-  margin-bottom:8px;
+  color:var(--pink);
+  font:900 11px monospace;
+  letter-spacing:4px;
+  text-shadow:0 0 10px rgba(226,0,116,.5);
 }
 h1{
-  font-size:30px;
-  margin:0;
-  letter-spacing:-1px;
-}
-h2{
-  font-size:18px;
-  margin:0;
+  margin:10px 0 0;
+  font:900 clamp(30px,5.8vw,58px)/.9 monospace;
+  letter-spacing:-3px;
+  color:#fff;
+  text-shadow:0 0 16px rgba(0,200,255,.25);
 }
 .card{
-  background:linear-gradient(145deg,#101010,#0b0b0b);
-  border:1px solid var(--line);
-  border-radius:12px;
-}
-.card-pad{
-  padding:18px;
-}
-.muted{
-  color:var(--muted);
-}
-.small{
-  font-size:11px;
-}
-/* HERO */
-.hero{
-  border:1px solid #303500;
-  background:
-    radial-gradient(circle at 90% 10%,rgba(216,255,0,.08),transparent 35%),
-    linear-gradient(145deg,#111400,#090909);
-  border-radius:16px;
-  padding:28px;
-  margin-bottom:18px;
-}
-.hero h1{
-  font-size:38px;
-  max-width:760px;
-}
-.hero p{
-  color:#999;
-  max-width:720px;
-  line-height:1.6;
-}
-.hero-actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:22px;
-}
-.primary{
-  background:var(--acid);
-  color:#050505;
-  border:0;
-  padding:13px 18px;
-  border-radius:7px;
-  font-weight:900;
-  letter-spacing:.5px;
-}
-.primary:hover{
-  filter:brightness(1.08);
-}
-.secondary{
-  background:#171717;
-  color:#ddd;
-  border:1px solid #333;
-  padding:12px 16px;
-  border-radius:7px;
-}
-.secondary:hover{
-  border-color:#555;
-}
-.danger{
-  background:#190b0e;
-  color:#ff7187;
-  border:1px solid #4a1d26;
-  padding:11px 14px;
-  border-radius:7px;
-}
-/* STATS */
-.stats{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:10px;
-  margin-bottom:18px;
-}
-.stat{
-  padding:17px;
-  border:1px solid var(--line);
-  background:#0c0c0c;
-  border-radius:10px;
-}
-.stat-label{
-  color:#777;
-  font-size:10px;
-  letter-spacing:1px;
-  text-transform:uppercase;
-}
-.stat-value{
-  font-size:29px;
-  font-weight:900;
-  margin-top:7px;
-}
-.stat.green .stat-value{color:var(--green)}
-.stat.red .stat-value{color:var(--red)}
-.stat.orange .stat-value{color:var(--orange)}
-.stat.cyan .stat-value{color:var(--cyan)}
-.stat.pink .stat-value{color:var(--pink)}
-/* WORKFLOW */
-.workflow{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:18px;
-}
-.step{
-  padding:16px;
-  border:1px solid var(--line);
-  border-radius:10px;
-  background:#0c0c0c;
-  min-height:120px;
-}
-.step-number{
-  color:var(--acid);
-  font-size:10px;
-  font-weight:bold;
-  letter-spacing:1px;
-}
-.step-title{
-  margin-top:13px;
-  font-weight:bold;
-}
-.step-text{
-  color:#777;
-  font-size:11px;
-  line-height:1.5;
-  margin-top:6px;
-}
-/* IMPORT */
-.import-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
-.source-card{
-  padding:20px;
+  background:var(--panel);
+  border:1px solid #222236;
+  box-shadow:6px 6px 0 #000, 0 0 24px rgba(0,0,0,.45);
+  margin-bottom:20px;
   position:relative;
-  overflow:hidden;
 }
-.source-card.a{
-  border-top:3px solid var(--cyan);
+.card::before{
+  content:"";
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--pink),var(--cyan));
+  opacity:.75;
 }
-.source-card.b{
-  border-top:3px solid var(--pink);
+.card-head{
+  padding:15px 18px;
+  border-bottom:1px solid #1e1e2e;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  font:900 11px monospace;
+  color:var(--cyan);
+  text-shadow:0 0 6px rgba(0,200,255,.35);
 }
-.source-head{
+.card-body{padding:18px}
+textarea{
+  width:100%;min-height:280px;resize:vertical;padding:16px;
+  background:#030308;color:var(--acid);border:1px solid #2a2a40;outline:none;
+  font:12px/1.5 monospace;
+  box-shadow:inset 0 0 24px rgba(0,0,0,.55);
+}
+textarea:focus{
+  border-color:var(--cyan);
+  box-shadow:inset 0 0 24px rgba(0,0,0,.55), 0 0 14px rgba(0,200,255,.2);
+}
+.actions{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.btn{
+  padding:14px 20px;
+  background:var(--pink);
+  color:#fff;
+  border:1px solid var(--pink);
+  font:900 12px monospace;
+  letter-spacing:1.5px;
+  box-shadow:4px 4px 0 #000, var(--glow-pink);
+  min-height:48px;
+  transition:all .12s;
+}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #000}
+.btn.secondary{
+  background:#0a0a14;
+  color:#ccc;
+  border-color:#3a3a50;
+  box-shadow:4px 4px 0 #000;
+}
+.btn.secondary:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:4px 4px 0 #000, var(--glow-cyan)}
+.btn.pink{
+  background:var(--pink);
+  color:#fff;
+  border-color:var(--pink);
+  box-shadow:4px 4px 0 #000, var(--glow-pink);
+}
+.btn.cyan{
+  background:var(--cyan);
+  color:#000;
+  border-color:var(--cyan);
+  box-shadow:4px 4px 0 #000, var(--glow-cyan);
+}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;filter:none;box-shadow:4px 4px 0 #000}
+.status{
+  margin-top:16px;padding:14px;
+  border:1px solid #2a2a40;
+  min-height:46px;
+  font:12px monospace;
+  background:#08080f;
+}
+.status.ok{color:var(--acid);border-color:var(--acid);box-shadow:0 0 12px rgba(0,229,160,.18)}
+.status.error{color:var(--red);border-color:var(--red);box-shadow:0 0 12px rgba(255,59,107,.22)}
+.status.warn{color:var(--pink);border-color:var(--pink);box-shadow:0 0 12px rgba(226,0,116,.18)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat{
+  padding:18px;
+  background:#0a0a12;
+  border:1px solid #222236;
+  box-shadow:0 0 16px rgba(0,0,0,.35);
+}
+.stat-label{color:var(--muted);font:9px monospace;letter-spacing:2px}
+.stat-value{
+  margin-top:8px;
+  font:900 34px monospace;
+  color:#fff;
+  text-shadow:0 0 12px rgba(0,200,255,.35);
+}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{
+  padding:11px 15px;
+  background:#0a0a12;
+  color:#777;
+  border:1px solid #2a2a3a;
+  font:900 10px monospace;
+  transition:all .12s;
+}
+.tab:hover{border-color:var(--cyan);color:var(--cyan)}
+.tab.active{
+  color:#fff;
+  background:var(--pink);
+  border-color:var(--pink);
+  box-shadow:0 0 14px rgba(226,0,116,.4);
+}
+.search{
+  margin-left:auto;min-width:200px;padding:11px 13px;
+  background:#08080f;color:#fff;border:1px solid #2a2a3a;outline:none;font:11px monospace;
+}
+.search:focus{border-color:var(--cyan);box-shadow:0 0 10px rgba(0,200,255,.2)}
+.table-wrap{overflow:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{
+  padding:12px 10px;text-align:left;white-space:nowrap;
+  color:var(--cyan);background:#08080f;
+  border-bottom:2px solid var(--cyan);
+  font:900 9px monospace;letter-spacing:1px;
+}
+td{padding:12px 10px;border-bottom:1px solid #1a1a28}
+tr:hover{background:rgba(226,0,116,.04)}
+.mono{color:var(--cyan);font-family:monospace}
+.good{color:var(--acid)}.bad{color:var(--red)}.warn{color:var(--pink)}.info{color:var(--cyan)}.ambiguous{color:var(--orange)}
+.query-input{
+  width:100%;padding:15px;
+  background:#030308;color:#fff;border:1px solid #2a2a3a;outline:none;font:12px monospace;
+}
+.query-input:focus{border-color:var(--cyan);box-shadow:0 0 12px rgba(0,200,255,.18)}
+.examples{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.examples button{
+  padding:9px 12px;color:#888;background:#0a0a12;border:1px solid #2a2a3a;font:9px monospace;
+  transition:all .12s;
+}
+.examples button:hover{color:var(--cyan);border-color:var(--cyan);box-shadow:var(--glow-cyan)}
+.plan{
+  margin-top:20px;padding:16px;
+  color:var(--cyan);background:#030308;
+  border:1px solid var(--cyan);
+  font:11px monospace;overflow:auto;white-space:pre-wrap;
+  box-shadow:0 0 16px rgba(0,200,255,.12);
+}
+.field-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{color:var(--muted);font:900 9px monospace;letter-spacing:2px}
+.field input,.field select{
+  width:100%;padding:12px 13px;
+  background:#08080f;color:#fff;border:1px solid #2a2a3a;outline:none;font:11px monospace;
+}
+.field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:0 0 10px rgba(0,200,255,.18)}
+.notice{
+  padding:14px;
+  border-left:3px solid var(--pink);
+  background:#0a0a12;
+  color:#9a9ab0;
+  font:11px/1.55 monospace;
+  margin-bottom:16px;
+}
+.badge{display:inline-block;padding:4px 8px;border:1px solid #333;font:900 8px monospace;letter-spacing:1px}
+.badge.good{border-color:var(--acid);color:var(--acid)}
+.badge.bad{border-color:var(--red);color:var(--red)}
+.badge.warn{border-color:var(--pink);color:var(--pink)}
+.badge.ambiguous{border-color:var(--orange);color:var(--orange)}
+.empty{padding:32px;text-align:center;color:var(--muted);font:12px monospace}
+.hidden{display:none!important}
+
+/* STEPPER */
+.stepper{
+  display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 28px;align-items:center;
+  font:900 10px monospace;letter-spacing:1.5px;
+}
+.step-item{
+  padding:10px 13px;
+  border:1px solid #2a2a40;
+  background:#0a0a12;
+  color:#555;
+  white-space:nowrap;
+  transition:all .15s;
+}
+.step-item.active{
+  background:transparent;
+  color:var(--cyan);
+  border-color:var(--cyan);
+  box-shadow:0 0 14px rgba(0,200,255,.35);
+  text-shadow:0 0 8px rgba(0,200,255,.5);
+}
+.step-item.done{
+  color:var(--pink);
+  border-color:var(--pink);
+  box-shadow:0 0 10px rgba(226,0,116,.2);
+}
+.step-arrow{color:#333;font-size:13px}
+
+/* UPLOAD */
+.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:720px){.upload-grid{grid-template-columns:1fr}}
+.upload-card{
+  background:var(--panel2);
+  border:1px solid #222236;
+  padding:22px;
+  box-shadow:5px 5px 0 #000, 0 0 20px rgba(0,0,0,.4);
+  min-height:190px;
+  display:flex;flex-direction:column;
+  position:relative;
+}
+.upload-card::after{
+  content:"";
+  position:absolute;bottom:0;left:0;right:0;height:2px;
+  opacity:.7;
+}
+#cardA::after{background:linear-gradient(90deg,transparent,var(--pink),transparent)}
+#cardB::after{background:linear-gradient(90deg,transparent,var(--cyan),transparent)}
+.upload-card h3{font:900 17px monospace;letter-spacing:2px;margin-bottom:4px;color:#fff}
+#cardA h3{color:var(--pink);text-shadow:0 0 12px rgba(226,0,116,.6)}
+#cardB h3{color:var(--cyan);text-shadow:0 0 12px rgba(0,200,255,.55)}
+.upload-card .sub{color:var(--muted);font:10px monospace;margin-bottom:16px;letter-spacing:1px}
+.upload-zone{
+  flex:1;border:2px dashed #33334a;
+  display:flex;align-items:center;justify-content:center;
+  padding:22px;cursor:pointer;transition:all .15s;
+  background:rgba(0,0,0,.22);
+}
+.upload-zone:hover,.upload-zone.drag{
+  border-color:var(--pink);
+  box-shadow:inset 0 0 20px rgba(226,0,116,.06), 0 0 14px rgba(226,0,116,.12);
+}
+#cardB .upload-zone:hover,#cardB .upload-zone.drag{
+  border-color:var(--cyan);
+  box-shadow:inset 0 0 20px rgba(0,200,255,.06), 0 0 14px rgba(0,200,255,.12);
+}
+.upload-zone input{display:none}
+.meta-box{margin-top:16px;font:11px monospace;line-height:1.7}
+.meta-box .label{color:var(--muted)}
+.col-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.col-tag{
+  padding:6px 10px;
+  border:1px solid #2a2a40;
+  background:#08080f;
+  font:900 10px monospace;
+  color:var(--cyan);
+}
+
+/* QUESTIONS */
+.question-box{
+  background:#0a0a12;
+  border:1px solid #2a2a40;
+  padding:24px 20px;
+  box-shadow:6px 6px 0 #000, 0 0 24px rgba(0,0,0,.35);
+  margin-bottom:18px;
+  animation:fadeIn .28s ease;
+  position:relative;
+}
+.question-box::before{
+  content:"";
+  position:absolute;top:0;left:0;width:3px;height:100%;
+  background:linear-gradient(180deg,var(--pink),var(--cyan));
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.q-num{
+  color:var(--pink);
+  font:900 11px monospace;
+  letter-spacing:3px;
+  margin-bottom:10px;
+  text-shadow:0 0 8px rgba(226,0,116,.5);
+}
+.q-title{
+  font:900 19px monospace;
+  margin-bottom:20px;
+  letter-spacing:-.5px;
+  color:#fff;
+}
+.q-options{display:flex;flex-direction:column;gap:11px}
+.q-btn{
+  padding:15px 18px;
+  background:#08080f;
+  border:1px solid #2a2a3a;
+  color:#ccc;
+  font:900 13px monospace;
+  text-align:left;
+  min-height:52px;
+  box-shadow:3px 3px 0 #000;
+  transition:all .12s;
+}
+.q-btn:hover,.q-btn.selected{
+  border-color:var(--cyan);
+  color:var(--cyan);
+  background:#0c0c16;
+  box-shadow:3px 3px 0 #000, 0 0 12px rgba(0,200,255,.2);
+}
+.q-btn.multi.selected{
+  background:rgba(0,200,255,.08);
+  border-color:var(--cyan);
+}
+.q-suggest{
+  margin-bottom:14px;padding:12px;
+  border:1px solid var(--orange);
+  color:var(--orange);
+  font:11px monospace;
+}
+.q-text{
+  width:100%;min-height:95px;padding:14px;
+  background:#030308;border:1px solid #2a2a40;color:#fff;
+  font:12px monospace;resize:vertical;
+}
+.progress-mini{color:var(--muted);font:11px monospace;margin-bottom:12px;letter-spacing:1px}
+
+/* PROMPT / JSON */
+.terminal{
+  background:#020206;
+  border:1px solid #222240;
+  padding:16px;
+  font:12px/1.45 monospace;
+  color:var(--acid);
+  max-height:420px;overflow:auto;white-space:pre-wrap;word-break:break-all;
+  box-shadow:inset 0 0 30px rgba(0,0,0,.6);
+}
+.step-hint{margin-top:14px;color:#7a7a9a;font:11px monospace;line-height:1.55}
+
+/* POLICY CARDS */
+.policy-list{display:flex;flex-direction:column;gap:12px}
+.policy-card{
+  background:#0a0a12;
+  border:1px solid #2a2a40;
+  padding:16px;
+  box-shadow:4px 4px 0 #000;
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
-  margin-bottom:15px;
-}
-.source-label{
-  font-size:10px;
-  letter-spacing:2px;
-  font-weight:bold;
-}
-.a .source-label{color:var(--cyan)}
-.b .source-label{color:var(--pink)}
-.dropzone{
-  border:1px dashed #3a3a3a;
-  border-radius:9px;
-  padding:28px 15px;
-  text-align:center;
-  transition:.2s;
-}
-.dropzone:hover,
-.dropzone.drag{
-  border-color:var(--acid);
-  background:#111500;
-}
-.drop-icon{
-  font-size:27px;
-  margin-bottom:8px;
-}
-.dropzone input{
-  display:none;
-}
-.file-button{
-  display:inline-block;
-  margin-top:12px;
-  border:1px solid #444;
-  background:#151515;
-  padding:9px 13px;
-  border-radius:6px;
-  font-size:11px;
-  cursor:pointer;
-}
-.file-info{
-  margin-top:12px;
-  color:var(--green);
-  font-size:11px;
-  min-height:15px;
-}
-textarea{
-  width:100%;
-  min-height:260px;
-  resize:vertical;
-  background:#070707;
-  color:#ddd;
-  border:1px solid #292929;
-  border-radius:8px;
-  padding:14px;
-  outline:none;
-  font-family:monospace;
-  font-size:11px;
-  line-height:1.5;
-}
-textarea:focus{
-  border-color:#555;
-}
-.import-actions{
-  display:flex;
-  gap:10px;
+  gap:16px;
   flex-wrap:wrap;
-  margin-top:15px;
 }
-/* BADGES */
-.badge{
-  display:inline-flex;
-  align-items:center;
-  border:1px solid #333;
-  border-radius:20px;
-  padding:3px 7px;
-  font-size:9px;
-  color:#aaa;
-  white-space:nowrap;
+.policy-card.active-policy{
+  border-color:var(--cyan);
+  box-shadow:4px 4px 0 #000, 0 0 14px rgba(0,200,255,.2);
 }
-.badge.good{
-  color:var(--green);
-  border-color:#24502f;
+.policy-meta{font:11px monospace;line-height:1.6}
+.policy-meta strong{color:#fff;font-size:13px}
+.policy-meta .ver{color:var(--cyan)}
+.policy-meta .st{color:var(--acid)}
+.policy-meta .st.draft{color:var(--orange)}
+
+@media(max-width:950px){
+  header{flex-direction:column;align-items:flex-start}
+  nav{width:100%;overflow:auto}
+  .status-db{position:absolute;right:14px;top:20px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .field-grid{grid-template-columns:1fr}
+  .search{width:100%;margin-left:0}
+  main{padding:18px 12px 80px}
 }
-.badge.bad{
-  color:var(--red);
-  border-color:#54212b;
-}
-.badge.warn{
-  color:var(--orange);
-  border-color:#533d18;
-}
-.badge.info{
-  color:var(--cyan);
-  border-color:#164d55;
-}
-/* ATLAS */
-.atlas{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-}
-.atlas-group{
-  border:1px solid var(--line);
-  background:#0c0c0c;
-  border-radius:10px;
-  padding:15px;
-}
-.atlas-main{
-  color:var(--acid);
-  font-weight:900;
-  font-size:12px;
-  margin-bottom:10px;
-}
-.atlas-item{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  padding:7px 0;
-  border-bottom:1px solid #1c1c1c;
-  color:#aaa;
-  font-size:11px;
-}
-.atlas-item:last-child{
-  border-bottom:0;
-}
-/* RESULTS */
-.result-toolbar{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  align-items:center;
-  margin-bottom:15px;
-}
-.search{
-  flex:1;
-  min-width:220px;
-  background:#0c0c0c;
-  border:1px solid #292929;
-  color:#eee;
-  padding:11px 13px;
-  border-radius:7px;
-  outline:none;
-}
-.filter{
-  background:#0c0c0c;
-  border:1px solid #292929;
-  color:#bbb;
-  padding:10px 12px;
-  border-radius:7px;
-}
-.result-layout{
-  display:grid;
-  grid-template-columns:1fr 390px;
-  gap:14px;
-}
-.result-list{
-  min-height:400px;
-}
-.issue{
-  padding:15px;
-  border-bottom:1px solid #202020;
-  cursor:pointer;
-  transition:.15s;
-}
-.issue:hover{
-  background:#111;
-}
-.issue.selected{
-  background:#151700;
-  border-left:3px solid var(--acid);
-}
-.issue-top{
-  display:flex;
-  justify-content:space-between;
-  gap:15px;
-}
-.issue-name{
-  font-weight:bold;
-}
-.issue-meta{
-  color:#777;
-  font-size:10px;
-  margin-top:6px;
-}
-.issue-reason{
-  color:#bbb;
-  font-size:11px;
-  margin-top:10px;
-}
-.detail{
-  position:sticky;
-  top:135px;
-  align-self:start;
-  padding:18px;
-  max-height:calc(100vh - 155px);
-  overflow:auto;
-}
-.detail-title{
-  margin-bottom:15px;
-}
-.detail-section{
-  margin-top:18px;
-}
-.detail-row{
-  display:grid;
-  grid-template-columns:100px 1fr 1fr;
-  gap:8px;
-  border-bottom:1px solid #1f1f1f;
-  padding:9px 0;
-  font-size:10px;
-}
-.detail-row.head{
-  color:#666;
-  font-size:9px;
-  text-transform:uppercase;
-}
-.value-a{
-  color:var(--cyan);
-  word-break:break-word;
-}
-.value-b{
-  color:var(--pink);
-  word-break:break-word;
-}
-.diff{
-  background:#180d11;
-}
-.diff .value-a,
-.diff .value-b{
-  color:var(--red);
-}
-/* DATABASE */
-.table-wrap{
-  overflow:auto;
-  border:1px solid var(--line);
-  border-radius:10px;
-  background:#090909;
-}
-table{
-  border-collapse:collapse;
-  width:100%;
-  min-width:1100px;
-}
-th{
-  position:sticky;
-  top:0;
-  z-index:2;
-  background:#111;
-  color:#777;
-  text-align:left;
-  padding:10px;
-  border-bottom:1px solid #292929;
-  font-size:9px;
-  text-transform:uppercase;
-  letter-spacing:.6px;
-}
-td{
-  padding:10px;
-  border-bottom:1px solid #1b1b1b;
-  font-size:10px;
-  color:#bbb;
-}
-tr:hover td{
-  background:#101010;
-}
-/* REPORT */
-.report-box{
-  padding:22px;
-}
-.report-header{
-  display:flex;
-  justify-content:space-between;
-  gap:20px;
-  border-bottom:1px solid #292929;
-  padding-bottom:18px;
-  margin-bottom:18px;
-}
-.report-title{
-  font-size:24px;
-  font-weight:900;
-}
-.report-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-}
-.report-stat{
-  padding:15px;
-  border:1px solid #292929;
-  background:#0b0b0b;
-  border-radius:8px;
-}
-.report-issue{
-  padding:14px 0;
-  border-bottom:1px solid #222;
-}
-.report-issue strong{
-  color:#fff;
-}
-/* TOAST */
-.toast{
-  position:fixed;
-  right:18px;
-  bottom:18px;
-  z-index:999;
-  background:#151515;
-  border:1px solid #444;
-  padding:13px 16px;
-  border-radius:8px;
-  font-size:11px;
-  transform:translateY(100px);
-  opacity:0;
-  pointer-events:none;
-  transition:.25s;
-}
-.toast.show{
-  transform:translateY(0);
-  opacity:1;
-}
-.empty{
-  padding:45px;
-  text-align:center;
-  color:#666;
-}
-/* RESPONSIVE */
-@media(max-width:1000px){
-  .stats{
-    grid-template-columns:repeat(3,1fr);
-  }
-  .workflow,
-  .atlas{
-    grid-template-columns:repeat(2,1fr);
-  }
-  .result-layout{
-    grid-template-columns:1fr;
-  }
-  .detail{
-    position:relative;
-    top:0;
-    max-height:none;
-  }
-}
-@media(max-width:700px){
-  main{
-    padding:14px;
-  }
-  .header{
-    padding:0 14px;
-  }
-  .system-status{
-    display:none;
-  }
-  h1,
-  .hero h1{
-    font-size:27px;
-  }
-  .stats{
-    grid-template-columns:repeat(2,1fr);
-  }
-  .workflow,
-  .atlas,
-  .import-grid{
-    grid-template-columns:1fr;
-  }
-  .hero{
-    padding:20px;
-  }
-  .page-head{
-    align-items:flex-start;
-    flex-direction:column;
-  }
+@media(max-width:600px){
+  .stats{grid-template-columns:1fr}
+  .stepper{font-size:9px}
+  .step-item{padding:8px 9px}
 }
 </style>
 </head>
 <body>
-<div class="app">
-<header class="header">
-  <div class="brand">
-    <div class="logo">LV</div>
-    <div>
-      <div class="brand-title">BOOKING CONTROL</div>
-      <div class="brand-sub">
-        BUCHUNGSPRÜFUNG · DETERMINISTISCH
-      </div>
-    </div>
+
+<header>
+  <div>
+    <div class="brand-main">LV GmbH <span class="brand-divider">|</span> DATENBANK</div>
+    <div class="brand-sub">BOOKING RECON // CYBERUNK</div>
   </div>
-  <div class="system-status">
-    <span class="status-dot"></span>
-    SYSTEM BEREIT
-  </div>
+  <nav>
+    <button class="nav active" data-view="import">↓</button>
+    <button class="nav" data-view="database">▦</button>
+    <button class="nav" data-view="query">⚡</button>
+    <button class="nav" data-view="policies">▣</button>
+  </nav>
+  <div class="status-db"><span></span>INDEXEDDB LOCAL</div>
 </header>
-<nav class="nav">
-  <button class="nav-btn active"
-          data-view="dashboard">
-    ÜBERSICHT
-  </button>
-  <button class="nav-btn"
-          data-view="import">
-    DATEN HINEIN
-  </button>
-  <button class="nav-btn"
-          data-view="atlas">
-    VORGÄNGE
-  </button>
-  <button class="nav-btn"
-          data-view="results">
-    PRÜFUNG
-  </button>
-  <button class="nav-btn"
-          data-view="database">
-    DATENBESTAND
-  </button>
-  <button class="nav-btn"
-          data-view="report">
-    PRÜFBERICHT
-  </button>
-  <button class="nav-btn"
-          data-view="prompt">
-    LLM-AUFTRAG
-  </button>
-</nav>
+
 <main>
-<!-- =====================================================
-     ÜBERSICHT
-===================================================== -->
-<section id="dashboard" class="view active">
-  <div class="hero">
-    <div class="kicker">
-      LV · BOOKING CONTROL
+
+<!-- ===================== IMPORT ===================== -->
+<section id="view-import" class="view active">
+  <div class="head">
+    <div class="kicker">LOKALER WORKFLOW</div>
+    <h1>TABELLEN<br>AUFBEREITEN</h1>
+  </div>
+
+  <div class="stepper" id="stepper">
+    <div class="step-item active" data-step="1">01 TABELLEN</div>
+    <span class="step-arrow">→</span>
+    <div class="step-item" data-step="2">02 FRAGEN</div>
+    <span class="step-arrow">→</span>
+    <div class="step-item" data-step="3">03 LLM-AUFTRAG</div>
+    <span class="step-arrow">→</span>
+    <div class="step-item" data-step="4">04 JSON</div>
+    <span class="step-arrow">→</span>
+    <div class="step-item" data-step="5">05 ABGLEICH</div>
+  </div>
+
+  <div id="step1" class="step-panel">
+    <div class="upload-grid">
+      <div class="upload-card" id="cardA">
+        <h3>TABLE A</h3>
+        <div class="sub">Erste Tabelle</div>
+        <div class="upload-zone" id="zoneA" onclick="document.getElementById('fileA').click()">
+          <div>
+            <div style="font:900 13px monospace;margin-bottom:6px;letter-spacing:1px">DATEI AUSWÄHLEN</div>
+            <div style="font:10px monospace;color:#555">CSV · XLSX · XLS · TSV</div>
+          </div>
+          <input type="file" id="fileA" accept=".csv,.xlsx,.xls,.tsv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
+        </div>
+        <div class="meta-box hidden" id="metaA"></div>
+      </div>
+      <div class="upload-card" id="cardB">
+        <h3>TABLE B</h3>
+        <div class="sub">Zweite Tabelle</div>
+        <div class="upload-zone" id="zoneB" onclick="document.getElementById('fileB').click()">
+          <div>
+            <div style="font:900 13px monospace;margin-bottom:6px;letter-spacing:1px">DATEI AUSWÄHLEN</div>
+            <div style="font:10px monospace;color:#555">CSV · XLSX · XLS · TSV</div>
+          </div>
+          <input type="file" id="fileB" accept=".csv,.xlsx,.xls,.tsv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
+        </div>
+        <div class="meta-box hidden" id="metaB"></div>
+      </div>
     </div>
-    <h1>
-      Zwei Tabellen.<br>
-      Ein klares Prüfergebnis.
-    </h1>
-    <p>
-      Das System strukturiert Buchungsdaten, erkennt die vorhandenen
-      Vorgänge und vergleicht anschließend die Datensätze automatisch.
-      Die eigentliche Prüfung erfolgt regelbasiert und nachvollziehbar.
-    </p>
-    <div class="hero-actions">
-      <button class="primary"
-              onclick="go('import')">
-        DATEN IMPORTIEREN
-      </button>
-      <button class="secondary"
-              onclick="go('prompt')">
-        LLM-AUFTRAG ÖFFNEN
-      </button>
-      <button class="secondary"
-              onclick="runReconciliation()">
-        PRÜFUNG STARTEN
-      </button>
+    <div class="actions">
+      <button class="btn" id="btnToQuestions" disabled>WEITER ZU FRAGEN →</button>
     </div>
+    <div id="step1Status" class="status">Beide Tabellen hochladen.</div>
+  </div>
+
+  <div id="step2" class="step-panel hidden">
+    <div class="progress-mini" id="qProgress"></div>
+    <div id="questionContainer"></div>
+    <div class="actions">
+      <button class="btn secondary" id="btnBackToUpload">← ZURÜCK</button>
+    </div>
+  </div>
+
+  <div id="step3" class="step-panel hidden">
+    <div class="card">
+      <div class="card-head"><strong>LLM-AUFTRAG</strong><span>GENERATED</span></div>
+      <div class="card-body">
+        <div class="notice">Der Auftrag enthält Struktur, Benutzerantworten und die vollständigen Originaldaten. Kein Abgleich, keine Korrekturen.</div>
+        <div class="terminal" id="promptOutput"></div>
+        <div class="actions">
+          <button class="btn pink" id="btnCopyPrompt">📋 LLM-AUFTRAG KOPIEREN</button>
+          <button class="btn secondary" id="btnBackToQuestions">← FRAGEN</button>
+        </div>
+        <div id="promptStatus" class="status">Bereit zum Kopieren.</div>
+        <div class="step-hint">Öffne Grok oder ChatGPT, füge den Auftrag ein und kopiere anschließend die JSON-Antwort zurück hierher.</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" id="btnToJson">WEITER ZU JSON →</button>
+    </div>
+  </div>
+
+  <div id="step4" class="step-panel hidden">
+    <div class="card">
+      <div class="card-head"><strong>LLM-JSON</strong><span>VALIDIERUNG</span></div>
+      <div class="card-body">
+        <textarea id="jsonInput" spellcheck="false" placeholder="LLM-JSON HIER EINFÜGEN"></textarea>
+        <div class="actions">
+          <button class="btn" id="btnValidateJson">JSON VALIDIEREN</button>
+          <button class="btn cyan hidden" id="btnImportJson">IN DATENBANK IMPORTIEREN</button>
+          <button class="btn secondary" id="btnClearJson">CLEAR</button>
+        </div>
+        <div id="jsonStatus" class="status">JSON einfügen und validieren.</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn secondary" id="btnBackToPrompt">← LLM-AUFTRAG</button>
+      <button class="btn cyan hidden" id="btnSaveAsPolicy">ALS POLICY SPEICHERN</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DATENBANK ===================== -->
+<section id="view-database" class="view">
+  <div class="head">
+    <div class="kicker">GESPEICHERTE DATEN</div>
+    <h1>DATENBANK</h1>
   </div>
   <div class="stats">
-    <div class="stat cyan">
-      <div class="stat-label">Tabelle A</div>
-      <div class="stat-value" id="statA">0</div>
-    </div>
-    <div class="stat pink">
-      <div class="stat-label">Tabelle B</div>
-      <div class="stat-value" id="statB">0</div>
-    </div>
-    <div class="stat green">
-      <div class="stat-label">Übereinstimmend</div>
-      <div class="stat-value" id="statMatch">0</div>
-    </div>
-    <div class="stat red">
-      <div class="stat-label">Abweichungen</div>
-      <div class="stat-value" id="statDiff">0</div>
-    </div>
-    <div class="stat orange">
-      <div class="stat-label">Nicht zugeordnet</div>
-      <div class="stat-value" id="statMissing">0</div>
+    <div class="stat"><div class="stat-label">TABELLE A</div><div id="tableACount" class="stat-value">0</div></div>
+    <div class="stat"><div class="stat-label">TABELLE B</div><div id="tableBCount" class="stat-value">0</div></div>
+    <div class="stat"><div class="stat-label">GESAMT</div><div id="recordCount" class="stat-value">0</div></div>
+    <div class="stat"><div class="stat-label">ABWEICHUNGEN</div><div id="differenceCount" class="stat-value">0</div></div>
+  </div>
+  <div class="toolbar">
+    <button class="tab active" data-tab="tableA">TABELLE A</button>
+    <button class="tab" data-tab="tableB">TABELLE B</button>
+    <button class="tab" data-tab="differences">ABWEICHUNGEN</button>
+    <input id="dbSearch" class="search" placeholder="Datenbank durchsuchen...">
+  </div>
+  <div class="card"><div class="table-wrap"><div id="databaseTable"></div></div></div>
+</section>
+
+<!-- ===================== ABGLEICH ===================== -->
+<section id="view-query" class="view">
+  <div class="head">
+    <div class="kicker">ABGLEICH</div>
+    <h1>VALIDIERUNG</h1>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><strong>POLICY AUSWÄHLEN</strong><span>DETERMINISTISCH</span></div>
+    <div class="card-body">
+      <div class="notice">Wähle eine gespeicherte Policy. Der Executor führt ausschließlich die Regeln der Policy aus. Keine LLM-Entscheidung zur Laufzeit.</div>
+      <div class="field">
+        <label>AKTIVE POLICY</label>
+        <select id="policySelect">
+          <option value="">— manuelle Konfiguration —</option>
+        </select>
+      </div>
+      <div id="policyPreview" class="status" style="margin-top:12px">Keine Policy gewählt. Manuelle Felder unten werden verwendet.</div>
     </div>
   </div>
-  <div class="workflow">
-    <div class="step">
-      <div class="step-number">
-        01 · DATEN
+
+  <div class="card">
+    <div class="card-head"><strong>ABGLEICH</strong><span>DETERMINISTISCH</span></div>
+    <div class="card-body">
+      <div class="notice">Die eigentliche Ausführung verwendet ausschließlich die unten festgelegte Vergleichskonfiguration bzw. die gewählte Policy.</div>
+      <input id="queryInput" class="query-input" placeholder="Beschreibung der Vergleichsanfrage...">
+      <div class="examples">
+        <button data-query="Vergleiche Tabelle A und Tabelle B und zeige alle Abweichungen.">ALLE ABWEICHUNGEN</button>
+        <button data-query="Vergleiche Tabelle A und Tabelle B für den gewählten Zeitraum.">ZEITRAUM</button>
+        <button data-query="Vergleiche die relevanten Buchungswerte aus Tabelle A und Tabelle B.">BUCHUNGEN</button>
       </div>
-      <div class="step-title">
-        Tabellen bereitstellen
-      </div>
-      <div class="step-text">
-        Zwei Buchungsbestände werden in das System übernommen.
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-number">
-        02 · STRUKTUR
-      </div>
-      <div class="step-title">
-        Vorgänge erkennen
-      </div>
-      <div class="step-text">
-        Vorhandene Kennzeichnungen wie FN, MF, VVL, FTTH
-        oder Congstar bleiben erhalten.
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-number">
-        03 · PRÜFUNG
-      </div>
-      <div class="step-title">
-        Datensätze vergleichen
-      </div>
-      <div class="step-text">
-        Auftragsnummern und definierte Felder werden
-        deterministisch gegeneinander geprüft.
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-number">
-        04 · ERGEBNIS
-      </div>
-      <div class="step-title">
-        Abweichungen sehen
-      </div>
-      <div class="step-text">
-        Jeder problematische Vorgang kann einzeln geöffnet
-        und nachvollzogen werden.
+      <div class="actions">
+        <button id="runQuery" class="btn">AUSFÜHREN</button>
+        <button id="clearQuery" class="btn secondary">CLEAR</button>
       </div>
     </div>
   </div>
-  <div class="card card-pad">
-    <div class="page-head"
-         style="margin-bottom:12px">
-      <div>
-        <div class="kicker">
-          SYSTEMSTATUS
-        </div>
-        <h2 id="dashboardStatus">
-          Noch keine Prüfung durchgeführt.
-        </h2>
+
+  <div class="card">
+    <div class="card-head"><strong>VERGLEICHSKONFIGURATION</strong><span>EXPLIZITE REGELN</span></div>
+    <div class="card-body">
+      <div class="field-grid">
+        <div class="field"><label>VON</label><input id="dateFrom" type="date"></div>
+        <div class="field"><label>BIS</label><input id="dateTo" type="date"></div>
+        <div class="field"><label>ABGLEICH ÜBER</label><input id="matchKeys" value="auftrag_id" placeholder="z.B. auftrag_id, vertrags_id"></div>
+        <div class="field"><label>ZU VERGLEICHEN</label><input id="numericFields" value="menge,betrag" placeholder="z.B. menge,betrag"></div>
       </div>
-      <span class="badge info"
-            id="recordBadge">
-        0 Datensätze
-      </span>
+      <div class="actions"><button id="resetConfig" class="btn secondary">ZURÜCKSETZEN</button></div>
     </div>
-    <div class="muted small"
-         id="dashboardExplanation">
-      Importiere zwei Datenbestände oder füge das vom LLM
-      erzeugte JSON ein.
+  </div>
+
+  <div id="queryPlan" class="plan hidden"></div>
+  <div id="queryResults" class="card hidden" style="margin-top:20px"></div>
+</section>
+
+<!-- ===================== POLICIES ===================== -->
+<section id="view-policies" class="view">
+  <div class="head">
+    <div class="kicker">ABGLEICH-PROFILE</div>
+    <h1>POLICIES</h1>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><strong>GESPEICHERTE POLICIES</strong><span>VERSIONIERT</span></div>
+    <div class="card-body">
+      <div class="notice">
+        Eine Policy ist ein vom Nutzer beigebrachter, versionierter Ablauf.<br>
+        Das LLM erzeugt die Policy. Der Compiler prüft sie. Der Executor führt sie deterministisch aus.
+      </div>
+      <div id="policyList" class="policy-list">
+        <div class="empty">NOCH KEINE POLICIES GESPEICHERT</div>
+      </div>
+      <div class="actions" style="margin-top:18px">
+        <button class="btn cyan" id="btnCreatePolicyFromAnswers">AUS AKTUELLEM WORKFLOW ERZEUGEN</button>
+        <button class="btn secondary" id="btnRefreshPolicies">AKTUALISIEREN</button>
+      </div>
+      <div id="policyStatus" class="status">Bereit.</div>
     </div>
   </div>
 </section>
-<!-- =====================================================
-     DATEN HINEIN
-===================================================== -->
-<section id="import" class="view">
-  <div class="page-head">
-    <div>
-      <div class="kicker">
-        01 · DATEN HINEIN
-      </div>
-      <h1>
-        Daten übernehmen
-      </h1>
-      <div class="muted small">
-        Zwei getrennte Datenbestände werden im System gehalten.
-      </div>
-    </div>
-    <button class="secondary"
-            onclick="go('prompt')">
-      LLM-AUFTRAG
-    </button>
-  </div>
-  <div class="import-grid">
-    <!-- TABLE A -->
-    <div class="card source-card a">
-      <div class="source-head">
-        <div>
-          <div class="source-label">
-            TABLE A
-          </div>
-          <h2>
-            Erster Datenbestand
-          </h2>
-        </div>
-        <span class="badge info">
-          A
-        </span>
-      </div>
-      <div class="dropzone"
-           id="dropA">
-        <div class="drop-icon">
-          ▣
-        </div>
-        <div class="muted small">
-          XLSX, XLS, CSV oder JSON
-        </div>
-        <label class="file-button">
-          DATEI AUSWÄHLEN
-          <input type="file"
-                 id="fileA"
-                 accept=".xlsx,.xls,.csv,.json">
-        </label>
-        <div class="file-info"
-             id="fileInfoA">
-          Keine Datei geladen.
-        </div>
-      </div>
-      <div style="margin-top:12px">
-        <textarea id="jsonA"
-          placeholder="Oder JSON für TABLE_A hier einfügen..."></textarea>
-      </div>
-      <div class="import-actions">
-        <button class="secondary"
-                onclick="loadJsonArea('A')">
-          JSON ÜBERNEHMEN
-        </button>
-        <button class="secondary"
-                onclick="clearSource('A')">
-          LEEREN
-        </button>
-      </div>
-    </div>
-    <!-- TABLE B -->
-    <div class="card source-card b">
-      <div class="source-head">
-        <div>
-          <div class="source-label">
-            TABLE B
-          </div>
-          <h2>
-            Zweiter Datenbestand
-          </h2>
-        </div>
-        <span class="badge"
-              style="color:var(--pink);border-color:#55204a">
-          B
-        </span>
-      </div>
-      <div class="dropzone"
-           id="dropB">
-        <div class="drop-icon">
-          ▣
-        </div>
-        <div class="muted small">
-          XLSX, XLS, CSV oder JSON
-        </div>
-        <label class="file-button">
-          DATEI AUSWÄHLEN
-          <input type="file"
-                 id="fileB"
-                 accept=".xlsx,.xls,.csv,.json">
-        </label>
-        <div class="file-info"
-             id="fileInfoB">
-          Keine Datei geladen.
-        </div>
-      </div>
-      <div style="margin-top:12px">
-        <textarea id="jsonB"
-          placeholder="Oder JSON für TABLE_B hier einfügen..."></textarea>
-      </div>
-      <div class="import-actions">
-        <button class="secondary"
-                onclick="loadJsonArea('B')">
-          JSON ÜBERNEHMEN
-        </button>
-        <button class="secondary"
-                onclick="clearSource('B')">
-          LEEREN
-        </button>
-      </div>
-    </div>
-  </div>
-  <div style="height:14px"></div>
-  <div class="card card-pad">
-    <div class="page-head"
-         style="margin-bottom:14px">
-      <div>
-        <div class="kicker">
-          IMPORT
-        </div>
-        <h2>
-          Datenbestand übernehmen
-        </h2>
-      </div>
-    </div>
-    <div class="muted small"
-         style="line-height:1.7">
-      Das System verändert keine Originalwerte absichtlich.
-      Die Tabellen bleiben getrennt. Kassenabschluss-Zeilen
-      werden erkannt und nicht als normale Kundenbuchungen
-      gewertet.
-    </div>
-    <div class="hero-actions">
-      <button class="primary"
-              onclick="commitImportedData()">
-        DATENBESTAND ÜBERNEHMEN
-      </button>
-      <button class="secondary"
-              onclick="loadDemo()">
-        DEMODATEN LADEN
-      </button>
-      <button class="danger"
-              onclick="clearAllData()">
-        ALLES LÖSCHEN
-      </button>
-    </div>
-  </div>
-</section>
-<!-- =====================================================
-     VORGÄNGE
-===================================================== -->
-<section id="atlas" class="view">
-  <div class="page-head">
-    <div>
-      <div class="kicker">
-        02 · VORGANGSATLAS
-      </div>
-      <h1>
-        Was wurde gebucht?
-      </h1>
-      <div class="muted small">
-        Die vorhandenen Kennzeichnungen werden sichtbar gemacht.
-      </div>
-    </div>
-  </div>
-  <div id="atlasContainer"
-       class="atlas">
-  </div>
-</section>
-<!-- =====================================================
-     PRÜFUNG
-===================================================== -->
-<section id="results" class="view">
-  <div class="page-head">
-    <div>
-      <div class="kicker">
-        03 · PRÜFUNG
-      </div>
-      <h1>
-        Prüfergebnis
-      </h1>
-      <div class="muted small"
-           id="resultSubtitle">
-        Noch keine Prüfung durchgeführt.
-      </div>
-    </div>
-    <button class="primary"
-            onclick="runReconciliation()">
-      PRÜFUNG STARTEN
-    </button>
-  </div>
-  <div class="stats">
-    <div class="stat green">
-      <div class="stat-label">Match</div>
-      <div class="stat-value" id="resMatch">0</div>
-    </div>
-    <div class="stat red">
-      <div class="stat-label">Wertabweichung</div>
-      <div class="stat-value" id="resDiff">0</div>
-    </div>
-    <div class="stat orange">
-      <div class="stat-label">Nur A</div>
-      <div class="stat-value" id="resOnlyA">0</div>
-    </div>
-    <div class="stat pink">
-      <div class="stat-label">Nur B</div>
-      <div class="stat-value" id="resOnlyB">0</div>
-    </div>
-    <div class="stat cyan">
-      <div class="stat-label">Duplikate</div>
-      <div class="stat-value" id="resDup">0</div>
-    </div>
-  </div>
-  <div class="result-toolbar">
-    <input
-      class="search"
-      id="issueSearch"
-      placeholder="Name, Auftragsnummer, Vorgang suchen..."
-      oninput="renderIssues()">
-    <select class="filter"
-            id="issueFilter"
-            onchange="renderIssues()">
-      <option value="ALL">
-        ALLE
-      </option>
-      <option value="VALUE_DIFFERENCE">
-        ABWEICHUNGEN
-      </option>
-      <option value="ONLY_A">
-        NUR A
-      </option>
-      <option value="ONLY_B">
-        NUR B
-      </option>
-      <option value="DUPLICATE">
-        DUPLIKATE
-      </option>
-    </select>
-  </div>
-  <div class="result-layout">
-    <div class="card result-list"
-         id="issueList">
-      <div class="empty">
-        Noch kein Prüfergebnis.
-      </div>
-    </div>
-    <div class="card detail"
-         id="issueDetail">
-      <div class="empty">
-        Wähle einen Vorgang aus.
-      </div>
-    </div>
-  </div>
-</section>
-<!-- =====================================================
-     DATENBESTAND
-===================================================== -->
-<section id="database" class="view">
-  <div class="page-head">
-    <div>
-      <div class="kicker">
-        DATENBESTAND
-      </div>
-      <h1>
-        Alle Vorgänge
-      </h1>
-      <div class="muted small">
-        Originaldaten plus erkannte Vorgangsstruktur.
-      </div>
-    </div>
-    <input
-      class="search"
-      style="max-width:350px"
-      id="dbSearch"
-      placeholder="Datenbestand durchsuchen..."
-      oninput="renderDatabase()">
-  </div>
-  <div class="card table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>
-            Quelle
-          </th>
-          <th>
-            Datum
-          </th>
-          <th>
-            Art
-          </th>
-          <th>
-            Name
-          </th>
-          <th>
-            Produktklasse
-          </th>
-          <th>
-            Vorgang
-          </th>
-          <th>
-            Auftragsnummer
-          </th>
-          <th>
-            Gesamt
-          </th>
-          <th>
-            Verkäufer
-          </th>
-        </tr>
-      </thead>
-      <tbody id="databaseBody"></tbody>
-    </table>
-  </div>
-</section>
-<!-- =====================================================
-     BERICHT
-===================================================== -->
-<section id="report" class="view">
-  <div class="page-head">
-    <div>
-      <div class="kicker">
-        04 · PRÜFBERICHT
-      </div>
-      <h1>
-        Prüfbericht
-      </h1>
-      <div class="muted small">
-        Zusammenfassung der letzten deterministischen Prüfung.
-      </div>
-    </div>
-    <div class="hero-actions"
-         style="margin-top:0">
-      <button class="secondary"
-              onclick="exportReportJSON()">
-        JSON EXPORT
-      </button>
-      <button class="secondary"
-              onclick="exportReportCSV()">
-        CSV EXPORT
-      </button>
-      <button class="primary"
-              onclick="printReport()">
-        BERICHT DRUCKEN
-      </button>
-    </div>
-  </div>
-  <div class="card report-box"
-       id="reportContent">
-    <div class="empty">
-      Noch kein Prüfbericht vorhanden.
-    </div>
-  </div>
-</section>
-<!-- =====================================================
-     LLM
-===================================================== -->
-<section id="prompt" class="view">
-  <div class="page-head">
-    <div>
-      <div class="kicker">
-        LLM · STRUKTURIERUNG
-      </div>
-      <h1>
-        LLM-Auftrag
-      </h1>
-      <div class="muted small">
-        Das LLM strukturiert die Tabellen.
-        Die Prüfung übernimmt dieses Tool anschließend selbst.
-      </div>
-    </div>
-  </div>
-  <div class="card card-pad">
-    <div class="import-actions">
-      <button class="primary"
-              onclick="copyPrompt()">
-        AUFTRAG KOPIEREN
-      </button>
-      <button class="secondary"
-              onclick="downloadPrompt()">
-        ALS TXT SPEICHERN
-      </button>
-    </div>
-    <div class="prompt-status"
-         id="promptStatus">
-    </div>
-    <textarea id="promptText"></textarea>
-  </div>
-</section>
+
 </main>
-<div class="toast"
-     id="toast">
-</div>
-</div>
+
 <script>
 /* =========================================================
-   ZUSTAND
+   DATABASE
 ========================================================= */
-const STATE = {
-  A:[],
-  B:[],
-  results:[],
-  selectedIssue:null,
-  lastRun:null
+const DB_NAME = "BOOKING_RECON_DB";
+const DB_VERSION = 2;
+const STORE_RECORDS = "records";
+const STORE_DIFFERENCES = "differences";
+const STORE_POLICIES = "policies";
+let database = null;
+
+let state = { records: [], differences: [], policies: [] };
+let currentTab = "tableA";
+let activePolicyId = null;
+
+const workflow = {
+  step: 1,
+  tableA: null,
+  tableB: null,
+  answersA: {},
+  answersB: {},
+  currentTable: "A",
+  qIndex: 0,
+  validatedPayload: null
 };
-const STORAGE_KEY =
-  "LV_BOOKING_CONTROL_V1";
+
+const QUESTIONS = [
+  { id: "table_type", title: "WAS IST DAS FÜR EINE TABELLE?", type: "single", options: ["KASSENAUFTRÄGE", "VERTRAGSBUCHUNGEN", "SONSTIGES"] },
+  { id: "row_meaning", title: "WAS BEDEUTET EINE ZEILE?", type: "single", options: ["EIN AUFTRAG", "EINE POSITION", "EINE BUCHUNG", "SONSTIGES"] },
+  { id: "identifier", title: "WELCHE SPALTE IDENTIFIZIERT DEN VORGANG?", type: "columns", allowNone: false },
+  { id: "date_field", title: "WELCHE SPALTE ENTHÄLT DAS DATUM?", type: "columns", allowNone: true },
+  { id: "relevant", title: "WELCHE SPALTEN SIND FÜR DEN SPÄTEREN ABGLEICH RELEVANT?", type: "multi" },
+  { id: "extra", title: "GIBT ES NOCH EINE WICHTIGE INFORMATION?", type: "text", placeholder: "z.B. Vorgang entspricht dem Auftrag aus Tabelle A." }
+];
+
+const ALLOWED_OPERATIONS = [
+  "READ_TABLE",
+  "MATCH_RECORDS",
+  "COMPARE_FIELDS",
+  "CLASSIFY_DIFFERENCE",
+  "STORE_RESULT"
+];
+
 /* =========================================================
-   NAVIGATION
+   OPEN DATABASE (Version 2 + Policies)
 ========================================================= */
-function go(view){
-  document.querySelectorAll(".view")
-    .forEach(v=>{
-      v.classList.remove("active");
-    });
-  document.querySelectorAll(".nav-btn")
-    .forEach(b=>{
-      b.classList.remove("active");
-    });
-  const target =
-    document.getElementById(view);
-  if(target){
-    target.classList.add("active");
-  }
-  const button =
-    document.querySelector(
-      `.nav-btn[data-view="${view}"]`
-    );
-  if(button){
-    button.classList.add("active");
-  }
-  if(view==="atlas"){
-    renderAtlas();
-  }
-  if(view==="database"){
-    renderDatabase();
-  }
-  if(view==="results"){
-    renderIssues();
-    renderIssueDetail();
-  }
-  if(view==="report"){
-    renderReport();
-  }
-}
-/* =========================================================
-   NAV BUTTONS
-========================================================= */
-document.querySelectorAll(".nav-btn")
-  .forEach(button=>{
-    button.addEventListener(
-      "click",
-      ()=>{
-        go(button.dataset.view);
+function openDatabase(){
+  if(database) return Promise.resolve(database);
+  return new Promise((resolve,reject)=>{
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onupgradeneeded = event => {
+      const db = event.target.result;
+      if(!db.objectStoreNames.contains(STORE_RECORDS)){
+        const store = db.createObjectStore(STORE_RECORDS, { keyPath:"id", autoIncrement:true });
+        store.createIndex("source_table","source_table",{unique:false});
+        store.createIndex("record_id","record_id",{unique:false});
+        store.createIndex("date","date",{unique:false});
       }
-    );
+      if(!db.objectStoreNames.contains(STORE_DIFFERENCES)){
+        db.createObjectStore(STORE_DIFFERENCES, { keyPath:"difference_id" });
+      }
+      if(!db.objectStoreNames.contains(STORE_POLICIES)){
+        const pStore = db.createObjectStore(STORE_POLICIES, { keyPath:"id", autoIncrement:true });
+        pStore.createIndex("policy_id","policy_id",{unique:false});
+        pStore.createIndex("version","version",{unique:false});
+        pStore.createIndex("status","status",{unique:false});
+      }
+    };
+    request.onsuccess = () => {
+      database = request.result;
+      database.onversionchange = () => { database.close(); database = null; };
+      resolve(database);
+    };
+    request.onerror = () => reject(request.error || new Error("IndexedDB konnte nicht geöffnet werden."));
   });
+}
+
+function getAll(storeName){
+  return new Promise((resolve,reject)=>{
+    const tx = database.transaction(storeName,"readonly");
+    const request = tx.objectStore(storeName).getAll();
+    request.onsuccess = () => resolve(request.result || []);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function readDatabase(){
+  await openDatabase();
+  return {
+    records: await getAll(STORE_RECORDS),
+    differences: await getAll(STORE_DIFFERENCES),
+    policies: await getAll(STORE_POLICIES)
+  };
+}
+
+function clearStore(storeName){
+  return new Promise((resolve,reject)=>{
+    const tx = database.transaction(storeName,"readwrite");
+    tx.objectStore(storeName).clear();
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error || new Error("Transaktion abgebrochen."));
+  });
+}
+
 /* =========================================================
-   DATEI-IMPORT
+   POLICY MODEL + COMPILER + STORE
 ========================================================= */
-document.getElementById("fileA")
-  .addEventListener(
-    "change",
-    e=>{
-      handleFile(
-        e.target.files[0],
-        "A"
-      );
-    }
-  );
-document.getElementById("fileB")
-  .addEventListener(
-    "change",
-    e=>{
-      handleFile(
-        e.target.files[0],
-        "B"
-      );
-    }
-  );
-function setupDropzone(id,source){
-  const zone =
-    document.getElementById(id);
-  ["dragenter","dragover"]
-    .forEach(event=>{
-      zone.addEventListener(
-        event,
-        e=>{
-          e.preventDefault();
-          zone.classList.add("drag");
-        }
-      );
-    });
-  ["dragleave","drop"]
-    .forEach(event=>{
-      zone.addEventListener(
-        event,
-        e=>{
-          e.preventDefault();
-          zone.classList.remove("drag");
-        }
-      );
-    });
-  zone.addEventListener(
-    "drop",
-    e=>{
-      const file =
-        e.dataTransfer.files[0];
-      if(file){
-        handleFile(file,source);
+function buildPolicyFromWorkflow(){
+  const A = workflow.tableA;
+  const B = workflow.tableB;
+  const ansA = workflow.answersA;
+  const ansB = workflow.answersB;
+
+  if(!A || !B) throw new Error("Beide Tabellen müssen geladen sein.");
+
+  const matchKeys = [];
+  if(ansA.identifier) matchKeys.push(ansA.identifier);
+  if(ansB.identifier && ansB.identifier !== ansA.identifier) matchKeys.push(ansB.identifier);
+
+  const numeric = [];
+  (ansA.relevant || []).forEach(f => { if(!numeric.includes(f)) numeric.push(f); });
+  (ansB.relevant || []).forEach(f => { if(!numeric.includes(f)) numeric.push(f); });
+
+  const policy = {
+    policy_id: "BOOKING_RECON",
+    version: "1.0",
+    name: (ansA.table_type || "TABELLE A") + " ↔ " + (ansB.table_type || "TABELLE B"),
+    created_at: new Date().toISOString(),
+    status: "active",
+    schema: {
+      TABLE_A: A.headers.slice(),
+      TABLE_B: B.headers.slice()
+    },
+    match: {
+      keys: matchKeys.length ? matchKeys : ["auftrag_id"],
+      numeric_fields: numeric.length ? numeric : ["menge","betrag"],
+      date_field_a: ansA.date_field || null,
+      date_field_b: ansB.date_field || null
+    },
+    operations: [
+      "READ_TABLE",
+      "MATCH_RECORDS",
+      "COMPARE_FIELDS",
+      "CLASSIFY_DIFFERENCE",
+      "STORE_RESULT"
+    ],
+    dependencies: [
+      ["v1","v3"],
+      ["v2","v3"],
+      ["v3","v4"],
+      ["v4","v5"]
+    ],
+    semantics: {
+      table_a: {
+        description: ansA.table_type || "",
+        row_meaning: ansA.row_meaning || "",
+        identifier: ansA.identifier || null,
+        extra: ansA.extra || ""
+      },
+      table_b: {
+        description: ansB.table_type || "",
+        row_meaning: ansB.row_meaning || "",
+        identifier: ansB.identifier || null,
+        extra: ansB.extra || ""
       }
     }
-  );
+  };
+  return policy;
 }
-setupDropzone("dropA","A");
-setupDropzone("dropB","B");
-async function handleFile(file,source){
-  if(!file) return;
-  const info =
-    document.getElementById(
-      "fileInfo"+source
-    );
-  info.textContent =
-    "Wird gelesen...";
+
+function compilePolicy(raw){
+  if(!raw || typeof raw !== "object") throw new Error("Policy ist kein Objekt.");
+  if(!raw.policy_id) throw new Error("policy_id fehlt.");
+  if(!raw.version) throw new Error("version fehlt.");
+  if(!raw.match || !Array.isArray(raw.match.keys) || raw.match.keys.length === 0){
+    throw new Error("match.keys muss mindestens ein Feld enthalten.");
+  }
+  if(!Array.isArray(raw.match.numeric_fields) || raw.match.numeric_fields.length === 0){
+    throw new Error("match.numeric_fields muss mindestens ein Feld enthalten.");
+  }
+  if(!Array.isArray(raw.operations)) throw new Error("operations fehlt.");
+  for(const op of raw.operations){
+    if(!ALLOWED_OPERATIONS.includes(op)) throw new Error("Unzulässige Operation: " + op);
+  }
+  if(!Array.isArray(raw.dependencies)) throw new Error("dependencies fehlt.");
+
+  // simple cycle check on dependency pairs
+  const nodes = new Set();
+  raw.dependencies.forEach(([a,b]) => { nodes.add(a); nodes.add(b); });
+  const adj = {};
+  nodes.forEach(n => adj[n] = []);
+  raw.dependencies.forEach(([a,b]) => adj[a].push(b));
+  const visited = {};
+  const stack = {};
+  function hasCycle(n){
+    if(stack[n]) return true;
+    if(visited[n]) return false;
+    visited[n] = true;
+    stack[n] = true;
+    for(const m of (adj[n]||[])) if(hasCycle(m)) return true;
+    stack[n] = false;
+    return false;
+  }
+  for(const n of nodes) if(hasCycle(n)) throw new Error("Abhängigkeitsgraph enthält einen Zyklus.");
+
+  return {
+    ...raw,
+    compiled_at: new Date().toISOString(),
+    compiled: true
+  };
+}
+
+async function savePolicy(policy){
+  await openDatabase();
+  const compiled = compilePolicy(policy);
+  const tx = database.transaction(STORE_POLICIES, "readwrite");
+  const store = tx.objectStore(STORE_POLICIES);
+  const record = {
+    policy_id: compiled.policy_id,
+    version: compiled.version,
+    name: compiled.name || compiled.policy_id,
+    created_at: compiled.created_at || new Date().toISOString(),
+    status: compiled.status || "active",
+    policy: compiled
+  };
+  return new Promise((resolve,reject)=>{
+    const req = store.add(record);
+    req.onsuccess = () => resolve({ id: req.result, ...record });
+    req.onerror = () => reject(req.error || new Error("Policy konnte nicht gespeichert werden."));
+  });
+}
+
+async function loadPolicies(){
+  await openDatabase();
+  const list = await getAll(STORE_POLICIES);
+  state.policies = list.sort((a,b) => (b.created_at||"").localeCompare(a.created_at||""));
+  return state.policies;
+}
+
+async function deletePolicy(id){
+  await openDatabase();
+  return new Promise((resolve,reject)=>{
+    const tx = database.transaction(STORE_POLICIES,"readwrite");
+    tx.objectStore(STORE_POLICIES).delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+/* =========================================================
+   FILE PARSE + ANALYZE (unchanged)
+========================================================= */
+function parseFile(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    const name = file.name.toLowerCase();
+    reader.onload = e => {
+      try{
+        let workbook;
+        if(name.endsWith(".csv") || name.endsWith(".tsv") || file.type.includes("csv") || file.type.includes("tab")){
+          const text = e.target.result;
+          const delim = name.endsWith(".tsv") || (text.indexOf("\t") > -1 && text.indexOf("\t") < text.indexOf(",")) ? "\t" : ",";
+          workbook = XLSX.read(text, { type:"string", FS:delim, raw:false });
+        } else {
+          workbook = XLSX.read(e.target.result, { type:"array", cellDates:true });
+        }
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const json = XLSX.utils.sheet_to_json(sheet, { header:1, defval:"", raw:false });
+        if(!json.length) throw new Error("Leere Tabelle");
+        const headers = json[0].map(h => String(h || "").trim() || "SPALTE");
+        const rows = json.slice(1).filter(r => r.some(c => String(c).trim() !== ""));
+        const data = rows.map(r => {
+          const obj = {};
+          headers.forEach((h,i) => { obj[h] = r[i] !== undefined && r[i] !== null ? String(r[i]).trim() : ""; });
+          return obj;
+        });
+        resolve({ fileName: file.name, fileType: file.name.split(".").pop().toUpperCase(), headers, rows: data, rowCount: data.length, colCount: headers.length });
+      }catch(err){ reject(err); }
+    };
+    reader.onerror = () => reject(new Error("Datei konnte nicht gelesen werden."));
+    if(name.endsWith(".csv") || name.endsWith(".tsv")) reader.readAsText(file);
+    else reader.readAsArrayBuffer(file);
+  });
+}
+
+function analyzeTable(tbl){
+  const samples = {};
+  const emptyCols = [];
+  const types = {};
+  const possibleDate = [];
+  const possibleNum = [];
+  const possibleId = [];
+  tbl.headers.forEach(h => {
+    const vals = tbl.rows.map(r => r[h]).filter(v => v !== "");
+    samples[h] = vals.slice(0,3);
+    if(vals.length === 0) emptyCols.push(h);
+    let numCount = 0, dateCount = 0;
+    vals.slice(0,50).forEach(v => {
+      if(/^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$/.test(v) || /^\d{4}-\d{2}-\d{2}/.test(v)) dateCount++;
+      if(/^-?[\d.,]+$/.test(v.replace(/\s/g,""))) numCount++;
+    });
+    if(dateCount > vals.length * 0.4) possibleDate.push(h);
+    if(numCount > vals.length * 0.5) possibleNum.push(h);
+    const low = h.toLowerCase();
+    if(/id|nr|nummer|auftrag|vertrag|key|code|ref/.test(low)) possibleId.push(h);
+    types[h] = dateCount > numCount ? "date-like" : numCount > vals.length*0.4 ? "numeric-like" : "text";
+  });
+  return { samples, emptyCols, types, possibleDate, possibleNum, possibleId };
+}
+
+function renderMeta(which, tbl){
+  const el = document.getElementById("meta" + which);
+  const a = analyzeTable(tbl);
+  tbl.analysis = a;
+  el.innerHTML = `
+    <div><span class="label">DATEI</span> ${esc(tbl.fileName)}</div>
+    <div><span class="label">TYP</span> ${esc(tbl.fileType)}</div>
+    <div><span class="label">ZEILEN</span> ${tbl.rowCount.toLocaleString("de-DE")}</div>
+    <div><span class="label">SPALTEN</span> ${tbl.colCount}</div>
+    <div style="margin-top:8px"><span class="label">GEFUNDENE SPALTEN</span></div>
+    <div class="col-tags">${tbl.headers.map(h => `<span class="col-tag">${esc(h)}</span>`).join("")}</div>
+  `;
+  el.classList.remove("hidden");
+}
+
+async function handleFile(which, file){
+  const status = document.getElementById("step1Status");
   try{
-    const extension =
-      file.name
-        .split(".")
-        .pop()
-        .
+    status.className = "status"; status.textContent = "Analysiere " + file.name + " …";
+    const tbl = await parseFile(file);
+    if(which === "A") workflow.tableA = tbl; else workflow.tableB = tbl;
+    renderMeta(which, tbl);
+    status.className = "status ok";
+    status.textContent = "TABLE " + which + " geladen: " + tbl.rowCount + " Zeilen, " + tbl.colCount + " Spalten.";
+    checkReady();
+  }catch(e){
+    status.className = "status error";
+    status.textContent = "✕ " + e.message;
+  }
+}
+
+function checkReady(){
+  document.getElementById("btnToQuestions").disabled = !(workflow.tableA && workflow.tableB);
+}
+
+["A","B"].forEach(w => {
+  const input = document.getElementById("file" + w);
+  const zone = document.getElementById("zone" + w);
+  input.addEventListener("change", e => { if(e.target.files[0]) handleFile(w, e.target.files[0]); });
+  zone.addEventListener("dragover", e => { e.preventDefault(); zone.classList.add("drag"); });
+  zone.addEventListener("dragleave", () => zone.classList.remove("drag"));
+  zone.addEventListener("drop", e => {
+    e.preventDefault(); zone.classList.remove("drag");
+    if(e.dataTransfer.files[0]) handleFile(w, e.dataTransfer.files[0]);
+  });
+});
+
+/* =========================================================
+   STEPPER + QUESTIONS (unchanged core)
+========================================================= */
+function setStep(n){
+  workflow.step = n;
+  document.querySelectorAll(".step-item").forEach(el => {
+    const s = +el.dataset.step;
+    el.classList.remove("active","done");
+    if(s === n) el.classList.add("active");
+    else if(s < n) el.classList.add("done");
+  });
+  document.querySelectorAll(".step-panel").forEach(p => p.classList.add("hidden"));
+  const panel = document.getElementById("step" + n);
+  if(panel) panel.classList.remove("hidden");
+}
+
+document.getElementById("btnToQuestions").onclick = () => {
+  workflow.currentTable = "A";
+  workflow.qIndex = 0;
+  workflow.answersA = {};
+  workflow.answersB = {};
+  setStep(2);
+  renderQuestion();
+};
+document.getElementById("btnBackToUpload").onclick = () => setStep(1);
+document.getElementById("btnBackToQuestions").onclick = () => {
+  workflow.currentTable = "B";
+  workflow.qIndex = QUESTIONS.length - 1;
+  setStep(2);
+  renderQuestion();
+};
+document.getElementById("btnToJson").onclick = () => setStep(4);
+document.getElementById("btnBackToPrompt").onclick = () => setStep(3);
+
+function getCurrentAnswers(){ return workflow.currentTable === "A" ? workflow.answersA : workflow.answersB; }
+function getCurrentTable(){ return workflow.currentTable === "A" ? workflow.tableA : workflow.tableB; }
+
+function renderQuestion(){
+  const container = document.getElementById("questionContainer");
+  const progress = document.getElementById("qProgress");
+  const tbl = getCurrentTable();
+  const answers = getCurrentAnswers();
+  const q = QUESTIONS[workflow.qIndex];
+  const totalQ = QUESTIONS.length * 2;
+  const done = (workflow.currentTable === "A" ? 0 : QUESTIONS.length) + workflow.qIndex;
+  progress.textContent = `TABLE ${workflow.currentTable} · FRAGE ${workflow.qIndex + 1}/${QUESTIONS.length} · GESAMT ${done + 1}/${totalQ}`;
+
+  let html = `<div class="question-box"><div class="q-num">QUESTION ${String(workflow.qIndex + 1).padStart(2,"0")} — TABLE ${workflow.currentTable}</div><div class="q-title">${q.title}</div>`;
+
+  if(q.type === "single"){
+    html += `<div class="q-options">`;
+    q.options.forEach(opt => { html += `<button class="q-btn" data-val="${esc(opt)}">${esc(opt)}</button>`; });
+    html += `</div>`;
+  }
+  else if(q.type === "columns"){
+    const analysis = tbl.analysis || {};
+    if(q.id === "identifier" && analysis.possibleId && analysis.possibleId.length){
+      html += `<div class="q-suggest">MÖGLICHES IDENTIFIKATIONSFELD ERKANNT: ${analysis.possibleId.map(x=>esc(x)).join(", ")}</div>`;
+    }
+    if(q.id === "date_field" && analysis.possibleDate && analysis.possibleDate.length){
+      html += `<div class="q-suggest">MÖGLICHES DATUMSFELD ERKANNT: ${analysis.possibleDate.map(x=>esc(x)).join(", ")}</div>`;
+    }
+    html += `<div class="q-options">`;
+    tbl.headers.forEach(h => { html += `<button class="q-btn" data-val="${esc(h)}">${esc(h)}</button>`; });
+    if(q.allowNone) html += `<button class="q-btn" data-val="__NONE__">[ KEIN DATUM ]</button>`;
+    html += `</div>`;
+  }
+  else if(q.type === "multi"){
+    html += `<div class="q-options" id="multiOpts">`;
+    tbl.headers.forEach(h => {
+      const checked = (answers.relevant || []).includes(h);
+      html += `<button class="q-btn multi ${checked?"selected":""}" data-val="${esc(h)}">${checked?"[x]":"[ ]"} ${esc(h)}</button>`;
+    });
+    html += `</div><div class="actions" style="margin-top:16px"><button class="btn" id="btnMultiNext">WEITER</button></div>`;
+  }
+  else if(q.type === "text"){
+    html += `<textarea class="q-text" id="extraText" placeholder="${esc(q.placeholder||"")}">${esc(answers.extra||"")}</textarea>`;
+    html += `<div class="actions" style="margin-top:14px">
+      <button class="btn" id="btnTextNext">WEITER</button>
+      <button class="btn secondary" id="btnTextSkip">NICHTS WEITERES</button>
+    </div>`;
+  }
+  html += `</div>`;
+  container.innerHTML = html;
+
+  if(q.type === "single" || q.type === "columns"){
+    container.querySelectorAll(".q-btn").forEach(btn => {
+      btn.onclick = () => {
+        const val = btn.dataset.val;
+        if(q.id === "table_type") answers.table_type = val;
+        if(q.id === "row_meaning") answers.row_meaning = val;
+        if(q.id === "identifier") answers.identifier = val === "__NONE__" ? null : val;
+        if(q.id === "date_field") answers.date_field = val === "__NONE__" ? null : val;
+        nextQuestion();
+      };
+    });
+  }
+  if(q.type === "multi"){
+    const selected = new Set(answers.relevant || []);
+    container.querySelectorAll(".q-btn.multi").forEach(btn => {
+      btn.onclick = () => {
+        const v = btn.dataset.val;
+        if(selected.has(v)){ selected.delete(v); btn.classList.remove("selected"); btn.textContent = "[ ] " + v; }
+        else { selected.add(v); btn.classList.add("selected"); btn.textContent = "[x] " + v; }
+      };
+    });
+    document.getElementById("btnMultiNext").onclick = () => {
+      answers.relevant = Array.from(selected);
+      nextQuestion();
+    };
+  }
+  if(q.type === "text"){
+    document.getElementById("btnTextNext").onclick = () => {
+      answers.extra = document.getElementById("extraText").value.trim();
+      nextQuestion();
+    };
+    document.getElementById("btnTextSkip").onclick = () => {
+      answers.extra = "";
+      nextQuestion();
+    };
+  }
+}
+
+function nextQuestion(){
+  workflow.qIndex++;
+  if(workflow.qIndex >= QUESTIONS.length){
+    if(workflow.currentTable === "A"){
+      workflow.currentTable = "B";
+      workflow.qIndex = 0;
+      renderQuestion();
+    } else {
+      generatePrompt();
+      setStep(3);
+    }
+  } else {
+    renderQuestion();
+  }
+}
+
+/* =========================================================
+   PROMPT GENERATOR (unchanged)
+========================================================= */
+function generatePrompt(){
+  const A = workflow.tableA;
+  const B = workflow.tableB;
+  const ansA = workflow.answersA;
+  const ansB = workflow.answersB;
+
+  function tableBlock(label, tbl, ans){
+    const dataPreview = tbl.rows.map((r,i) => `  ${JSON.stringify(r)}`).join(",\n");
+    return `────────────────────────
+${label}
+────────────────────────
+
+METADATEN
+Datei: ${tbl.fileName}
+Typ: ${tbl.fileType}
+Zeilen: ${tbl.rowCount}
+Spalten: ${tbl.colCount}
+
+SPALTEN:
+${tbl.headers.map(h => `[ ${h} ]`).join("\n")}
+
+BEISPIELWERTE (erste Zeilen):
+${tbl.rows.slice(0,3).map(r => JSON.stringify(r)).join("\n")}
+
+LEERE SPALTEN: ${(tbl.analysis.emptyCols||[]).join(", ") || "keine"}
+
+MÖGLICHE DATUMSFELDER: ${(tbl.analysis.possibleDate||[]).join(", ") || "—"}
+MÖGLICHE NUMERISCHE FELDER: ${(tbl.analysis.possibleNum||[]).join(", ") || "—"}
+MÖGLICHE IDENTIFIKATIONSFELDER: ${(tbl.analysis.possibleId||[]).join(", ") || "—"}
+
+BENUTZERINFORMATION:
+Tabellentyp: ${ans.table_type || "—"}
+Zeilenbedeutung: ${ans.row_meaning || "—"}
+Identifikationsfeld: ${ans.identifier || "—"}
+Datumsfeld: ${ans.date_field || "KEIN DATUM"}
+Relevante Felder: ${(ans.relevant||[]).join(", ") || "—"}
+Zusatzinfo: ${ans.extra || "—"}
+
+SEMANTISCHE AUSWAHLEN:
+identifier_fields: ${ans.identifier ? JSON.stringify([ans.identifier]) : "[]"}
+date_fields: ${ans.date_field ? JSON.stringify([ans.date_field]) : "[]"}
+relevant_fields: ${JSON.stringify(ans.relevant||[])}
+
+DATEN (vollständig, Originalwerte):
+[
+${dataPreview}
+]
+`;
+  }
+
+  const prompt = `DU BIST EIN DATENSTRUKTURIERUNGS- UND TABELLENANALYSESYSTEM.
+
+AUFGABE:
+Analysiere die folgenden Tabellen zusammen mit den vom Benutzer bereitgestellten Informationen.
+
+Erkenne und strukturiere:
+1. Tabellenstruktur
+2. Bedeutung der Spalten
+3. Datensatzgrenzen
+4. Identifikationsfelder
+5. Datentypen
+6. semantische Beziehungen
+
+WICHTIG:
+* Keine Zeile auslassen.
+* Keine Werte erfinden.
+* Keine Werte korrigieren.
+* Originalwerte erhalten.
+* Tabellen strikt getrennt halten.
+* Keine Buchungen zusammenführen.
+* Keine Buchungen entfernen.
+* Keine Buchungsfehler bewerten.
+* Keine Abweichungen berechnen.
+* Ausschließlich gültiges JSON ausgeben.
+
+${tableBlock("TABLE A", A, ansA)}
+
+${tableBlock("TABLE B", B, ansB)}
+
+AUSGABEFORMAT
+
+Das LLM muss ausschließlich JSON zurückgeben:
+
+{
+  "version": "1.0",
+  "dataset": "BOOKING_RECON",
+  "semantic_structure": {
+    "table_a": {
+      "description": "...",
+      "row_meaning": "...",
+      "identifier_fields": [],
+      "date_fields": [],
+      "relevant_fields": []
+    },
+    "table_b": {
+      "description": "...",
+      "row_meaning": "...",
+      "identifier_fields": [],
+      "date_fields": [],
+      "relevant_fields": []
+    },
+    "relationships": []
+  },
+  "tables": [
+    {
+      "table_id": "TABLE_A",
+      "name": "${A.fileName}",
+      "records": [
+        {
+          "record_id": "A-000001",
+          "date": "YYYY-MM-DD oder null",
+          "source_table": "TABLE_A",
+          "data": { ... Originalfelder ... }
+        }
+      ]
+    },
+    {
+      "table_id": "TABLE_B",
+      "name": "${B.fileName}",
+      "records": [
+        {
+          "record_id": "B-000001",
+          "date": "YYYY-MM-DD oder null",
+          "source_table": "TABLE_B",
+          "data": { ... Originalfelder ... }
+        }
+      ]
+    }
+  ]
+}
+
+Keine Erklärung außerhalb des JSON.
+Keine Markdown-Codeblöcke.
+Nur das JSON-Objekt.`;
+
+  document.getElementById("promptOutput").textContent = prompt;
+  document.getElementById("promptStatus").className = "status";
+  document.getElementById("promptStatus").textContent = "Bereit zum Kopieren.";
+}
+
+document.getElementById("btnCopyPrompt").onclick = async () => {
+  const text = document.getElementById("promptOutput").textContent;
+  const status = document.getElementById("promptStatus");
+  try{
+    await navigator.clipboard.writeText(text);
+    status.className = "status ok";
+    status.textContent = "✓ LLM-AUFTRAG KOPIERT";
+  }catch(e){
+    status.className = "status error";
+    status.textContent = "✕ Kopieren nicht möglich – manuell markieren.";
+  }
+};
+
+/* =========================================================
+   JSON VALIDATION + IMPORT
+========================================================= */
+function validateImportPayload(payload){
+  if(!payload || typeof payload !== "object") throw new Error("Die Eingabe ist kein gültiges JSON-Objekt.");
+  if(payload.version === undefined) throw new Error("version fehlt.");
+  if(payload.dataset !== "BOOKING_RECON" && !(payload.dataset && payload.dataset.name === "BOOKING_RECON")){
+    throw new Error("dataset muss BOOKING_RECON sein.");
+  }
+  if(!payload.semantic_structure || typeof payload.semantic_structure !== "object"){
+    throw new Error("semantic_structure fehlt.");
+  }
+  if(!Array.isArray(payload.tables)) throw new Error("tables fehlt oder ist kein Array.");
+  if(payload.tables.length !== 2) throw new Error("Es werden genau zwei Tabellen benötigt.");
+
+  const expected = ["TABLE_A","TABLE_B"];
+  const seenIds = new Set();
+
+  payload.tables.forEach((table, index) => {
+    if(!table || typeof table !== "object") throw new Error("Eine Tabelle ist ungültig.");
+    if(table.table_id !== expected[index]) throw new Error("Die Tabellen müssen als TABLE_A und TABLE_B in dieser Reihenfolge vorliegen.");
+    if(!Array.isArray(table.records)) throw new Error(table.table_id + " besitzt kein gültiges records-Array.");
+
+    table.records.forEach((record, recordIndex) => {
+      if(!record || typeof record !== "object"){
+        throw new Error("Ungültiger Datensatz in " + table.table_id + " an Position " + recordIndex + ".");
+      }
+      if(!record.record_id){
+        throw new Error(table.table_id + ".records[" + recordIndex + "] — record_id fehlt.");
+      }
+      const rid = String(record.record_id);
+      if(seenIds.has(rid)) throw new Error("Doppelte record_id: " + rid);
+      seenIds.add(rid);
+      if(record.source_table && record.source_table !== table.table_id){
+        throw new Error("source_table stimmt nicht mit table_id überein (" + table.table_id + ".records[" + recordIndex + "]).");
+      }
+      if(record.data !== undefined && (record.data === null || typeof record.data !== "object" || Array.isArray(record.data))){
+        throw new Error("data muss ein Objekt sein (" + table.table_id + ".records[" + recordIndex + "]).");
+      }
+    });
+  });
+}
+
+async function importJSON(payload){
+  await openDatabase();
+  validateImportPayload(payload);
+  const tables = payload.tables || (payload.dataset && payload.dataset.tables) || [];
+  const version = payload.version || "1.0";
+  await clearStore(STORE_RECORDS);
+  const transaction = database.transaction(STORE_RECORDS, "readwrite");
+  const store = transaction.objectStore(STORE_RECORDS);
+  let inserted = 0;
+  for(const table of tables){
+    for(const record of table.records){
+      store.put({
+        record_id: String(record.record_id),
+        source_table: table.table_id,
+        source_name: String(table.name || table.table_id),
+        date: record.date || null,
+        data: record.data && typeof record.data === "object" ? record.data : {},
+        imported_at: new Date().toISOString(),
+        dataset_version: String(version)
+      });
+      inserted++;
+    }
+  }
+  return new Promise((resolve,reject)=>{
+    transaction.oncomplete = () => resolve({ tables:2, records:inserted });
+    transaction.onerror = () => reject(transaction.error || new Error("Die Daten konnten nicht gespeichert werden."));
+    transaction.onabort = () => reject(transaction.error || new Error("Die Übernahme wurde abgebrochen."));
+  });
+}
+
+document.getElementById("btnValidateJson").onclick = () => {
+  const status = document.getElementById("jsonStatus");
+  const importBtn = document.getElementById("btnImportJson");
+  const savePolicyBtn = document.getElementById("btnSaveAsPolicy");
+  importBtn.classList.add("hidden");
+  savePolicyBtn.classList.add("hidden");
+  workflow.validatedPayload = null;
+  try{
+    const text = document.getElementById("jsonInput").value.trim();
+    if(!text) throw new Error("Bitte zuerst die JSON-Ausgabe einfügen.");
+    let json;
+    try{ json = JSON.parse(text); } catch(e){ throw new Error("Die Ausgabe ist kein gültiges JSON."); }
+    validateImportPayload(json);
+    const a = json.tables[0].records.length;
+    const b = json.tables[1].records.length;
+    status.className = "status ok";
+    status.innerHTML = `✓ JSON VALID<br>✓ TABLE A VALID (${a} records)<br>✓ TABLE B VALID (${b} records)<br>✓ ${(a+b).toLocaleString("de-DE")} RECORDS ERKANNT`;
+    workflow.validatedPayload = json;
+    importBtn.classList.remove("hidden");
+    if(workflow.tableA && workflow.tableB && workflow.answersA && workflow.answersB){
+      savePolicyBtn.classList.remove("hidden");
+    }
+  }catch(e){
+    status.className = "status error";
+    status.textContent = "✕ JSON ABGELEHNT\n\n" + e.message;
+  }
+};
+
+document.getElementById("btnImportJson").onclick = async () => {
+  const status = document.getElementById("jsonStatus");
+  if(!workflow.validatedPayload) return;
+  try{
+    status.className = "status"; status.textContent = "IMPORTIERE …";
+    const result = await importJSON(workflow.validatedPayload);
+    await refresh();
+    status.className = "status ok";
+    status.textContent = "✓ " + result.records + " Datensätze aus " + result.tables + " Tabellen in IndexedDB gespeichert.";
+    setStep(5);
+    document.querySelectorAll(".nav").forEach(n => n.classList.remove("active"));
+    document.querySelector('.nav[data-view="database"]').classList.add("active");
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    document.getElementById("view-database").classList.add("active");
+  }catch(e){
+    status.className = "status error";
+    status.textContent = "✕ " + e.message;
+  }
+};
+
+document.getElementById("btnClearJson").onclick = () => {
+  document.getElementById("jsonInput").value = "";
+  document.getElementById("btnImportJson").classList.add("hidden");
+  document.getElementById("btnSaveAsPolicy").classList.add("hidden");
+  workflow.validatedPayload = null;
+  document.getElementById("jsonStatus").className = "status";
+  document.getElementById("jsonStatus").textContent = "JSON einfügen und validieren.";
+};
+
+document.getElementById("btnSaveAsPolicy").onclick = async () => {
+  const status = document.getElementById("jsonStatus");
+  try{
+    const raw = buildPolicyFromWorkflow();
+    const saved = await savePolicy(raw);
+    status.className = "status ok";
+    status.textContent = "✓ POLICY GESPEICHERT: " + saved.policy_id + " v" + saved.version;
+    await refreshPoliciesUI();
+  }catch(e){
+    status.className = "status error";
+    status.textContent = "✕ Policy-Fehler: " + e.message;
+  }
+};
+
+/* =========================================================
+   REFRESH / RENDER
+========================================================= */
+async function refresh(){
+  state = await readDatabase();
+  const a = state.records.filter(r => r.source_table === "TABLE_A");
+  const b = state.records.filter(r => r.source_table === "TABLE_B");
+  document.getElementById("tableACount").textContent = a.length;
+  document.getElementById("tableBCount").textContent = b.length;
+  document.getElementById("recordCount").textContent = state.records.length;
+  document.getElementById("differenceCount").textContent = state.differences.length;
+  renderDatabase();
+  await refreshPoliciesUI();
+}
+
+function esc(value){
+  return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+}
+
+function formatData(data){
+  if(data === null || data === undefined) return "—";
+  if(typeof data === "object") return JSON.stringify(data);
+  return String(data);
+}
+
+function renderDatabase(){
+  const container = document.getElementById("databaseTable");
+  const search = document.getElementById("dbSearch").value.toLowerCase().trim();
+  if(currentTab === "differences"){ renderDifferences(container, search); return; }
+  const source = currentTab === "tableA" ? "TABLE_A" : "TABLE_B";
+  let rows = state.records.filter(r => r.source_table === source);
+  if(search) rows = rows.filter(r => JSON.stringify(r).toLowerCase().includes(search));
+  if(!rows.length){ container.innerHTML = `<div class="empty">KEINE DATENSÄTZE VORHANDEN</div>`; return; }
+  const keys = new Set();
+  rows.forEach(row => Object.keys(row.data || {}).forEach(k => keys.add(k)));
+  const columns = Array.from(keys);
+  let html = `<table><thead><tr><th>RECORD-ID</th><th>DATUM</th>${columns.map(k=>`<th>${esc(k.toUpperCase())}</th>`).join("")}</tr></thead><tbody>`;
+  rows.forEach(row => {
+    html += `<tr><td class="mono">${esc(row.record_id)}</td><td>${esc(row.date||"—")}</td>${columns.map(k=>`<td>${esc(formatData(row.data[k]))}</td>`).join("")}</tr>`;
+  });
+  html += `</tbody></table>`;
+  container.innerHTML = html;
+}
+
+function renderDifferences(container, search){
+  let rows = [...state.differences];
+  if(search) rows = rows.filter(r => JSON.stringify(r).toLowerCase().includes(search));
+  if(!rows.length){ container.innerHTML = `<div class="empty">KEINE ABWEICHUNGEN GEFUNDEN</div>`; return; }
+  let html = `<table><thead><tr><th>STATUS</th><th>ABGLEICH</th><th>FELD</th><th>TABELLE A</th><th>TABELLE B</th><th>DIFFERENZ</th></tr></thead><tbody>`;
+  rows.forEach(row => {
+    let statusClass = "warn";
+    if(row.status === "DIFFERENCE") statusClass = "bad";
+    if(row.status === "AMBIGUOUS_MATCH") statusClass = "ambiguous";
+    html += `<tr>
+      <td><span class="badge ${statusClass}">${esc(row.status)}</span></td>
+      <td class="mono">${esc(row.match_key)}</td>
+      <td>${esc(row.field)}</td>
+      <td>${esc(formatData(row.value_a))}</td>
+      <td>${esc(formatData(row.value_b))}</td>
+      <td class="${statusClass}">${esc(formatData(row.difference))}</td>
+    </tr>`;
+  });
+  html += `</tbody></table>`;
+  container.innerHTML = html;
+}
+
+/* =========================================================
+   POLICY UI
+========================================================= */
+async function refreshPoliciesUI(){
+  const list = await loadPolicies();
+  const container = document.getElementById("policyList");
+  const select = document.getElementById("policySelect");
+
+  // select
+  const current = select.value;
+  select.innerHTML = `<option value="">— manuelle Konfiguration —</option>`;
+  list.forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = p.id;
+    opt.textContent = `${p.name}  ·  ${p.policy_id} v${p.version}`;
+    select.appendChild(opt);
+  });
+  if(current) select.value = current;
+
+  // list
+  if(!list.length){
+    container.innerHTML = `<div class="empty">NOCH KEINE POLICIES GESPEICHERT</div>`;
+    return;
+  }
+  container.innerHTML = list.map(p => {
+    const pol = p.policy || {};
+    const keys = (pol.match && pol.match.keys) ? pol.match.keys.join(", ") : "—";
+    const nums = (pol.match && pol.match.numeric_fields) ? pol.match.numeric_fields.join(", ") : "—";
+    return `
+      <div class="policy-card ${activePolicyId == p.id ? "active-policy" : ""}" data-id="${p.id}">
+        <div class="policy-meta">
+          <strong>${esc(p.name)}</strong><br>
+          <span class="ver">${esc(p.policy_id)} · v${esc(p.version)}</span><br>
+          <span class="st ${p.status==="draft"?"draft":""}">${esc(p.status||"active").toUpperCase()}</span><br>
+          MATCH: ${esc(keys)}<br>
+          VERGLEICH: ${esc(nums)}<br>
+          ${esc(p.created_at||"").slice(0,19).replace("T"," ")}
+        </div>
+        <div class="actions" style="margin:0">
+          <button class="btn cyan btn-use-policy" data-id="${p.id}">VERWENDEN</button>
+          <button class="btn secondary btn-del-policy" data-id="${p.id}">LÖSCHEN</button>
+        </div>
+      </div>`;
+  }).join("");
+
+  container.querySelectorAll(".btn-use-policy").forEach(btn => {
+    btn.onclick = () => {
+      const id = +btn.dataset.id;
+      applyPolicy(id);
+    };
+  });
+  container.querySelectorAll(".btn-del-policy").forEach(btn => {
+    btn.onclick = async () => {
+      if(!confirm("Policy wirklich löschen?")) return;
+      await deletePolicy(+btn.dataset.id);
+      await refreshPoliciesUI();
+      document.getElementById("policyStatus").className = "status ok";
+      document.getElementById("policyStatus").textContent = "✓ Policy gelöscht.";
+    };
+  });
+}
+
+function applyPolicy(id){
+  const p = state.policies.find(x => x.id === id);
+  if(!p) return;
+  activePolicyId = id;
+  const pol = p.policy;
+  document.getElementById("matchKeys").value = (pol.match.keys || []).join(",");
+  document.getElementById("numericFields").value = (pol.match.numeric_fields || []).join(",");
+  document.getElementById("policySelect").value = id;
+  const preview = document.getElementById("policyPreview");
+  preview.className = "status ok";
+  preview.innerHTML = `✓ AKTIVE POLICY: <strong>${esc(p.name)}</strong> (${esc(p.policy_id)} v${esc(p.version)})<br>
+    MATCH: ${esc((pol.match.keys||[]).join(", "))}<br>
+    VERGLEICH: ${esc((pol.match.numeric_fields||[]).join(", "))}`;
+  refreshPoliciesUI();
+}
+
+document.getElementById("policySelect").onchange = function(){
+  const id = this.value;
+  if(!id){
+    activePolicyId = null;
+    document.getElementById("policyPreview").className = "status";
+    document.getElementById("policyPreview").textContent = "Keine Policy gewählt. Manuelle Felder unten werden verwendet.";
+    refreshPoliciesUI();
+    return;
+  }
+  applyPolicy(+id);
+};
+
+document.getElementById("btnCreatePolicyFromAnswers").onclick = async () => {
+  const status = document.getElementById("policyStatus");
+  try{
+    if(!workflow.tableA || !workflow.tableB){
+      throw new Error("Zuerst den Import-Workflow mit beiden Tabellen und Fragen durchlaufen.");
+    }
+    const raw = buildPolicyFromWorkflow();
+    const saved = await savePolicy(raw);
+    status.className = "status ok";
+    status.textContent = "✓ POLICY ERZEUGT UND GESPEICHERT: " + saved.policy_id + " v" + saved.version;
+    await refreshPoliciesUI();
+  }catch(e){
+    status.className = "status error";
+    status.textContent = "✕ " + e.message;
+  }
+};
+
+document.getElementById("btnRefreshPolicies").onclick = () => refreshPoliciesUI();
+
+/* =========================================================
+   COMPARE LOGIC (Executor) – gekapselt
+========================================================= */
+function getField(record, field){
+  if(record.data && Object.prototype.hasOwnProperty.call(record.data, field)) return record.data[field];
+  return undefined;
+}
+function normalizeKey(value){
+  if(value === undefined || value === null) return null;
+  const normalized = String(value).trim().toLowerCase();
+  return normalized === "" ? null : normalized;
+}
+function makeMatchKey(record, fields){
+  return fields.map(f => normalizeKey(getField(record, f))).join("||");
+}
+function hasCompleteMatchKey(record, fields){
+  return fields.every(f => normalizeKey(getField(record, f)) !== null);
+}
+function dateAllowed(record, from, to){
+  if(!record.date) return true;
+  if(from && record.date < from) return false;
+  if(to && record.date > to) return false;
+  return true;
+}
+function numeric(value){
+  if(typeof value === "number"){
+    return Number.isFinite(value) ? {state:"PRESENT",value} : {state:"INVALID",value:null};
+  }
+  if(value === null || value === undefined) return {state:"MISSING",value:null};
+  const raw = String(value).trim();
+  if(raw === "") return {state:"MISSING",value:null};
+  let text = raw.replace(/[€$£]/g,"").replace(/\s/g,"");
+  const hasComma = text.includes(","), hasDot = text.includes(".");
+  if(hasComma && hasDot){
+    const lastComma = text.lastIndexOf(","), lastDot = text.lastIndexOf(".");
+    if(lastComma > lastDot) text = text.replace(/\./g,"").replace(",",".");
+    else text = text.replace(/,/g,"");
+  } else if(hasComma) text = text.replace(",",".");
+  text = text.replace(/[^\d.-]/g,"");
+  if(text === "" || text === "-" || text === ".") return {state:"INVALID",value:null};
+  const number = Number(text);
+  return Number.isFinite(number) ? {state:"PRESENT",value:number} : {state:"INVALID",value:null};
+}
+function createRunId(){
+  const now = new Date();
+  const iso = now.toISOString().replace(/[-:.TZ]/g,"");
+  if(typeof crypto !== "undefined" && crypto.randomUUID) return "RUN-" + iso + "-" + crypto.randomUUID().slice(0,8).toUpperCase();
+  return "RUN-" + iso;
+}
+
+/**
+ * EXECUTOR
+ * Führt eine (optionale) Policy aus.
+ * Die eigentliche Vergleichslogik bleibt deterministisch und unverändert.
+ */
+async function executePolicy(compiledPolicy){
+  // Policy steuert die Parameter – Executor entscheidet nichts neu
+  if(compiledPolicy && compiledPolicy.match){
+    if(Array.isArray(compiledPolicy.match.keys) && compiledPolicy.match.keys.length){
+      document.getElementById("matchKeys").value = compiledPolicy.match.keys.join(",");
+    }
+    if(Array.isArray(compiledPolicy.match.numeric_fields) && compiledPolicy.match.numeric_fields.length){
+      document.getElementById("numericFields").value = compiledPolicy.match.numeric_fields.join(",");
+    }
+  }
+  return compareTables(compiledPolicy);
+}
+
+async function compareTables(activePolicy){
+  await openDatabase();
+  const from = document.getElementById("dateFrom").value;
+  const to = document.getElementById("dateTo").value;
+  if(from && to && from > to) throw new Error("Der Zeitraum ist ungültig: VON liegt nach BIS.");
+  const matchFields = document.getElementById("matchKeys").value.split(",").map(v=>v.trim()).filter(Boolean);
+  const numericFields = document.getElementById("numericFields").value.split(",").map(v=>v.trim()).filter(Boolean);
+  if(!matchFields.length) throw new Error("Mindestens ein Abgleich-Feld ist erforderlich.");
+  if(!numericFields.length) throw new Error("Mindestens ein Vergleichsfeld ist erforderlich.");
+
+  const tableA = state.records.filter(r => r.source_table==="TABLE_A" && dateAllowed(r,from,to));
+  const tableB = state.records.filter(r => r.source_table==="TABLE_B" && dateAllowed(r,from,to));
+
+  const mapB = new Map();
+  tableB.forEach(record => {
+    if(!hasCompleteMatchKey(record, matchFields)) return;
+    const key = makeMatchKey(record, matchFields);
+    if(!mapB.has(key)) mapB.set(key,[]);
+    mapB.get(key).push(record);
+  });
+  const mapA = new Map();
+  tableA.forEach(record => {
+    if(!hasCompleteMatchKey(record, matchFields)) return;
+    const key = makeMatchKey(record, matchFields);
+    if(!mapA.has(key)) mapA.set(key,[]);
+    mapA.get(key).push(record);
+  });
+
+  const differences = [];
+  let comparisonCount=0, ambiguousCount=0, missingInACount=0, missingInBCount=0, invalidKeyCount=0;
+  const runId = createRunId();
+
+  function addDifference(row){
+    differences.push({ ...row, run_id: runId, sequence: differences.length+1 });
+  }
+
+  for(const recordA of tableA){
+    if(!hasCompleteMatchKey(recordA, matchFields)){
+      invalidKeyCount++;
+      addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"INVALID_MATCH_KEY", match_key:makeMatchKey(recordA,matchFields), field:"__match_key__", value_a:recordA.record_id, value_b:null, difference:null, record_a:recordA.record_id, record_b:null });
+      continue;
+    }
+    const key = makeMatchKey(recordA, matchFields);
+    const candidates = mapB.get(key) || [];
+    if(candidates.length === 0){
+      missingInBCount++;
+      addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"MISSING_IN_B", match_key:key, field:"__record__", value_a:recordA.record_id, value_b:null, difference:null, record_a:recordA.record_id, record_b:null });
+      continue;
+    }
+    if(candidates.length > 1){
+      ambiguousCount++;
+      addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"AMBIGUOUS_MATCH", match_key:key, field:"__record__", value_a:recordA.record_id, value_b:candidates.map(r=>r.record_id).join(", "), difference:null, record_a:recordA.record_id, record_b:candidates.map(r=>r.record_id) });
+      continue;
+    }
+    const recordB = candidates[0];
+    comparisonCount++;
+    for(const field of numericFields){
+      const valueA = numeric(getField(recordA, field));
+      const valueB = numeric(getField(recordB, field));
+      if(valueA.state==="MISSING" && valueB.state==="MISSING") continue;
+      if(valueA.state==="MISSING" || valueB.state==="MISSING"){
+        addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"VALUE_MISSING", match_key:key, field, value_a:valueA.state==="PRESENT"?valueA.value:null, value_b:valueB.state==="PRESENT"?valueB.value:null, difference:null, record_a:recordA.record_id, record_b:recordB.record_id });
+        continue;
+      }
+      if(valueA.state==="INVALID" || valueB.state==="INVALID"){
+        addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"VALUE_INVALID", match_key:key, field, value_a:getField(recordA,field), value_b:getField(recordB,field), difference:null, record_a:recordA.record_id, record_b:recordB.record_id });
+        continue;
+      }
+      const difference = valueA.value - valueB.value;
+      if(difference !== 0){
+        addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"DIFFERENCE", match_key:key, field, value_a:valueA.value, value_b:valueB.value, difference, record_a:recordA.record_id, record_b:recordB.record_id });
+      }
+    }
+  }
+
+  for(const recordB of tableB){
+    if(!hasCompleteMatchKey(recordB, matchFields)) continue;
+    const key = makeMatchKey(recordB, matchFields);
+    const candidates = mapA.get(key) || [];
+    if(candidates.length === 0){
+      missingInACount++;
+      addDifference({ difference_id:"DIFF-"+String(differences.length+1).padStart(6,"0"), status:"MISSING_IN_A", match_key:key, field:"__record__", value_a:null, value_b:recordB.record_id, difference:null, record_a:null, record_b:recordB.record_id });
+    }
+  }
+
+  const plan = {
+    version:"2.0",
+    operation:"COMPARE_TABLES",
+    execution:"DETERMINISTIC",
+    run_id:runId,
+    policy: activePolicy ? {
+      policy_id: activePolicy.policy_id,
+      version: activePolicy.version,
+      name: activePolicy.name
+    } : null,
+    period:{from:from||null,to:to||null},
+    input:{tableA:tableA.length,tableB:tableB.length},
+    matching:{
+      strategy:"EXACT",
+      fields:matchFields,
+      incomplete_key_policy:"INVALID_MATCH_KEY",
+      duplicate_match_policy:"AMBIGUOUS_MATCH",
+      missing_record_policy:"EXPLICIT_STATUS"
+    },
+    calculations:numericFields.map(f=>({field:f,operation:"A_MINUS_B",missing_value_policy:"DO_NOT_COERCE_TO_ZERO",invalid_value_policy:"VALUE_INVALID"})),
+    output:{type:"VALIDATED_DIFFERENCES",statuses:["DIFFERENCE","VALUE_MISSING","VALUE_INVALID","MISSING_IN_A","MISSING_IN_B","AMBIGUOUS_MATCH","INVALID_MATCH_KEY"]},
+    statistics:{
+      exact_matches:comparisonCount,
+      differences:differences.filter(r=>r.status==="DIFFERENCE").length,
+      missingValues:differences.filter(r=>r.status==="VALUE_MISSING").length,
+      invalidValues:differences.filter(r=>r.status==="VALUE_INVALID").length,
+      missingInA:missingInACount, missingInB:missingInBCount, ambiguousMatches:ambiguousCount, invalidMatchKeys:invalidKeyCount
+    }
+  };
+
+  await clearStore(STORE_DIFFERENCES);
+  const transaction = database.transaction(STORE_DIFFERENCES,"readwrite");
+  const store = transaction.objectStore(STORE_DIFFERENCES);
+  differences.forEach(d => store.put(d));
+
+  return new Promise((resolve,reject)=>{
+    transaction.oncomplete = () => resolve({
+      runId, tableA:tableA.length, tableB:tableB.length, comparisons:comparisonCount,
+      differences:differences.length, ambiguous:ambiguousCount, missingInA:missingInACount,
+      missingInB:missingInBCount, invalidMatchKeys:invalidKeyCount, plan
+    });
+    transaction.onerror = () => reject(transaction.error || new Error("Ergebnis konnte nicht gespeichert werden."));
+    transaction.onabort = () => reject(transaction.error || new Error("Ergebnis-Speicherung wurde abgebrochen."));
+  });
+}
+
+/* =========================================================
+   UI BINDINGS
+========================================================= */
+document.querySelectorAll(".nav").forEach(button => {
+  button.onclick = function(){
+    document.querySelectorAll(".nav").forEach(i => i.classList.remove("active"));
+    button.classList.add("active");
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    document.getElementById("view-" + button.dataset.view).classList.add("active");
+    if(button.dataset.view === "database") refresh();
+    if(button.dataset.view === "policies") refreshPoliciesUI();
+    if(button.dataset.view === "import") setStep(workflow.step);
+  };
+});
+
+document.querySelectorAll(".tab").forEach(button => {
+  button.onclick = function(){
+    document.querySelectorAll(".tab").forEach(i => i.classList.remove("active"));
+    button.classList.add("active");
+    currentTab = button.dataset.tab;
+    renderDatabase();
+  };
+});
+
+document.getElementById("dbSearch").oninput = renderDatabase;
+
+document.querySelectorAll(".examples button").forEach(button => {
+  button.onclick = function(){ document.getElementById("queryInput").value = button.dataset.query; };
+});
+
+document.getElementById("clearQuery").onclick = function(){
+  document.getElementById("queryInput").value = "";
+  document.getElementById("queryPlan").classList.add("hidden");
+  document.getElementById("queryResults").classList.add("hidden");
+};
+
+document.getElementById("resetConfig").onclick = function(){
+  document.getElementById("dateFrom").value = "";
+  document.getElementById("dateTo").value = "";
+  document.getElementById("matchKeys").value = "auftrag_id";
+  document.getElementById("numericFields").value = "menge,betrag";
+  activePolicyId = null;
+  document.getElementById("policySelect").value = "";
+  document.getElementById("policyPreview").className = "status";
+  document.getElementById("policyPreview").textContent = "Keine Policy gewählt. Manuelle Felder unten werden verwendet.";
+};
+
+document.getElementById("runQuery").onclick = async function(){
+  const planElement = document.getElementById("queryPlan");
+  const resultCard = document.getElementById("queryResults");
+  try{
+    await refresh();
+    let policy = null;
+    if(activePolicyId){
+      const p = state.policies.find(x => x.id === activePolicyId);
+      if(p) policy = p.policy;
+    }
+    const result = await executePolicy(policy);
+    planElement.textContent = JSON.stringify(result.plan, null, 2);
+    planElement.classList.remove("hidden");
+    const hasProblems = result.differences > 0;
+    resultCard.innerHTML = `
+      <div class="card-head"><strong>ERGEBNIS</strong><span>FESTE AUSFÜHRUNG</span></div>
+      <div class="card-body">
+        <div class="stats">
+          <div class="stat"><div class="stat-label">TABELLE A</div><div class="stat-value">${result.tableA}</div></div>
+          <div class="stat"><div class="stat-label">TABELLE B</div><div class="stat-value">${result.tableB}</div></div>
+          <div class="stat"><div class="stat-label">VERGLEICHE</div><div class="stat-value">${result.comparisons}</div></div>
+          <div class="stat"><div class="stat-label">ERGEBNISSE</div><div class="stat-value">${result.differences}</div></div>
+        </div>
+        <div class="status ${hasProblems?"warn":"ok"}">
+          ${!hasProblems ? "✓ KEINE ABWEICHUNGEN GEFUNDEN." : "⚠ " + result.differences + " ERGEBNISSE GEFUNDEN."}
+        </div>
+        <div class="status">
+          RUN-ID: ${esc(result.runId)}<br>
+          ${result.plan.policy ? "POLICY: " + esc(result.plan.policy.policy_id) + " v" + esc(result.plan.policy.version) + "<br>" : ""}
+          <br>
+          Eindeutige Matches: ${result.comparisons}<br>
+          Abweichungen: ${result.plan.statistics.differences}<br>
+          Fehlende Werte: ${result.plan.statistics.missingValues}<br>
+          Ungültige Werte: ${result.plan.statistics.invalidValues}<br>
+          Fehlt in A: ${result.missingInA}<br>
+          Fehlt in B: ${result.missingInB}<br>
+          Mehrdeutige Matches: ${result.ambiguous}<br>
+          Ungültige Match-Keys: ${result.invalidMatchKeys}
+        </div>
+      </div>`;
+    resultCard.classList.remove("hidden");
+    await refresh();
+  }catch(error){
+    planElement.textContent = "FEHLER:\n\n" + error.message;
+    planElement.classList.remove("hidden");
+    resultCard.classList.add("hidden");
+  }
+};
+
+/* =========================================================
+   START
+========================================================= */
+openDatabase().then(refresh).catch(error => {
+  console.error(error);
+  const status = document.getElementById("step1Status");
+  if(status){ status.className = "status error"; status.textContent = "DATENBANK FEHLER: " + error.message; }
+});
+</script>
+</body>
+</html>
+```
