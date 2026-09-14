@@ -84,6 +84,11 @@ button{
   cursor:pointer;
 }
 
+button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
 .app{
   min-height:100vh;
   display:flex;
@@ -331,6 +336,15 @@ header{
   color:var(--red);
 
   border-color:var(--red);
+}
+
+.btn.yellow{
+  color:var(--yellow);
+
+  border-color:var(--yellow);
+
+  background:
+    rgba(255,230,0,.025);
 }
 
 .button-row{
@@ -613,7 +627,7 @@ tr:hover td{
    ========================================================= */
 
 .log{
-  height:230px;
+  height:300px;
 
   overflow:auto;
 
@@ -840,6 +854,48 @@ pre{
   color:var(--muted);
 
   font-size:9px;
+}
+
+
+/* =========================================================
+   BUILD SUMMARY
+   ========================================================= */
+
+.build-summary{
+  margin-top:10px;
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(2,1fr);
+
+  gap:5px;
+}
+
+.build-stat{
+  padding:7px;
+
+  border:1px solid rgba(0,245,255,.10);
+
+  background:rgba(0,0,0,.16);
+}
+
+.build-stat-label{
+  color:var(--muted);
+
+  font-size:7px;
+
+  letter-spacing:1px;
+}
+
+.build-stat-value{
+  margin-top:3px;
+
+  color:var(--cyan);
+
+  font-size:13px;
+
+  font-weight:800;
 }
 
 
@@ -1468,6 +1524,16 @@ footer{
 
 
         <button
+          id="stopBuildBtn"
+          class="btn yellow"
+          type="button"
+          disabled
+        >
+          STOP BUILD
+        </button>
+
+
+        <button
           id="clearMemoryBtn"
           class="btn red"
           type="button"
@@ -1505,6 +1571,74 @@ footer{
           id="progressBar"
           class="progress-bar"
         ></div>
+
+      </div>
+
+
+      <div class="build-summary">
+
+        <div class="build-stat">
+
+          <div class="build-stat-label">
+            EXISTING
+          </div>
+
+          <div
+            id="buildExisting"
+            class="build-stat-value"
+          >
+            0
+          </div>
+
+        </div>
+
+
+        <div class="build-stat">
+
+          <div class="build-stat-label">
+            NEW
+          </div>
+
+          <div
+            id="buildNew"
+            class="build-stat-value"
+          >
+            0
+          </div>
+
+        </div>
+
+
+        <div class="build-stat">
+
+          <div class="build-stat-label">
+            FAILED
+          </div>
+
+          <div
+            id="buildFailed"
+            class="build-stat-value"
+          >
+            0
+          </div>
+
+        </div>
+
+
+        <div class="build-stat">
+
+          <div class="build-stat-label">
+            STORED
+          </div>
+
+          <div
+            id="buildStored"
+            class="build-stat-value"
+          >
+            0
+          </div>
+
+        </div>
 
       </div>
 
@@ -1741,6 +1875,26 @@ const STORE_NAME =
   "memories";
 
 
+/*
+ * ROBUSTER BUILD-BETRIEB
+ *
+ * Kleine Batches sind absichtlich gewählt.
+ *
+ * Besonders auf iOS/Safari kann WebAssembly /
+ * Transformers.js bei längeren Serien unter
+ * Speicherdruck geraten.
+ */
+
+const BUILD_BATCH_SIZE =
+  2;
+
+const BUILD_RECORD_YIELD_MS =
+  100;
+
+const BUILD_BATCH_YIELD_MS =
+  250;
+
+
 /* =========================================================
    STATE
    ========================================================= */
@@ -1767,6 +1921,8 @@ const state = {
 
   building:false,
 
+  buildAbortRequested:false,
+
   db:null
 
 };
@@ -1784,10 +1940,35 @@ function $(id){
 
 
 /* =========================================================
+   BROWSER YIELD
+   ========================================================= */
+
+function yieldToBrowser(
+  milliseconds = 0
+){
+
+  return new Promise(
+    resolve => {
+
+      setTimeout(
+        resolve,
+        milliseconds
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
    LOGGING
    ========================================================= */
 
-function log(message,type=""){
+function log(
+  message,
+  type=""
+){
 
   const time =
     new Date().toLocaleTimeString(
@@ -1800,7 +1981,9 @@ function log(message,type=""){
     );
 
   const line =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   line.className =
     `log-line ${type}`;
@@ -1808,7 +1991,9 @@ function log(message,type=""){
   line.textContent =
     `[${time}] ${message}`;
 
-  $("systemLog").appendChild(line);
+  $("systemLog").appendChild(
+    line
+  );
 
   $("systemLog").scrollTop =
     $("systemLog").scrollHeight;
@@ -1818,7 +2003,8 @@ function log(message,type=""){
 
 function clearLog(){
 
-  $("systemLog").innerHTML = "";
+  $("systemLog").innerHTML =
+    "";
 
 }
 
@@ -1852,10 +2038,56 @@ function setDatasetState(text){
 
 
 /* =========================================================
+   BUILD SUMMARY
+   ========================================================= */
+
+function resetBuildSummary(){
+
+  $("buildExisting").textContent =
+    "0";
+
+  $("buildNew").textContent =
+    "0";
+
+  $("buildFailed").textContent =
+    "0";
+
+  $("buildStored").textContent =
+    "0";
+
+}
+
+
+function updateBuildSummary(
+  existing,
+  newlyBuilt,
+  failed,
+  stored
+){
+
+  $("buildExisting").textContent =
+    String(existing);
+
+  $("buildNew").textContent =
+    String(newlyBuilt);
+
+  $("buildFailed").textContent =
+    String(failed);
+
+  $("buildStored").textContent =
+    String(stored);
+
+}
+
+
+/* =========================================================
    PROGRESS
    ========================================================= */
 
-function setProgress(current,total){
+function setProgress(
+  current,
+  total
+){
 
   const percent =
     total > 0
@@ -1869,6 +2101,31 @@ function setProgress(current,total){
 
   $("progressText").textContent =
     `${current} / ${total}`;
+
+}
+
+
+function setDetailedProgress(
+  current,
+  total,
+  existing,
+  newlyBuilt,
+  failed,
+  stored
+){
+
+  const percent =
+    total > 0
+      ? Math.round(
+          current / total * 100
+        )
+      : 0;
+
+  $("progressBar").style.width =
+    `${percent}%`;
+
+  $("progressText").textContent =
+    `${current} / ${total}  |  EXISTING ${existing}  |  NEW ${newlyBuilt}  |  FAILED ${failed}  |  STORED ${stored}`;
 
 }
 
@@ -1895,7 +2152,9 @@ function safeString(value){
 
     try{
 
-      return JSON.stringify(value);
+      return JSON.stringify(
+        value
+      );
 
     }catch{
 
@@ -1915,7 +2174,9 @@ function safeString(value){
    CREATE EMBEDDING TEXT
    ========================================================= */
 
-function createEmbeddingText(record){
+function createEmbeddingText(
+  record
+){
 
   const lines = [];
 
@@ -1947,7 +2208,9 @@ function createEmbeddingText(record){
   }
 
 
-  return lines.join("\n");
+  return lines.join(
+    "\n"
+  );
 
 }
 
@@ -1970,9 +2233,14 @@ async function loadEmbeddingModel(){
     "info"
   );
 
+
   setRuntimeStatus(
     "LOADING MODEL"
   );
+
+
+  $("runtimeStat").textContent =
+    "LOADING";
 
 
   try{
@@ -2007,6 +2275,10 @@ async function loadEmbeddingModel(){
     );
 
 
+    $("runtimeStat").textContent =
+      "MODEL READY";
+
+
     return state.extractor;
 
 
@@ -2019,6 +2291,10 @@ async function loadEmbeddingModel(){
     setRuntimeStatus(
       "MODEL ERROR"
     );
+
+
+    $("runtimeStat").textContent =
+      "ERROR";
 
 
     log(
@@ -2038,24 +2314,16 @@ async function loadEmbeddingModel(){
    CREATE PASSAGE EMBEDDING
    ========================================================= */
 
-async function createEmbedding(text){
+async function createEmbedding(
+  text
+){
 
   const model =
     await loadEmbeddingModel();
 
 
-  /*
-   * E5 DOCUMENT / PASSAGE PREFIX
-   */
-
   const prepared =
     `passage: ${String(text).trim()}`;
-
-
-  log(
-    "Erzeuge 384D passage embedding ...",
-    "info"
-  );
 
 
   const output =
@@ -2069,7 +2337,9 @@ async function createEmbedding(text){
 
 
   const vector =
-    Array.from(output.data);
+    Array.from(
+      output.data
+    );
 
 
   if(
@@ -2082,10 +2352,6 @@ async function createEmbedding(text){
 
   }
 
-
-  /*
-   * Zusätzliche Sicherheitsprüfung.
-   */
 
   const norm =
     Math.sqrt(
@@ -2118,15 +2384,13 @@ async function createEmbedding(text){
    QUERY EMBEDDING
    ========================================================= */
 
-async function createQueryEmbedding(question){
+async function createQueryEmbedding(
+  question
+){
 
   const model =
     await loadEmbeddingModel();
 
-
-  /*
-   * E5 QUERY PREFIX
-   */
 
   const prepared =
     `query: ${String(question).trim()}`;
@@ -2143,7 +2407,9 @@ async function createQueryEmbedding(question){
 
 
   const vector =
-    Array.from(output.data);
+    Array.from(
+      output.data
+    );
 
 
   if(
@@ -2166,7 +2432,10 @@ async function createQueryEmbedding(question){
    COSINE SIMILARITY
    ========================================================= */
 
-function cosineSimilarity(a,b){
+function cosineSimilarity(
+  a,
+  b
+){
 
   if(
     !Array.isArray(a) ||
@@ -2191,11 +2460,14 @@ function cosineSimilarity(a,b){
   }
 
 
-  let dot = 0;
+  let dot =
+    0;
 
-  let normA = 0;
+  let normA =
+    0;
 
-  let normB = 0;
+  let normB =
+    0;
 
 
   for(
@@ -2238,17 +2510,109 @@ function cosineSimilarity(a,b){
 
 
 /* =========================================================
+   VALID MEMORY RECORD
+   ========================================================= */
+
+function isValidMemoryRecord(
+  record
+){
+
+  if(!record){
+
+    return false;
+
+  }
+
+
+  if(
+    !record.id ||
+    !record.memory_id
+  ){
+
+    return false;
+
+  }
+
+
+  if(
+    !Array.isArray(
+      record.embedding
+    )
+  ){
+
+    return false;
+
+  }
+
+
+  if(
+    record.embedding.length !==
+    EMBEDDING_DIM
+  ){
+
+    return false;
+
+  }
+
+
+  return true;
+
+}
+
+
+/* =========================================================
    CREATE MEMORY RECORD
    ========================================================= */
 
-async function buildMemoryRecord(record){
+async function buildMemoryRecord(
+  record
+){
+
+  if(
+    !record ||
+    !record.data
+  ){
+
+    throw new Error(
+      "Ungültiger Record."
+    );
+
+  }
+
+
+  const memoryId =
+    record.memory_id;
+
+
+  if(!memoryId){
+
+    throw new Error(
+      "Record besitzt keine memory_id."
+    );
+
+  }
+
 
   /*
    * Originaldaten werden NICHT verändert.
    */
 
   const embeddingText =
-    createEmbeddingText(record);
+    createEmbeddingText(
+      record
+    );
+
+
+  /*
+   * Diagnostik:
+   * Die Textlänge wird geloggt,
+   * aber der Text wird NICHT verändert.
+   */
+
+  log(
+    `${memoryId} | embedding_text=${embeddingText.length} Zeichen`,
+    "info"
+  );
 
 
   /*
@@ -2265,29 +2629,23 @@ async function buildMemoryRecord(record){
    * IndexedDB-Key MUSS vorhanden sein.
    */
 
-  const memoryId =
-    record.memory_id;
+  const memoryRecord = {
 
+    id:
+      memoryId,
 
-  if(!memoryId){
-
-    throw new Error(
-      "Record besitzt keine memory_id."
-    );
-
-  }
-
-
-  return {
-
-    id:memoryId,
-
-    memory_id:memoryId,
+    memory_id:
+      memoryId,
 
     source:{
-      file:record.source.file,
-      sheet:record.source.sheet,
-      row:record.source.row
+      file:
+        record.source.file,
+
+      sheet:
+        record.source.sheet,
+
+      row:
+        record.source.row
     },
 
 
@@ -2295,31 +2653,52 @@ async function buildMemoryRecord(record){
      * ORIGINALDATEN
      */
 
-    data:record.data,
+    data:
+      record.data,
 
 
     /*
      * DETERMINISTISCHE TEXTREPRÄSENTATION
      */
 
-    embedding_text:embeddingText,
+    embedding_text:
+      embeddingText,
 
 
     /*
      * ECHTER 384D VEKTOR
      */
 
-    embedding:embedding,
+    embedding:
+      embedding,
 
 
-    dimension:embedding.length,
+    dimension:
+      embedding.length,
 
-    model:MODEL,
+    model:
+      MODEL,
 
     created:
       new Date().toISOString()
 
   };
+
+
+  if(
+    !isValidMemoryRecord(
+      memoryRecord
+    )
+  ){
+
+    throw new Error(
+      "Erzeugter Memory Record ist ungültig."
+    );
+
+  }
+
+
+  return memoryRecord;
 
 }
 
@@ -2330,10 +2709,10 @@ async function buildMemoryRecord(record){
 
    WICHTIG:
 
-   IndexedDB wird NICHT beim Boot geöffnet.
+   Die Datenbank wird NICHT beim Boot geöffnet.
 
-   Dadurch kann ein altes/beschädigtes DB-Schema
-   die Benutzeroberfläche nicht mehr beim Start zerstören.
+   Dadurch kann eine alte DB-Version die UI
+   nicht bereits beim Start blockieren.
 
    ========================================================= */
 
@@ -2342,7 +2721,9 @@ async function buildMemoryRecord(record){
    OPEN DATABASE
    ========================================================= */
 
-function openDatabase(version){
+function openDatabase(
+  version
+){
 
   return new Promise(
     (resolve,reject)=>{
@@ -2433,7 +2814,9 @@ function openDatabase(version){
           };
 
 
-        resolve(db);
+        resolve(
+          db
+        );
 
       };
 
@@ -2466,13 +2849,6 @@ async function openMemoryDB(){
 
   }
 
-
-  /*
-   * Versuch 1:
-   *
-   * vorhandene Datenbank ohne
-   * künstliches Herabsetzen der Version öffnen.
-   */
 
   try{
 
@@ -2544,12 +2920,57 @@ async function openMemoryDB(){
       );
 
 
+    /*
+     * Vorhandenes Schema prüfen.
+     */
+
+    if(
+      !db.objectStoreNames.contains(
+        STORE_NAME
+      )
+    ){
+
+      db.close();
+
+      throw new Error(
+        `IndexedDB Store "${STORE_NAME}" fehlt.`
+      );
+
+    }
+
+
+    const transaction =
+      db.transaction(
+        STORE_NAME,
+        "readonly"
+      );
+
+
+    const store =
+      transaction.objectStore(
+        STORE_NAME
+      );
+
+
+    if(
+      store.keyPath !== "id"
+    ){
+
+      db.close();
+
+      throw new Error(
+        `Inkompatibles IndexedDB-Schema: keyPath="${store.keyPath}". Erwartet wird "id".`
+      );
+
+    }
+
+
     state.db =
       db;
 
 
     log(
-      "IndexedDB verbunden.",
+      `IndexedDB verbunden. Version ${db.version}.`,
       "ok"
     );
 
@@ -2576,7 +2997,22 @@ async function openMemoryDB(){
    STORE MEMORY
    ========================================================= */
 
-async function putMemoryRecord(record){
+async function putMemoryRecord(
+  record
+){
+
+  if(
+    !isValidMemoryRecord(
+      record
+    )
+  ){
+
+    throw new Error(
+      "Ungültiger Memory Record kann nicht gespeichert werden."
+    );
+
+  }
+
 
   const db =
     await openMemoryDB();
@@ -2585,11 +3021,26 @@ async function putMemoryRecord(record){
   return new Promise(
     (resolve,reject)=>{
 
-      const transaction =
-        db.transaction(
-          STORE_NAME,
-          "readwrite"
+      let transaction;
+
+
+      try{
+
+        transaction =
+          db.transaction(
+            STORE_NAME,
+            "readwrite"
+          );
+
+      }catch(error){
+
+        reject(
+          error
         );
+
+        return;
+
+      }
 
 
       const store =
@@ -2599,7 +3050,9 @@ async function putMemoryRecord(record){
 
 
       const request =
-        store.put(record);
+        store.put(
+          record
+        );
 
 
       request.onsuccess =
@@ -2630,11 +3083,26 @@ async function loadAllMemory(){
   return new Promise(
     (resolve,reject)=>{
 
-      const transaction =
-        db.transaction(
-          STORE_NAME,
-          "readonly"
+      let transaction;
+
+
+      try{
+
+        transaction =
+          db.transaction(
+            STORE_NAME,
+            "readonly"
+          );
+
+      }catch(error){
+
+        reject(
+          error
         );
+
+        return;
+
+      }
 
 
       const store =
@@ -2723,7 +3191,9 @@ async function resetMemoryDatabase(){
    IMPORT WORKBOOK
    ========================================================= */
 
-async function importWorkbook(file){
+async function importWorkbook(
+  file
+){
 
   if(!file){
 
@@ -2831,7 +3301,9 @@ async function importWorkbook(file){
    SELECT SHEET
    ========================================================= */
 
-function selectSheet(sheetName){
+function selectSheet(
+  sheetName
+){
 
   if(
     !state.workbook
@@ -2874,7 +3346,9 @@ function selectSheet(sheetName){
 
 
   state.schema =
-    inferSchema(rows);
+    inferSchema(
+      rows
+    );
 
 
   /*
@@ -2888,15 +3362,19 @@ function selectSheet(sheetName){
 
         memory_id:
           createMemoryId(
-            state.file?.name || "DATA",
+            state.file?.name ||
+            "DATA",
             index + 2
           ),
 
         source:{
           file:
-            state.file?.name || "",
+            state.file?.name ||
+            "",
+
           sheet:
             sheetName,
+
           row:
             index + 2
         },
@@ -2953,13 +3431,19 @@ function createMemoryId(
         ""
       )
       .toUpperCase()
-      .slice(0,24);
+      .slice(
+        0,
+        24
+      );
 
 
   return (
     `${base || "DATA"}-` +
     String(rowNumber)
-      .padStart(6,"0")
+      .padStart(
+        6,
+        "0"
+      )
   );
 
 }
@@ -2969,7 +3453,9 @@ function createMemoryId(
    INFER SCHEMA
    ========================================================= */
 
-function inferSchema(rows){
+function inferSchema(
+  rows
+){
 
   const fields =
     new Set();
@@ -2983,7 +3469,9 @@ function inferSchema(rows){
       const key of Object.keys(row)
     ){
 
-      fields.add(key);
+      fields.add(
+        key
+      );
 
     }
 
@@ -3004,7 +3492,8 @@ function inferSchema(rows){
     const values =
       rows
         .map(
-          row => row[field]
+          row =>
+            row[field]
         )
         .filter(
           value =>
@@ -3055,9 +3544,15 @@ function inferSchema(rows){
 
 
     schema.push({
-      name:field,
-      type,
-      count:values.length
+      name:
+        field,
+
+      type:
+        type,
+
+      count:
+        values.length
+
     });
 
   }
@@ -3123,7 +3618,10 @@ function renderSheets(){
 
     item.addEventListener(
       "click",
-      () => selectSheet(sheet)
+      () =>
+        selectSheet(
+          sheet
+        )
     );
 
 
@@ -3164,7 +3662,8 @@ function renderRawTable(){
 
   const columns =
     state.schema.map(
-      item => item.name
+      item =>
+        item.name
     );
 
 
@@ -3411,6 +3910,20 @@ function updateStats(){
 async function testOneEmbedding(){
 
   if(
+    state.building
+  ){
+
+    log(
+      "Während eines laufenden Builds ist der Embedding-Test gesperrt.",
+      "warn"
+    );
+
+    return;
+
+  }
+
+
+  if(
     state.records.length === 0
   ){
 
@@ -3583,6 +4096,9 @@ async function buildMemory(){
   state.building =
     true;
 
+  state.buildAbortRequested =
+    false;
+
 
   $("buildMemoryBtn").disabled =
     true;
@@ -3590,6 +4106,17 @@ async function buildMemory(){
 
   $("testEmbeddingBtn").disabled =
     true;
+
+
+  $("clearMemoryBtn").disabled =
+    true;
+
+
+  $("stopBuildBtn").disabled =
+    false;
+
+
+  resetBuildSummary();
 
 
   setBuildState(
@@ -3610,38 +4137,64 @@ async function buildMemory(){
 
   try{
 
-    /*
-     * =====================================================
-     * SCHRITT 1
-     * =====================================================
-     */
-
     log(
-      "Memory Build gestartet.",
+      "========================================",
       "info"
     );
 
 
     log(
-      `${state.records.length} Records werden verarbeitet.`,
+      "ROBUST MEMORY BUILD GESTARTET",
+      "info"
+    );
+
+
+    log(
+      `${state.records.length} Records im aktuellen Dataset.`,
+      "info"
+    );
+
+
+    log(
+      `Batch-Größe: ${BUILD_BATCH_SIZE}`,
+      "info"
+    );
+
+
+    log(
+      `Yield pro Record: ${BUILD_RECORD_YIELD_MS} ms`,
+      "info"
+    );
+
+
+    log(
+      `Yield pro Batch: ${BUILD_BATCH_YIELD_MS} ms`,
       "info"
     );
 
 
     /*
      * =====================================================
-     * SCHRITT 2
-     * MODEL LADEN
+     * 1. MODEL LADEN
      * =====================================================
      */
+
+    setBuildState(
+      "LOADING MODEL"
+    );
+
 
     await loadEmbeddingModel();
 
 
+    await yieldToBrowser(
+      50
+    );
+
+
     /*
      * =====================================================
-     * SCHRITT 3
-     * INDEXEDDB ERST JETZT ÖFFNEN
+     * 2. DATABASE
      * =====================================================
      */
 
@@ -3661,8 +4214,87 @@ async function buildMemory(){
 
     /*
      * =====================================================
-     * SCHRITT 4
-     * RECORDS EMBEDDING
+     * 3. EXISTIERENDE MEMORY LADEN
+     *
+     * Das ist der Checkpoint.
+     * Bereits gültige 384D Records werden
+     * nicht erneut eingebettet.
+     * =====================================================
+     */
+
+    setBuildState(
+      "CHECKING MEMORY"
+    );
+
+
+    const existingRecords =
+      await loadAllMemory();
+
+
+    const validExistingIds =
+      new Set();
+
+
+    for(
+      const existing of existingRecords
+    ){
+
+      if(
+        isValidMemoryRecord(
+          existing
+        )
+      ){
+
+        validExistingIds.add(
+          existing.memory_id
+        );
+
+      }
+
+    }
+
+
+    let existingCount =
+      0;
+
+    let newlyBuilt =
+      0;
+
+    let failedCount =
+      0;
+
+    let storedCount =
+      existingRecords.filter(
+        record =>
+          isValidMemoryRecord(
+            record
+          )
+      ).length;
+
+
+    log(
+      `IndexedDB enthält ${existingRecords.length} Records.`,
+      "info"
+    );
+
+
+    log(
+      `${validExistingIds.size} gültige 384D Memory Records bereits vorhanden.`,
+      "ok"
+    );
+
+
+    updateBuildSummary(
+      validExistingIds.size,
+      0,
+      0,
+      storedCount
+    );
+
+
+    /*
+     * =====================================================
+     * 4. RECORDS VERARBEITEN
      * =====================================================
      */
 
@@ -3671,20 +4303,143 @@ async function buildMemory(){
     );
 
 
-    const builtRecords = [];
-
-
     for(
       let i = 0;
       i < state.records.length;
       i++
     ){
 
+      /*
+       * Benutzer kann Build kontrolliert stoppen.
+       */
+
+      if(
+        state.buildAbortRequested
+      ){
+
+        log(
+          "STOP BUILD angefordert. Build wird kontrolliert beendet.",
+          "warn"
+        );
+
+        break;
+
+      }
+
+
       const record =
         state.records[i];
 
 
+      if(!record){
+
+        failedCount++;
+
+
+        log(
+          `Record ${i + 1}: Record ist leer.`,
+          "error"
+        );
+
+
+        setDetailedProgress(
+          i + 1,
+          state.records.length,
+          validExistingIds.size,
+          newlyBuilt,
+          failedCount,
+          storedCount
+        );
+
+
+        continue;
+
+      }
+
+
+      /*
+       * ===================================================
+       * RESUME / CHECKPOINT
+       * ===================================================
+       */
+
+      if(
+        validExistingIds.has(
+          record.memory_id
+        )
+      ){
+
+        existingCount++;
+
+
+        log(
+          `SKIP ${i + 1}/${state.records.length} | ${record.memory_id} | bereits vorhanden`,
+          "info"
+        );
+
+
+        setDetailedProgress(
+          i + 1,
+          state.records.length,
+          existingCount,
+          newlyBuilt,
+          failedCount,
+          storedCount
+        );
+
+
+        await yieldToBrowser(
+          BUILD_RECORD_YIELD_MS
+        );
+
+
+        continue;
+
+      }
+
+
+      /*
+       * ===================================================
+       * EINZELN EMBEDDING ERZEUGEN
+       *
+       * Jeder Record besitzt seinen eigenen try/catch.
+       * Ein Fehler kann den Gesamtprozess nicht stoppen.
+       * ===================================================
+       */
+
       try{
+
+        log(
+          `EMBEDDING ${i + 1}/${state.records.length} | ${record.memory_id} | ${record.source.file} / ${record.source.sheet} / ROW ${record.source.row}`,
+          "info"
+        );
+
+
+        const embeddingText =
+          createEmbeddingText(
+            record
+          );
+
+
+        /*
+         * Preview des ersten tatsächlich
+         * verarbeiteten Records.
+         */
+
+        if(
+          newlyBuilt === 0 &&
+          existingCount === 0
+        ){
+
+          $("embeddingPreview").innerHTML =
+            `
+            <pre>${escapeHtml(
+              embeddingText
+            )}</pre>
+            `;
+
+        }
+
 
         const memoryRecord =
           await buildMemoryRecord(
@@ -3692,40 +4447,148 @@ async function buildMemory(){
           );
 
 
-        builtRecords.push(
-          memoryRecord
-        );
-
+        /*
+         * =================================================
+         * SOFORT SPEICHERN
+         *
+         * Nicht erst nach 237 Records.
+         * =================================================
+         */
 
         await putMemoryRecord(
           memoryRecord
         );
 
 
-        setProgress(
-          i + 1,
-          state.records.length
+        newlyBuilt++;
+
+        storedCount++;
+
+
+        /*
+         * Checkpoint sofort aktualisieren.
+         */
+
+        validExistingIds.add(
+          record.memory_id
         );
 
 
+        log(
+          `GESPEICHERT ${i + 1}/${state.records.length} | ${record.memory_id} | 384D`,
+          "ok"
+        );
+
+
+        /*
+         * Ersten echten Vector sichtbar machen.
+         */
+
         if(
-          (i + 1) % 5 === 0 ||
-          i + 1 === state.records.length
+          newlyBuilt === 1
         ){
 
-          log(
-            `Memory ${i + 1}/${state.records.length} gespeichert.`,
-            "ok"
-          );
+          const vector =
+            memoryRecord.embedding;
+
+
+          $("embeddingPreview").innerHTML =
+            `
+            <pre>${escapeHtml(
+              memoryRecord.embedding_text
+            )}
+
+--------------------------------
+REAL 384D EMBEDDING
+--------------------------------
+
+DIMENSION:
+${vector.length}
+
+FIRST 16 VALUES:
+${vector
+  .slice(0,16)
+  .map(
+    (v,i)=>
+      `[${i}] ${v}`
+  )
+  .join("\n")}
+
+--------------------------------
+MODEL:
+${MODEL}
+
+STORED:
+INDEXEDDB
+            </pre>
+            `;
 
         }
 
 
       }catch(error){
 
+        failedCount++;
+
+
         log(
-          `Record ${i + 1} fehlgeschlagen: ${error.message || error}`,
+          `FEHLER ${i + 1}/${state.records.length} | ${record.memory_id} | ROW ${record.source?.row} | ${error.message || error}`,
           "error"
+        );
+
+
+        /*
+         * Der nächste Record darf weiterlaufen.
+         */
+
+      }
+
+
+      /*
+       * Fortschritt immer aktualisieren.
+       */
+
+      setDetailedProgress(
+        i + 1,
+        state.records.length,
+        existingCount,
+        newlyBuilt,
+        failedCount,
+        storedCount
+      );
+
+
+      /*
+       * Browser-Zeit geben.
+       *
+       * Wichtig auf iOS/Safari.
+       */
+
+      await yieldToBrowser(
+        BUILD_RECORD_YIELD_MS
+      );
+
+
+      /*
+       * Nach jedem kleinen Batch zusätzliche Pause.
+       */
+
+      if(
+        (
+          i + 1
+        ) %
+        BUILD_BATCH_SIZE ===
+        0
+      ){
+
+        log(
+          `BATCH CHECKPOINT ${i + 1}/${state.records.length} | stored=${storedCount}`,
+          "info"
+        );
+
+
+        await yieldToBrowser(
+          BUILD_BATCH_YIELD_MS
         );
 
       }
@@ -3735,45 +4598,124 @@ async function buildMemory(){
 
     /*
      * =====================================================
-     * SCHRITT 5
+     * 5. ABSCHLUSS / RESUME-STATUS
      * =====================================================
      */
+
+    const finalRecords =
+      await loadAllMemory();
+
+
+    renderMemoryList(
+      finalRecords
+    );
+
+
+    $("memoryCount").textContent =
+      `${finalRecords.length} STORED`;
+
 
     state.selectedRecord =
       null;
 
 
-    const stored =
-      await loadAllMemory();
+    $("selectedRecord").innerHTML =
+      `
+      <div class="empty">
+        Kein Record ausgewählt.
+      </div>
+      `;
 
 
-    renderMemoryList(
-      stored
+    updateBuildSummary(
+      existingCount,
+      newlyBuilt,
+      failedCount,
+      finalRecords.length
     );
 
 
-    $("memoryCount").textContent =
-      `${stored.length} STORED`;
+    if(
+      state.buildAbortRequested
+    ){
+
+      setBuildState(
+        "STOPPED"
+      );
 
 
-    setBuildState(
-      "READY"
-    );
+      setDatasetState(
+        "PAUSED"
+      );
 
 
-    setDatasetState(
-      "READY"
-    );
+      log(
+        `Build kontrolliert gestoppt. ${finalRecords.length} Records sind dauerhaft gespeichert.`,
+        "warn"
+      );
 
 
-    log(
-      `Memory Build abgeschlossen: ${stored.length} Records gespeichert.`,
-      "ok"
-    );
+      log(
+        "BUILD MEMORY erneut starten, um fortzusetzen.",
+        "info"
+      );
+
+    }
+
+    else{
+
+      setBuildState(
+        failedCount > 0
+          ? "DONE / ERRORS"
+          : "READY"
+      );
+
+
+      setDatasetState(
+        failedCount > 0
+          ? "DONE / ERRORS"
+          : "READY"
+      );
+
+
+      log(
+        "========================================",
+        "info"
+      );
+
+
+      log(
+        `BUILD ABGESCHLOSSEN | EXISTING=${existingCount} | NEW=${newlyBuilt} | FAILED=${failedCount} | STORED=${finalRecords.length}`,
+        failedCount > 0
+          ? "warn"
+          : "ok"
+      );
+
+
+      if(
+        failedCount > 0
+      ){
+
+        log(
+          "Fehlerhafte Records können beim nächsten BUILD erneut versucht werden.",
+          "warn"
+        );
+
+      }
+
+    }
 
 
   }catch(error){
 
+    /*
+     * GLOBALER FEHLER
+     *
+     * Wichtig:
+     * Bereits erfolgreich gespeicherte Records
+     * bleiben in IndexedDB erhalten.
+     */
+
     setBuildState(
       "ERROR"
     );
@@ -3785,20 +4727,46 @@ async function buildMemory(){
 
 
     log(
-      `Memory Build abgebrochen: ${error.message || error}`,
+      `GLOBALER BUILD-FEHLER: ${error.message || error}`,
       "error"
+    );
+
+
+    log(
+      "Bereits gespeicherte Memory Records bleiben erhalten.",
+      "warn"
     );
 
 
     if(
       error &&
-      String(error.message).includes(
+      String(
+        error.message
+      ).includes(
         "lower version"
       )
     ){
 
       log(
         "Die vorhandene IndexedDB besitzt ein inkompatibles Schema. CLEAR MEMORY DB ausführen und danach BUILD MEMORY erneut starten.",
+        "warn"
+      );
+
+    }
+
+
+    if(
+      error &&
+      String(
+        error.message
+      ).toLowerCase()
+        .includes(
+          "key path"
+        )
+    ){
+
+      log(
+        "IndexedDB-Key-Schema ist inkompatibel. CLEAR MEMORY DB ausführen und danach BUILD MEMORY erneut starten.",
         "warn"
       );
 
@@ -3817,7 +4785,51 @@ async function buildMemory(){
     $("testEmbeddingBtn").disabled =
       false;
 
+
+    $("clearMemoryBtn").disabled =
+      false;
+
+
+    $("stopBuildBtn").disabled =
+      true;
+
+
+    state.buildAbortRequested =
+      false;
+
   }
+
+}
+
+
+/* =========================================================
+   STOP BUILD
+   ========================================================= */
+
+function stopBuild(){
+
+  if(
+    !state.building
+  ){
+
+    return;
+
+  }
+
+
+  state.buildAbortRequested =
+    true;
+
+
+  setBuildState(
+    "STOPPING"
+  );
+
+
+  log(
+    "STOP BUILD gesetzt. Der aktuelle Record darf noch sauber abgeschlossen werden.",
+    "warn"
+  );
 
 }
 
@@ -3826,7 +4838,9 @@ async function buildMemory(){
    RENDER MEMORY LIST
    ========================================================= */
 
-function renderMemoryList(records){
+function renderMemoryList(
+  records
+){
 
   const container =
     $("memoryList");
@@ -3933,7 +4947,9 @@ function renderMemoryList(records){
    SELECTED RECORD
    ========================================================= */
 
-function renderSelectedRecord(record){
+function renderSelectedRecord(
+  record
+){
 
   if(!record){
 
@@ -3949,20 +4965,22 @@ function renderSelectedRecord(record){
   }
 
 
-  /*
-   * Embedding nicht komplett im Detailfenster
-   * ausgeben, sonst wird die UI unnötig riesig.
-   */
-
   const previewVector =
-    Array.isArray(record.embedding)
+    Array.isArray(
+      record.embedding
+    )
       ? record.embedding
-          .slice(0,20)
+          .slice(
+            0,
+            20
+          )
           .map(
             (v,i)=>
               `[${i}] ${v}`
           )
-          .join("\n")
+          .join(
+            "\n"
+          )
       : "kein Embedding";
 
 
@@ -4017,6 +5035,20 @@ function renderSelectedRecord(record){
    ========================================================= */
 
 function clearImport(){
+
+  if(
+    state.building
+  ){
+
+    log(
+      "Import kann während eines laufenden Builds nicht gelöscht werden.",
+      "warn"
+    );
+
+    return;
+
+  }
+
 
   state.workbook =
     null;
@@ -4131,6 +5163,9 @@ function clearImport(){
   );
 
 
+  resetBuildSummary();
+
+
   log(
     "Import zurückgesetzt.",
     "info"
@@ -4144,6 +5179,20 @@ function clearImport(){
    ========================================================= */
 
 async function clearMemoryDB(){
+
+  if(
+    state.building
+  ){
+
+    log(
+      "CLEAR MEMORY DB ist während eines Builds gesperrt.",
+      "warn"
+    );
+
+    return;
+
+  }
+
 
   const confirmed =
     window.confirm(
@@ -4187,6 +5236,15 @@ async function clearMemoryDB(){
       null;
 
 
+    resetBuildSummary();
+
+
+    setProgress(
+      0,
+      state.records.length
+    );
+
+
     log(
       "Lokale Memory-Datenbank gelöscht.",
       "ok"
@@ -4215,6 +5273,20 @@ async function clearMemoryDB(){
    ========================================================= */
 
 async function exportMemory(){
+
+  if(
+    state.building
+  ){
+
+    log(
+      "Export während des Builds nicht empfohlen.",
+      "warn"
+    );
+
+    return;
+
+  }
+
 
   try{
 
@@ -4448,6 +5520,13 @@ $("buildMemoryBtn")
   );
 
 
+$("stopBuildBtn")
+  .addEventListener(
+    "click",
+    stopBuild
+  );
+
+
 $("testEmbeddingBtn")
   .addEventListener(
     "click",
@@ -4473,7 +5552,9 @@ $("exportMemoryBtn")
    ESCAPE HTML
    ========================================================= */
 
-function escapeHtml(value){
+function escapeHtml(
+  value
+){
 
   return String(value)
     .replace(
@@ -4504,7 +5585,9 @@ function escapeHtml(value){
    FORMAT BYTES
    ========================================================= */
 
-function formatBytes(bytes){
+function formatBytes(
+  bytes
+){
 
   if(
     !Number.isFinite(bytes)
@@ -4515,14 +5598,18 @@ function formatBytes(bytes){
   }
 
 
-  if(bytes < 1024){
+  if(
+    bytes < 1024
+  ){
 
     return `${bytes} B`;
 
   }
 
 
-  if(bytes < 1024 * 1024){
+  if(
+    bytes < 1024 * 1024
+  ){
 
     return `${(
       bytes / 1024
@@ -4542,8 +5629,6 @@ function formatBytes(bytes){
 /* =========================================================
    BOOT
    =========================================================
-
-   WICHTIG:
 
    KEIN IndexedDB-Aufruf.
 
@@ -4600,6 +5685,18 @@ function boot(){
   );
 
 
+  log(
+    `Robuster Build: ${BUILD_BATCH_SIZE} Records/Batch.`,
+    "info"
+  );
+
+
+  log(
+    "Bereits gespeicherte 384D Records werden beim nächsten Build übersprungen.",
+    "ok"
+  );
+
+
   $("runtimeStat").textContent =
     "UI READY";
 
@@ -4623,6 +5720,9 @@ function boot(){
     0,
     0
   );
+
+
+  resetBuildSummary();
 
 }
 
@@ -4654,6 +5754,8 @@ window.NEURAL_MEMORY = {
 
   cosineSimilarity,
 
+  isValidMemoryRecord,
+
   searchMemory:
     async function(
       question,
@@ -4664,6 +5766,15 @@ window.NEURAL_MEMORY = {
         await loadAllMemory();
 
 
+      const validRecords =
+        records.filter(
+          record =>
+            isValidMemoryRecord(
+              record
+            )
+        );
+
+
       const queryVector =
         await createQueryEmbedding(
           question
@@ -4671,7 +5782,7 @@ window.NEURAL_MEMORY = {
 
 
       const results =
-        records.map(
+        validRecords.map(
           record => ({
 
             record,
