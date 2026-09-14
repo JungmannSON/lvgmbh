@@ -4,8 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport"
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
 <title>NEURAL MEMORY — DATA INGESTION</title>
+
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+
 <style>
 :root{
   --bg:#020308;
@@ -20,7 +23,9 @@
   --text:#dce7f5;
   --muted:#718096;
 }
+
 *{box-sizing:border-box}
+
 html,body{
   margin:0;
   width:100%;
@@ -30,10 +35,12 @@ html,body{
   font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
   overflow:hidden;
 }
+
 body{
   display:flex;
   flex-direction:column;
 }
+
 header{
   height:62px;
   flex:none;
@@ -44,15 +51,18 @@ header{
   border-bottom:1px solid var(--line);
   background:#03050b;
 }
+
 .logo{
   color:var(--cyan);
   font-size:16px;
   font-weight:900;
   letter-spacing:2px;
 }
+
 .logo span{
   color:var(--pink);
 }
+
 .headerStatus{
   display:flex;
   gap:10px;
@@ -60,6 +70,7 @@ header{
   font-size:10px;
   color:var(--muted);
 }
+
 .dot{
   width:7px;
   height:7px;
@@ -67,6 +78,7 @@ header{
   background:var(--green);
   box-shadow:0 0 10px var(--green);
 }
+
 main{
   flex:1;
   min-height:0;
@@ -75,30 +87,33 @@ main{
   gap:1px;
   background:var(--line);
 }
+
 .panel{
   background:var(--panel);
   min-width:0;
   min-height:0;
   overflow:hidden;
 }
+
 .left,
 .center,
 .right{
   overflow:auto;
   min-height:0;
 }
+
 .left,
-.right{
-  padding:14px;
-}
+.right,
 .center{
   padding:14px;
 }
+
 .section{
   border:1px solid var(--line);
   background:var(--panel2);
   margin-bottom:12px;
 }
+
 .sectionTitle{
   padding:9px 11px;
   border-bottom:1px solid var(--line);
@@ -106,9 +121,11 @@ main{
   font-size:10px;
   letter-spacing:1.4px;
 }
+
 .sectionBody{
   padding:11px;
 }
+
 .drop{
   border:1px dashed #27415d;
   padding:22px 10px;
@@ -117,12 +134,14 @@ main{
   cursor:pointer;
   transition:.2s;
 }
+
 .drop:hover,
 .drop.drag{
   border-color:var(--cyan);
   color:var(--cyan);
   background:#06121b;
 }
+
 button{
   border:1px solid var(--line);
   background:#0b1220;
@@ -132,91 +151,104 @@ button{
   font-size:10px;
   cursor:pointer;
 }
+
 button:hover{
   border-color:var(--cyan);
   color:var(--cyan);
 }
+
 button.primary{
   width:100%;
   background:#07191e;
   border-color:var(--cyan);
   color:var(--cyan);
 }
+
 button.danger{
   border-color:var(--red);
   color:var(--red);
 }
-button.green{
-  border-color:var(--green);
-  color:var(--green);
-}
+
 .actions{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:7px;
   margin-top:8px;
 }
+
 .full{
   width:100%;
   margin-top:7px;
 }
+
 .fileInput{
   display:none;
 }
+
 .statGrid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:7px;
 }
+
 .stat{
   border:1px solid var(--line);
   padding:9px;
   background:#050914;
 }
+
 .stat small{
   display:block;
   color:var(--muted);
   font-size:8px;
   margin-bottom:5px;
 }
+
 .stat strong{
   font-size:18px;
   color:var(--cyan);
 }
+
 .datasetName{
   color:var(--pink);
   font-size:11px;
   word-break:break-all;
 }
+
 .log{
-  height:250px;
+  height:260px;
   overflow:auto;
   white-space:pre-wrap;
   font-size:9px;
   line-height:1.55;
   color:#8da0b7;
 }
+
 .log .ok{color:var(--green)}
 .log .warn{color:var(--yellow)}
 .log .err{color:var(--red)}
 .log .info{color:var(--cyan)}
+
 .tableWrap{
   overflow:auto;
-  max-height:330px;
+  max-height:350px;
   border:1px solid var(--line);
 }
+
 table{
   width:100%;
   border-collapse:collapse;
   font-size:9px;
   white-space:nowrap;
 }
+
 th,
 td{
   padding:6px 8px;
   border-bottom:1px solid #111a2b;
   text-align:left;
 }
+
 th{
   position:sticky;
   top:0;
@@ -224,14 +256,17 @@ th{
   color:var(--cyan);
   z-index:2;
 }
+
 td{
   color:#aab8ca;
 }
+
 .card{
   border:1px solid var(--line);
   background:#050914;
   margin-bottom:12px;
 }
+
 .cardHead{
   display:flex;
   justify-content:space-between;
@@ -241,9 +276,11 @@ td{
   color:var(--cyan);
   font-size:10px;
 }
+
 .cardBody{
   padding:11px;
 }
+
 pre{
   margin:0;
   white-space:pre-wrap;
@@ -252,33 +289,40 @@ pre{
   line-height:1.5;
   color:#aebbd0;
 }
+
 .badge{
   padding:3px 6px;
   border:1px solid var(--line);
   font-size:8px;
   color:var(--muted);
 }
+
 .badge.ready{
   color:var(--green);
   border-color:var(--green);
 }
+
 .badge.build{
   color:var(--cyan);
   border-color:var(--cyan);
 }
+
 .badge.pause{
   color:var(--yellow);
   border-color:var(--yellow);
 }
+
 .badge.error{
   color:var(--red);
   border-color:var(--red);
 }
+
 .pipeline{
   display:flex;
   flex-direction:column;
   gap:5px;
 }
+
 .step{
   display:flex;
   align-items:center;
@@ -288,14 +332,17 @@ pre{
   font-size:9px;
   color:var(--muted);
 }
+
 .step.active{
   border-color:var(--cyan);
   color:var(--cyan);
 }
+
 .step.done{
   border-color:#245f42;
   color:var(--green);
 }
+
 .step .num{
   width:19px;
   height:19px;
@@ -304,71 +351,93 @@ pre{
   border:1px solid currentColor;
   border-radius:50%;
 }
+
 .recordList{
-  max-height:240px;
+  max-height:280px;
   overflow:auto;
 }
+
 .record{
   padding:8px;
   border-bottom:1px solid #111a2b;
   cursor:pointer;
 }
+
 .record:hover{
   background:#091321;
 }
+
 .recordId{
   color:var(--cyan);
   font-size:9px;
 }
+
 .recordMeta{
   color:var(--muted);
   font-size:8px;
   margin-top:3px;
 }
-textarea{
-  width:100%;
-  min-height:180px;
-  resize:vertical;
-  background:#02050b;
-  color:#b9c8da;
-  border:1px solid var(--line);
-  padding:10px;
-  font:inherit;
-  font-size:9px;
-}
+
 .empty{
   padding:18px;
   color:var(--muted);
   text-align:center;
   font-size:9px;
 }
+
 .progress{
   height:5px;
   background:#111827;
   margin-top:8px;
 }
-.progress > div{
+
+.progress>div{
   height:100%;
   width:0%;
   background:var(--cyan);
   transition:.15s;
 }
+
+.sheetList{
+  max-height:180px;
+  overflow:auto;
+}
+
+.sheetItem{
+  padding:6px 8px;
+  border-bottom:1px solid #111a2b;
+  font-size:9px;
+}
+
+.sheetItem b{
+  color:var(--cyan);
+}
+
+.sheetItem span{
+  color:var(--muted);
+  float:right;
+}
+
 @media(max-width:1050px){
   main{
     grid-template-columns:220px minmax(300px,1fr);
   }
+
   .right{
     display:none;
   }
 }
+
 @media(max-width:700px){
   html,body{
     overflow:auto;
   }
+
   main{
     display:block;
     overflow:visible;
   }
+
   .left,
   .center,
   .right{
@@ -377,291 +446,464 @@ textarea{
 }
 </style>
 </head>
+
 <body>
+
 <header>
   <div class="logo">
     NEURAL <span>MEMORY</span> / DATA INGESTION
   </div>
+
   <div class="headerStatus">
     <span class="dot"></span>
     <span id="headerStatus">READY</span>
   </div>
 </header>
+
 <main>
+
 <!-- ========================================================= -->
 <!-- LEFT -->
 <!-- ========================================================= -->
+
 <section class="panel left">
+
   <div class="section">
+
     <div class="sectionTitle">
       DATA INGESTION
     </div>
+
     <div class="sectionBody">
+
       <div id="drop" class="drop">
         XLSX / XLS / CSV<br><br>
         DATEI AUSWÄHLEN
       </div>
+
       <input
         id="fileInput"
         class="fileInput"
         type="file"
         accept=".xlsx,.xls,.csv">
+
       <div class="actions">
         <button id="chooseFile">DATEI</button>
         <button id="clearImport">CLEAR</button>
       </div>
+
     </div>
   </div>
+
+
   <div class="section">
+
     <div class="sectionTitle">
-      DATASET
+      FILE DATASET
     </div>
+
     <div class="sectionBody">
+
       <div class="datasetName" id="datasetName">
         —
       </div>
+
       <div style="height:8px"></div>
+
       <div class="statGrid">
+
         <div class="stat">
           <small>SHEETS</small>
           <strong id="sheetCount">0</strong>
         </div>
+
         <div class="stat">
           <small>ROWS</small>
           <strong id="rowCount">0</strong>
         </div>
+
         <div class="stat">
           <small>COLUMNS</small>
           <strong id="columnCount">0</strong>
         </div>
+
         <div class="stat">
           <small>RECORDS</small>
           <strong id="recordCount">0</strong>
         </div>
+
       </div>
+
     </div>
   </div>
+
+
   <div class="section">
+
     <div class="sectionTitle">
-      CURRENT DATASET
+      SOURCE SHEETS
     </div>
+
     <div class="sectionBody">
-      <pre id="datasetInfo">Kein Dataset geladen.</pre>
+
+      <div id="sheetList" class="sheetList">
+        <div class="empty">Keine Sheets.</div>
+      </div>
+
     </div>
+
   </div>
+
+
   <div class="section">
+
+    <div class="sectionTitle">
+      CURRENT FILE
+    </div>
+
+    <div class="sectionBody">
+
+      <pre id="datasetInfo">Kein Dataset geladen.</pre>
+
+    </div>
+
+  </div>
+
+
+  <div class="section">
+
     <div class="sectionTitle">
       SYSTEM LOG
     </div>
+
     <div class="sectionBody">
+
       <div id="log" class="log"></div>
+
     </div>
+
   </div>
+
 </section>
+
+
 <!-- ========================================================= -->
 <!-- CENTER -->
 <!-- ========================================================= -->
+
 <section class="panel center">
+
   <div class="card">
+
     <div class="cardHead">
       <span>RAW DATA</span>
       <span id="rawBadge" class="badge">EMPTY</span>
     </div>
+
     <div class="cardBody">
+
       <div id="rawTable" class="tableWrap">
         <div class="empty">
           Noch keine Daten geladen.
         </div>
       </div>
+
     </div>
+
   </div>
+
+
   <div class="card">
+
     <div class="cardHead">
       <span>MEMORY REPRESENTATION</span>
-      <span class="badge">SCHEMA 1.2</span>
+      <span class="badge">SCHEMA 1.3</span>
     </div>
+
     <div class="cardBody">
+
       <pre id="memoryPreview">
 Noch kein Memory Record ausgewählt.
       </pre>
+
     </div>
+
   </div>
+
+
   <div class="card">
+
     <div class="cardHead">
       <span>EMBEDDING TEXT</span>
       <span class="badge">DETERMINISTIC</span>
     </div>
+
     <div class="cardBody">
+
       <pre id="embeddingPreview">
 Noch kein Record ausgewählt.
       </pre>
+
     </div>
+
   </div>
+
 </section>
+
+
 <!-- ========================================================= -->
 <!-- RIGHT -->
 <!-- ========================================================= -->
+
 <section class="panel right">
+
   <div class="section">
+
     <div class="sectionTitle">
       MEMORY BUILD
     </div>
+
     <div class="sectionBody">
+
       <button
         id="buildMemory"
         class="primary">
         BUILD MEMORY
       </button>
+
       <button
         id="stopBuild"
         class="full danger">
         STOP BUILD
       </button>
+
       <div class="progress">
         <div id="progressBar"></div>
       </div>
+
       <div style="height:9px"></div>
+
       <div id="buildStatus" class="badge">
         IDLE
       </div>
+
     </div>
+
   </div>
+
+
   <div class="section">
+
     <div class="sectionTitle">
-      DATASET COUNTERS
+      CURRENT DATASET
     </div>
+
     <div class="sectionBody">
+
       <div class="statGrid">
+
         <div class="stat">
-          <small>DATASET TOTAL</small>
+          <small>TOTAL</small>
           <strong id="dsTotal">0</strong>
         </div>
+
         <div class="stat">
           <small>EXISTING</small>
           <strong id="dsExisting">0</strong>
         </div>
+
         <div class="stat">
           <small>SKIPPED</small>
           <strong id="dsSkipped">0</strong>
         </div>
+
         <div class="stat">
           <small>BUILT</small>
           <strong id="dsBuilt">0</strong>
         </div>
+
         <div class="stat">
           <small>REMAINING</small>
           <strong id="dsRemaining">0</strong>
         </div>
+
         <div class="stat">
           <small>FAILED</small>
           <strong id="dsFailed">0</strong>
         </div>
+
       </div>
+
     </div>
+
   </div>
+
+
   <div class="section">
+
     <div class="sectionTitle">
       DATABASE
     </div>
+
     <div class="sectionBody">
+
       <div class="stat">
         <small>ALL MEMORY RECORDS</small>
         <strong id="dbTotal">0</strong>
       </div>
-      <div style="height:8px"></div>
+
       <button
         id="clearDB"
         class="full danger">
         CLEAR MEMORY DB
       </button>
+
       <button
         id="exportMemory"
         class="full">
         EXPORT MEMORY JSON
       </button>
+
     </div>
+
   </div>
+
+
   <div class="section">
+
     <div class="sectionTitle">
       RUNTIME
     </div>
+
     <div class="sectionBody">
+
       <pre id="runtimeInfo">MODEL
 —
+
 DIMENSION
 —
+
 DATABASE
 —
+
 SCHEMA
-1.2</pre>
+1.3</pre>
+
     </div>
+
   </div>
+
+
   <div class="section">
+
     <div class="sectionTitle">
       PIPELINE
     </div>
+
     <div class="sectionBody">
+
       <div class="pipeline">
+
         <div id="step1" class="step active">
           <span class="num">1</span>
           <span>RAW DATA</span>
         </div>
+
         <div id="step2" class="step">
           <span class="num">2</span>
           <span>STRUCTURED MEMORY</span>
         </div>
+
         <div id="step3" class="step">
           <span class="num">3</span>
           <span>EMBEDDING 384D</span>
         </div>
+
         <div id="step4" class="step">
           <span class="num">4</span>
           <span>INDEXEDDB</span>
         </div>
+
       </div>
+
     </div>
+
   </div>
+
+
   <div class="section">
+
     <div class="sectionTitle">
       MEMORY RECORDS
     </div>
+
     <div class="sectionBody">
+
       <div id="recordList" class="recordList">
         <div class="empty">
           Keine Records.
         </div>
       </div>
+
     </div>
+
   </div>
+
 </section>
+
 </main>
+
+
 <script type="module">
+
 /* ============================================================
    CONFIG
 ============================================================ */
-const MEMORY_SCHEMA_VERSION = "1.2";
+
+const MEMORY_SCHEMA_VERSION = "1.3";
+
 const EMBEDDING_MODEL =
   "Xenova/multilingual-e5-small";
+
 const EMBEDDING_DIM = 384;
+
 const DB_NAME =
   "NEURAL_MEMORY_DB";
-const DB_VERSION = 3;
+
+const DB_VERSION = 4;
+
 const STORE_NAME =
   "memories";
+
+
 /* ============================================================
    STATE
 ============================================================ */
+
 const state = {
+
   workbook:null,
+
   fileName:null,
-  datasetId:null,
+
+  fileDatasetId:null,
+
   rows:[],
+
   sheets:[],
+
+  sheetInfo:[],
+
   selectedRecord:null,
+
   model:null,
+
   modelReady:false,
+
   building:false,
+
   stopRequested:false,
+
   counters:{
     total:0,
     existing:0,
@@ -670,444 +912,1040 @@ const state = {
     remaining:0,
     failed:0
   }
+
 };
+
+
 /* ============================================================
    DOM
 ============================================================ */
-const $ = id =>
-  document.getElementById(id);
+
+const $ =
+  id => document.getElementById(id);
+
+
 /* ============================================================
    LOG
 ============================================================ */
+
 function log(message,type=""){
+
   const time =
-    new Date().toLocaleTimeString("de-DE");
+    new Date()
+      .toLocaleTimeString("de-DE");
+
   const line =
     document.createElement("div");
+
   if(type)
     line.className = type;
+
   line.textContent =
     `[${time}] ${message}`;
+
   $("log").appendChild(line);
+
   $("log").scrollTop =
     $("log").scrollHeight;
+
 }
+
+
 /* ============================================================
    INITIAL LOG
 ============================================================ */
+
 log(
   "NEURAL MEMORY Data Ingestion gestartet.",
   "info"
 );
+
 log(
   "Originaldaten werden unverändert übernommen."
 );
+
 log(
   "Memory Representation wird deterministisch erzeugt."
 );
+
 log(
   "Keine semantische Interpretation aktiv."
 );
+
 log(
   `Memory Schema Version ${MEMORY_SCHEMA_VERSION}.`
 );
+
 log(
   "IndexedDB wird erst bei BUILD MEMORY geöffnet."
 );
+
+
 /* ============================================================
-   DATASET ID
+   NORMALIZATION
 ============================================================ */
+
 function normalizeIdPart(value){
+
   return String(value ?? "")
     .trim()
     .toUpperCase()
     .replace(/\.[^.]+$/,"")
-    .replace(/[^A-Z0-9]+/g,"-")
+    .replace(/[^A-Z0-9ÄÖÜ]+/g,"-")
+    .replace(/Ä/g,"AE")
+    .replace(/Ö/g,"OE")
+    .replace(/Ü/g,"UE")
+    .replace(/[^A-Z0-9-]+/g,"")
     .replace(/^-+|-+$/g,"");
+
 }
-function createDatasetId(fileName,sheetName){
+
+
+/* ============================================================
+   DATASET IDS
+============================================================ */
+
+function createFileDatasetId(fileName){
+
+  return normalizeIdPart(
+    fileName
+  );
+
+}
+
+
+function createSheetDatasetId(
+  fileName,
+  sheetName
+){
+
   return [
-    normalizeIdPart(fileName),
-    normalizeIdPart(sheetName)
+
+    createFileDatasetId(
+      fileName
+    ),
+
+    normalizeIdPart(
+      sheetName
+    )
+
   ].join("__");
+
 }
+
+
 function createMemoryId(
   fileName,
   sheetName,
   rowNumber
 ){
+
   return [
-    normalizeIdPart(fileName),
-    normalizeIdPart(sheetName),
+
+    createSheetDatasetId(
+      fileName,
+      sheetName
+    ),
+
     `ROW-${String(rowNumber).padStart(6,"0")}`
+
   ].join("__");
+
 }
+
+
 /* ============================================================
-   TYPE DETECTION
+   EXCEL VALUE TYPE
 ============================================================ */
+
 function valueType(value){
-  if(value === null ||
-     value === undefined ||
-     value === "")
+
+  if(
+    value === null ||
+    value === undefined ||
+    value === ""
+  )
     return "null";
+
   if(typeof value === "number")
     return "number";
+
   if(typeof value === "boolean")
     return "boolean";
+
   return "string";
+
 }
+
+
+/* ============================================================
+   HEADER DETECTION
+============================================================ */
+
+const KNOWN_HEADER_NAMES = [
+
+  "Tag",
+  "Datum",
+  "Art",
+  "Name",
+  "Produktklasse",
+  "Tarif",
+  "Auftragsnummer",
+  "BEM",
+  "Schalttermin",
+  "Basis",
+  "Ixus",
+  "HW Bonus",
+  "Gesamt",
+  "Hardware EK",
+  "HW Verkauf",
+  "Gewinn",
+  "Verkäufer",
+  "Hardware",
+  "To Do",
+  "Grund",
+  "Summe"
+
+];
+
+
+function normalizeHeader(value){
+
+  return String(value ?? "")
+    .trim()
+    .toLowerCase();
+
+}
+
+
+function detectHeaderRow(sheet){
+
+  const matrix =
+    XLSX.utils.sheet_to_json(
+      sheet,
+      {
+        header:1,
+        defval:null,
+        raw:true
+      }
+    );
+
+  let best = {
+    rowIndex:0,
+    score:-Infinity,
+    values:[]
+  };
+
+  const maxScan =
+    Math.min(
+      matrix.length,
+      30
+    );
+
+  for(
+    let r=0;
+    r<maxScan;
+    r++
+  ){
+
+    const row =
+      matrix[r] || [];
+
+    const values =
+      row.map(
+        value =>
+          String(
+            value ?? ""
+          ).trim()
+      );
+
+    const nonEmpty =
+      values.filter(
+        value =>
+          value !== ""
+      );
+
+    if(nonEmpty.length < 2)
+      continue;
+
+    let knownMatches = 0;
+
+    for(
+      const value of nonEmpty
+    ){
+
+      const normalized =
+        normalizeHeader(
+          value
+        );
+
+      if(
+        KNOWN_HEADER_NAMES
+          .some(
+            known =>
+              normalizeHeader(
+                known
+              ) === normalized
+          )
+      ){
+
+        knownMatches++;
+
+      }
+
+    }
+
+    const textLike =
+      nonEmpty.filter(
+        value =>
+          isNaN(
+            Number(value)
+          )
+      ).length;
+
+    const score =
+      knownMatches * 100 +
+      nonEmpty.length * 2 +
+      textLike;
+
+    if(score > best.score){
+
+      best = {
+
+        rowIndex:r,
+
+        score,
+
+        values
+
+      };
+
+    }
+
+  }
+
+  return best;
+
+}
+
+
+/* ============================================================
+   SHEET PARSING
+============================================================ */
+
+function parseSheet(
+  sheet,
+  sheetName,
+  fileName
+){
+
+  const headerInfo =
+    detectHeaderRow(
+      sheet
+    );
+
+  const headerRowIndex =
+    headerInfo.rowIndex;
+
+  const matrix =
+    XLSX.utils.sheet_to_json(
+      sheet,
+      {
+        header:1,
+        defval:null,
+        raw:true
+      }
+    );
+
+  const rawHeaders =
+    matrix[
+      headerRowIndex
+    ] || [];
+
+  const headers =
+    rawHeaders.map(
+      (value,index)=>{
+
+        const text =
+          String(
+            value ?? ""
+          ).trim();
+
+        if(text)
+          return text;
+
+        return `__EMPTY_${index}`;
+
+      }
+    );
+
+  const rows = [];
+
+  for(
+    let r =
+      headerRowIndex + 1;
+
+    r < matrix.length;
+
+    r++
+  ){
+
+    const sourceRow =
+      matrix[r] || [];
+
+    const hasData =
+      sourceRow.some(
+        value =>
+          value !== null &&
+          value !== undefined &&
+          value !== ""
+      );
+
+    if(!hasData)
+      continue;
+
+    const data = {};
+
+    for(
+      let c=0;
+      c<headers.length;
+      c++
+    ){
+
+      data[
+        headers[c]
+      ] =
+        sourceRow[c] ??
+        null;
+
+    }
+
+    rows.push({
+
+      file:
+        fileName,
+
+      sheet:
+        sheetName,
+
+      row:
+        r + 1,
+
+      data
+
+    });
+
+  }
+
+  return {
+
+    sheetName,
+
+    headerRow:
+      headerRowIndex + 1,
+
+    headers,
+
+    rows
+
+  };
+
+}
+
+
 /* ============================================================
    MEMORY REPRESENTATION
 ============================================================ */
+
 function createMemoryRepresentation({
+
   memoryId,
   datasetId,
   fileName,
   sheetName,
   rowNumber,
   row
+
 }){
+
   const fields =
-    Object.entries(row).map(
-      ([name,value]) => ({
-        name,
-        value,
-        value_type:
-          valueType(value)
-      })
-    );
+    Object.entries(row)
+      .map(
+        ([name,value])=>({
+
+          name,
+
+          value,
+
+          value_type:
+            valueType(value)
+
+        })
+      );
+
   return {
+
     representation_version:
       MEMORY_SCHEMA_VERSION,
+
     type:
       "tabular-row",
+
     identity:{
+
       memory_id:
         memoryId,
+
       dataset_id:
         datasetId
+
     },
+
     provenance:{
+
       file:
         fileName,
+
       sheet:
         sheetName,
+
       row:
         rowNumber
+
     },
+
     fields
+
   };
+
 }
+
+
 /* ============================================================
    EMBEDDING TEXT
 ============================================================ */
+
 function createEmbeddingText(memory){
+
   const lines = [
+
     "MEMORY TYPE: tabular-row",
+
     `MEMORY VERSION: ${memory.representation_version}`,
+
     `MEMORY ID: ${memory.identity.memory_id}`,
+
     `DATASET ID: ${memory.identity.dataset_id}`,
+
     `SOURCE FILE: ${memory.provenance.file}`,
+
     `SOURCE SHEET: ${memory.provenance.sheet}`,
+
     `SOURCE ROW: ${memory.provenance.row}`,
+
     ""
+
   ];
-  for(const field of memory.fields){
+
+  for(
+    const field of memory.fields
+  ){
+
     lines.push(
       `FIELD "${field.name}": ${formatValue(field.value)}`
     );
+
   }
+
   return lines.join("\n");
+
 }
+
+
 function formatValue(value){
-  if(value === null ||
-     value === undefined)
+
+  if(
+    value === null ||
+    value === undefined
+  )
     return "null";
+
   if(typeof value === "object")
     return JSON.stringify(value);
+
   return String(value);
+
 }
+
+
 /* ============================================================
    INDEXED DB
 ============================================================ */
+
 let dbPromise = null;
+
+
 function openDB(){
+
   if(dbPromise)
     return dbPromise;
+
   dbPromise =
-    new Promise((resolve,reject)=>{
-      const request =
-        indexedDB.open(
-          DB_NAME,
-          DB_VERSION
-        );
-      request.onupgradeneeded = e => {
-        const db =
-          e.target.result;
-        let store;
-        if(!db.objectStoreNames.contains(STORE_NAME)){
-          store =
-            db.createObjectStore(
-              STORE_NAME,
-              {keyPath:"id"}
+    new Promise(
+      (resolve,reject)=>{
+
+        const request =
+          indexedDB.open(
+            DB_NAME,
+            DB_VERSION
+          );
+
+        request.onupgradeneeded =
+          e => {
+
+            const db =
+              e.target.result;
+
+            let store;
+
+            if(
+              !db.objectStoreNames
+                .contains(STORE_NAME)
+            ){
+
+              store =
+                db.createObjectStore(
+                  STORE_NAME,
+                  {
+                    keyPath:"id"
+                  }
+                );
+
+            }else{
+
+              store =
+                e.target.transaction
+                  .objectStore(
+                    STORE_NAME
+                  );
+
+            }
+
+            const indexes = [
+
+              ["memory_id","memory_id"],
+
+              ["dataset_id","dataset_id"],
+
+              ["source_file","source.file"],
+
+              ["source_sheet","source.sheet"]
+
+            ];
+
+            for(
+              const [name,path]
+              of indexes
+            ){
+
+              if(
+                !store.indexNames
+                  .contains(name)
+              ){
+
+                store.createIndex(
+                  name,
+                  path,
+                  {
+                    unique:false
+                  }
+                );
+
+              }
+
+            }
+
+          };
+
+        request.onsuccess =
+          () => {
+
+            log(
+              `IndexedDB verbunden. Version ${DB_VERSION}.`,
+              "ok"
             );
-        }else{
-          store =
-            e.target.transaction.objectStore(
-              STORE_NAME
+
+            resolve(
+              request.result
             );
-        }
-        if(!store.indexNames.contains("memory_id"))
-          store.createIndex(
-            "memory_id",
-            "memory_id",
-            {unique:false}
-          );
-        if(!store.indexNames.contains("dataset_id"))
-          store.createIndex(
-            "dataset_id",
-            "dataset_id",
-            {unique:false}
-          );
-        if(!store.indexNames.contains("source_file"))
-          store.createIndex(
-            "source_file",
-            "source.file",
-            {unique:false}
-          );
-        if(!store.indexNames.contains("source_sheet"))
-          store.createIndex(
-            "source_sheet",
-            "source.sheet",
-            {unique:false}
-          );
-      };
-      request.onsuccess = () => {
-        log(
-          `IndexedDB verbunden. Version ${DB_VERSION}.`,
-          "ok"
-        );
-        resolve(request.result);
-      };
-      request.onerror = () =>
-        reject(request.error);
-    });
+
+          };
+
+        request.onerror =
+          () =>
+            reject(
+              request.error
+            );
+
+      }
+    );
+
   return dbPromise;
+
 }
+
+
 /* ============================================================
    DB GET
 ============================================================ */
+
 async function getMemory(id){
+
   const db =
     await openDB();
+
   return new Promise(
     (resolve,reject)=>{
+
       const tx =
         db.transaction(
           STORE_NAME,
           "readonly"
         );
+
       const request =
-        tx.objectStore(STORE_NAME)
-          .get(id);
+        tx.objectStore(
+          STORE_NAME
+        ).get(id);
+
       request.onsuccess =
-        () => resolve(request.result || null);
+        () =>
+          resolve(
+            request.result ||
+            null
+          );
+
       request.onerror =
-        () => reject(request.error);
+        () =>
+          reject(
+            request.error
+          );
+
     }
   );
+
 }
+
+
 /* ============================================================
    DB PUT
 ============================================================ */
+
 async function putMemory(record){
+
   const db =
     await openDB();
+
   return new Promise(
     (resolve,reject)=>{
+
       const tx =
         db.transaction(
           STORE_NAME,
           "readwrite"
         );
-      tx.objectStore(STORE_NAME)
-        .put(record);
+
+      tx.objectStore(
+        STORE_NAME
+      ).put(record);
+
       tx.oncomplete =
-        () => resolve();
+        resolve;
+
       tx.onerror =
-        () => reject(tx.error);
+        () =>
+          reject(
+            tx.error
+          );
+
     }
   );
+
 }
+
+
 /* ============================================================
    DB ALL
 ============================================================ */
+
 async function loadAllMemory(){
+
   const db =
     await openDB();
+
   return new Promise(
     (resolve,reject)=>{
+
       const tx =
         db.transaction(
           STORE_NAME,
           "readonly"
         );
+
       const request =
-        tx.objectStore(STORE_NAME)
-          .getAll();
+        tx.objectStore(
+          STORE_NAME
+        ).getAll();
+
       request.onsuccess =
-        () => resolve(request.result || []);
+        () =>
+          resolve(
+            request.result || []
+          );
+
       request.onerror =
-        () => reject(request.error);
+        () =>
+          reject(
+            request.error
+          );
+
     }
   );
+
 }
+
+
 /* ============================================================
    DB TOTAL
 ============================================================ */
+
 async function updateDBTotal(){
-  const all =
+
+  const records =
     await loadAllMemory();
+
   $("dbTotal").textContent =
-    all.length;
-  renderRecords(all);
-  return all;
+    records.length;
+
+  renderRecords(
+    records
+  );
+
+  return records;
+
 }
+
+
 /* ============================================================
-   MEMORY VALIDATION
+   VALIDATION
 ============================================================ */
+
 function isValidMemoryRecord(record){
-  if(!record)
-    return false;
-  if(typeof record !== "object")
-    return false;
-  if(!record.id)
-    return false;
-  if(!record.memory_id)
-    return false;
-  if(!record.dataset_id)
-    return false;
-  if(!record.memory)
-    return false;
-  if(!Array.isArray(record.memory.fields))
-    return false;
-  if(!record.embedding)
-    return false;
-  if(record.dimension !== EMBEDDING_DIM)
-    return false;
-  if(record.model !== EMBEDDING_MODEL)
-    return false;
-  return true;
+
+  return !!(
+
+    record &&
+
+    typeof record === "object" &&
+
+    record.id &&
+
+    record.memory_id &&
+
+    record.dataset_id &&
+
+    record.memory &&
+
+    Array.isArray(
+      record.memory.fields
+    ) &&
+
+    Array.isArray(
+      record.embedding
+    ) &&
+
+    record.embedding.length ===
+      EMBEDDING_DIM
+
+  );
+
 }
+
+
 /* ============================================================
    COMPATIBILITY
 ============================================================ */
+
 function isCompatibleMemoryRecord(
   record,
   expected
 ){
+
   return (
-    isValidMemoryRecord(record)
+
+    isValidMemoryRecord(
+      record
+    )
+
     &&
+
     record.memory_schema_version ===
       MEMORY_SCHEMA_VERSION
+
     &&
-    record.memory?.representation_version ===
+
+    record.memory
+      ?.representation_version ===
       MEMORY_SCHEMA_VERSION
+
     &&
+
     record.dimension ===
       EMBEDDING_DIM
+
     &&
+
     record.model ===
       EMBEDDING_MODEL
+
     &&
+
     record.dataset_id ===
       expected.dataset_id
+
     &&
+
     record.source?.file ===
       expected.file
+
     &&
+
     record.source?.sheet ===
       expected.sheet
+
     &&
-    Number(record.source?.row) ===
-      Number(expected.row)
+
+    Number(
+      record.source?.row
+    ) ===
+      Number(
+        expected.row
+      )
+
   );
+
 }
+
+
 /* ============================================================
-   TRANSFORMERS.JS
+   TRANSFORMERS
 ============================================================ */
-let transformersPromise = null;
+
+let transformersPromise =
+  null;
+
+
 async function loadEmbeddingModel(){
+
   if(state.modelReady)
     return state.model;
+
   if(transformersPromise)
     return transformersPromise;
+
   transformersPromise =
     (async()=>{
+
       log(
         "Embedding Runtime wird geladen ...",
         "info"
       );
+
       const module =
         await import(
           "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1"
         );
+
+      const pipeline =
+        module.pipeline;
+
       log(
         "Transformers.js geladen.",
         "ok"
       );
-      const pipeline =
-        module.pipeline;
+
       state.model =
         await pipeline(
           "feature-extraction",
           EMBEDDING_MODEL
         );
-      state.modelReady = true;
+
+      state.modelReady =
+        true;
+
       $("runtimeInfo").textContent =
 `MODEL
 ${EMBEDDING_MODEL}
+
 DIMENSION
 ${EMBEDDING_DIM}
+
 DATABASE
-IndexedDB / ${DB_NAME}
+${DB_NAME}
+
 SCHEMA
 ${MEMORY_SCHEMA_VERSION}`;
+
       log(
         `${EMBEDDING_MODEL} ist bereit.`,
         "ok"
       );
+
       return state.model;
+
     })();
+
   return transformersPromise;
+
 }
+
+
 /* ============================================================
    EMBEDDING
 ============================================================ */
+
 async function createEmbedding(text){
+
   const model =
     await loadEmbeddingModel();
-  const prepared =
-    `passage: ${text}`;
+
   const output =
     await model(
-      prepared,
+      `passage: ${text}`,
       {
         pooling:"mean",
         normalize:true
       }
     );
+
   return Array.from(
     output.data
   );
+
 }
+
+
 /* ============================================================
    QUERY EMBEDDING
 ============================================================ */
-async function createQueryEmbedding(question){
+
+async function createQueryEmbedding(
+  question
+){
+
   const model =
     await loadEmbeddingModel();
+
   const output =
     await model(
       `query: ${question}`,
@@ -1116,172 +1954,213 @@ async function createQueryEmbedding(question){
         normalize:true
       }
     );
+
   return Array.from(
     output.data
   );
+
 }
+
+
 /* ============================================================
    COSINE
 ============================================================ */
+
 function cosineSimilarity(a,b){
-  let dot = 0;
-  let normA = 0;
-  let normB = 0;
+
+  let dot=0;
+  let normA=0;
+  let normB=0;
+
   const length =
     Math.min(
       a.length,
       b.length
     );
-  for(let i=0;i<length;i++){
-    dot += a[i] * b[i];
-    normA += a[i] * a[i];
-    normB += b[i] * b[i];
+
+  for(
+    let i=0;
+    i<length;
+    i++
+  ){
+
+    dot +=
+      a[i] * b[i];
+
+    normA +=
+      a[i] * a[i];
+
+    normB +=
+      b[i] * b[i];
+
   }
-  if(normA === 0 ||
-     normB === 0)
+
+  if(
+    normA === 0 ||
+    normB === 0
+  )
     return 0;
+
   return dot /
     (
       Math.sqrt(normA) *
       Math.sqrt(normB)
     );
+
 }
+
+
 /* ============================================================
    BUILD MEMORY RECORD
 ============================================================ */
+
 async function buildMemoryRecord(
   row,
   fileName,
   sheetName,
   rowNumber
 ){
+
   const datasetId =
-    createDatasetId(
+    createSheetDatasetId(
       fileName,
       sheetName
     );
+
   const memoryId =
     createMemoryId(
       fileName,
       sheetName,
       rowNumber
     );
+
   const memory =
     createMemoryRepresentation({
+
       memoryId,
+
       datasetId,
+
       fileName,
+
       sheetName,
+
       rowNumber,
+
       row
+
     });
+
   const embeddingText =
     createEmbeddingText(
       memory
     );
+
   log(
     `${memoryId} | embedding_text=${embeddingText.length} Zeichen`
   );
+
   const embedding =
     await createEmbedding(
       embeddingText
     );
+
   return {
+
     id:
       memoryId,
+
     memory_id:
       memoryId,
+
     dataset_id:
       datasetId,
+
     memory_schema_version:
       MEMORY_SCHEMA_VERSION,
+
     source:{
+
       file:
         fileName,
+
       sheet:
         sheetName,
+
       row:
         rowNumber
+
     },
+
     /*
-      WICHTIG:
-      RAW DATA bleibt exakt die importierte Row.
+      DAS IST DIE ORIGINALZEILE.
+      Keine Korrektur.
+      Keine Umbenennung.
+      Keine Interpretation.
     */
+
     data:
       row,
+
     memory,
+
     embedding_text:
       embeddingText,
+
     embedding,
+
     dimension:
       EMBEDDING_DIM,
+
     model:
       EMBEDDING_MODEL,
+
     created:
       new Date().toISOString()
+
   };
+
 }
+
+
 /* ============================================================
-   SHEET ROWS
+   IMPORT WORKBOOK
 ============================================================ */
-function workbookToRecords(){
-  state.rows = [];
-  if(!state.workbook)
-    return;
-  for(
-    const sheetName of
-    state.workbook.SheetNames
-  ){
-    const sheet =
-      state.workbook.Sheets[
-        sheetName
-      ];
-    const rows =
-      XLSX.utils.sheet_to_json(
-        sheet,
-        {
-          defval:null,
-          raw:true
-        }
-      );
-    for(
-      let i=0;
-      i<rows.length;
-      i++
-    ){
-      state.rows.push({
-        file:
-          state.fileName,
-        sheet:
-          sheetName,
-        row:
-          i + 2,
-        data:
-          rows[i]
-      });
-    }
-  }
-}
-/* ============================================================
-   IMPORT
-============================================================ */
+
 async function importFile(file){
+
   state.fileName =
     file.name;
+
+  state.fileDatasetId =
+    createFileDatasetId(
+      file.name
+    );
+
+  state.rows = [];
+
+  state.sheets = [];
+
+  state.sheetInfo = [];
+
   log(
     `Datei wird gelesen: ${file.name}`,
     "info"
   );
+
   const buffer =
     await file.arrayBuffer();
+
   if(
     file.name
       .toLowerCase()
       .endsWith(".csv")
   ){
+
     const text =
       new TextDecoder()
         .decode(buffer);
+
     state.workbook =
       XLSX.read(
         text,
@@ -1289,7 +2168,9 @@ async function importFile(file){
           type:"string"
         }
       );
+
   }else{
+
     state.workbook =
       XLSX.read(
         buffer,
@@ -1297,208 +2178,418 @@ async function importFile(file){
           type:"array"
         }
       );
+
   }
+
   state.sheets =
     state.workbook.SheetNames;
-  workbookToRecords();
+
   log(
     `${state.sheets.length} Worksheet(s) erkannt.`,
     "ok"
   );
+
+
+  /*
+    JEDES SHEET WIRD SEPARAT PARSEN.
+  */
+
   for(
-    const sheetName of
-    state.sheets
+    const sheetName
+    of state.sheets
   ){
-    const count =
-      state.rows.filter(
-        x => x.sheet === sheetName
-      ).length;
+
+    const sheet =
+      state.workbook.Sheets[
+        sheetName
+      ];
+
+    const parsed =
+      parseSheet(
+        sheet,
+        sheetName,
+        file.name
+      );
+
+    state.sheetInfo.push(
+      parsed
+    );
+
+    state.rows.push(
+      ...parsed.rows
+    );
+
     log(
-      `Worksheet "${sheetName}" geladen: ${count} Datenzeilen.`,
+      `Worksheet "${sheetName}" | Header Zeile ${parsed.headerRow} | ${parsed.rows.length} Datenzeilen.`,
       "ok"
     );
+
   }
-  state.datasetId =
-    state.sheets.length === 1
-      ? createDatasetId(
-          state.fileName,
-          state.sheets[0]
-        )
-      : normalizeIdPart(
-          state.fileName
-        );
+
+
+  log(
+    `FILE DATASET: ${state.fileDatasetId}`,
+    "info"
+  );
+
+  log(
+    `Gesamt: ${state.rows.length} Memory-Kandidaten.`,
+    "ok"
+  );
+
   updateDatasetUI();
+
   renderRaw();
+
   updatePipeline(1);
+
 }
+
+
 /* ============================================================
    DATASET UI
 ============================================================ */
+
 function updateDatasetUI(){
+
+  const firstSheet =
+    state.sheetInfo[0];
+
   const columns =
-    state.rows.length
-      ? Object.keys(
-          state.rows[0].data
-        ).length
+    firstSheet
+      ? firstSheet.headers.length
       : 0;
+
   $("datasetName").textContent =
     state.fileName || "—";
+
   $("sheetCount").textContent =
     state.sheets.length;
+
   $("rowCount").textContent =
     state.rows.length;
+
   $("columnCount").textContent =
     columns;
+
   $("recordCount").textContent =
     state.rows.length;
+
+
   $("datasetInfo").textContent =
-`DATASET ID
-${state.datasetId || "—"}
+`FILE DATASET
+${state.fileDatasetId || "—"}
+
 FILE
 ${state.fileName || "—"}
+
 SHEETS
-${state.sheets.join(", ") || "—"}
-RECORDS
+${state.sheets.length}
+
+TOTAL RECORDS
 ${state.rows.length}
-SCHEMA
-${MEMORY_SCHEMA_VERSION}`;
+
+MEMORY SCHEMA
+${MEMORY_SCHEMA_VERSION}
+
+SHEET DATASETS
+${state.sheetInfo
+  .map(
+    x =>
+      `${createSheetDatasetId(
+        state.fileName,
+        x.sheetName
+      )} → ${x.rows.length} Records`
+  )
+  .join("\n")}`;
+
+
+  renderSheetList();
+
 }
+
+
+/* ============================================================
+   SHEET LIST
+============================================================ */
+
+function renderSheetList(){
+
+  if(!state.sheetInfo.length){
+
+    $("sheetList").innerHTML =
+      `<div class="empty">Keine Sheets.</div>`;
+
+    return;
+
+  }
+
+  $("sheetList").innerHTML =
+    state.sheetInfo
+      .map(
+        sheet => `
+
+          <div class="sheetItem">
+
+            <b>
+              ${escapeHTML(
+                sheet.sheetName
+              )}
+            </b>
+
+            <span>
+              ${sheet.rows.length}
+            </span>
+
+            <div style="
+              color:#4d6078;
+              font-size:8px;
+              margin-top:3px;
+            ">
+              ${escapeHTML(
+                createSheetDatasetId(
+                  state.fileName,
+                  sheet.sheetName
+                )
+              )}
+            </div>
+
+          </div>
+
+        `
+      )
+      .join("");
+
+}
+
+
 /* ============================================================
    RAW TABLE
 ============================================================ */
+
 function renderRaw(){
+
   if(!state.rows.length){
+
     $("rawTable").innerHTML =
-      `<div class="empty">Keine Daten.</div>`;
+      `<div class="empty">
+        Keine Daten.
+      </div>`;
+
     return;
+
   }
+
+  /*
+    Wir zeigen das ERSTE echte Sheet.
+    Nicht die Metadatenzeile.
+  */
+
+  const first =
+    state.sheetInfo[0];
+
   const sample =
-    state.rows.slice(
+    first.rows.slice(
       0,
-      Math.min(30,state.rows.length)
+      30
     );
+
   const columns =
-    Object.keys(
-      sample[0].data
-    );
+    first.headers;
+
   let html =
-    `<table><thead><tr>`;
-  html +=
-    `<th>ROW</th>`;
+    `<table>
+      <thead>
+        <tr>
+          <th>SHEET</th>
+          <th>ROW</th>`;
+
   for(
-    const column of columns
+    const column
+    of columns
   ){
+
     html +=
-      `<th>${escapeHTML(column)}</th>`;
+      `<th>${escapeHTML(
+        column
+      )}</th>`;
+
   }
+
   html +=
-    `</tr></thead><tbody>`;
+    `</tr>
+    </thead>
+    <tbody>`;
+
   for(
-    const item of sample
+    const item
+    of sample
   ){
+
     html +=
-      `<tr><td>${item.row}</td>`;
+      `<tr>
+        <td>${escapeHTML(
+          item.sheet
+        )}</td>
+
+        <td>${item.row}</td>`;
+
     for(
-      const column of columns
+      const column
+      of columns
     ){
+
       html +=
         `<td>${escapeHTML(
           formatValue(
-            item.data[column]
+            item.data[
+              column
+            ]
           )
         )}</td>`;
+
     }
+
     html +=
       `</tr>`;
+
   }
+
   html +=
     `</tbody></table>`;
+
   $("rawTable").innerHTML =
     html;
+
   $("rawBadge").textContent =
-    `${state.rows.length} ROWS`;
+    `${state.rows.length} ROWS / ${state.sheets.length} SHEETS`;
+
 }
+
+
 /* ============================================================
    BUILD
 ============================================================ */
+
 async function buildMemory(){
+
   if(state.building)
     return;
+
   if(!state.rows.length){
+
     log(
       "Kein Dataset geladen.",
       "err"
     );
+
     return;
+
   }
-  state.building = true;
-  state.stopRequested = false;
+
+  state.building =
+    true;
+
+  state.stopRequested =
+    false;
+
   state.counters = {
+
     total:
       state.rows.length,
+
     existing:0,
+
     skipped:0,
+
     built:0,
+
     remaining:
       state.rows.length,
+
     failed:0
+
   };
+
   updateCounters();
+
   setBuildStatus(
     "BUILDING",
     "build"
   );
+
   $("headerStatus").textContent =
     "BUILDING";
+
   updatePipeline(2);
+
   try{
+
     await loadEmbeddingModel();
+
     const db =
       await openDB();
+
     const allBefore =
       await loadAllMemory();
+
     log(
       `IndexedDB enthält ${allBefore.length} Records.`
     );
+
     log(
-      `Aktueller Dataset: ${state.datasetId}`
+      `FILE DATASET: ${state.fileDatasetId}`
     );
-    /*
-      Wir prüfen jeden Record des aktuellen
-      Datasets separat.
-      Alte Records aus anderen Datasets
-      beeinflussen die Dataset-Zähler NICHT.
-    */
+
     for(
       let index=0;
       index<state.rows.length;
       index++
     ){
+
       const item =
         state.rows[index];
+
+      const datasetId =
+        createSheetDatasetId(
+          item.file,
+          item.sheet
+        );
+
       const memoryId =
         createMemoryId(
           item.file,
           item.sheet,
           item.row
         );
+
       const expected = {
+
         dataset_id:
-          createDatasetId(
-            item.file,
-            item.sheet
-          ),
+          datasetId,
+
         file:
           item.file,
+
         sheet:
           item.sheet,
+
         row:
           item.row
+
       };
+
       const existing =
         await getMemory(
           memoryId
         );
+
+
+      /*
+        EXISTING + KOMPATIBEL
+        = echter SKIP
+      */
+
       if(
         existing &&
         isCompatibleMemoryRecord(
@@ -1506,371 +2597,568 @@ async function buildMemory(){
           expected
         )
       ){
+
         state.counters.existing++;
+
         state.counters.skipped++;
-        state.counters.remaining =
-          state.counters.total -
-          state.counters.built -
-          state.counters.skipped;
+
         log(
-          `SKIP ${index+1}/${state.rows.length} | ${memoryId} | bereits vorhanden`,
+          `SKIP ${index+1}/${state.rows.length} | ${memoryId}`,
           "ok"
         );
-        updateCounters();
-        continue;
+
       }
-      if(
-        existing &&
-        !isCompatibleMemoryRecord(
-          existing,
-          expected
-        )
-      ){
-        log(
-          `REBUILD ${index+1}/${state.rows.length} | ${memoryId} | alter Record inkompatibel`,
-          "warn"
-        );
-      }else{
-        log(
-          `EMBEDDING ${index+1}/${state.rows.length} | ${memoryId} | ${item.file} / ${item.sheet} / ROW ${item.row}`,
-          "info"
-        );
-      }
-      try{
-        const record =
-          await buildMemoryRecord(
-            item.data,
-            item.file,
-            item.sheet,
-            item.row
-          );
-        updatePipeline(3);
-        await putMemory(
-          record
-        );
-        state.counters.built++;
-        state.counters.remaining =
-          state.counters.total -
-          state.counters.built -
-          state.counters.skipped;
-        log(
-          `GESPEICHERT ${index+1}/${state.rows.length} | ${memoryId} | ${EMBEDDING_DIM}D`,
-          "ok"
-        );
-        updatePipeline(4);
-        state.selectedRecord =
-          record;
-        renderSelectedRecord();
-      }catch(error){
-        state.counters.failed++;
-        state.counters.remaining =
-          state.counters.total -
-          state.counters.built -
-          state.counters.skipped;
-        log(
-          `FEHLER ${memoryId} | ${error.message}`,
-          "err"
-        );
-      }
-      updateCounters();
-      const progress =
-        ((index+1) /
-          state.rows.length) *
-        100;
-      $("progressBar").style.width =
-        `${progress}%`;
+
       /*
-        Browser UI nicht blockieren.
+        EXISTING + ALT
+        = REBUILD
       */
+
+      else{
+
+        if(existing){
+
+          log(
+            `REBUILD ${index+1}/${state.rows.length} | ${memoryId} | Schema/Quelle inkompatibel`,
+            "warn"
+          );
+
+        }else{
+
+          log(
+            `BUILD ${index+1}/${state.rows.length} | ${memoryId}`,
+            "info"
+          );
+
+        }
+
+        try{
+
+          const record =
+            await buildMemoryRecord(
+              item.data,
+              item.file,
+              item.sheet,
+              item.row
+            );
+
+          updatePipeline(3);
+
+          await putMemory(
+            record
+          );
+
+          state.counters.built++;
+
+          state.selectedRecord =
+            record;
+
+          renderSelectedRecord();
+
+          log(
+            `GESPEICHERT ${index+1}/${state.rows.length} | ${memoryId} | 384D`,
+            "ok"
+          );
+
+          updatePipeline(4);
+
+        }catch(error){
+
+          state.counters.failed++;
+
+          log(
+            `FEHLER ${memoryId} | ${error.message}`,
+            "err"
+          );
+
+        }
+
+      }
+
+
+      state.counters.remaining =
+        state.counters.total -
+        state.counters.built -
+        state.counters.skipped;
+
+      updateCounters();
+
+
+      $("progressBar").style.width =
+        `${
+          ((index+1) /
+          state.rows.length) *
+          100
+        }%`;
+
+
+      /*
+        Browser atmen lassen.
+      */
+
       await new Promise(
         resolve =>
-          setTimeout(resolve,0)
+          setTimeout(
+            resolve,
+            0
+          )
       );
-      if(state.stopRequested){
+
+
+      if(
+        state.stopRequested
+      ){
+
         log(
-          "STOP BUILD angefordert. Aktueller Record wurde sauber abgeschlossen.",
+          "STOP BUILD angefordert. Build wird kontrolliert beendet.",
           "warn"
         );
+
         break;
+
       }
+
     }
+
+
     const finalDB =
       await loadAllMemory();
+
     $("dbTotal").textContent =
       finalDB.length;
-    renderRecords(finalDB);
-    if(state.stopRequested){
+
+    renderRecords(
+      finalDB
+    );
+
+
+    if(
+      state.stopRequested
+    ){
+
       setBuildStatus(
         "PAUSED",
         "pause"
       );
+
       $("headerStatus").textContent =
         "PAUSED";
+
       log(
-        `Build kontrolliert gestoppt.`,
+        "Build kontrolliert gestoppt. BUILD MEMORY erneut starten, um fortzusetzen.",
         "warn"
       );
+
     }else{
+
       setBuildStatus(
         "COMPLETE",
         "ready"
       );
+
       $("headerStatus").textContent =
         "READY";
+
       log(
-        `Build abgeschlossen.`,
+        "Build vollständig abgeschlossen.",
         "ok"
       );
+
     }
+
+
     log(
-      `CURRENT DATASET: ${state.counters.total} Records`
+      `CURRENT DATASET | total=${state.counters.total} | existing=${state.counters.existing} | skipped=${state.counters.skipped} | built=${state.counters.built} | remaining=${state.counters.remaining} | failed=${state.counters.failed}`
     );
+
     log(
-      `Existing=${state.counters.existing} | Skipped=${state.counters.skipped} | Built=${state.counters.built} | Remaining=${state.counters.remaining} | Failed=${state.counters.failed}`
+      `DATABASE TOTAL | ${finalDB.length} Records`
     );
-    log(
-      `DATABASE TOTAL: ${finalDB.length} Records`
-    );
+
   }catch(error){
+
     setBuildStatus(
       "ERROR",
       "error"
     );
+
     $("headerStatus").textContent =
       "ERROR";
+
     log(
       `BUILD ERROR: ${error.message}`,
       "err"
     );
+
   }finally{
-    state.building = false;
+
+    state.building =
+      false;
+
   }
+
 }
+
+
 /* ============================================================
    COUNTERS
 ============================================================ */
+
 function updateCounters(){
+
   $("dsTotal").textContent =
     state.counters.total;
+
   $("dsExisting").textContent =
     state.counters.existing;
+
   $("dsSkipped").textContent =
     state.counters.skipped;
+
   $("dsBuilt").textContent =
     state.counters.built;
+
   $("dsRemaining").textContent =
     Math.max(
       0,
       state.counters.remaining
     );
+
   $("dsFailed").textContent =
     state.counters.failed;
+
 }
+
+
 /* ============================================================
-   BUILD STATUS
+   STATUS
 ============================================================ */
+
 function setBuildStatus(
   text,
   type=""
 ){
+
   const el =
     $("buildStatus");
+
   el.textContent =
     text;
+
   el.className =
     `badge ${type}`;
+
 }
+
+
 /* ============================================================
    SELECTED RECORD
 ============================================================ */
+
 function renderSelectedRecord(){
+
   const record =
     state.selectedRecord;
+
   if(!record)
     return;
+
   $("memoryPreview").textContent =
     JSON.stringify(
       record.memory,
       null,
       2
     );
+
   $("embeddingPreview").textContent =
     record.embedding_text;
+
 }
+
+
 /* ============================================================
    RECORD LIST
 ============================================================ */
+
 function renderRecords(records){
+
   if(!records.length){
+
     $("recordList").innerHTML =
-      `<div class="empty">Keine Records.</div>`;
+      `<div class="empty">
+        Keine Records.
+      </div>`;
+
     return;
+
   }
-  /*
-    Neueste / relevante Records zuerst.
-    Nicht alles riesig in die UI rendern.
-  */
+
   const visible =
-    records.slice(
-      Math.max(
-        0,
-        records.length - 100
+    records
+      .slice(
+        Math.max(
+          0,
+          records.length - 100
+        )
       )
-    ).reverse();
-  let html = "";
-  for(
-    const record of visible
-  ){
-    html += `
-      <div
-        class="record"
-        data-record-id="${escapeHTML(record.id)}">
-        <div class="recordId">
-          ${escapeHTML(record.memory_id)}
-        </div>
-        <div class="recordMeta">
-          DATASET:
-          ${escapeHTML(record.dataset_id || "—")}
-        </div>
-        <div class="recordMeta">
-          ${escapeHTML(record.source?.sheet || "—")}
-          /
-          ROW
-          ${escapeHTML(String(record.source?.row ?? "—"))}
-        </div>
-      </div>
-    `;
-  }
+      .reverse();
+
   $("recordList").innerHTML =
-    html;
+    visible
+      .map(
+        record => `
+
+          <div
+            class="record"
+            data-record-id="${escapeHTML(
+              record.id
+            )}">
+
+            <div class="recordId">
+              ${escapeHTML(
+                record.memory_id
+              )}
+            </div>
+
+            <div class="recordMeta">
+              DATASET:
+              ${escapeHTML(
+                record.dataset_id
+              )}
+            </div>
+
+            <div class="recordMeta">
+              ${escapeHTML(
+                record.source?.sheet || "—"
+              )}
+              /
+              ROW
+              ${escapeHTML(
+                String(
+                  record.source?.row ?? "—"
+                )
+              )}
+            </div>
+
+          </div>
+
+        `
+      )
+      .join("");
+
   document
-    .querySelectorAll(".record")
-    .forEach(el=>{
-      el.onclick =
-        async()=>{
-          const record =
-            await getMemory(
-              el.dataset.recordId
-            );
-          if(!record)
-            return;
-          state.selectedRecord =
-            record;
-          renderSelectedRecord();
-        };
-    });
+    .querySelectorAll(
+      ".record"
+    )
+    .forEach(
+      element => {
+
+        element.onclick =
+          async()=>{
+
+            const record =
+              await getMemory(
+                element.dataset.recordId
+              );
+
+            if(!record)
+              return;
+
+            state.selectedRecord =
+              record;
+
+            renderSelectedRecord();
+
+          };
+
+      }
+    );
+
 }
+
+
 /* ============================================================
    PIPELINE
 ============================================================ */
+
 function updatePipeline(active){
+
   for(
     let i=1;
     i<=4;
     i++
   ){
-    const el =
+
+    const element =
       $(`step${i}`);
-    el.classList.remove(
+
+    element.classList.remove(
       "active",
       "done"
     );
+
     if(i < active)
-      el.classList.add("done");
+      element.classList.add(
+        "done"
+      );
+
     if(i === active)
-      el.classList.add("active");
+      element.classList.add(
+        "active"
+      );
+
   }
+
 }
+
+
 /* ============================================================
    CLEAR IMPORT
 ============================================================ */
+
 function clearImport(){
+
   state.workbook = null;
+
   state.fileName = null;
-  state.datasetId = null;
+
+  state.fileDatasetId = null;
+
   state.rows = [];
+
   state.sheets = [];
+
+  state.sheetInfo = [];
+
   state.selectedRecord = null;
+
   $("datasetName").textContent =
     "—";
+
   $("sheetCount").textContent =
     "0";
+
   $("rowCount").textContent =
     "0";
+
   $("columnCount").textContent =
     "0";
+
   $("recordCount").textContent =
     "0";
+
   $("datasetInfo").textContent =
     "Kein Dataset geladen.";
+
+  $("sheetList").innerHTML =
+    `<div class="empty">
+      Keine Sheets.
+    </div>`;
+
   $("rawTable").innerHTML =
-    `<div class="empty">Noch keine Daten geladen.</div>`;
+    `<div class="empty">
+      Noch keine Daten geladen.
+    </div>`;
+
   $("memoryPreview").textContent =
     "Noch kein Memory Record ausgewählt.";
+
   $("embeddingPreview").textContent =
     "Noch kein Record ausgewählt.";
+
   $("rawBadge").textContent =
     "EMPTY";
+
   state.counters = {
+
     total:0,
     existing:0,
     skipped:0,
     built:0,
     remaining:0,
     failed:0
+
   };
+
   updateCounters();
+
   $("progressBar").style.width =
     "0%";
+
   setBuildStatus(
     "IDLE"
   );
+
   updatePipeline(1);
+
   log(
     "Import zurückgesetzt.",
     "info"
   );
+
 }
+
+
 /* ============================================================
-   CLEAR DATABASE
+   CLEAR DB
 ============================================================ */
+
 async function clearDatabase(){
+
   if(
     !confirm(
       "Wirklich die gesamte NEURAL MEMORY Datenbank löschen?"
     )
   )
     return;
+
   const db =
     await openDB();
+
   await new Promise(
     (resolve,reject)=>{
+
       const tx =
         db.transaction(
           STORE_NAME,
           "readwrite"
         );
+
       tx.objectStore(
         STORE_NAME
       ).clear();
+
       tx.oncomplete =
         resolve;
+
       tx.onerror =
-        () => reject(tx.error);
+        () =>
+          reject(
+            tx.error
+          );
+
     }
   );
+
   await updateDBTotal();
+
   log(
     "NEURAL MEMORY DB vollständig gelöscht.",
     "warn"
   );
+
 }
+
+
 /* ============================================================
    EXPORT
 ============================================================ */
+
 async function exportMemory(){
+
   const records =
     await loadAllMemory();
+
   const blob =
     new Blob(
       [
@@ -1881,183 +3169,304 @@ async function exportMemory(){
         )
       ],
       {
-        type:"application/json"
+        type:
+          "application/json"
       }
     );
+
   const url =
-    URL.createObjectURL(blob);
+    URL.createObjectURL(
+      blob
+    );
+
   const a =
-    document.createElement("a");
+    document.createElement(
+      "a"
+    );
+
   a.href =
     url;
+
   a.download =
     "neural-memory-export.json";
+
   a.click();
+
   URL.revokeObjectURL(
     url
   );
+
   log(
     `${records.length} Memory Records exportiert.`,
     "ok"
   );
+
 }
+
+
 /* ============================================================
    ESCAPE
 ============================================================ */
+
 function escapeHTML(value){
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+
+  return String(
+    value ?? ""
+  )
+  .replaceAll(
+    "&",
+    "&amp;"
+  )
+  .replaceAll(
+    "<",
+    "&lt;"
+  )
+  .replaceAll(
+    ">",
+    "&gt;"
+  )
+  .replaceAll(
+    '"',
+    "&quot;"
+  )
+  .replaceAll(
+    "'",
+    "&#039;"
+  );
+
 }
+
+
 /* ============================================================
    FILE UI
 ============================================================ */
+
 $("chooseFile").onclick =
   () =>
     $("fileInput").click();
+
+
 $("drop").onclick =
   () =>
     $("fileInput").click();
+
+
 $("fileInput").onchange =
-  async e => {
+  async event => {
+
     const file =
-      e.target.files?.[0];
+      event.target.files?.[0];
+
     if(file)
-      await importFile(file);
+      await importFile(
+        file
+      );
+
   };
+
+
 $("drop").ondragover =
-  e => {
-    e.preventDefault();
+  event => {
+
+    event.preventDefault();
+
     $("drop")
       .classList
       .add("drag");
+
   };
+
+
 $("drop").ondragleave =
   () =>
     $("drop")
       .classList
       .remove("drag");
+
+
 $("drop").ondrop =
-  async e => {
-    e.preventDefault();
+  async event => {
+
+    event.preventDefault();
+
     $("drop")
       .classList
       .remove("drag");
+
     const file =
-      e.dataTransfer.files?.[0];
+      event.dataTransfer
+        .files?.[0];
+
     if(file)
-      await importFile(file);
+      await importFile(
+        file
+      );
+
   };
+
+
 /* ============================================================
    BUTTONS
 ============================================================ */
+
 $("clearImport").onclick =
   clearImport;
+
 $("buildMemory").onclick =
   buildMemory;
+
 $("stopBuild").onclick =
   () => {
+
     if(!state.building)
       return;
+
     state.stopRequested =
       true;
+
     log(
       "STOP BUILD gesetzt.",
       "warn"
     );
+
   };
+
 $("clearDB").onclick =
   clearDatabase;
+
 $("exportMemory").onclick =
   exportMemory;
+
+
 /* ============================================================
-   INITIAL DB STATUS
+   INITIAL DB
 ============================================================ */
+
 (async()=>{
+
   try{
+
     const records =
       await updateDBTotal();
+
     log(
       `Persistente Memory DB gefunden: ${records.length} Records.`,
       "ok"
     );
+
   }catch(error){
+
     log(
-      `IndexedDB noch nicht geöffnet: ${error.message}`,
+      `IndexedDB Status: ${error.message}`,
       "warn"
     );
+
   }
+
 })();
+
+
 /* ============================================================
    PUBLIC API
 ============================================================ */
+
 window.NEURAL_MEMORY = {
+
   state,
+
   loadEmbeddingModel,
+
   createEmbedding,
+
   createQueryEmbedding,
+
   createMemoryRepresentation,
+
   createEmbeddingText,
+
   buildMemoryRecord,
+
   cosineSimilarity,
+
   isValidMemoryRecord,
+
   isCompatibleMemoryRecord,
+
   loadAllMemory,
+
   getMemory,
+
   searchMemory:
     async function(
       question,
       topK=5,
       datasetId=null
     ){
+
       const queryEmbedding =
         await createQueryEmbedding(
           question
         );
+
       let records =
         await loadAllMemory();
+
       if(datasetId){
+
         records =
           records.filter(
             record =>
               record.dataset_id ===
               datasetId
           );
+
       }
-      const results =
-        records
-          .filter(
-            record =>
-              isValidMemoryRecord(
-                record
-              )
-          )
-          .map(record=>({
+
+      return records
+
+        .filter(
+          record =>
+            isValidMemoryRecord(
+              record
+            )
+        )
+
+        .map(
+          record => ({
+
             memory_id:
               record.memory_id,
+
             dataset_id:
               record.dataset_id,
+
             score:
               cosineSimilarity(
                 queryEmbedding,
                 record.embedding
               ),
+
             record
-          }))
-          .sort(
-            (a,b)=>
-              b.score - a.score
-          )
-          .slice(
-            0,
-            topK
-          );
-      return results;
+
+          })
+        )
+
+        .sort(
+          (a,b) =>
+            b.score -
+            a.score
+        )
+
+        .slice(
+          0,
+          topK
+        );
+
     }
+
 };
+
 </script>
+
 </body>
 </html>
