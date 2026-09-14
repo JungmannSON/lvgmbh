@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport"
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
-<title>NEURAL MEMORY — Structured Memory Engine</title>
+<title>NEURAL MEMORY — Data Ingestion</title>
 
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 
@@ -117,7 +115,7 @@ header{
 
   z-index:100;
 
-  min-height:72px;
+  height:72px;
 
   display:flex;
 
@@ -125,7 +123,7 @@ header{
 
   justify-content:space-between;
 
-  padding:12px 22px;
+  padding:0 22px;
 
   background:
 
@@ -229,12 +227,12 @@ header{
 
 
 /* =====================================================
-   LAYOUT
+   MAIN
 ===================================================== */
 
 main{
 
-  width:min(1550px,100%);
+  width:min(1500px,100%);
 
   margin:auto;
 
@@ -243,21 +241,20 @@ main{
   display:grid;
 
   grid-template-columns:
-    minmax(280px,350px)
-    minmax(480px,1fr)
-    minmax(300px,380px);
+    minmax(280px,360px)
+    minmax(420px,1fr)
+    minmax(280px,360px);
 
   gap:18px;
 }
 
-@media(max-width:1150px){
+@media(max-width:1100px){
 
   main{
 
-    grid-template-columns:1fr;
-
+    grid-template-columns:
+      1fr;
   }
-
 }
 
 
@@ -330,12 +327,10 @@ main{
 
 
 /* =====================================================
-   DROP
+   FILE IMPORT
 ===================================================== */
 
 .dropZone{
-
-  display:block;
 
   border:
     1px dashed
@@ -364,15 +359,6 @@ main{
   box-shadow:
     0 0 20px
     rgba(0,245,255,.08);
-}
-
-.dropZone.drag{
-
-  border-color:
-    var(--green);
-
-  background:
-    rgba(74,255,136,.04);
 }
 
 .dropIcon{
@@ -492,70 +478,6 @@ button.yellow{
 
 
 /* =====================================================
-   PROGRESS
-===================================================== */
-
-.progressBox{
-
-  margin-top:14px;
-
-  display:none;
-}
-
-.progressBox.show{
-
-  display:block;
-}
-
-.progressHeader{
-
-  display:flex;
-
-  justify-content:space-between;
-
-  color:var(--muted);
-
-  font-size:8px;
-
-  letter-spacing:1px;
-}
-
-.progressTrack{
-
-  height:5px;
-
-  margin-top:7px;
-
-  background:#0a151d;
-
-  border:
-    1px solid
-    rgba(0,245,255,.12);
-}
-
-.progressBar{
-
-  width:0%;
-
-  height:100%;
-
-  background:
-    linear-gradient(
-      90deg,
-      var(--cyan),
-      var(--pink)
-    );
-
-  box-shadow:
-    0 0 10px
-    var(--cyan);
-
-  transition:
-    width .15s linear;
-}
-
-
-/* =====================================================
    FILE INFO
 ===================================================== */
 
@@ -588,7 +510,8 @@ button.yellow{
 
   color:var(--green);
 
-  word-break:break-all;
+  word-break:
+    break-all;
 }
 
 
@@ -604,7 +527,7 @@ button.yellow{
 
   gap:7px;
 
-  max-height:330px;
+  max-height:300px;
 
   overflow:auto;
 }
@@ -655,18 +578,9 @@ button.yellow{
     rgba(0,245,255,.1);
 }
 
-.sheetButton .sheetRows{
-
-  float:right;
-
-  color:#405861;
-
-  font-size:8px;
-}
-
 
 /* =====================================================
-   METRICS
+   STATS
 ===================================================== */
 
 .metrics{
@@ -674,20 +588,9 @@ button.yellow{
   display:grid;
 
   grid-template-columns:
-    repeat(4,1fr);
+    1fr 1fr;
 
   gap:8px;
-}
-
-@media(max-width:700px){
-
-  .metrics{
-
-    grid-template-columns:
-      1fr 1fr;
-
-  }
-
 }
 
 .metric{
@@ -728,7 +631,7 @@ button.yellow{
 
   overflow:auto;
 
-  max-height:620px;
+  max-height:650px;
 
   border:
     1px solid
@@ -811,7 +714,7 @@ tr:hover td{
 
   gap:8px;
 
-  max-height:610px;
+  max-height:520px;
 
   overflow:auto;
 }
@@ -859,15 +762,6 @@ tr:hover td{
   line-height:1.5;
 }
 
-.recordEmbedding{
-
-  margin-top:6px;
-
-  color:var(--green);
-
-  font-size:8px;
-}
-
 .recordJson{
 
   margin-top:7px;
@@ -896,7 +790,7 @@ tr:hover td{
 
   gap:6px;
 
-  max-height:350px;
+  max-height:360px;
 
   overflow:auto;
 }
@@ -938,186 +832,12 @@ tr:hover td{
 
 
 /* =====================================================
-   EMBEDDING
-===================================================== */
-
-.embeddingBox{
-
-  background:#010308;
-
-  border:
-    1px solid
-    rgba(0,245,255,.14);
-
-  padding:12px;
-
-  max-height:300px;
-
-  overflow:auto;
-
-  font-size:8px;
-
-  line-height:1.6;
-
-  word-break:break-all;
-
-  color:#8acdd5;
-}
-
-.embeddingDim{
-
-  color:var(--yellow);
-
-  font-size:11px;
-
-  margin-bottom:8px;
-}
-
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
-input,
-select{
-
-  width:100%;
-
-  background:#02050b;
-
-  color:var(--text);
-
-  border:
-    1px solid
-    rgba(0,245,255,.25);
-
-  outline:none;
-
-  padding:11px;
-
-  font-family:inherit;
-
-  font-size:10px;
-
-  margin-bottom:8px;
-}
-
-input:focus,
-select:focus{
-
-  border-color:
-    var(--cyan);
-
-  box-shadow:
-    0 0 15px
-    rgba(0,245,255,.15);
-}
-
-.filterGrid{
-
-  display:grid;
-
-  grid-template-columns:
-    1fr 1fr;
-
-  gap:6px;
-}
-
-.filterGrid input,
-.filterGrid select{
-
-  margin:0;
-}
-
-
-/* =====================================================
-   RANKING
-===================================================== */
-
-.rank{
-
-  border:
-    1px solid
-    rgba(0,245,255,.12);
-
-  padding:10px;
-
-  margin-bottom:8px;
-
-  background:#030710;
-
-  cursor:pointer;
-}
-
-.rank:hover{
-
-  border-color:
-    var(--cyan);
-}
-
-.rankTop{
-
-  display:flex;
-
-  justify-content:space-between;
-
-  gap:10px;
-
-  font-size:9px;
-}
-
-.rankScore{
-
-  color:var(--green);
-}
-
-.bar{
-
-  height:3px;
-
-  background:#0b1820;
-
-  margin-top:7px;
-}
-
-.barFill{
-
-  height:100%;
-
-  background:
-    linear-gradient(
-      90deg,
-      var(--cyan),
-      var(--pink)
-    );
-
-  box-shadow:
-    0 0 8px var(--cyan);
-
-  width:0%;
-
-  transition:.5s;
-}
-
-.rankText{
-
-  margin-top:7px;
-
-  color:#718b92;
-
-  font-size:8px;
-
-  line-height:1.4;
-}
-
-
-/* =====================================================
    LOG
 ===================================================== */
 
 .log{
 
-  height:210px;
+  height:180px;
 
   overflow:auto;
 
@@ -1137,18 +857,22 @@ select:focus{
 }
 
 .logLine.ok{
+
   color:var(--green);
 }
 
 .logLine.info{
+
   color:var(--cyan);
 }
 
 .logLine.warn{
+
   color:var(--yellow);
 }
 
 .logLine.error{
+
   color:var(--red);
 }
 
@@ -1205,7 +929,7 @@ select:focus{
 
 footer{
 
-  width:min(1550px,100%);
+  width:min(1500px,100%);
 
   margin:auto;
 
@@ -1220,9 +944,7 @@ footer{
 }
 
 </style>
-
 </head>
-
 
 <body>
 
@@ -1250,7 +972,7 @@ footer{
     </div>
 
     <span id="statusText">
-      MEMORY CORE READY
+      DATA CORE READY
     </span>
 
   </div>
@@ -1258,16 +980,17 @@ footer{
 </header>
 
 
-
 <main>
 
 
 <!-- =====================================================
-     LEFT
+     LEFT COLUMN
 ===================================================== -->
 
 <section>
 
+
+  <!-- IMPORT -->
 
   <div class="panel">
 
@@ -1276,7 +999,6 @@ footer{
     </div>
 
     <div class="panelBody">
-
 
       <label
         id="dropZone"
@@ -1297,11 +1019,8 @@ footer{
         </div>
 
         <div class="dropText">
-
           XLSX / XLS / CSV<br>
-
-          ALLE SHEETS WERDEN AUSGELESEN
-
+          Datei auswählen
         </div>
 
       </label>
@@ -1322,69 +1041,26 @@ footer{
 
         <div>
           TYPE:
-          <span id="fileType">—</span>
+          <span id="fileType">
+            —
+          </span>
         </div>
 
         <div>
           SIZE:
-          <span id="fileSize">—</span>
+          <span id="fileSize">
+            —
+          </span>
         </div>
 
       </div>
 
 
       <button
-        id="processBtn"
-        class="green"
-        disabled>
-
-        BUILD MEMORY FROM ALL SHEETS
-
-      </button>
-
-
-      <div
-        id="progressBox"
-        class="progressBox">
-
-        <div class="progressHeader">
-
-          <span id="progressLabel">
-            EMBEDDING
-          </span>
-
-          <span id="progressPercent">
-            0%
-          </span>
-
-        </div>
-
-        <div class="progressTrack">
-
-          <div
-            id="progressBar"
-            class="progressBar">
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <button
-        id="exportBtn"
-        class="yellow">
-
-        EXPORT COMPLETE MEMORY
-
-      </button>
-
-
-      <button
-        id="clearBtn"
+        id="clearDataBtn"
         class="pink">
 
-        CLEAR MEMORY STORE
+        CLEAR IMPORT
 
       </button>
 
@@ -1399,7 +1075,6 @@ footer{
   </div>
 
 
-
   <!-- SHEETS -->
 
   <div
@@ -1407,7 +1082,7 @@ footer{
     style="margin-top:18px">
 
     <div class="panelTitle">
-      02 / IMPORTED SHEETS
+      02 / SHEETS
     </div>
 
     <div class="panelBody">
@@ -1427,66 +1102,7 @@ footer{
   </div>
 
 
-
-  <!-- PIPELINE -->
-
-  <div
-    class="panel"
-    style="margin-top:18px">
-
-    <div class="panelTitle">
-      MEMORY PIPELINE
-    </div>
-
-    <div class="panelBody">
-
-      <div
-        style="
-          font-size:9px;
-          line-height:2;
-          color:#59737b">
-
-        FILE<br>
-        ↓<br>
-
-        <span style="color:var(--cyan)">
-          ALL SHEETS
-        </span>
-
-        <br>
-        ↓<br>
-
-        ROW → RECORD<br>
-        ↓<br>
-        TECHNICAL SCHEMA<br>
-        ↓<br>
-
-        <span style="color:var(--yellow)">
-          embedding_text
-        </span>
-
-        <br>
-        ↓<br>
-
-        <span style="color:var(--green)">
-          E5 / 384D
-        </span>
-
-        <br>
-        ↓<br>
-        INDEXEDDB<br>
-        ↓<br>
-        RETRIEVAL
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- LOG -->
+  <!-- SYSTEM LOG -->
 
   <div
     class="panel"
@@ -1513,18 +1129,18 @@ footer{
 
 
 <!-- =====================================================
-     CENTER
+     CENTER COLUMN
 ===================================================== -->
 
 <section>
 
 
-  <!-- METRICS -->
+  <!-- IMPORT STATUS -->
 
   <div class="panel">
 
     <div class="panelTitle">
-      MEMORY STATUS
+      DATASET STATUS
     </div>
 
     <div class="panelBody">
@@ -1534,11 +1150,11 @@ footer{
         <div class="metric">
 
           <div class="metricLabel">
-            FILES
+            SHEETS
           </div>
 
           <div
-            id="fileCount"
+            id="sheetCount"
             class="metricValue">
             0
           </div>
@@ -1549,11 +1165,26 @@ footer{
         <div class="metric">
 
           <div class="metricLabel">
-            SHEETS
+            ROWS
           </div>
 
           <div
-            id="sheetCount"
+            id="rowCount"
+            class="metricValue">
+            0
+          </div>
+
+        </div>
+
+
+        <div class="metric">
+
+          <div class="metricLabel">
+            COLUMNS
+          </div>
+
+          <div
+            id="columnCount"
             class="metricValue">
             0
           </div>
@@ -1575,21 +1206,6 @@ footer{
 
         </div>
 
-
-        <div class="metric">
-
-          <div class="metricLabel">
-            EMBEDDED
-          </div>
-
-          <div
-            id="embeddedCount"
-            class="metricValue">
-            0
-          </div>
-
-        </div>
-
       </div>
 
     </div>
@@ -1605,18 +1221,7 @@ footer{
     style="margin-top:18px">
 
     <div class="panelTitle">
-
-      03 / SHEET INSPECTOR
-
-      <span
-        id="currentSheetLabel"
-        style="
-          float:right;
-          color:#526f78">
-        —
-
-      </span>
-
+      03 / RAW TABLE VIEW
     </div>
 
     <div
@@ -1631,7 +1236,7 @@ footer{
           class="empty"
           style="padding:20px">
 
-          Importiere zunächst eine Datei.
+          Noch keine Tabelle geladen.
 
         </div>
 
@@ -1660,34 +1265,8 @@ footer{
         class="schemaList">
 
         <div class="empty">
-          Schema wird erzeugt.
+          Schema wird nach dem Import erzeugt.
         </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- EMBEDDING TEXT -->
-
-  <div
-    class="panel"
-    style="margin-top:18px">
-
-    <div class="panelTitle">
-      EMBEDDING TEXT
-    </div>
-
-    <div class="panelBody">
-
-      <div
-        id="embeddingText"
-        class="embeddingBox">
-
-        Kein Record ausgewählt.
 
       </div>
 
@@ -1701,7 +1280,7 @@ footer{
 
 
 <!-- =====================================================
-     RIGHT
+     RIGHT COLUMN
 ===================================================== -->
 
 <section>
@@ -1712,7 +1291,7 @@ footer{
   <div class="panel">
 
     <div class="panelTitle">
-      05 / MEMORY BROWSER
+      05 / MEMORY RECORDS
     </div>
 
     <div class="panelBody">
@@ -1722,7 +1301,7 @@ footer{
         class="recordList">
 
         <div class="empty">
-          Memory Store leer.
+          Noch keine Records.
         </div>
 
       </div>
@@ -1732,7 +1311,6 @@ footer{
   </div>
 
 
-
   <!-- SELECTED RECORD -->
 
   <div
@@ -1740,7 +1318,7 @@ footer{
     style="margin-top:18px">
 
     <div class="panelTitle">
-      06 / RECORD
+      SELECTED RECORD
     </div>
 
     <div class="panelBody">
@@ -1758,150 +1336,58 @@ footer{
   </div>
 
 
-
-  <!-- EMBEDDING -->
-
-  <div
-    class="panel"
-    style="margin-top:18px">
-
-    <div class="panelTitle">
-      07 / EMBEDDING
-    </div>
-
-    <div class="panelBody">
-
-      <div
-        id="embeddingDim"
-        class="embeddingDim">
-
-        d = —
-
-      </div>
-
-      <div
-        id="embeddingBox"
-        class="embeddingBox">
-
-        Kein Embedding ausgewählt.
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- SEARCH -->
+  <!-- NEXT STAGE -->
 
   <div
     class="panel"
     style="margin-top:18px">
 
     <div class="panelTitle">
-      08 / SEMANTIC RETRIEVAL
+      MEMORY PIPELINE
     </div>
 
     <div class="panelBody">
 
-      <input
-        id="queryInput"
-        placeholder="Semantische Suche ...">
+      <div class="recordMeta">
 
-
-      <button
-        id="searchBtn"
-        class="pink"
-        disabled>
-
-        QUERY → E5 → COSINE
-
-      </button>
-
-
-      <div
-        id="ranking"
-        style="margin-top:12px">
-
-        <div class="empty">
-          Keine Suche.
-        </div>
+        CURRENT STAGE
 
       </div>
 
-    </div>
+      <div
+        style="
+          margin-top:8px;
+          color:var(--cyan);
+          font-size:11px;
+          letter-spacing:1px">
 
-  </div>
+        INGESTION
 
-
-
-  <!-- FILTER -->
-
-  <div
-    class="panel"
-    style="margin-top:18px">
-
-    <div class="panelTitle">
-      09 / DETERMINISTIC FILTER
-    </div>
-
-    <div class="panelBody">
-
-      <input
-        id="filterField"
-        placeholder="Feldname z.B. Name">
+      </div>
 
 
-      <select id="filterOperator">
+      <div
+        style="
+          margin-top:15px;
+          color:#405861;
+          font-size:9px;
+          line-height:1.8">
 
-        <option value="equals">
-          = EXACT
-        </option>
+        FILE<br>
+        ↓<br>
+        SHEET<br>
+        ↓<br>
+        ROW<br>
+        ↓<br>
+        RECORD<br>
+        ↓<br>
+        SCHEMA<br>
+        ↓<br>
+        <span style="color:var(--yellow)">
+          NEXT: EMBEDDING TEXT
+        </span>
 
-        <option value="contains">
-          CONTAINS
-        </option>
-
-        <option value="gt">
-          &gt;
-        </option>
-
-        <option value="gte">
-          &gt;=
-        </option>
-
-        <option value="lt">
-          &lt;
-        </option>
-
-        <option value="lte">
-          &lt;=
-        </option>
-
-      </select>
-
-
-      <input
-        id="filterValue"
-        placeholder="Wert">
-
-
-      <button
-        id="filterBtn"
-        class="yellow">
-
-        APPLY DETERMINISTIC FILTER
-
-      </button>
-
-
-      <button
-        id="clearFilterBtn">
-
-        CLEAR FILTER
-
-      </button>
+      </div>
 
     </div>
 
@@ -1913,51 +1399,18 @@ footer{
 </main>
 
 
-
 <footer>
 
   NEURAL MEMORY //
-  MULTI-SHEET INGESTION //
-  RECORD BUILDER //
-  EMBEDDING //
-  INDEXEDDB //
-  DETERMINISTIC RETRIEVAL
+  DATA INGESTION //
+  ORIGINAL DATA PRESERVED //
+  NO SEMANTIC INTERPRETATION
 
 </footer>
 
 
 
-<script type="module">
-
-
-/* =====================================================
-   TRANSFORMERS
-===================================================== */
-
-import {
-  pipeline
-} from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
-
-
-/* =====================================================
-   CONFIGURATION
-===================================================== */
-
-const MODEL =
-  "Xenova/multilingual-e5-small";
-
-const EMBEDDING_DIM =
-  384;
-
-const DB_NAME =
-  "NEURAL_MEMORY_DB";
-
-const DB_VERSION =
-  2;
-
-const STORE_NAME =
-  "memories";
-
+<script>
 
 /* =====================================================
    STATE
@@ -1973,21 +1426,13 @@ const state = {
 
   currentSheet:null,
 
-  currentRows:[],
+  rows:[],
 
   records:[],
 
   schema:[],
 
-  selectedRecord:null,
-
-  extractor:null,
-
-  modelLoading:false,
-
-  modelReady:false,
-
-  filterActive:false
+  selectedRecord:null
 
 };
 
@@ -2006,15 +1451,6 @@ const fileInput =
 const dropZone =
   $("dropZone");
 
-const processBtn =
-  $("processBtn");
-
-const exportBtn =
-  $("exportBtn");
-
-const clearBtn =
-  $("clearBtn");
-
 const fileInfo =
   $("fileInfo");
 
@@ -2027,26 +1463,11 @@ const fileType =
 const fileSize =
   $("fileSize");
 
-const progressBox =
-  $("progressBox");
-
-const progressBar =
-  $("progressBar");
-
-const progressLabel =
-  $("progressLabel");
-
-const progressPercent =
-  $("progressPercent");
-
 const sheetList =
   $("sheetList");
 
 const tableWrap =
   $("tableWrap");
-
-const currentSheetLabel =
-  $("currentSheetLabel");
 
 const schemaList =
   $("schemaList");
@@ -2057,50 +1478,20 @@ const recordList =
 const selectedRecord =
   $("selectedRecord");
 
-const embeddingText =
-  $("embeddingText");
-
-const embeddingBox =
-  $("embeddingBox");
-
-const embeddingDim =
-  $("embeddingDim");
-
-const queryInput =
-  $("queryInput");
-
-const searchBtn =
-  $("searchBtn");
-
-const ranking =
-  $("ranking");
-
-const filterField =
-  $("filterField");
-
-const filterOperator =
-  $("filterOperator");
-
-const filterValue =
-  $("filterValue");
-
-const filterBtn =
-  $("filterBtn");
-
-const clearFilterBtn =
-  $("clearFilterBtn");
-
-const fileCount =
-  $("fileCount");
-
 const sheetCount =
   $("sheetCount");
+
+const rowCount =
+  $("rowCount");
+
+const columnCount =
+  $("columnCount");
 
 const recordCount =
   $("recordCount");
 
-const embeddedCount =
-  $("embeddedCount");
+const clearDataBtn =
+  $("clearDataBtn");
 
 const log =
   $("log");
@@ -2144,9 +1535,7 @@ function addLog(
   line.textContent =
     `[${time}] ${message}`;
 
-  log.appendChild(
-    line
-  );
+  log.appendChild(line);
 
   log.scrollTop =
     log.scrollHeight;
@@ -2158,9 +1547,7 @@ function addLog(
    ERROR
 ===================================================== */
 
-function showError(
-  error
-){
+function showError(error){
 
   const message =
     error?.message ||
@@ -2190,7 +1577,6 @@ function clearError(){
 
   errorBox.innerHTML =
     "";
-
 }
 
 
@@ -2198,9 +1584,7 @@ function clearError(){
    ESCAPE
 ===================================================== */
 
-function escapeHtml(
-  value
-){
+function escapeHtml(value){
 
   return String(value)
 
@@ -2243,7 +1627,7 @@ function setOnline(){
   );
 
   statusText.textContent =
-    "MEMORY CORE ONLINE";
+    "DATA CORE ONLINE";
 
 }
 
@@ -2255,51 +1639,7 @@ function setOffline(){
   );
 
   statusText.textContent =
-    "MEMORY CORE READY";
-
-}
-
-
-/* =====================================================
-   PROGRESS
-===================================================== */
-
-function setProgress(
-  current,
-  total,
-  label
-){
-
-  const percent =
-    total === 0
-      ? 0
-      : Math.round(
-          current /
-          total *
-          100
-        );
-
-  progressBox.classList.add(
-    "show"
-  );
-
-  progressBar.style.width =
-    `${percent}%`;
-
-  progressPercent.textContent =
-    `${percent}%`;
-
-  progressLabel.textContent =
-    label;
-
-}
-
-
-function hideProgress(){
-
-  progressBox.classList.remove(
-    "show"
-  );
+    "DATA CORE READY";
 
 }
 
@@ -2312,17 +1652,13 @@ function formatFileSize(
   bytes
 ){
 
-  if(
-    bytes < 1024
-  ){
+  if(bytes < 1024){
 
     return `${bytes} B`;
 
   }
 
-  if(
-    bytes < 1024 * 1024
-  ){
+  if(bytes < 1024*1024){
 
     return `${(
       bytes / 1024
@@ -2332,14 +1668,14 @@ function formatFileSize(
 
   return `${(
     bytes /
-    (1024 * 1024)
+    (1024*1024)
   ).toFixed(2)} MB`;
 
 }
 
 
 /* =====================================================
-   FILE INPUT
+   FILE IMPORT
 ===================================================== */
 
 fileInput.addEventListener(
@@ -2349,20 +1685,20 @@ fileInput.addEventListener(
     const file =
       event.target.files[0];
 
-    if(file){
+    if(!file){
 
-      importWorkbook(
-        file
-      );
+      return;
 
     }
+
+    importFile(file);
 
   }
 );
 
 
 /* =====================================================
-   DRAG / DROP
+   DROP SUPPORT
 ===================================================== */
 
 dropZone.addEventListener(
@@ -2371,9 +1707,8 @@ dropZone.addEventListener(
 
     event.preventDefault();
 
-    dropZone.classList.add(
-      "drag"
-    );
+    dropZone.style.borderColor =
+      "var(--cyan)";
 
   }
 );
@@ -2383,9 +1718,8 @@ dropZone.addEventListener(
   "dragleave",
   () => {
 
-    dropZone.classList.remove(
-      "drag"
-    );
+    dropZone.style.borderColor =
+      "";
 
   }
 );
@@ -2397,18 +1731,15 @@ dropZone.addEventListener(
 
     event.preventDefault();
 
-    dropZone.classList.remove(
-      "drag"
-    );
+    dropZone.style.borderColor =
+      "";
 
     const file =
       event.dataTransfer.files[0];
 
     if(file){
 
-      importWorkbook(
-        file
-      );
+      importFile(file);
 
     }
 
@@ -2417,10 +1748,10 @@ dropZone.addEventListener(
 
 
 /* =====================================================
-   IMPORT WORKBOOK
+   IMPORT FILE
 ===================================================== */
 
-async function importWorkbook(
+async function importFile(
   file
 ){
 
@@ -2435,18 +1766,21 @@ async function importWorkbook(
         .toLowerCase();
 
 
+    const allowed = [
+      "xlsx",
+      "xls",
+      "csv"
+    ];
+
+
     if(
-      ![
-        "xlsx",
-        "xls",
-        "csv"
-      ].includes(
+      !allowed.includes(
         extension
       )
     ){
 
       throw new Error(
-        "Nur XLSX, XLS oder CSV werden unterstützt."
+        "Nicht unterstütztes Dateiformat. Bitte XLSX, XLS oder CSV verwenden."
       );
 
     }
@@ -2478,19 +1812,19 @@ async function importWorkbook(
     );
 
 
-    const buffer =
+    const arrayBuffer =
       await file.arrayBuffer();
 
 
     addLog(
-      "Workbook wird gelesen.",
+      "Datei wird gelesen.",
       "info"
     );
 
 
     const workbook =
       XLSX.read(
-        buffer,
+        arrayBuffer,
         {
           type:"array",
           cellDates:true
@@ -2508,9 +1842,7 @@ async function importWorkbook(
           name => {
 
             const worksheet =
-              workbook.Sheets[
-                name
-              ];
+              workbook.Sheets[name];
 
             const rows =
               XLSX.utils.sheet_to_json(
@@ -2521,7 +1853,6 @@ async function importWorkbook(
                   raw:true
                 }
               );
-
 
             return {
 
@@ -2538,30 +1869,21 @@ async function importWorkbook(
     sheetCount.textContent =
       state.sheets.length;
 
-    fileCount.textContent =
-      "1";
-
-
-    processBtn.disabled =
-      false;
-
 
     setOnline();
+
+
+    addLog(
+      `${state.sheets.length} Sheet(s) gefunden.`,
+      "ok"
+    );
 
 
     renderSheetList();
 
 
-    /*
-     * Standardmäßig erstes
-     * Sheet anzeigen.
-     *
-     * Es wird NICHT exklusiv
-     * verarbeitet.
-     */
-
     if(
-      state.sheets.length
+      state.sheets.length > 0
     ){
 
       selectSheet(
@@ -2570,29 +1892,15 @@ async function importWorkbook(
 
     }
 
-
-    addLog(
-      `${state.sheets.length} Sheet(s) erkannt.`,
-      "ok"
-    );
-
-
-    addLog(
-      "Alle Sheets stehen für den Memory-Build bereit.",
-      "info"
-    );
-
   }
 
   catch(error){
 
-    console.error(
-      error
-    );
+    console.error(error);
 
-    showError(
-      error
-    );
+    setOffline();
+
+    showError(error);
 
   }
 
@@ -2608,14 +1916,13 @@ function renderSheetList(){
   sheetList.innerHTML =
     "";
 
-
   if(
     state.sheets.length === 0
   ){
 
     sheetList.innerHTML =
       `<div class="empty">
-        Keine Sheets.
+        Keine Sheets gefunden.
        </div>`;
 
     return;
@@ -2630,7 +1937,6 @@ function renderSheetList(){
         document.createElement(
           "button"
         );
-
 
       button.className =
         "sheetButton";
@@ -2648,19 +1954,8 @@ function renderSheetList(){
       }
 
 
-      const rows =
-        countDataRows(
-          sheet.rows
-        );
-
-
-      button.innerHTML =
-        `${escapeHtml(
-          sheet.name
-        )}
-        <span class="sheetRows">
-          ${rows} rows
-        </span>`;
+      button.textContent =
+        sheet.name;
 
 
       button.onclick =
@@ -2679,40 +1974,6 @@ function renderSheetList(){
 
     }
   );
-
-}
-
-
-/* =====================================================
-   COUNT DATA ROWS
-===================================================== */
-
-function countDataRows(
-  rows
-){
-
-  if(
-    !Array.isArray(rows) ||
-    rows.length < 2
-  ){
-
-    return 0;
-
-  }
-
-
-  return rows
-    .filter(
-      row =>
-        Array.isArray(row) &&
-        row.some(
-          cell =>
-            cell !== null &&
-            cell !== undefined &&
-            String(cell).trim() !== ""
-        )
-    )
-    .length - 1;
 
 }
 
@@ -2740,48 +2001,160 @@ function selectSheet(
 
 
   state.currentSheet =
-    sheetName;
-
-  state.currentRows =
-    sheet.rows;
-
-
-  currentSheetLabel.textContent =
-    sheetName;
+    sheet.name;
 
 
   renderSheetList();
 
-  renderRawTable(
-    sheet.rows
+
+  addLog(
+    `Sheet ausgewählt: ${sheet.name}`,
+    "info"
   );
+
+
+  processRows(
+    sheet.rows,
+    sheet.name
+  );
+
+}
+
+
+/* =====================================================
+   PROCESS ROWS
+===================================================== */
+
+function processRows(
+  rawRows,
+  sheetName
+){
+
+  state.rows =
+    rawRows || [];
 
 
   /*
-   * Nur technische Ansicht
-   * dieses Sheets.
-   *
-   * Der Memory Build unten
-   * verarbeitet trotzdem ALLE.
+   * Leere Zeilen entfernen.
    */
 
-  const previewRecords =
-    buildRecordsForSheet(
-      sheet,
-      false
+  const nonEmptyRows =
+    state.rows.filter(
+      row =>
+        Array.isArray(row) &&
+        row.some(
+          cell =>
+            cell !== null &&
+            cell !== undefined &&
+            String(cell).trim() !== ""
+        )
     );
 
 
-  renderSchema(
+  if(
+    nonEmptyRows.length === 0
+  ){
+
+    state.records = [];
+
+    state.schema = [];
+
+    renderAll();
+
+    return;
+
+  }
+
+
+  /*
+   * Erste Zeile = Header.
+   */
+
+  const headerRow =
+    nonEmptyRows[0];
+
+
+  const headers =
+    makeUniqueHeaders(
+      headerRow
+    );
+
+
+  /*
+   * Restliche Zeilen = Daten.
+   */
+
+  const dataRows =
+    nonEmptyRows.slice(1);
+
+
+  state.records =
+    dataRows.map(
+      (row,index) => {
+
+        const record = {
+
+          memory_id:
+            `${sourcePrefix(
+              state.file?.name
+            )}-${String(
+              index + 1
+            ).padStart(
+              6,
+              "0"
+            )}`,
+
+          source: {
+
+            file:
+              state.file?.name ||
+              null,
+
+            sheet:
+              sheetName,
+
+            row:
+              index + 2
+
+          },
+
+          data:{}
+
+        };
+
+
+        headers.forEach(
+          (header,columnIndex) => {
+
+            record.data[
+              header
+            ] =
+              normalizeCell(
+                row[columnIndex]
+              );
+
+          }
+        );
+
+
+        return record;
+
+      }
+    );
+
+
+  state.schema =
     buildSchema(
-      previewRecords
-    )
-  );
+      state.records
+    );
+
+
+  renderAll();
 
 
   addLog(
-    `Sheet-Ansicht: ${sheetName}`,
-    "info"
+    `${state.records.length} Records aus "${sheetName}" erzeugt.`,
+    "ok"
   );
 
 }
@@ -2798,44 +2171,44 @@ function makeUniqueHeaders(
   const used =
     new Map();
 
-
   return row.map(
     (value,index) => {
 
-      const raw =
+      let base =
         value === null ||
         value === undefined ||
         String(value).trim() === ""
 
           ? `column_${index+1}`
 
-          : String(value).trim();
+          : String(value)
+              .trim();
 
 
       if(
-        !used.has(raw)
+        !used.has(base)
       ){
 
         used.set(
-          raw,
+          base,
           1
         );
 
-        return raw;
+        return base;
 
       }
 
 
-      const n =
-        used.get(raw) + 1;
+      const number =
+        used.get(base) + 1;
 
       used.set(
-        raw,
-        n
+        base,
+        number
       );
 
 
-      return `${raw}_${n}`;
+      return `${base}_${number}`;
 
     }
   );
@@ -2860,17 +2233,14 @@ function sourcePrefix(
 
   const base =
     fileName
-
       .replace(
         /\.[^/.]+$/,
         ""
       )
-
       .replace(
         /[^a-zA-Z0-9]+/g,
         "_"
       )
-
       .replace(
         /^_+|_+$/g,
         ""
@@ -2879,48 +2249,10 @@ function sourcePrefix(
 
   return (
     base
-      .substring(
-        0,
-        18
-      )
-      .toUpperCase()
-      ||
-      "DATA"
+      .substring(0,20)
+      .toUpperCase() ||
+    "DATA"
   );
-
-}
-
-
-/* =====================================================
-   SHEET PREFIX
-===================================================== */
-
-function sheetPrefix(
-  sheetName
-){
-
-  return String(
-    sheetName
-  )
-
-    .replace(
-      /[^a-zA-Z0-9]+/g,
-      "_"
-    )
-
-    .replace(
-      /^_+|_+$/g,
-      ""
-    )
-
-    .substring(
-      0,
-      18
-    )
-
-    .toUpperCase()
-    ||
-    "SHEET";
 
 }
 
@@ -2934,9 +2266,12 @@ function normalizeCell(
 ){
 
   /*
-   * Keine fachliche Interpretation.
+   * Wichtig:
    *
-   * Nur technische Typbehandlung.
+   * Keine semantische Interpretation.
+   * Keine Korrektur.
+   *
+   * Nur technische Repräsentation.
    */
 
   if(
@@ -2960,7 +2295,15 @@ function normalizeCell(
 
 
   if(
-    typeof value === "number" ||
+    typeof value === "number"
+  ){
+
+    return value;
+
+  }
+
+
+  if(
     typeof value === "boolean"
   ){
 
@@ -2969,114 +2312,83 @@ function normalizeCell(
   }
 
 
-  return String(
-    value
-  );
+  return String(value);
 
 }
 
 
 /* =====================================================
-   BUILD RECORDS FOR SHEET
+   SCHEMA
 ===================================================== */
 
-function buildRecordsForSheet(
-  sheet,
-  withIds=true
+function buildSchema(
+  records
 ){
 
-  const rows =
-    sheet.rows;
+  const fields =
+    new Map();
 
 
-  const nonEmpty =
-    rows.filter(
-      row =>
-        Array.isArray(row) &&
-        row.some(
-          cell =>
-            cell !== null &&
-            cell !== undefined &&
-            String(cell).trim() !== ""
-        )
-    );
+  records.forEach(
+    record => {
+
+      Object.entries(
+        record.data
+      ).forEach(
+        ([name,value]) => {
+
+          if(
+            !fields.has(name)
+          ){
+
+            fields.set(
+              name,
+              {
+                name,
+                types:new Set()
+              }
+            );
+
+          }
 
 
-  if(
-    nonEmpty.length < 2
-  ){
-
-    return [];
-
-  }
-
-
-  const headers =
-    makeUniqueHeaders(
-      nonEmpty[0]
-    );
-
-
-  const dataRows =
-    nonEmpty.slice(1);
-
-
-  return dataRows.map(
-    (row,index) => {
-
-      const data = {};
-
-
-      headers.forEach(
-        (
-          header,
-          columnIndex
-        ) => {
-
-          data[header] =
-            normalizeCell(
-              row[columnIndex]
+          fields
+            .get(name)
+            .types
+            .add(
+              detectType(value)
             );
 
         }
       );
 
+    }
+  );
 
-      const record = {
 
-        memory_id:
-          withIds
-            ? createMemoryId(
-                sheet,
-                index
-              )
-            : null,
+  return Array.from(
+    fields.values()
+  ).map(
+    field => {
 
-        source:{
+      const types =
+        Array.from(
+          field.types
+        );
 
-          file:
-            state.file?.name ||
-            null,
 
-          sheet:
-            sheet.name,
+      return {
 
-          row:
-            findOriginalRowNumber(
-              rows,
-              row,
-              index
-            )
+        name:
+          field.name,
 
-        },
-
-        data
+        type:
+          resolveSchemaType(
+            types
+          )
 
       };
 
-
-      return record;
-
     }
   );
 
@@ -3084,128 +2396,14 @@ function buildRecordsForSheet(
 
 
 /* =====================================================
-   ORIGINAL ROW NUMBER
-===================================================== */
-
-function findOriginalRowNumber(
-  rows,
-  row,
-  index
-){
-
-  /*
-   * Da leere Zeilen beim
-   * Record-Build entfernt werden,
-   * suchen wir die tatsächliche
-   * Excel-Zeilennummer.
-   */
-
-  let count = 0;
-
-
-  for(
-    let i=0;
-    i<rows.length;
-    i++
-  ){
-
-    const candidate =
-      rows[i];
-
-
-    const nonEmpty =
-      Array.isArray(candidate) &&
-      candidate.some(
-        cell =>
-          cell !== null &&
-          cell !== undefined &&
-          String(cell).trim() !== ""
-      );
-
-
-    if(!nonEmpty){
-
-      continue;
-
-    }
-
-
-    /*
-     * Header ist Zeile 1
-     */
-
-    if(count === 0){
-
-      count++;
-
-      continue;
-
-    }
-
-
-    if(
-      candidate === row
-    ){
-
-      return i + 1;
-
-    }
-
-
-    count++;
-
-  }
-
-
-  return index + 2;
-
-}
-
-
-/* =====================================================
-   MEMORY ID
-===================================================== */
-
-function createMemoryId(
-  sheet,
-  index
-){
-
-  return [
-
-    sourcePrefix(
-      state.file?.name
-    ),
-
-    sheetPrefix(
-      sheet.name
-    ),
-
-    String(
-      index + 1
-    ).padStart(
-      6,
-      "0"
-    )
-
-  ].join(
-    "-"
-  );
-
-}
-
-
-/* =====================================================
-   TECHNICAL TYPE
+   TYPE DETECTION
 ===================================================== */
 
 function detectType(
   value
 ){
 
-  if(
-    value === null
-  ){
+  if(value === null){
 
     return "null";
 
@@ -3234,11 +2432,16 @@ function detectType(
     typeof value === "string"
   ){
 
+    /*
+     * Wir erkennen hier nur
+     * technische String-Muster.
+     *
+     * Keine fachliche Bedeutung.
+     */
+
     if(
       /^\d{4}-\d{2}-\d{2}/
-        .test(
-          value
-        )
+        .test(value)
     ){
 
       return "date";
@@ -3257,993 +2460,75 @@ function detectType(
 
 
 /* =====================================================
-   SCHEMA
+   RESOLVE SCHEMA TYPE
 ===================================================== */
 
-function buildSchema(
-  records
+function resolveSchemaType(
+  types
 ){
 
-  const fields =
-    new Map();
-
-
-  records.forEach(
-    record => {
-
-      Object.entries(
-        record.data
-      ).forEach(
-        ([name,value]) => {
-
-          if(
-            !fields.has(
-              name
-            )
-          ){
-
-            fields.set(
-              name,
-              {
-                name,
-                types:new Set()
-              }
-            );
-
-          }
-
-
-          fields
-            .get(name)
-            .types
-            .add(
-              detectType(
-                value
-              )
-            );
-
-        }
-      );
-
-    }
-  );
-
-
-  return Array.from(
-    fields.values()
-  ).map(
-    field => {
-
-      const types =
-        Array.from(
-          field.types
-        )
-        .filter(
-          type =>
-            type !== "null"
-        );
-
-
-      let resolved =
-        "null";
-
-
-      if(
-        types.length === 1
-      ){
-
-        resolved =
-          types[0];
-
-      }
-
-      else if(
-        types.length > 1
-      ){
-
-        resolved =
-          "mixed";
-
-      }
-
-
-      return {
-
-        name:
-          field.name,
-
-        type:
-          resolved
-
-      };
-
-    }
-  );
-
-}
-
-
-/* =====================================================
-   EMBEDDING TEXT
-===================================================== */
-
-function createEmbeddingText(
-  record
-){
-
-  /*
-   * Kontrollierte Darstellung.
-   *
-   * KEINE Interpretation
-   * unbekannter Fachbegriffe.
-   *
-   * Feldname + Originalwert.
-   */
-
-  const lines = [];
-
-
-  lines.push(
-    `Quelle: ${record.source.file || ""}`
-  );
-
-
-  lines.push(
-    `Sheet: ${record.source.sheet || ""}`
-  );
-
-
-  lines.push(
-    `Zeile: ${record.source.row}`
-  );
-
-
-  Object.entries(
-    record.data
-  ).forEach(
-    ([key,value]) => {
-
-      if(
-        value === null ||
-        value === undefined ||
-        String(value).trim() === ""
-      ){
-
-        return;
-
-      }
-
-
-      lines.push(
-        `${key}: ${formatEmbeddingValue(value)}`
-      );
-
-    }
-  );
-
-
-  return lines.join(
-    "\n"
-  );
-
-}
-
-
-/* =====================================================
-   EMBEDDING VALUE
-===================================================== */
-
-function formatEmbeddingValue(
-  value
-){
-
-  if(
-    typeof value === "object"
-  ){
-
-    return JSON.stringify(
-      value
+  const filtered =
+    types.filter(
+      type =>
+        type !== "null"
     );
 
-  }
-
-
-  return String(
-    value
-  );
-
-}
-
-
-/* =====================================================
-   LOAD MODEL
-===================================================== */
-
-async function loadModel(){
 
   if(
-    state.modelReady
+    filtered.length === 0
   ){
 
-    return;
+    return "null";
 
   }
 
 
   if(
-    state.modelLoading
+    filtered.length === 1
   ){
 
-    while(
-      state.modelLoading
-    ){
-
-      await sleep(
-        100
-      );
-
-    }
-
-    return;
+    return filtered[0];
 
   }
 
 
-  state.modelLoading =
-    true;
-
-
-  try{
-
-    addLog(
-      "Embedding-Modell wird geladen.",
-      "info"
-    );
-
-
-    addLog(
-      `Model: ${MODEL}`,
-      "info"
-    );
-
-
-    state.extractor =
-      await pipeline(
-        "feature-extraction",
-        MODEL,
-        {
-
-          progress_callback:
-            progress => {
-
-              if(
-                progress &&
-                progress.status ===
-                "progress"
-              ){
-
-                const percent =
-                  Math.round(
-                    progress.progress ||
-                    0
-                  );
-
-
-                setProgress(
-                  percent,
-                  100,
-                  `MODEL DOWNLOAD ${percent}%`
-                );
-
-              }
-
-            }
-
-        }
-      );
-
-
-    state.modelReady =
-      true;
-
-
-    setOnline();
-
-
-    addLog(
-      `Embedding Core ONLINE — ${EMBEDDING_DIM}D.`,
-      "ok"
-    );
-
-  }
-
-  catch(error){
-
-    state.modelReady =
-      false;
-
-    state.extractor =
-      null;
-
-    throw error;
-
-  }
-
-  finally{
-
-    state.modelLoading =
-      false;
-
-    hideProgress();
-
-  }
+  return "mixed";
 
 }
 
 
 /* =====================================================
-   CREATE EMBEDDING
+   RENDER ALL
 ===================================================== */
 
-async function createEmbedding(
-  text,
-  mode="passage"
-){
+function renderAll(){
 
-  if(
-    !text ||
-    !text.trim()
-  ){
+  renderTable();
 
-    throw new Error(
-      "Embedding-Text ist leer."
-    );
-
-  }
-
-
-  await loadModel();
-
-
-  /*
-   * E5 erwartet die Präfixe
-   * passage: bzw. query:
-   */
-
-  const prepared =
-    `${mode}: ${text.trim()}`;
-
-
-  const output =
-    await state.extractor(
-      prepared,
-      {
-        pooling:"mean",
-        normalize:true
-      }
-    );
-
-
-  const vector =
-    Array.from(
-      output.data
-    );
-
-
-  if(
-    vector.length !==
-    EMBEDDING_DIM
-  ){
-
-    throw new Error(
-      `Unerwartete Dimension ${vector.length}; erwartet ${EMBEDDING_DIM}.`
-    );
-
-  }
-
-
-  return vector;
-
-}
-
-
-/* =====================================================
-   BUILD COMPLETE MEMORY
-===================================================== */
-
-processBtn.addEventListener(
-  "click",
-  buildMemory
-);
-
-
-async function buildMemory(){
-
-  if(
-    !state.workbook ||
-    !state.sheets.length
-  ){
-
-    showError({
-      message:
-        "Bitte zuerst eine Excel-/CSV-Datei importieren."
-    });
-
-    return;
-
-  }
-
-
-  clearError();
-
-
-  processBtn.disabled =
-    true;
-
-
-  try{
-
-    /*
-     * -------------------------------------------------
-     * 1. ALLE SHEETS → RECORDS
-     * -------------------------------------------------
-     */
-
-    addLog(
-      "Memory Build gestartet.",
-      "info"
-    );
-
-
-    const allRecords = [];
-
-
-    for(
-      const sheet of state.sheets
-    ){
-
-      addLog(
-        `Sheet "${sheet.name}" wird in Records umgewandelt.`,
-        "info"
-      );
-
-
-      const records =
-        buildRecordsForSheet(
-          sheet,
-          true
-        );
-
-
-      addLog(
-        `${records.length} Records aus "${sheet.name}".`,
-        "ok"
-      );
-
-
-      allRecords.push(
-        ...records
-      );
-
-    }
-
-
-    state.records =
-      allRecords;
-
-
-    recordCount.textContent =
-      state.records.length;
-
-
-    addLog(
-      `Gesamt: ${state.records.length} Records.`,
-      "ok"
-    );
-
-
-    /*
-     * -------------------------------------------------
-     * 2. SCHEMA
-     * -------------------------------------------------
-     */
-
-    state.schema =
-      buildSchema(
-        state.records
-      );
-
-
-    addLog(
-      `${state.schema.length} technische Felder erkannt.`,
-      "ok"
-    );
-
-
-    /*
-     * -------------------------------------------------
-     * 3. EMBEDDING MODEL
-     * -------------------------------------------------
-     */
-
-    await loadModel();
-
-
-    /*
-     * -------------------------------------------------
-     * 4. EMBEDDING TEXT + EMBEDDING
-     * -------------------------------------------------
-     */
-
-    const total =
-      state.records.length;
-
-
-    let embedded =
-      0;
-
-
-    for(
-      const record of state.records
-    ){
-
-      const text =
-        createEmbeddingText(
-          record
-        );
-
-
-      record.embedding_text =
-        text;
-
-
-      const vector =
-        await createEmbedding(
-          text,
-          "passage"
-        );
-
-
-      record.embedding =
-        vector;
-
-
-      record.embedding_model =
-        MODEL;
-
-
-      record.embedding_dimension =
-        vector.length;
-
-
-      record.created_at =
-        new Date().toISOString();
-
-
-      embedded++;
-
-
-      setProgress(
-        embedded,
-        total,
-        `EMBEDDING ${embedded}/${total}`
-      );
-
-
-      /*
-       * Zwischenspeichern.
-       *
-       * Dadurch geht bei sehr großen
-       * Imports nicht der gesamte
-       * Fortschritt verloren, falls
-       * später ein Fehler auftritt.
-       */
-
-      await dbPut(
-        record
-      );
-
-
-      embeddedCount.textContent =
-        embedded;
-
-    }
-
-
-    /*
-     * -------------------------------------------------
-     * 5. MEMORY STORE
-     * -------------------------------------------------
-     */
-
-    addLog(
-      "Alle Embeddings erzeugt.",
-      "ok"
-    );
-
-
-    addLog(
-      "Records werden im IndexedDB Memory Store synchronisiert.",
-      "info"
-    );
-
-
-    /*
-     * IndexedDB enthält bereits
-     * jeden Record durch dbPut().
-     */
-
-    await refreshMemoryFromDB();
-
-
-    renderRecords();
-
-
-    renderSchema(
-      state.schema
-    );
-
-
-    hideProgress();
-
-
-    addLog(
-      `MEMORY BUILD COMPLETE — ${embedded} Records / ${EMBEDDING_DIM}D.`,
-      "ok"
-    );
-
-
-    searchBtn.disabled =
-      state.records.length === 0;
-
-
-  }
-
-  catch(error){
-
-    console.error(
-      error
-    );
-
-    showError(
-      error
-    );
-
-  }
-
-  finally{
-
-    processBtn.disabled =
-      false;
-
-  }
-
-}
-
-
-/* =====================================================
-   INDEXED DB
-===================================================== */
-
-let dbPromise =
-  null;
-
-
-function openDB(){
-
-  if(
-    dbPromise
-  ){
-
-    return dbPromise;
-
-  }
-
-
-  dbPromise =
-    new Promise(
-      (
-        resolve,
-        reject
-      ) => {
-
-        const request =
-          indexedDB.open(
-            DB_NAME,
-            DB_VERSION
-          );
-
-
-        request.onupgradeneeded =
-          event => {
-
-            const db =
-              event.target.result;
-
-
-            if(
-              !db.objectStoreNames
-                .contains(
-                  STORE_NAME
-                )
-            ){
-
-              db.createObjectStore(
-                STORE_NAME,
-                {
-                  keyPath:"memory_id"
-                }
-              );
-
-            }
-
-          };
-
-
-        request.onsuccess =
-          event => {
-
-            resolve(
-              event.target.result
-            );
-
-          };
-
-
-        request.onerror =
-          () => {
-
-            reject(
-              request.error
-            );
-
-          };
-
-      }
-    );
-
-
-  return dbPromise;
-
-}
-
-
-/* =====================================================
-   DB PUT
-===================================================== */
-
-async function dbPut(
-  record
-){
-
-  const db =
-    await openDB();
-
-
-  return new Promise(
-    (
-      resolve,
-      reject
-    ) => {
-
-      const transaction =
-        db.transaction(
-          STORE_NAME,
-          "readwrite"
-        );
-
-
-      transaction
-        .objectStore(
-          STORE_NAME
-        )
-        .put(
-          record
-        );
-
-
-      transaction.oncomplete =
-        () => {
-
-          resolve();
-
-        };
-
-
-      transaction.onerror =
-        () => {
-
-          reject(
-            transaction.error
-          );
-
-        };
-
-    }
-  );
-
-}
-
-
-/* =====================================================
-   DB GET ALL
-===================================================== */
-
-async function dbGetAll(){
-
-  const db =
-    await openDB();
-
-
-  return new Promise(
-    (
-      resolve,
-      reject
-    ) => {
-
-      const transaction =
-        db.transaction(
-          STORE_NAME,
-          "readonly"
-        );
-
-
-      const request =
-        transaction
-          .objectStore(
-            STORE_NAME
-          )
-          .getAll();
-
-
-      request.onsuccess =
-        () => {
-
-          resolve(
-            request.result || []
-          );
-
-        };
-
-
-      request.onerror =
-        () => {
-
-          reject(
-            request.error
-          );
-
-        };
-
-    }
-  );
-
-}
-
-
-/* =====================================================
-   DB CLEAR
-===================================================== */
-
-async function dbClear(){
-
-  const db =
-    await openDB();
-
-
-  return new Promise(
-    (
-      resolve,
-      reject
-    ) => {
-
-      const transaction =
-        db.transaction(
-          STORE_NAME,
-          "readwrite"
-        );
-
-
-      transaction
-        .objectStore(
-          STORE_NAME
-        )
-        .clear();
-
-
-      transaction.oncomplete =
-        () => resolve();
-
-
-      transaction.onerror =
-        () =>
-          reject(
-            transaction.error
-          );
-
-    }
-  );
-
-}
-
-
-/* =====================================================
-   REFRESH MEMORY
-===================================================== */
-
-async function refreshMemoryFromDB(){
-
-  state.records =
-    await dbGetAll();
-
-
-  state.records.sort(
-    (
-      a,
-      b
-    ) =>
-      String(
-        a.memory_id
-      ).localeCompare(
-        String(
-          b.memory_id
-        )
-      )
-  );
-
-
-  recordCount.textContent =
-    state.records.length;
-
-
-  embeddedCount.textContent =
-    state.records.filter(
-      r =>
-        Array.isArray(
-          r.embedding
-        )
-    ).length;
-
-
-  searchBtn.disabled =
-    state.records.length === 0;
-
+  renderSchema();
 
   renderRecords();
 
+  updateMetrics();
+
 }
 
 
 /* =====================================================
-   RENDER RAW TABLE
+   RENDER TABLE
 ===================================================== */
 
-function renderRawTable(
-  rows
-){
-
-  const nonEmpty =
-    rows.filter(
-      row =>
-        Array.isArray(row) &&
-        row.some(
-          cell =>
-            cell !== null &&
-            cell !== undefined &&
-            String(cell).trim() !== ""
-        )
-    );
-
+function renderTable(){
 
   if(
-    nonEmpty.length === 0
+    state.records.length === 0
   ){
 
     tableWrap.innerHTML =
       `<div
         class="empty"
         style="padding:20px">
-        Sheet enthält keine Daten.
+        Keine Daten.
        </div>`;
 
     return;
@@ -4252,15 +2537,15 @@ function renderRawTable(
 
 
   const headers =
-    makeUniqueHeaders(
-      nonEmpty[0]
+    Object.keys(
+      state.records[0].data
     );
 
 
   let html =
     `<table>
-      <thead>
-        <tr>`;
+       <thead>
+         <tr>`;
 
 
   headers.forEach(
@@ -4281,36 +2566,39 @@ function renderRawTable(
      <tbody>`;
 
 
-  nonEmpty
-    .slice(
-      1,
-      501
-    )
+  /*
+   * Für die UI zunächst
+   * maximal 500 Zeilen.
+   *
+   * Die Records selbst
+   * bleiben vollständig.
+   */
+
+  state.records
+    .slice(0,500)
     .forEach(
-      row => {
+      record => {
 
         html +=
           `<tr>`;
 
 
         headers.forEach(
-          (
-            header,
-            index
-          ) => {
+          header => {
 
             const value =
-              normalizeCell(
-                row[index]
-              );
+              record.data[
+                header
+              ];
 
 
             html +=
-              `<td title="${escapeHtml(
-                value ?? ""
-              )}">
-                ${escapeHtml(
+              `<td
+                title="${escapeHtml(
                   value ?? ""
+                )}">
+                ${escapeHtml(
+                  formatCell(value)
                 )}
                </td>`;
 
@@ -4337,24 +2625,53 @@ function renderRawTable(
 
 
 /* =====================================================
+   FORMAT CELL
+===================================================== */
+
+function formatCell(
+  value
+){
+
+  if(value === null){
+
+    return "";
+
+  }
+
+
+  if(
+    typeof value === "object"
+  ){
+
+    return JSON.stringify(
+      value
+    );
+
+  }
+
+
+  return String(value);
+
+}
+
+
+/* =====================================================
    RENDER SCHEMA
 ===================================================== */
 
-function renderSchema(
-  schema
-){
+function renderSchema(){
 
   schemaList.innerHTML =
     "";
 
 
   if(
-    !schema.length
+    state.schema.length === 0
   ){
 
     schemaList.innerHTML =
       `<div class="empty">
-        Kein Schema.
+        Kein Schema vorhanden.
        </div>`;
 
     return;
@@ -4362,14 +2679,13 @@ function renderSchema(
   }
 
 
-  schema.forEach(
+  state.schema.forEach(
     field => {
 
       const item =
         document.createElement(
           "div"
         );
-
 
       item.className =
         "schemaItem";
@@ -4413,12 +2729,12 @@ function renderRecords(){
 
 
   if(
-    !state.records.length
+    state.records.length === 0
   ){
 
     recordList.innerHTML =
       `<div class="empty">
-        Memory Store leer.
+        Noch keine Records.
        </div>`;
 
     return;
@@ -4427,18 +2743,12 @@ function renderRecords(){
 
 
   /*
-   * Browser-Ansicht.
-   *
-   * Der Store enthält alle Records.
-   * Für die UI zeigen wir zunächst
-   * maximal 500.
+   * UI zeigt zunächst
+   * die ersten 100 Records.
    */
 
   state.records
-    .slice(
-      0,
-      500
-    )
+    .slice(0,100)
     .forEach(
       record => {
 
@@ -4447,81 +2757,54 @@ function renderRecords(){
             "div"
           );
 
-
         item.className =
           "record";
 
 
-        const preview = {};
+        const keys =
+          Object.keys(
+            record.data
+          );
 
 
-        Object.entries(
-          record.data || {}
-        )
-        .slice(
-          0,
-          4
-        )
-        .forEach(
-          (
-            [key,value]
-          ) => {
-
-            preview[key] =
-              value;
-
-          }
-        );
+        const preview =
+          {};
 
 
-        const hasEmbedding =
-          Array.isArray(
-            record.embedding
+        keys
+          .slice(0,5)
+          .forEach(
+            key => {
+
+              preview[key] =
+                record.data[key];
+
+            }
           );
 
 
         item.innerHTML = `
 
           <div class="recordId">
-
             ${escapeHtml(
               record.memory_id
             )}
-
           </div>
-
 
           <div class="recordMeta">
-
             ${escapeHtml(
-              record.source?.file || ""
+              record.source.file
             )}
-
             //
-
             ${escapeHtml(
-              record.source?.sheet || ""
+              record.source.sheet
             )}
-
             //
-
             ROW
-            ${record.source?.row || "—"}
-
+            ${record.source.row}
           </div>
-
-
-          <div class="recordEmbedding">
-
-            ${hasEmbedding
-              ? `● EMBEDDED / ${record.embedding.length}D`
-              : `○ NOT EMBEDDED`}
-
-          </div>
-
 
           <div class="recordJson">
-
             ${escapeHtml(
               JSON.stringify(
                 preview,
@@ -4529,7 +2812,6 @@ function renderRecords(){
                 2
               )
             )}
-
           </div>
 
         `;
@@ -4575,58 +2857,6 @@ function selectRecord(
     );
 
 
-  embeddingText.textContent =
-    record.embedding_text ||
-    "Kein embedding_text vorhanden.";
-
-
-  if(
-    Array.isArray(
-      record.embedding
-    )
-  ){
-
-    embeddingDim.textContent =
-      `d = ${record.embedding.length}`;
-
-
-    const preview =
-      record.embedding
-        .map(
-          (
-            value,
-            index
-          ) =>
-            `v${index+1}=${value.toFixed(7)}`
-        )
-        .join("\n");
-
-
-    embeddingBox.textContent =
-      `${preview}
-
-...
-
-[${record.embedding.length} DIMENSIONEN]
-
-L2-NORM:
-${vectorNorm(
-  record.embedding
-).toFixed(8)}`;
-
-  }
-
-  else{
-
-    embeddingDim.textContent =
-      "d = —";
-
-    embeddingBox.textContent =
-      "Kein Embedding.";
-
-  }
-
-
   addLog(
     `${record.memory_id} ausgewählt.`,
     "info"
@@ -4636,798 +2866,25 @@ ${vectorNorm(
 
 
 /* =====================================================
-   VECTOR MATH
+   METRICS
 ===================================================== */
 
-function dot(
-  a,
-  b
-){
+function updateMetrics(){
 
-  let sum = 0;
+  rowCount.textContent =
+    state.records.length;
 
 
-  const length =
-    Math.min(
-      a.length,
-      b.length
-    );
+  recordCount.textContent =
+    state.records.length;
 
 
-  for(
-    let i=0;
-    i<length;
-    i++
-  ){
+  columnCount.textContent =
+    state.schema.length;
 
-    sum +=
-      a[i] *
-      b[i];
 
-  }
-
-
-  return sum;
-
-}
-
-
-function vectorNorm(
-  v
-){
-
-  let sum = 0;
-
-
-  for(
-    let i=0;
-    i<v.length;
-    i++
-  ){
-
-    sum +=
-      v[i] *
-      v[i];
-
-  }
-
-
-  return Math.sqrt(
-    sum
-  );
-
-}
-
-
-function cosineSimilarity(
-  a,
-  b
-){
-
-  if(
-    !Array.isArray(a) ||
-    !Array.isArray(b) ||
-    a.length !== b.length
-  ){
-
-    return 0;
-
-  }
-
-
-  const denominator =
-    vectorNorm(a) *
-    vectorNorm(b);
-
-
-  if(
-    denominator === 0
-  ){
-
-    return 0;
-
-  }
-
-
-  return (
-    dot(a,b) /
-    denominator
-  );
-
-}
-
-
-/* =====================================================
-   SEMANTIC SEARCH
-===================================================== */
-
-searchBtn.addEventListener(
-  "click",
-  runSearch
-);
-
-
-queryInput.addEventListener(
-  "keydown",
-  event => {
-
-    if(
-      event.key === "Enter"
-    ){
-
-      runSearch();
-
-    }
-
-  }
-);
-
-
-async function runSearch(){
-
-  const query =
-    queryInput.value.trim();
-
-
-  if(!query){
-
-    showError({
-      message:
-        "Bitte eine Suchanfrage eingeben."
-    });
-
-    return;
-
-  }
-
-
-  const candidates =
-    getFilteredRecords();
-
-
-  if(
-    !candidates.length
-  ){
-
-    showError({
-      message:
-        "Keine Records nach dem aktuellen Filter."
-    });
-
-    return;
-
-  }
-
-
-  clearError();
-
-
-  searchBtn.disabled =
-    true;
-
-
-  try{
-
-    addLog(
-      `Semantic Query: "${query}"`,
-      "info"
-    );
-
-
-    const queryVector =
-      await createEmbedding(
-        query,
-        "query"
-      );
-
-
-    const results =
-      candidates
-        .map(
-          record => ({
-
-            record,
-
-            score:
-              cosineSimilarity(
-                queryVector,
-                record.embedding
-              )
-
-          })
-        )
-        .sort(
-          (
-            a,
-            b
-          ) =>
-            b.score -
-            a.score
-        );
-
-
-    renderRanking(
-      results
-    );
-
-
-    addLog(
-      `${results.length} Records deterministisch verglichen.`,
-      "ok"
-    );
-
-
-    if(
-      results.length
-    ){
-
-      addLog(
-        `Top-1: ${results[0].record.memory_id}`,
-        "ok"
-      );
-
-
-      addLog(
-        `Cosine: ${results[0].score.toFixed(6)}`,
-        "ok"
-      );
-
-    }
-
-  }
-
-  catch(error){
-
-    showError(
-      error
-    );
-
-  }
-
-  finally{
-
-    searchBtn.disabled =
-      state.records.length === 0;
-
-  }
-
-}
-
-
-/* =====================================================
-   FILTER
-===================================================== */
-
-filterBtn.addEventListener(
-  "click",
-  () => {
-
-    state.filterActive =
-      true;
-
-    renderRecords();
-
-    addLog(
-      `Deterministischer Filter aktiviert: ${filterField.value}`,
-      "info"
-    );
-
-  }
-);
-
-
-clearFilterBtn.addEventListener(
-  "click",
-  () => {
-
-    filterField.value =
-      "";
-
-    filterValue.value =
-      "";
-
-    state.filterActive =
-      false;
-
-    renderRecords();
-
-    addLog(
-      "Deterministischer Filter entfernt.",
-      "info"
-    );
-
-  }
-);
-
-
-/* =====================================================
-   GET FILTERED RECORDS
-===================================================== */
-
-function getFilteredRecords(){
-
-  if(
-    !state.filterActive
-  ){
-
-    return state.records.filter(
-      record =>
-        Array.isArray(
-          record.embedding
-        )
-    );
-
-  }
-
-
-  const field =
-    filterField.value.trim();
-
-
-  const operator =
-    filterOperator.value;
-
-
-  const wanted =
-    filterValue.value;
-
-
-  if(!field){
-
-    return state.records.filter(
-      record =>
-        Array.isArray(
-          record.embedding
-        )
-    );
-
-  }
-
-
-  return state.records.filter(
-    record => {
-
-      if(
-        !Array.isArray(
-          record.embedding
-        )
-      ){
-
-        return false;
-
-      }
-
-
-      const actual =
-        getNestedDataValue(
-          record,
-          field
-        );
-
-
-      return compareValues(
-        actual,
-        wanted,
-        operator
-      );
-
-    }
-  );
-
-}
-
-
-/* =====================================================
-   FIELD VALUE
-===================================================== */
-
-function getNestedDataValue(
-  record,
-  field
-){
-
-  /*
-   * Primär wird record.data
-   * durchsucht.
-   *
-   * source.file usw.
-   * können ebenfalls explizit
-   * angesprochen werden.
-   */
-
-  if(
-    Object.prototype.hasOwnProperty.call(
-      record.data || {},
-      field
-    )
-  ){
-
-    return record.data[field];
-
-  }
-
-
-  if(
-    field === "memory_id"
-  ){
-
-    return record.memory_id;
-
-  }
-
-
-  if(
-    field === "source.file"
-  ){
-
-    return record.source?.file;
-
-  }
-
-
-  if(
-    field === "source.sheet"
-  ){
-
-    return record.source?.sheet;
-
-  }
-
-
-  if(
-    field === "source.row"
-  ){
-
-    return record.source?.row;
-
-  }
-
-
-  return undefined;
-
-}
-
-
-/* =====================================================
-   DETERMINISTIC COMPARISON
-===================================================== */
-
-function compareValues(
-  actual,
-  wanted,
-  operator
-){
-
-  if(
-    actual === undefined ||
-    actual === null
-  ){
-
-    return false;
-
-  }
-
-
-  const actualNumber =
-    Number(actual);
-
-  const wantedNumber =
-    Number(wanted);
-
-
-  const numeric =
-    Number.isFinite(
-      actualNumber
-    ) &&
-    Number.isFinite(
-      wantedNumber
-    );
-
-
-  switch(operator){
-
-    case "equals":
-
-      if(numeric){
-
-        return (
-          actualNumber ===
-          wantedNumber
-        );
-
-      }
-
-      return (
-        String(actual) ===
-        String(wanted)
-      );
-
-
-    case "contains":
-
-      return String(actual)
-        .toLowerCase()
-        .includes(
-          String(wanted)
-            .toLowerCase()
-        );
-
-
-    case "gt":
-
-      return numeric
-        ? actualNumber > wantedNumber
-        : String(actual) > String(wanted);
-
-
-    case "gte":
-
-      return numeric
-        ? actualNumber >= wantedNumber
-        : String(actual) >= String(wanted);
-
-
-    case "lt":
-
-      return numeric
-        ? actualNumber < wantedNumber
-        : String(actual) < String(wanted);
-
-
-    case "lte":
-
-      return numeric
-        ? actualNumber <= wantedNumber
-        : String(actual) <= String(wanted);
-
-
-    default:
-
-      return false;
-
-  }
-
-}
-
-
-/* =====================================================
-   RANKING
-===================================================== */
-
-function renderRanking(
-  results
-){
-
-  ranking.innerHTML =
-    "";
-
-
-  if(
-    !results.length
-  ){
-
-    ranking.innerHTML =
-      `<div class="empty">
-        NO RESULT
-       </div>`;
-
-    return;
-
-  }
-
-
-  const maxScore =
-    Math.max(
-      ...results.map(
-        r =>
-          r.score
-      )
-    );
-
-
-  results
-    .slice(
-      0,
-      30
-    )
-    .forEach(
-      (
-        result,
-        index
-      ) => {
-
-        const record =
-          result.record;
-
-
-        const item =
-          document.createElement(
-            "div"
-          );
-
-
-        item.className =
-          "rank";
-
-
-        const width =
-          maxScore > 0
-            ? (
-                result.score /
-                maxScore
-              ) *
-              100
-            : 0;
-
-
-        item.innerHTML = `
-
-          <div class="rankTop">
-
-            <span>
-              #${index+1}
-              ${escapeHtml(
-                record.memory_id
-              )}
-            </span>
-
-            <span class="rankScore">
-
-              COSINE
-              ${result.score.toFixed(6)}
-
-            </span>
-
-          </div>
-
-
-          <div class="bar">
-
-            <div
-              class="barFill"
-              style="width:${width}%">
-            </div>
-
-          </div>
-
-
-          <div class="rankText">
-
-            ${escapeHtml(
-              record.embedding_text
-                ?.split("\n")
-                .slice(0,4)
-                .join(" // ")
-              ||
-              ""
-            )}
-
-          </div>
-
-        `;
-
-
-        item.onclick =
-          () => {
-
-            selectRecord(
-              record
-            );
-
-          };
-
-
-        ranking.appendChild(
-          item
-        );
-
-      }
-    );
-
-}
-
-
-/* =====================================================
-   EXPORT
-===================================================== */
-
-exportBtn.addEventListener(
-  "click",
-  exportMemory
-);
-
-
-async function exportMemory(){
-
-  const records =
-    await dbGetAll();
-
-
-  const payload = {
-
-    format:
-      "NEURAL_MEMORY_EXPORT",
-
-    version:
-      2,
-
-    model:
-      MODEL,
-
-    dimension:
-      EMBEDDING_DIM,
-
-    exported_at:
-      new Date().toISOString(),
-
-    source_file:
-      state.file?.name ||
-      null,
-
-    record_count:
-      records.length,
-
-    records
-
-  };
-
-
-  const blob =
-    new Blob(
-      [
-        JSON.stringify(
-          payload,
-          null,
-          2
-        )
-      ],
-      {
-        type:
-          "application/json"
-      }
-    );
-
-
-  const url =
-    URL.createObjectURL(
-      blob
-    );
-
-
-  const a =
-    document.createElement(
-      "a"
-    );
-
-
-  a.href =
-    url;
-
-
-  a.download =
-    `neural-memory-${Date.now()}.json`;
-
-
-  document.body.appendChild(
-    a
-  );
-
-
-  a.click();
-
-
-  a.remove();
-
-
-  URL.revokeObjectURL(
-    url
-  );
-
-
-  addLog(
-    `${records.length} Memory Records exportiert.`,
-    "ok"
-  );
+  sheetCount.textContent =
+    state.sheets.length;
 
 }
 
@@ -5436,192 +2893,117 @@ async function exportMemory(){
    CLEAR
 ===================================================== */
 
-clearBtn.addEventListener(
+clearDataBtn.addEventListener(
   "click",
-  clearMemory
+  () => {
+
+    clearImportedData();
+
+  }
 );
 
 
-async function clearMemory(){
+function clearImportedData(){
 
-  const confirmed =
-    confirm(
-      "Wirklich den kompletten NEURAL MEMORY Store löschen?"
-    );
+  state.workbook = null;
 
+  state.file = null;
 
-  if(!confirmed){
+  state.sheets = [];
 
-    return;
+  state.currentSheet = null;
 
-  }
+  state.rows = [];
 
+  state.records = [];
 
-  try{
+  state.schema = [];
 
-    await dbClear();
-
-
-    state.records =
-      [];
+  state.selectedRecord = null;
 
 
-    state.selectedRecord =
-      null;
+  fileInfo.classList.remove(
+    "show"
+  );
 
 
-    embeddedCount.textContent =
-      "0";
+  fileInput.value =
+    "";
 
 
-    recordCount.textContent =
-      "0";
+  sheetList.innerHTML =
+    `<div class="empty">
+      Noch keine Datei importiert.
+     </div>`;
 
 
-    selectedRecord.textContent =
-      "Kein Record ausgewählt.";
+  tableWrap.innerHTML =
+    `<div
+      class="empty"
+      style="padding:20px">
+      Noch keine Tabelle geladen.
+     </div>`;
 
 
-    embeddingText.textContent =
-      "Kein Record ausgewählt.";
+  schemaList.innerHTML =
+    `<div class="empty">
+      Schema wird nach dem Import erzeugt.
+     </div>`;
 
 
-    embeddingBox.textContent =
-      "Kein Embedding ausgewählt.";
+  recordList.innerHTML =
+    `<div class="empty">
+      Noch keine Records.
+     </div>`;
 
 
-    embeddingDim.textContent =
-      "d = —";
+  selectedRecord.textContent =
+    "Kein Record ausgewählt.";
 
 
-    ranking.innerHTML =
-      `<div class="empty">
-        Keine Suche.
-       </div>`;
+  updateMetrics();
+
+  setOffline();
 
 
-    renderRecords();
-
-
-    searchBtn.disabled =
-      true;
-
-
-    addLog(
-      "NEURAL MEMORY Store vollständig geleert.",
-      "warn"
-    );
-
-  }
-
-  catch(error){
-
-    showError(
-      error
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   UTILITY
-===================================================== */
-
-function sleep(
-  ms
-){
-
-  return new Promise(
-    resolve =>
-      setTimeout(
-        resolve,
-        ms
-      )
+  addLog(
+    "Importdaten vollständig entfernt.",
+    "warn"
   );
 
 }
 
 
 /* =====================================================
-   BOOT
+   INITIAL BOOT
 ===================================================== */
 
-(async function boot(){
+addLog(
+  "NEURAL MEMORY Data Ingestion gestartet.",
+  "ok"
+);
 
-  addLog(
-    "NEURAL MEMORY gestartet.",
-    "ok"
-  );
+addLog(
+  "UI bereit.",
+  "ok"
+);
 
+addLog(
+  "Warte auf XLSX / XLS / CSV.",
+  "info"
+);
 
-  addLog(
-    "Data Ingestion bereit.",
-    "ok"
-  );
+addLog(
+  "Originaldaten werden unverändert übernommen.",
+  "info"
+);
 
-
-  addLog(
-    "Multi-Sheet Import: ACTIVE.",
-    "info"
-  );
-
-
-  addLog(
-    `Embedding Model: ${MODEL}`,
-    "info"
-  );
-
-
-  addLog(
-    `Embedding Dimension: ${EMBEDDING_DIM}`,
-    "info"
-  );
-
-
-  addLog(
-    "Vector Store: IndexedDB.",
-    "info"
-  );
-
-
-  addLog(
-    "Semantic Retrieval: Cosine Similarity.",
-    "info"
-  );
-
-
-  addLog(
-    "Deterministic Field Filters: ACTIVE.",
-    "info"
-  );
-
-
-  try{
-
-    await refreshMemoryFromDB();
-
-
-    addLog(
-      `${state.records.length} bestehende Memory Records geladen.`,
-      "ok"
-    );
-
-  }
-
-  catch(error){
-
-    showError(
-      error
-    );
-
-  }
-
-})();
+addLog(
+  "Keine semantische Interpretation aktiv.",
+  "info"
+);
 
 </script>
 
 </body>
 </html>
-
