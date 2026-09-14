@@ -5,6 +5,9 @@
 <meta name="viewport"
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#020308">
+
 <title>NEURAL MEMORY — Semantic Memory Space</title>
 
 <style>
@@ -22,8 +25,7 @@
 
   --text:#e9f7ff;
   --muted:#71849b;
-
-  --shadow:0 0 25px rgba(0,245,255,.08);
+  --danger:#ff5277;
 }
 
 *{
@@ -35,8 +37,10 @@ html,body{
   width:100%;
   height:100%;
   overflow:hidden;
+
   background:var(--bg);
   color:var(--text);
+
   font-family:
     Inter,
     ui-sans-serif,
@@ -58,10 +62,17 @@ button{
   cursor:pointer;
 }
 
+button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
 #app{
   width:100%;
   height:100%;
+
   display:grid;
+
   grid-template-columns:310px 1fr 330px;
   grid-template-rows:64px 1fr 34px;
 }
@@ -71,7 +82,7 @@ button{
 ========================================================= */
 
 header{
-  grid-column:1 / 4;
+  grid-column:1/4;
 
   display:flex;
   align-items:center;
@@ -80,6 +91,7 @@ header{
   padding:0 22px;
 
   border-bottom:1px solid var(--line);
+
   background:
     linear-gradient(
       90deg,
@@ -88,8 +100,6 @@ header{
       transparent 65%,
       rgba(255,43,214,.05)
     );
-
-  box-shadow:var(--shadow);
 }
 
 .logo{
@@ -102,10 +112,10 @@ header{
   width:32px;
   height:32px;
 
-  border:1px solid var(--cyan);
-
   display:grid;
   place-items:center;
+
+  border:1px solid var(--cyan);
 
   color:var(--cyan);
 
@@ -113,7 +123,7 @@ header{
     0 0 12px rgba(0,245,255,.35),
     inset 0 0 12px rgba(0,245,255,.08);
 
-  font-size:13px;
+  font-size:12px;
   font-weight:800;
 }
 
@@ -134,18 +144,26 @@ header{
   align-items:center;
   gap:8px;
 
+  color:var(--muted);
+
   font-size:10px;
   letter-spacing:.14em;
-  color:var(--muted);
 }
 
 .status-dot{
   width:7px;
   height:7px;
+
   border-radius:50%;
+
   background:var(--green);
 
   box-shadow:0 0 12px var(--green);
+}
+
+.status-dot.error{
+  background:var(--danger);
+  box-shadow:0 0 12px var(--danger);
 }
 
 /* =========================================================
@@ -154,14 +172,14 @@ header{
 
 .left,
 .right{
+  overflow:auto;
+
   background:
     linear-gradient(
       180deg,
       rgba(255,255,255,.015),
       transparent
     );
-
-  overflow:auto;
 }
 
 .left{
@@ -174,6 +192,7 @@ header{
 
 .panel{
   padding:18px;
+
   border-bottom:1px solid var(--line);
 }
 
@@ -191,15 +210,10 @@ header{
   color:var(--muted);
 }
 
-/* =========================================================
-   INPUT
-========================================================= */
-
 label{
   display:block;
 
-  margin:
-    13px 0 6px;
+  margin:13px 0 6px;
 
   color:var(--muted);
 
@@ -241,10 +255,6 @@ textarea{
   resize:vertical;
 }
 
-select{
-  appearance:auto;
-}
-
 .primary{
   width:100%;
 
@@ -266,11 +276,7 @@ select{
   font-size:10px;
   font-weight:800;
   letter-spacing:.15em;
-
   text-transform:uppercase;
-
-  box-shadow:
-    0 0 15px rgba(0,245,255,.06);
 }
 
 .primary:hover{
@@ -279,7 +285,9 @@ select{
 
 .secondary{
   border:1px solid var(--line);
+
   background:#070b14;
+
   color:#9fb0c2;
 
   padding:9px 11px;
@@ -294,21 +302,22 @@ select{
   color:white;
 }
 
+.danger{
+  border-color:rgba(255,82,119,.35);
+  color:#ff829d;
+}
+
 .actions{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:7px;
+
   margin-top:10px;
 }
-
-/* =========================================================
-   STATS
-========================================================= */
 
 .stats{
   display:grid;
   grid-template-columns:1fr 1fr;
-
   gap:7px;
 }
 
@@ -316,6 +325,7 @@ select{
   padding:11px;
 
   border:1px solid var(--line);
+
   background:#050914;
 }
 
@@ -335,11 +345,12 @@ select{
 }
 
 /* =========================================================
-   CENTER
+   3D SPACE
 ========================================================= */
 
 .space{
   position:relative;
+
   min-width:0;
   min-height:0;
 
@@ -359,10 +370,12 @@ select{
 
 .space-top{
   position:absolute;
+
   left:18px;
   top:16px;
 
   pointer-events:none;
+
   z-index:5;
 }
 
@@ -371,7 +384,6 @@ select{
 
   font-size:12px;
   font-weight:800;
-
   letter-spacing:.18em;
 }
 
@@ -386,6 +398,7 @@ select{
 
 .legend{
   position:absolute;
+
   left:18px;
   bottom:18px;
 
@@ -410,11 +423,13 @@ select{
 .legend-dot{
   width:7px;
   height:7px;
+
   border-radius:50%;
 }
 
 .controls{
   position:absolute;
+
   right:18px;
   bottom:18px;
 
@@ -431,7 +446,7 @@ select{
 }
 
 /* =========================================================
-   EXPLORER
+   SEARCH / EXPLORER
 ========================================================= */
 
 .search{
@@ -444,10 +459,13 @@ select{
 
 .search-icon{
   position:absolute;
+
   left:10px;
   top:9px;
 
   color:var(--muted);
+
+  pointer-events:none;
 }
 
 .filter-row{
@@ -463,7 +481,9 @@ select{
   white-space:nowrap;
 
   border:1px solid var(--line);
+
   background:#050914;
+
   color:#71849b;
 
   padding:6px 8px;
@@ -489,6 +509,7 @@ select{
   padding:10px;
 
   border:1px solid var(--line);
+
   background:#050914;
 
   cursor:pointer;
@@ -534,6 +555,7 @@ select{
   display:-webkit-box;
   -webkit-line-clamp:2;
   -webkit-box-orient:vertical;
+
   overflow:hidden;
 }
 
@@ -572,11 +594,13 @@ select{
 
 .meta-item{
   border:1px solid var(--line);
+
   padding:8px;
 }
 
 .meta-key{
   color:var(--muted);
+
   font-size:7px;
   letter-spacing:.1em;
   text-transform:uppercase;
@@ -624,6 +648,7 @@ select{
 .relation{
   display:flex;
   justify-content:space-between;
+  gap:10px;
 
   padding:7px 0;
 
@@ -638,6 +663,27 @@ select{
 
 .relation-target{
   color:#b9c7d4;
+
+  text-align:right;
+}
+
+.inspector-actions{
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:6px;
+
+  margin-top:14px;
+}
+
+.small-note{
+  color:#506175;
+
+  font-size:8px;
+  line-height:1.5;
+
+  margin-top:10px;
 }
 
 /* =========================================================
@@ -645,7 +691,7 @@ select{
 ========================================================= */
 
 footer{
-  grid-column:1 / 4;
+  grid-column:1/4;
 
   display:flex;
   align-items:center;
@@ -666,6 +712,125 @@ footer{
 }
 
 /* =========================================================
+   TOAST
+========================================================= */
+
+.toast{
+  position:fixed;
+
+  left:50%;
+  bottom:48px;
+
+  transform:
+    translateX(-50%)
+    translateY(20px);
+
+  opacity:0;
+
+  pointer-events:none;
+
+  z-index:100;
+
+  border:1px solid var(--cyan);
+
+  background:#050914;
+
+  color:var(--text);
+
+  padding:10px 14px;
+
+  font-size:9px;
+  letter-spacing:.08em;
+
+  transition:.2s;
+
+  box-shadow:
+    0 0 25px rgba(0,245,255,.12);
+}
+
+.toast.show{
+  opacity:1;
+
+  transform:
+    translateX(-50%)
+    translateY(0);
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+
+  background:rgba(0,0,0,.65);
+
+  z-index:90;
+
+  display:none;
+
+  align-items:center;
+  justify-content:center;
+
+  padding:20px;
+}
+
+.modal-backdrop.show{
+  display:flex;
+}
+
+.modal{
+  width:min(560px,100%);
+  max-height:90vh;
+
+  overflow:auto;
+
+  border:1px solid var(--line);
+
+  background:#060a12;
+
+  box-shadow:
+    0 0 50px rgba(0,245,255,.12);
+}
+
+.modal-head{
+  padding:14px 16px;
+
+  border-bottom:1px solid var(--line);
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.modal-title{
+  color:var(--cyan);
+
+  font-size:10px;
+  letter-spacing:.16em;
+  font-weight:800;
+}
+
+.modal-body{
+  padding:16px;
+}
+
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:7px;
+
+  margin-top:14px;
+}
+
+.relation-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+
+/* =========================================================
    RESPONSIVE
 ========================================================= */
 
@@ -679,12 +844,9 @@ footer{
     display:none;
   }
 
-  header{
-    grid-column:1 / 3;
-  }
-
+  header,
   footer{
-    grid-column:1 / 3;
+    grid-column:1/3;
   }
 }
 
@@ -697,6 +859,7 @@ footer{
   #app{
     height:auto;
     min-height:100%;
+
     display:block;
   }
 
@@ -707,6 +870,7 @@ footer{
   .left,
   .right{
     border:none;
+
     border-bottom:1px solid var(--line);
   }
 
@@ -726,32 +890,53 @@ footer{
 
 <div id="app">
 
+<!-- =======================================================
+     HEADER
+======================================================= -->
+
 <header>
 
   <div class="logo">
 
-    <div class="logo-mark">NM</div>
+    <div class="logo-mark">
+      NM
+    </div>
 
     <div>
-      <div class="logo-title">NEURAL MEMORY</div>
-      <div class="logo-sub">SEMANTIC MEMORY SPACE</div>
+      <div class="logo-title">
+        NEURAL MEMORY
+      </div>
+
+      <div class="logo-sub">
+        SEMANTIC MEMORY SPACE
+      </div>
     </div>
 
   </div>
 
   <div class="engine-status">
-    <span class="status-dot"></span>
-    <span id="engineStatus">LOCAL MEMORY ONLINE</span>
+
+    <span
+      class="status-dot"
+      id="statusDot">
+    </span>
+
+    <span id="engineStatus">
+      LOCAL MEMORY ONLINE
+    </span>
+
   </div>
 
 </header>
 
 
-<!-- =====================================================
+<!-- =======================================================
      LEFT
-===================================================== -->
+======================================================= -->
 
 <section class="left">
+
+  <!-- MEMORY INPUT -->
 
   <div class="panel">
 
@@ -760,7 +945,10 @@ footer{
       <span>/ CREATE</span>
     </div>
 
-    <label for="name">Name</label>
+
+    <label for="name">
+      Name
+    </label>
 
     <input
       id="name"
@@ -768,31 +956,60 @@ footer{
       autocomplete="off"
     >
 
-    <label for="type">Typ</label>
+
+    <label for="type">
+      Typ
+    </label>
 
     <select id="type">
-      <option value="concept">CONCEPT</option>
-      <option value="system">SYSTEM</option>
-      <option value="person">PERSON</option>
-      <option value="project">PROJECT</option>
-      <option value="technology">TECHNOLOGY</option>
-      <option value="other">OTHER</option>
+
+      <option value="concept">
+        CONCEPT
+      </option>
+
+      <option value="system">
+        SYSTEM
+      </option>
+
+      <option value="person">
+        PERSON
+      </option>
+
+      <option value="project">
+        PROJECT
+      </option>
+
+      <option value="technology">
+        TECHNOLOGY
+      </option>
+
+      <option value="other">
+        OTHER
+      </option>
+
     </select>
 
-    <label for="description">Beschreibung</label>
+
+    <label for="description">
+      Beschreibung
+    </label>
 
     <textarea
       id="description"
       placeholder="Was soll dieses Memory Object bedeuten?"
     ></textarea>
 
-    <label for="tags">Tags</label>
+
+    <label for="tags">
+      Tags
+    </label>
 
     <input
       id="tags"
       placeholder="z.B. llm, architecture, ui"
       autocomplete="off"
     >
+
 
     <button
       class="primary"
@@ -803,6 +1020,8 @@ footer{
 
   </div>
 
+
+  <!-- DATABASE -->
 
   <div class="panel">
 
@@ -815,24 +1034,28 @@ footer{
       <div class="stat">
         <div
           class="stat-value"
-          id="objectCount"
-        >0</div>
+          id="objectCount">
+          0
+        </div>
 
         <div class="stat-label">
           Objects
         </div>
       </div>
 
+
       <div class="stat">
         <div
           class="stat-value"
-          id="relationCount"
-        >0</div>
+          id="relationCount">
+          0
+        </div>
 
         <div class="stat-label">
           Relations
         </div>
       </div>
+
 
       <div class="stat">
         <div class="stat-value">
@@ -843,6 +1066,7 @@ footer{
           Embedding
         </div>
       </div>
+
 
       <div class="stat">
         <div class="stat-value">
@@ -859,6 +1083,8 @@ footer{
   </div>
 
 
+  <!-- MEMORY DATA -->
+
   <div class="panel">
 
     <div class="panel-title">
@@ -869,16 +1095,30 @@ footer{
 
       <button
         class="secondary"
-        id="exportBtn"
-      >
+        id="exportBtn">
         EXPORT JSON
       </button>
 
       <button
         class="secondary"
-        id="importBtn"
-      >
+        id="importBtn">
         IMPORT JSON
+      </button>
+
+    </div>
+
+    <div class="actions">
+
+      <button
+        class="secondary"
+        id="demoBtn">
+        DEMO OPTIONAL
+      </button>
+
+      <button
+        class="secondary danger"
+        id="clearBtn">
+        CLEAR DB
       </button>
 
     </div>
@@ -893,23 +1133,29 @@ footer{
   </div>
 
 
+  <!-- ENGINE -->
+
   <div class="panel">
 
     <div class="panel-title">
       ENGINE
     </div>
 
-    <div style="
-      color:#62768a;
-      font-size:9px;
-      line-height:1.7;
-    ">
+    <div
+      style="
+        color:#62768a;
+        font-size:9px;
+        line-height:1.7
+      "
+    >
 
       01&nbsp; MEMORY ENGINE INITIALIZED<br>
       02&nbsp; VECTOR SPACE READY<br>
       03&nbsp; GRAPH LAYER READY<br>
       04&nbsp; 3D SPACE READY<br>
-      05&nbsp; PERSISTENT STORAGE READY
+      05&nbsp; PERSISTENT STORAGE READY<br>
+      06&nbsp; IMPORT / EXPORT READY<br>
+      07&nbsp; SEMANTIC SEARCH READY
 
     </div>
 
@@ -918,9 +1164,9 @@ footer{
 </section>
 
 
-<!-- =====================================================
-     CENTER
-===================================================== -->
+<!-- =======================================================
+     SEMANTIC SPACE
+======================================================= -->
 
 <main class="space">
 
@@ -932,65 +1178,80 @@ footer{
 
     <div
       class="space-sub"
-      id="spaceInfo"
-    >
+      id="spaceInfo">
       0 MEMORY OBJECTS · 384D → 3D
     </div>
 
   </div>
 
+
   <div id="scene"></div>
+
 
   <div class="legend">
 
     <div class="legend-item">
       <span
         class="legend-dot"
-        style="background:#00f5ff"
-      ></span>
+        style="background:#00f5ff">
+      </span>
       CONCEPT
     </div>
 
     <div class="legend-item">
       <span
         class="legend-dot"
-        style="background:#4ade80"
-      ></span>
+        style="background:#4ade80">
+      </span>
       SYSTEM
     </div>
 
     <div class="legend-item">
       <span
         class="legend-dot"
-        style="background:#ff2bd6"
-      ></span>
+        style="background:#ff2bd6">
+      </span>
       PROJECT
     </div>
 
     <div class="legend-item">
       <span
         class="legend-dot"
-        style="background:#ffe600"
-      ></span>
+        style="background:#ffe600">
+      </span>
       TECHNOLOGY
+    </div>
+
+    <div class="legend-item">
+      <span
+        class="legend-dot"
+        style="background:#ff8a00">
+      </span>
+      PERSON
     </div>
 
   </div>
 
+
   <div class="controls">
+
     DRAG = ROTATE<br>
     SCROLL = ZOOM<br>
     CLICK = INSPECT
+
   </div>
 
 </main>
 
 
-<!-- =====================================================
+<!-- =======================================================
      RIGHT
-===================================================== -->
+======================================================= -->
 
 <section class="right">
+
+
+  <!-- EXPLORER -->
 
   <div class="panel">
 
@@ -998,63 +1259,73 @@ footer{
       MEMORY EXPLORER
     </div>
 
+
     <div class="search">
 
-      <span class="search-icon">⌕</span>
+      <span class="search-icon">
+        ⌕
+      </span>
 
       <input
         id="search"
-        placeholder="semantic / text search..."
+        placeholder="semantic search..."
       >
 
     </div>
 
-    <div class="filter-row">
+
+    <div
+      class="filter-row"
+      id="filterRow">
 
       <button
         class="filter active"
-        data-filter="all"
-      >
+        data-filter="all">
         ALLE
       </button>
 
       <button
         class="filter"
-        data-filter="concept"
-      >
+        data-filter="concept">
         CONCEPT
       </button>
 
       <button
         class="filter"
-        data-filter="system"
-      >
+        data-filter="system">
         SYSTEM
       </button>
 
       <button
         class="filter"
-        data-filter="project"
-      >
+        data-filter="project">
         PROJECT
       </button>
 
       <button
         class="filter"
-        data-filter="technology"
-      >
+        data-filter="technology">
         TECH
+      </button>
+
+      <button
+        class="filter"
+        data-filter="person">
+        PERSON
       </button>
 
     </div>
 
+
     <div
       class="object-list"
-      id="objectList"
-    ></div>
+      id="objectList">
+    </div>
 
   </div>
 
+
+  <!-- INSPECTOR -->
 
   <div class="panel">
 
@@ -1065,10 +1336,13 @@ footer{
     <div id="inspector">
 
       <div class="inspector-empty">
-        Noch keine Memory Objects vorhanden.<br><br>
+
+        Noch keine Memory Objects vorhanden.
+
+        <br><br>
+
         Lege links dein erstes Objekt an.
-        Klicke anschließend einen Node im
-        semantischen Raum oder einen Treffer an.
+
       </div>
 
     </div>
@@ -1077,6 +1351,10 @@ footer{
 
 </section>
 
+
+<!-- =======================================================
+     FOOTER
+======================================================= -->
 
 <footer>
 
@@ -1093,44 +1371,149 @@ footer{
 </div>
 
 
-<!-- =====================================================
-     THREE.JS
-===================================================== -->
+<!-- =======================================================
+     TOAST
+======================================================= -->
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<div
+  class="toast"
+  id="toast">
+</div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+
+<!-- =======================================================
+     RELATION MODAL
+======================================================= -->
+
+<div
+  class="modal-backdrop"
+  id="relationModal">
+
+  <div class="modal">
+
+    <div class="modal-head">
+
+      <div class="modal-title">
+        CREATE RELATION
+      </div>
+
+      <button
+        class="secondary"
+        id="closeRelation">
+        CLOSE
+      </button>
+
+    </div>
 
 
-<!-- =====================================================
-     TRANSFORMERS.JS
-===================================================== -->
+    <div class="modal-body">
+
+      <div
+        class="small-note"
+        id="relationSource">
+      </div>
+
+
+      <label for="relationType">
+        Relationstyp
+      </label>
+
+      <input
+        id="relationType"
+        placeholder="z.B. uses, depends_on, part_of"
+      >
+
+
+      <label for="relationTarget">
+        Zielobjekt
+      </label>
+
+      <select id="relationTarget"></select>
+
+
+      <div class="modal-actions">
+
+        <button
+          class="secondary"
+          id="cancelRelation">
+          CANCEL
+        </button>
+
+        <button
+          class="primary"
+          style="width:auto;margin-top:0"
+          id="saveRelation">
+          CREATE RELATION
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =======================================================
+     THREE.JS + APPLICATION
+======================================================= -->
 
 <script type="module">
 
-import {
-  pipeline,
-  env
-} from "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2";
+/*
+============================================================
+ IMPORTS
+============================================================
+*/
+
+import * as THREE from
+  "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+
+import { OrbitControls } from
+  "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+
+import { pipeline, env } from
+  "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2";
 
 
-/* =======================================================
-   CONFIG
-======================================================= */
+/*
+============================================================
+ TRANSFORMERS CONFIG
+============================================================
+*/
 
-const DB_NAME = "NEURAL_MEMORY_DB";
-const DB_VERSION = 1;
-const STORE = "memoryObjects";
+env.allowLocalModels = true;
+env.allowRemoteModels = true;
 
-const EMBEDDING_MODEL =
+
+/*
+============================================================
+ CONSTANTS
+============================================================
+*/
+
+const DB_NAME =
+  "NEURAL_MEMORY_DB";
+
+const DB_VERSION =
+  2;
+
+const STORE_NAME =
+  "memoryObjects";
+
+const VECTOR_DIM =
+  384;
+
+const MODEL_NAME =
   "Xenova/multilingual-e5-small";
 
-const EMBEDDING_DIM = 384;
 
-
-/* =======================================================
-   STATE
-======================================================= */
+/*
+============================================================
+ STATE
+============================================================
+*/
 
 const state = {
 
@@ -1138,140 +1521,188 @@ const state = {
 
   selectedId: null,
 
-  filter: "all",
+  activeFilter: "all",
 
-  search: "",
+  searchText: "",
 
-  embedder: null,
+  searchResults: null,
 
-  embeddingLoading: false,
+  embeddingsPipeline: null,
+
+  modelLoading: false,
+
+  modelReady: false,
+
+  db: null,
+
+  dbPromise: null,
+
+  renderer: null,
 
   scene: null,
 
   camera: null,
 
-  renderer: null,
-
   controls: null,
-
-  nodes: new Map(),
-
-  relationLines: [],
 
   raycaster: new THREE.Raycaster(),
 
-  mouse: new THREE.Vector2()
+  mouse: new THREE.Vector2(),
+
+  nodeMeshes: new Map(),
+
+  nodeLabels: new Map(),
+
+  relationLines: [],
+
+  projected: new Map(),
+
+  relationSourceId: null
 
 };
 
 
-/* =======================================================
-   DOM
-======================================================= */
+/*
+============================================================
+ DOM
+============================================================
+*/
 
 const $ = id =>
   document.getElementById(id);
 
-const nameInput =
-  $("name");
 
-const typeInput =
-  $("type");
+/*
+============================================================
+ UI HELPERS
+============================================================
+*/
 
-const descriptionInput =
-  $("description");
+function setLog(text, error=false){
 
-const tagsInput =
-  $("tags");
+  $("log").textContent =
+    text;
 
-const createBtn =
-  $("createBtn");
-
-const objectCount =
-  $("objectCount");
-
-const relationCount =
-  $("relationCount");
-
-const objectList =
-  $("objectList");
-
-const inspector =
-  $("inspector");
-
-const searchInput =
-  $("search");
-
-const spaceInfo =
-  $("spaceInfo");
-
-const engineStatus =
-  $("engineStatus");
-
-const log =
-  $("log");
-
-
-/* =======================================================
-   UTILITIES
-======================================================= */
-
-function setLog(text){
-
-  log.textContent = text;
-
-}
-
-
-function escapeHTML(value){
-
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
-}
-
-
-function uid(){
-
-  return "MEM-" +
-    crypto.randomUUID()
-      .replaceAll("-","")
-      .slice(0,8)
-      .toUpperCase();
-
-}
-
-
-function normalizeVector(vector){
-
-  const norm =
-    Math.sqrt(
-      vector.reduce(
-        (sum,x)=>sum + x*x,
-        0
-      )
-    );
-
-  if(!norm){
-    return vector;
-  }
-
-  return vector.map(
-    x => x / norm
+  $("statusDot").classList.toggle(
+    "error",
+    error
   );
 
 }
 
 
-function cosineSimilarity(a,b){
+function setEngineStatus(text, error=false){
 
-  let dot = 0;
-  let na = 0;
-  let nb = 0;
+  $("engineStatus").textContent =
+    text;
+
+  $("statusDot").classList.toggle(
+    "error",
+    error
+  );
+
+}
+
+
+let toastTimer = null;
+
+function toast(text){
+
+  const el =
+    $("toast");
+
+  el.textContent =
+    text;
+
+  el.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer =
+    setTimeout(
+      () => el.classList.remove("show"),
+      2600
+    );
+}
+
+
+/*
+============================================================
+ UUID / IDs
+============================================================
+*/
+
+function createId(){
+
+  const time =
+    Date.now()
+      .toString(36)
+      .toUpperCase();
+
+  const random =
+    Math.random()
+      .toString(36)
+      .slice(2,8)
+      .toUpperCase();
+
+  return `MEM-${time}-${random}`;
+
+}
+
+
+/*
+============================================================
+ DATE
+============================================================
+*/
+
+function nowISO(){
+
+  return new Date().toISOString();
+
+}
+
+
+/*
+============================================================
+ VECTOR MATH
+============================================================
+*/
+
+function vectorNorm(v){
+
+  let sum = 0;
+
+  for(const x of v){
+
+    sum += x*x;
+
+  }
+
+  return Math.sqrt(sum);
+
+}
+
+
+function normalizeVector(v){
+
+  const n =
+    vectorNorm(v);
+
+  if(!n){
+    return v.slice();
+  }
+
+  return v.map(
+    x => x / n
+  );
+
+}
+
+
+function dot(a,b){
+
+  let sum = 0;
 
   const n =
     Math.min(
@@ -1281,99 +1712,387 @@ function cosineSimilarity(a,b){
 
   for(let i=0;i<n;i++){
 
-    dot += a[i] * b[i];
-
-    na += a[i] * a[i];
-
-    nb += b[i] * b[i];
+    sum +=
+      a[i] * b[i];
 
   }
 
-  if(!na || !nb){
-    return 0;
-  }
-
-  return dot /
-    (
-      Math.sqrt(na) *
-      Math.sqrt(nb)
-    );
+  return sum;
 
 }
 
 
-/* =======================================================
-   INDEXED DB
-======================================================= */
+function cosineSimilarity(a,b){
 
-function openDB(){
+  if(
+    !Array.isArray(a) ||
+    !Array.isArray(b) ||
+    a.length !== b.length
+  ){
 
-  return new Promise(
-    (resolve,reject)=>{
+    return 0;
 
-      const request =
-        indexedDB.open(
-          DB_NAME,
-          DB_VERSION
-        );
+  }
 
-      request.onupgradeneeded =
-        event => {
+  const na =
+    vectorNorm(a);
 
-          const db =
-            event.target.result;
+  const nb =
+    vectorNorm(b);
 
-          if(
-            !db.objectStoreNames
-              .contains(STORE)
-          ){
+  if(
+    na === 0 ||
+    nb === 0
+  ){
 
-            db.createObjectStore(
-              STORE,
-              {
-                keyPath:"id"
-              }
-            );
+    return 0;
 
-          }
+  }
 
-        };
+  return dot(a,b)/(na*nb);
 
-      request.onsuccess =
-        () => resolve(
-          request.result
-        );
+}
 
-      request.onerror =
-        () => reject(
-          request.error
-        );
+
+/*
+============================================================
+ TEXT FOR EMBEDDING
+============================================================
+*/
+
+function objectEmbeddingText(object){
+
+  const tags =
+    Array.isArray(object.tags)
+      ? object.tags.join(", ")
+      : "";
+
+  return [
+    object.label || "",
+    object.description || "",
+    tags
+  ]
+  .filter(Boolean)
+  .join(". ");
+
+}
+
+
+/*
+============================================================
+ EMBEDDING ENGINE
+============================================================
+*/
+
+async function getEmbeddingPipeline(){
+
+  if(state.embeddingsPipeline){
+
+    return state.embeddingsPipeline;
+
+  }
+
+  if(state.modelLoading){
+
+    while(state.modelLoading){
+
+      await new Promise(
+        resolve =>
+          setTimeout(resolve,100)
+      );
 
     }
+
+    if(state.embeddingsPipeline){
+
+      return state.embeddingsPipeline;
+
+    }
+
+  }
+
+  state.modelLoading =
+    true;
+
+  setEngineStatus(
+    "LOADING VECTOR MODEL..."
+  );
+
+  setLog(
+    "LOADING MODEL..."
+  );
+
+  try{
+
+    state.embeddingsPipeline =
+      await pipeline(
+        "feature-extraction",
+        MODEL_NAME
+      );
+
+    state.modelReady =
+      true;
+
+    setEngineStatus(
+      "LOCAL MEMORY ONLINE"
+    );
+
+    setLog(
+      "VECTOR MODEL READY"
+    );
+
+    return state.embeddingsPipeline;
+
+  }catch(error){
+
+    console.error(error);
+
+    state.modelReady =
+      false;
+
+    setEngineStatus(
+      "VECTOR MODEL ERROR",
+      true
+    );
+
+    setLog(
+      "MODEL ERROR",
+      true
+    );
+
+    throw error;
+
+  }finally{
+
+    state.modelLoading =
+      false;
+
+  }
+
+}
+
+
+/*
+============================================================
+ REAL 384D EMBEDDING
+============================================================
+*/
+
+async function createEmbedding(text){
+
+  if(!text || !text.trim()){
+
+    throw new Error(
+      "Embedding text is empty."
+    );
+
+  }
+
+  const extractor =
+    await getEmbeddingPipeline();
+
+  const result =
+    await extractor(
+      text.trim(),
+      {
+        pooling:"mean",
+        normalize:true
+      }
+    );
+
+  let values;
+
+  if(
+    result &&
+    result.data
+  ){
+
+    values =
+      Array.from(
+        result.data
+      );
+
+  }else if(
+    Array.isArray(result)
+  ){
+
+    values =
+      Array.from(
+        result
+      );
+
+  }else{
+
+    throw new Error(
+      "Unknown embedding result."
+    );
+
+  }
+
+  if(
+    values.length !== VECTOR_DIM
+  ){
+
+    throw new Error(
+      `Expected ${VECTOR_DIM} dimensions, got ${values.length}.`
+    );
+
+  }
+
+  return normalizeVector(
+    values
   );
 
 }
 
 
-let db;
+/*
+============================================================
+ INDEXED DB
+============================================================
+*/
 
+function openDB(){
+
+  if(state.db){
+
+    return Promise.resolve(
+      state.db
+    );
+
+  }
+
+  if(state.dbPromise){
+
+    return state.dbPromise;
+
+  }
+
+  if(!("indexedDB" in window)){
+
+    return Promise.reject(
+      new Error(
+        "IndexedDB is not available."
+      )
+    );
+
+  }
+
+  state.dbPromise =
+    new Promise(
+      (resolve,reject)=>{
+
+        const request =
+          indexedDB.open(
+            DB_NAME,
+            DB_VERSION
+          );
+
+
+        request.onupgradeneeded =
+          event => {
+
+            const database =
+              event.target.result;
+
+            if(
+              !database.objectStoreNames.contains(
+                STORE_NAME
+              )
+            ){
+
+              database.createObjectStore(
+                STORE_NAME,
+                {
+                  keyPath:"id"
+                }
+              );
+
+            }
+
+          };
+
+
+        request.onsuccess =
+          event => {
+
+            state.db =
+              event.target.result;
+
+            state.db.onclose =
+              () => {
+
+                state.db =
+                  null;
+
+                state.dbPromise =
+                  null;
+
+              };
+
+            resolve(
+              state.db
+            );
+
+          };
+
+
+        request.onerror =
+          () => {
+
+            state.dbPromise =
+              null;
+
+            reject(
+              request.error ||
+              new Error(
+                "IndexedDB open failed."
+              )
+            );
+
+          };
+
+
+        request.onblocked =
+          () => {
+
+            console.warn(
+              "IndexedDB open blocked."
+            );
+
+          };
+
+      }
+    );
+
+  return state.dbPromise;
+
+}
+
+
+/*
+============================================================
+ DATABASE READ
+============================================================
+*/
 
 async function loadDatabase(){
 
-  db = await openDB();
+  const database =
+    await openDB();
 
   return new Promise(
     (resolve,reject)=>{
 
-      const transaction =
-        db.transaction(
-          STORE,
+      const tx =
+        database.transaction(
+          STORE_NAME,
           "readonly"
         );
 
       const store =
-        transaction.objectStore(
-          STORE
+        tx.objectStore(
+          STORE_NAME
         );
 
       const request =
@@ -1382,48 +2101,58 @@ async function loadDatabase(){
       request.onsuccess =
         () => {
 
-          state.objects =
-            request.result || [];
-
           resolve(
-            state.objects
+            request.result || []
           );
 
         };
 
       request.onerror =
-        () => reject(
-          request.error
-        );
+        () => {
+
+          reject(
+            request.error
+          );
+
+        };
 
     }
   );
 
 }
 
+
+/*
+============================================================
+ DATABASE WRITE
+============================================================
+*/
 
 async function saveObject(object){
 
+  const database =
+    await openDB();
+
   return new Promise(
     (resolve,reject)=>{
 
-      const transaction =
-        db.transaction(
-          STORE,
+      const tx =
+        database.transaction(
+          STORE_NAME,
           "readwrite"
         );
 
-      transaction.objectStore(
-        STORE
-      ).put(object);
-
-      transaction.oncomplete =
+      tx.oncomplete =
         () => resolve();
 
-      transaction.onerror =
+      tx.onerror =
         () => reject(
-          transaction.error
+          tx.error
         );
+
+      tx.objectStore(
+        STORE_NAME
+      ).put(object);
 
     }
   );
@@ -1431,36 +2160,37 @@ async function saveObject(object){
 }
 
 
-async function saveAll(){
+async function saveAll(objects){
+
+  const database =
+    await openDB();
 
   return new Promise(
     (resolve,reject)=>{
 
-      const transaction =
-        db.transaction(
-          STORE,
+      const tx =
+        database.transaction(
+          STORE_NAME,
           "readwrite"
         );
 
       const store =
-        transaction.objectStore(
-          STORE
+        tx.objectStore(
+          STORE_NAME
         );
 
-      for(
-        const object of state.objects
-      ){
+      for(const object of objects){
 
         store.put(object);
 
       }
 
-      transaction.oncomplete =
+      tx.oncomplete =
         () => resolve();
 
-      transaction.onerror =
+      tx.onerror =
         () => reject(
-          transaction.error
+          tx.error
         );
 
     }
@@ -1471,25 +2201,28 @@ async function saveAll(){
 
 async function deleteAll(){
 
+  const database =
+    await openDB();
+
   return new Promise(
     (resolve,reject)=>{
 
-      const transaction =
-        db.transaction(
-          STORE,
+      const tx =
+        database.transaction(
+          STORE_NAME,
           "readwrite"
         );
 
-      transaction.objectStore(
-        STORE
+      tx.objectStore(
+        STORE_NAME
       ).clear();
 
-      transaction.oncomplete =
+      tx.oncomplete =
         () => resolve();
 
-      transaction.onerror =
+      tx.onerror =
         () => reject(
-          transaction.error
+          tx.error
         );
 
     }
@@ -1498,133 +2231,225 @@ async function deleteAll(){
 }
 
 
-/* =======================================================
-   EMBEDDING ENGINE
-======================================================= */
+/*
+============================================================
+ VALIDATION
+============================================================
+*/
 
-async function getEmbedder(){
+function validEmbedding(vector){
 
-  if(state.embedder){
-    return state.embedder;
-  }
+  return (
+    Array.isArray(vector) &&
+    vector.length === VECTOR_DIM &&
+    vector.every(
+      x =>
+        typeof x === "number" &&
+        Number.isFinite(x)
+    )
+  );
 
-  if(state.embeddingLoading){
-    while(state.embeddingLoading){
-      await new Promise(
-        r => setTimeout(r,100)
+}
+
+
+function normalizeImportedObject(raw){
+
+  /*
+    NEW FORMAT
+  */
+
+  if(
+    raw &&
+    typeof raw === "object" &&
+    Array.isArray(raw.embedding)
+  ){
+
+    if(
+      !validEmbedding(raw.embedding)
+    ){
+
+      throw new Error(
+        `Invalid embedding length for ${raw.id || "object"}.`
       );
+
     }
 
-    return state.embedder;
+    const created =
+      raw.createdAt ||
+      raw.created ||
+      nowISO();
+
+    return {
+
+      id:
+        raw.id ||
+        createId(),
+
+      version:
+        2,
+
+      type:
+        raw.type ||
+        "concept",
+
+      label:
+        raw.label ||
+        raw.name ||
+        "Unnamed",
+
+      description:
+        raw.description ||
+        "",
+
+      tags:
+        Array.isArray(raw.tags)
+          ? raw.tags
+          : [],
+
+      relations:
+        Array.isArray(raw.relations)
+          ? raw.relations
+          : [],
+
+      embedding:
+        normalizeVector(
+          raw.embedding
+        ),
+
+      provenance:
+        raw.provenance ||
+        {
+          source:"import"
+        },
+
+      createdAt:
+        created,
+
+      updatedAt:
+        raw.updatedAt ||
+        created
+
+    };
+
   }
 
-  state.embeddingLoading = true;
 
-  engineStatus.textContent =
-    "LOADING VECTOR ENGINE";
+  /*
+    LEGACY FORMAT
+  */
 
-  setLog(
-    "LOADING EMBEDDING MODEL..."
-  );
+  if(
+    raw &&
+    typeof raw === "object" &&
+    Array.isArray(raw.vector)
+  ){
 
-  try{
+    if(
+      !validEmbedding(raw.vector)
+    ){
 
-    env.allowLocalModels = false;
-    env.allowRemoteModels = true;
-
-    state.embedder =
-      await pipeline(
-        "feature-extraction",
-        EMBEDDING_MODEL
+      throw new Error(
+        `Legacy vector has invalid dimension: ${raw.id || "unknown"}`
       );
 
-    engineStatus.textContent =
-      "VECTOR ENGINE ONLINE";
+    }
 
-    setLog(
-      "384D EMBEDDING ENGINE READY"
-    );
+    const text =
+      raw.text ||
+      raw.label ||
+      raw.description ||
+      "Migrated memory";
 
-    return state.embedder;
+    const created =
+      raw.created ||
+      nowISO();
 
-  }finally{
+    return {
 
-    state.embeddingLoading =
-      false;
+      id:
+        raw.id ||
+        createId(),
+
+      version:
+        2,
+
+      type:
+        "concept",
+
+      label:
+        raw.label ||
+        text,
+
+      description:
+        raw.description ||
+        text,
+
+      tags:
+        [],
+
+      relations:
+        [],
+
+      embedding:
+        normalizeVector(
+          raw.vector
+        ),
+
+      provenance:{
+        source:"migration",
+        method:"legacy_neural_memory"
+      },
+
+      createdAt:
+        created,
+
+      updatedAt:
+        nowISO()
+
+    };
 
   }
 
-}
-
-
-async function createEmbedding(text){
-
-  const model =
-    await getEmbedder();
-
-  const output =
-    await model(
-      "passage: " + text,
-      {
-        pooling:"mean",
-        normalize:true
-      }
-    );
-
-  return Array.from(
-    output.data
+  throw new Error(
+    "Unsupported memory object format."
   );
 
 }
 
 
-/* =======================================================
-   MEMORY OBJECT
-======================================================= */
-
-function buildMemoryText(
-  name,
-  type,
-  description,
-  tags
-){
-
-  return [
-    name,
-    type,
-    description,
-    tags.join(" ")
-  ]
-    .filter(Boolean)
-    .join(". ");
-
-}
-
+/*
+============================================================
+ CREATE MEMORY OBJECT
+============================================================
+*/
 
 async function createMemoryObject(){
 
-  const name =
-    nameInput.value.trim();
+  const label =
+    $("name").value.trim();
 
   const type =
-    typeInput.value;
+    $("type").value;
 
   const description =
-    descriptionInput.value.trim();
+    $("description").value.trim();
 
   const tags =
-    tagsInput.value
+    $("tags").value
       .split(",")
-      .map(x=>x.trim())
+      .map(
+        tag => tag.trim()
+      )
       .filter(Boolean);
 
-  if(!name){
 
-    alert(
-      "Bitte einen Namen eingeben."
+  if(!label){
+
+    toast(
+      "NAME FEHLT"
     );
 
-    nameInput.focus();
+    $("name").focus();
 
     return;
 
@@ -1632,92 +2457,103 @@ async function createMemoryObject(){
 
   if(!description){
 
-    alert(
-      "Bitte eine Beschreibung eingeben."
+    toast(
+      "BESCHREIBUNG FEHLT"
     );
 
-    descriptionInput.focus();
+    $("description").focus();
 
     return;
 
   }
 
-  createBtn.disabled = true;
+
+  const button =
+    $("createBtn");
+
+  button.disabled =
+    true;
 
   setLog(
-    "ERZEUGE 384D EMBEDDING..."
+    "CREATING EMBEDDING..."
   );
+
+
+  let embedding;
 
   try{
 
-    const text =
-      buildMemoryText(
-        name,
-        type,
-        description,
-        tags
-      );
-
-    const embedding =
+    embedding =
       await createEmbedding(
-        text
+        [
+          label,
+          description,
+          tags.join(", ")
+        ]
+        .filter(Boolean)
+        .join(". ")
       );
 
-    const now =
-      new Date().toISOString();
+  }catch(error){
 
-    const object = {
+    console.error(error);
 
-      id:uid(),
-
-      version:1,
-
-      type,
-
-      label:name,
-
-      description,
-
-      tags,
-
-      relations:[],
-
-      embedding:
-
-        normalizeVector(
-          embedding
-        ),
-
-      provenance:{
-        source:"user",
-        method:"structured_input"
-      },
-
-      createdAt:now,
-
-      updatedAt:now
-
-    };
-
-    state.objects.push(
-      object
+    setLog(
+      "EMBEDDING ERROR",
+      true
     );
+
+    toast(
+      "Das 384D-Embedding konnte nicht erzeugt werden."
+    );
+
+    button.disabled =
+      false;
+
+    return;
+
+  }
+
+
+  const object = {
+
+    id:
+      createId(),
+
+    version:
+      2,
+
+    type,
+
+    label,
+
+    description,
+
+    tags,
+
+    relations:[],
+
+    embedding,
+
+    provenance:{
+      source:"user",
+      method:"transformers.js",
+      model:MODEL_NAME
+    },
+
+    createdAt:
+      nowISO(),
+
+    updatedAt:
+      nowISO()
+
+  };
+
+
+  try{
 
     await saveObject(
       object
-    );
-
-    nameInput.value = "";
-    descriptionInput.value = "";
-    tagsInput.value = "";
-
-    state.selectedId =
-      object.id;
-
-    updateUI();
-
-    setLog(
-      "MEMORY OBJECT STORED"
     );
 
   }catch(error){
@@ -1725,120 +2561,644 @@ async function createMemoryObject(){
     console.error(error);
 
     setLog(
-      "EMBEDDING ERROR"
+      "DATABASE ERROR",
+      true
     );
 
-    alert(
-      "Embedding konnte nicht erzeugt werden.\n\n" +
-      error.message
+    toast(
+      "Embedding erzeugt, aber Memory Object konnte nicht gespeichert werden."
     );
 
-  }finally{
-
-    createBtn.disabled = false;
-
-  }
-
-}
-
-
-/* =======================================================
-   FILTER / SEARCH
-======================================================= */
-
-function getVisibleObjects(){
-
-  const query =
-    state.search
-      .trim()
-      .toLowerCase();
-
-  return state.objects.filter(
-    object => {
-
-      const matchesType =
-        state.filter === "all" ||
-        object.type === state.filter;
-
-      if(!matchesType){
-        return false;
-      }
-
-      if(!query){
-        return true;
-      }
-
-      const haystack = [
-        object.label,
-        object.description,
-        ...(object.tags || [])
-      ]
-        .join(" ")
-        .toLowerCase();
-
-      return haystack.includes(
-        query
-      );
-
-    }
-  );
-
-}
-
-
-/* =======================================================
-   LIST
-======================================================= */
-
-function renderObjectList(){
-
-  const objects =
-    getVisibleObjects();
-
-  objectList.innerHTML = "";
-
-  if(!objects.length){
-
-    objectList.innerHTML = `
-      <div class="inspector-empty">
-        Keine Memory Objects gefunden.
-      </div>
-    `;
+    button.disabled =
+      false;
 
     return;
 
   }
 
-  for(
-    const object of objects
+
+  state.objects.push(
+    object
+  );
+
+  state.selectedId =
+    object.id;
+
+
+  $("name").value =
+    "";
+
+  $("description").value =
+    "";
+
+  $("tags").value =
+    "";
+
+  button.disabled =
+    false;
+
+
+  setLog(
+    "MEMORY OBJECT STORED"
+  );
+
+  toast(
+    "MEMORY OBJECT STORED"
+  );
+
+
+  updateUI();
+
+}
+
+
+/*
+============================================================
+ DELETE OBJECT
+============================================================
+*/
+
+async function deleteObject(id){
+
+  const object =
+    state.objects.find(
+      item => item.id === id
+    );
+
+  if(!object){
+
+    return;
+
+  }
+
+  const database =
+    await openDB();
+
+  await new Promise(
+    (resolve,reject)=>{
+
+      const tx =
+        database.transaction(
+          STORE_NAME,
+          "readwrite"
+        );
+
+      tx.objectStore(
+        STORE_NAME
+      ).delete(id);
+
+      tx.oncomplete =
+        () => resolve();
+
+      tx.onerror =
+        () => reject(
+          tx.error
+        );
+
+    }
+  );
+
+
+  state.objects =
+    state.objects.filter(
+      item => item.id !== id
+    );
+
+
+  /*
+    remove incoming relations
+  */
+
+  let changed =
+    false;
+
+  for(const item of state.objects){
+
+    const before =
+      item.relations.length;
+
+    item.relations =
+      item.relations.filter(
+        relation =>
+          relation.target !== id
+      );
+
+    if(
+      before !==
+      item.relations.length
+    ){
+
+      item.updatedAt =
+        nowISO();
+
+      changed =
+        true;
+
+    }
+
+  }
+
+  if(changed){
+
+    await saveAll(
+      state.objects
+    );
+
+  }
+
+
+  if(
+    state.selectedId === id
   ){
 
-    const element =
+    state.selectedId =
+      null;
+
+  }
+
+
+  toast(
+    "MEMORY OBJECT DELETED"
+  );
+
+  setLog(
+    "OBJECT DELETED"
+  );
+
+  updateUI();
+
+}
+
+
+/*
+============================================================
+ RELATIONS
+============================================================
+*/
+
+function relationCount(){
+
+  return state.objects.reduce(
+    (sum,object)=>
+      sum +
+      (
+        Array.isArray(object.relations)
+          ? object.relations.length
+          : 0
+      ),
+    0
+  );
+
+}
+
+
+function getObject(id){
+
+  return state.objects.find(
+    object =>
+      object.id === id
+  );
+
+}
+
+
+function openRelationModal(){
+
+  const source =
+    getObject(
+      state.selectedId
+    );
+
+  if(!source){
+
+    toast(
+      "ZUERST EIN OBJECT AUSWÄHLEN"
+    );
+
+    return;
+
+  }
+
+  state.relationSourceId =
+    source.id;
+
+  $("relationSource").textContent =
+    `${source.label} (${source.id})`;
+
+  $("relationType").value =
+    "";
+
+  const select =
+    $("relationTarget");
+
+  select.innerHTML =
+    "";
+
+  for(const object of state.objects){
+
+    if(
+      object.id === source.id
+    ){
+
+      continue;
+
+    }
+
+    const option =
+      document.createElement(
+        "option"
+      );
+
+    option.value =
+      object.id;
+
+    option.textContent =
+      `${object.label} — ${object.id}`;
+
+    select.appendChild(
+      option
+    );
+
+  }
+
+  if(!select.options.length){
+
+    toast(
+      "Mindestens zwei Objects benötigt."
+    );
+
+    return;
+
+  }
+
+  $("relationModal")
+    .classList.add("show");
+
+}
+
+
+function closeRelationModal(){
+
+  $("relationModal")
+    .classList.remove("show");
+
+  state.relationSourceId =
+    null;
+
+}
+
+
+async function createRelation(){
+
+  const source =
+    getObject(
+      state.relationSourceId
+    );
+
+  const target =
+    getObject(
+      $("relationTarget").value
+    );
+
+  const type =
+    $("relationType").value
+      .trim();
+
+  if(!source || !target){
+
+    return;
+
+  }
+
+  if(!type){
+
+    toast(
+      "RELATIONSTYP FEHLT"
+    );
+
+    return;
+
+  }
+
+
+  if(!Array.isArray(source.relations)){
+
+    source.relations =
+      [];
+
+  }
+
+
+  const exists =
+    source.relations.some(
+      relation =>
+        relation.target === target.id &&
+        relation.type === type
+    );
+
+  if(exists){
+
+    toast(
+      "RELATION EXISTIERT BEREITS"
+    );
+
+    return;
+
+  }
+
+
+  source.relations.push({
+
+    type,
+
+    target:
+      target.id
+
+  });
+
+
+  source.updatedAt =
+    nowISO();
+
+
+  try{
+
+    await saveObject(
+      source
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    toast(
+      "RELATION KONNTE NICHT GESPEICHERT WERDEN"
+    );
+
+    return;
+
+  }
+
+
+  closeRelationModal();
+
+  toast(
+    "RELATION CREATED"
+  );
+
+  setLog(
+    "GRAPH UPDATED"
+  );
+
+  updateUI();
+
+}
+
+
+/*
+============================================================
+ SEARCH
+============================================================
+*/
+
+let searchTimer =
+  null;
+
+
+async function semanticSearch(query){
+
+  if(!query.trim()){
+
+    state.searchResults =
+      null;
+
+    renderExplorer();
+
+    return;
+
+  }
+
+  if(!state.objects.length){
+
+    state.searchResults =
+      [];
+
+    renderExplorer();
+
+    return;
+
+  }
+
+
+  setLog(
+    "SEMANTIC SEARCH..."
+  );
+
+
+  try{
+
+    const queryVector =
+      await createEmbedding(
+        query
+      );
+
+
+    const results =
+      state.objects
+        .map(
+          object => ({
+
+            object,
+
+            score:
+              cosineSimilarity(
+                queryVector,
+                object.embedding
+              )
+
+          })
+        )
+        .sort(
+          (a,b) =>
+            b.score -
+            a.score
+        );
+
+
+    state.searchResults =
+      results;
+
+    setLog(
+      "SEMANTIC SEARCH READY"
+    );
+
+    renderExplorer();
+
+  }catch(error){
+
+    console.error(error);
+
+    state.searchResults =
+      null;
+
+    setLog(
+      "SEARCH ERROR",
+      true
+    );
+
+  }
+
+}
+
+
+/*
+============================================================
+ FILTER
+============================================================
+*/
+
+function matchesFilter(object){
+
+  if(
+    state.activeFilter ===
+    "all"
+  ){
+
+    return true;
+
+  }
+
+  return (
+    object.type ===
+    state.activeFilter
+  );
+
+}
+
+
+/*
+============================================================
+ EXPLORER RENDER
+============================================================
+*/
+
+function renderExplorer(){
+
+  const list =
+    $("objectList");
+
+  list.innerHTML =
+    "";
+
+
+  let objects;
+
+
+  if(
+    state.searchResults !== null
+  ){
+
+    objects =
+      state.searchResults
+        .filter(
+          item =>
+            matchesFilter(
+              item.object
+            )
+        );
+
+  }else{
+
+    objects =
+      state.objects
+        .filter(
+          matchesFilter
+        )
+        .map(
+          object => ({
+            object,
+            score:null
+          })
+        );
+
+  }
+
+
+  if(!objects.length){
+
+    const empty =
       document.createElement(
         "div"
       );
 
-    element.className =
-      "object" +
-      (
-        object.id ===
-        state.selectedId
-          ? " selected"
-          : ""
+    empty.className =
+      "inspector-empty";
+
+    empty.textContent =
+      state.objects.length
+        ? "Keine passenden Memory Objects."
+        : "Noch keine Memory Objects vorhanden.";
+
+    list.appendChild(
+      empty
+    );
+
+    return;
+
+  }
+
+
+  for(const result of objects){
+
+    const object =
+      result.object;
+
+    const item =
+      document.createElement(
+        "div"
       );
 
-    element.innerHTML = `
+    item.className =
+      "object";
+
+    if(
+      object.id ===
+      state.selectedId
+    ){
+
+      item.classList.add(
+        "selected"
+      );
+
+    }
+
+
+    const score =
+      result.score === null
+        ? ""
+        :
+        `<span style="
+          color:#4ade80;
+          font-size:7px;
+          margin-left:5px
+        ">${(
+          result.score * 100
+        ).toFixed(1)}%</span>`;
+
+
+    item.innerHTML = `
 
       <div class="object-head">
 
         <div class="object-name">
           ${escapeHTML(object.label)}
+          ${score}
         </div>
 
         <div class="object-type">
           ${escapeHTML(
-            object.type
-          ).toUpperCase()}
+            object.type.toUpperCase()
+          )}
         </div>
 
       </div>
@@ -1851,17 +3211,21 @@ function renderObjectList(){
 
     `;
 
-    element.onclick =
+
+    item.addEventListener(
+      "click",
       () => {
 
         selectObject(
           object.id
         );
 
-      };
+      }
+    );
 
-    objectList.appendChild(
-      element
+
+    list.appendChild(
+      item
     );
 
   }
@@ -1869,30 +3233,35 @@ function renderObjectList(){
 }
 
 
-/* =======================================================
-   INSPECTOR
-======================================================= */
+/*
+============================================================
+ INSPECTOR
+============================================================
+*/
 
 function renderInspector(){
 
+  const inspector =
+    $("inspector");
+
   const object =
-    state.objects.find(
-      x =>
-        x.id ===
-        state.selectedId
+    getObject(
+      state.selectedId
     );
+
 
   if(!object){
 
     inspector.innerHTML = `
 
       <div class="inspector-empty">
+
         Noch keine Memory Objects vorhanden.
+
         <br><br>
+
         Lege links dein erstes Objekt an.
-        <br><br>
-        Klicke einen Node im semantischen
-        Raum oder einen Treffer an.
+
       </div>
 
     `;
@@ -1901,22 +3270,108 @@ function renderInspector(){
 
   }
 
+
+  const tags =
+    Array.isArray(object.tags)
+      ? object.tags
+      : [];
+
+
   const relations =
-    object.relations || [];
+    Array.isArray(object.relations)
+      ? object.relations
+      : [];
+
+
+  let relationHTML =
+    "";
+
+
+  if(relations.length){
+
+    relationHTML =
+      relations
+        .map(
+          relation => {
+
+            const target =
+              getObject(
+                relation.target
+              );
+
+            return `
+
+              <div class="relation">
+
+                <span class="relation-type">
+                  ${escapeHTML(
+                    relation.type
+                  )}
+                </span>
+
+                <span class="relation-target">
+                  ${escapeHTML(
+                    target
+                      ? target.label
+                      : relation.target
+                  )}
+                </span>
+
+              </div>
+
+            `;
+
+          }
+        )
+        .join("");
+
+  }else{
+
+    relationHTML = `
+
+      <div class="small-note">
+        Keine Relations vorhanden.
+      </div>
+
+    `;
+
+  }
+
+
+  const tagHTML =
+    tags.length
+      ? tags
+          .map(
+            tag =>
+              `<span class="tag">
+                ${escapeHTML(tag)}
+              </span>`
+          )
+          .join("")
+      : `<span class="small-note">
+           Keine Tags
+         </span>`;
+
 
   inspector.innerHTML = `
 
     <div class="inspector-name">
-      ${escapeHTML(object.label)}
+      ${escapeHTML(
+        object.label
+      )}
     </div>
 
     <div class="inspector-id">
-      ${escapeHTML(object.id)}
+      ${escapeHTML(
+        object.id
+      )}
     </div>
+
 
     <div class="meta">
 
       <div class="meta-item">
+
         <div class="meta-key">
           TYPE
         </div>
@@ -1924,21 +3379,40 @@ function renderInspector(){
         <div class="meta-value">
           ${escapeHTML(
             object.type
-          ).toUpperCase()}
+          )}
         </div>
+
       </div>
 
+
       <div class="meta-item">
+
+        <div class="meta-key">
+          VERSION
+        </div>
+
+        <div class="meta-value">
+          ${object.version}
+        </div>
+
+      </div>
+
+
+      <div class="meta-item">
+
         <div class="meta-key">
           VECTOR
         </div>
 
         <div class="meta-value">
-          ${object.embedding?.length || 0}D
+          ${object.embedding.length}D
         </div>
+
       </div>
 
+
       <div class="meta-item">
+
         <div class="meta-key">
           SOURCE
         </div>
@@ -1949,40 +3423,25 @@ function renderInspector(){
             "unknown"
           )}
         </div>
-      </div>
 
-      <div class="meta-item">
-        <div class="meta-key">
-          RELATIONS
-        </div>
-
-        <div class="meta-value">
-          ${relations.length}
-        </div>
       </div>
 
     </div>
 
+
     <div class="inspector-description">
+
       ${escapeHTML(
         object.description
       )}
+
     </div>
+
 
     <div class="tag-list">
-
-      ${
-        (object.tags || [])
-          .map(
-            tag =>
-              `<span class="tag">
-                ${escapeHTML(tag)}
-              </span>`
-          )
-          .join("")
-      }
-
+      ${tagHTML}
     </div>
+
 
     <div class="relations">
 
@@ -1990,77 +3449,139 @@ function renderInspector(){
         RELATIONS
       </div>
 
-      ${
-        relations.length
-          ? relations
-              .map(
-                relation => {
+      ${relationHTML}
 
-                  const target =
-                    state.objects.find(
-                      x =>
-                        x.id ===
-                        relation.target
-                    );
+    </div>
 
-                  return `
-                    <div class="relation">
 
-                      <span class="relation-type">
-                        ${escapeHTML(
-                          relation.type
-                        )}
-                      </span>
+    <div class="inspector-actions">
 
-                      <span class="relation-target">
-                        ${escapeHTML(
-                          target?.label ||
-                          relation.target
-                        )}
-                      </span>
+      <button
+        class="secondary"
+        id="addRelationBtn">
+        + RELATION
+      </button>
 
-                    </div>
-                  `;
+      <button
+        class="secondary danger"
+        id="deleteObjectBtn">
+        DELETE
+      </button>
 
-                }
-              )
-              .join("")
-          : `
-            <div class="inspector-empty">
-              Keine Beziehungen definiert.
-            </div>
-          `
-      }
+    </div>
+
+
+    <div class="small-note">
+
+      CREATED:
+      ${escapeHTML(
+        object.createdAt
+      )}
+
+      <br>
+
+      UPDATED:
+      ${escapeHTML(
+        object.updatedAt
+      )}
 
     </div>
 
   `;
 
+
+  $("addRelationBtn")
+    ?.addEventListener(
+      "click",
+      openRelationModal
+    );
+
+
+  $("deleteObjectBtn")
+    ?.addEventListener(
+      "click",
+      async ()=>{
+
+        if(
+          confirm(
+            `Memory Object "${object.label}" wirklich löschen?`
+          )
+        ){
+
+          await deleteObject(
+            object.id
+          );
+
+        }
+
+      }
+    );
+
 }
 
 
-/* =======================================================
-   SELECT
-======================================================= */
+/*
+============================================================
+ SELECT
+============================================================
+*/
 
 function selectObject(id){
 
-  state.selectedId = id;
+  state.selectedId =
+    id;
 
-  renderObjectList();
+  renderExplorer();
 
   renderInspector();
 
-  focusNode(id);
+  updateSceneSelection();
 
 }
 
 
-/* =======================================================
-   TYPE COLORS
-======================================================= */
+/*
+============================================================
+ HTML ESCAPE
+============================================================
+*/
 
-function typeColor(type){
+function escapeHTML(value){
+
+  return String(
+    value ?? ""
+  )
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+
+}
+
+
+/*
+============================================================
+ COLOR BY TYPE
+============================================================
+*/
+
+function colorForType(type){
 
   switch(type){
 
@@ -2080,308 +3601,370 @@ function typeColor(type){
       return 0xff8a00;
 
     default:
-      return 0xffffff;
+      return 0x9aa8b8;
 
   }
-
-}
-
-
-/* =======================================================
-   PCA
-=======================================================
-
-   Wir berechnen eine echte lineare Projektion aus
-   den vorhandenen Embeddings.
-
-   Für kleine Memory-Datensätze ist eine kompakte
-   PCA-Implementierung ausreichend.
-
-======================================================= */
-
-function meanVectors(objects){
-
-  const n =
-    objects.length;
-
-  if(!n){
-    return [];
-  }
-
-  const d =
-    objects[0]
-      .embedding.length;
-
-  const mean =
-    new Array(d).fill(0);
-
-  for(
-    const object of objects
-  ){
-
-    for(
-      let j=0;
-      j<d;
-      j++
-    ){
-
-      mean[j] +=
-        object.embedding[j];
-
-    }
-
-  }
-
-  for(
-    let j=0;
-    j<d;
-    j++
-  ){
-
-    mean[j] /= n;
-
-  }
-
-  return mean;
-
-}
-
-
-function centerVectors(
-  objects,
-  mean
-){
-
-  return objects.map(
-    object =>
-      object.embedding.map(
-        (x,j) =>
-          x - mean[j]
-      )
-  );
-
-}
-
-
-function dot(a,b){
-
-  let result = 0;
-
-  for(
-    let i=0;
-    i<a.length;
-    i++
-  ){
-
-    result +=
-      a[i] * b[i];
-
-  }
-
-  return result;
-
-}
-
-
-function norm(v){
-
-  return Math.sqrt(
-    dot(v,v)
-  );
-
-}
-
-
-function normalize(v){
-
-  const n =
-    norm(v);
-
-  if(n === 0){
-    return v;
-  }
-
-  return v.map(
-    x => x/n
-  );
 
 }
 
 
 /*
-  Matrix-free power iteration.
+============================================================
+ PCA / 384D → 3D
+============================================================
 
-  Wir berechnen Hauptachsen direkt aus
+ Real projection of the stored vectors.
 
-      C v
+ This is NOT:
 
-  ohne die 384x384 Kovarianzmatrix
-  explizit speichern zu müssen.
+ x = vector[0]
+ y = vector[1]
+ z = vector[2]
+
+ Instead:
+
+ 1. center the vectors
+ 2. find principal directions
+ 3. project onto those directions
+
+ For a semantic embedding cloud this gives
+ a useful data-dependent 3D representation.
+============================================================
 */
 
-function covarianceMultiply(
-  vectors,
-  v
-){
+function projectVectors(objects){
 
   const result =
-    new Array(
-      v.length
-    ).fill(0);
+    new Map();
 
-  for(
-    const x of vectors
-  ){
+  if(!objects.length){
 
-    const scale =
-      dot(x,v);
+    return result;
+
+  }
+
+
+  const dimension =
+    VECTOR_DIM;
+
+
+  const matrix =
+    objects.map(
+      object =>
+        object.embedding.slice()
+    );
+
+
+  /*
+    mean
+  */
+
+  const mean =
+    new Array(dimension)
+      .fill(0);
+
+
+  for(const vector of matrix){
 
     for(
-      let j=0;
-      j<v.length;
-      j++
+      let d=0;
+      d<dimension;
+      d++
     ){
 
-      result[j] +=
-        x[j] * scale;
+      mean[d] +=
+        vector[d];
 
     }
 
   }
 
-  return result;
-
-}
-
-
-function randomVector(d){
-
-  const v =
-    new Array(d);
 
   for(
-    let i=0;
-    i<d;
-    i++
+    let d=0;
+    d<dimension;
+    d++
   ){
 
-    v[i] =
-      Math.random()*2-1;
+    mean[d] /=
+      matrix.length;
 
   }
 
-  return normalize(v);
 
-}
+  /*
+    centered matrix
+  */
 
-
-function principalAxis(
-  vectors,
-  previousAxes
-){
-
-  let axis =
-    randomVector(
-      vectors[0].length
+  const centered =
+    matrix.map(
+      vector =>
+        vector.map(
+          (value,d) =>
+            value - mean[d]
+        )
     );
 
-  for(
-    let iteration=0;
-    iteration<40;
-    iteration++
-  ){
 
-    let next =
-      covarianceMultiply(
-        vectors,
-        axis
-      );
+  /*
+    With fewer than 3 objects,
+    use stable deterministic directions.
+  */
 
-    /*
-      Orthogonalisierung gegen
-      bereits gefundene Achsen.
-    */
+  if(objects.length === 1){
+
+    result.set(
+      objects[0].id,
+      new THREE.Vector3(
+        0,0,0
+      )
+    );
+
+    return result;
+
+  }
+
+
+  if(objects.length === 2){
+
+    result.set(
+      objects[0].id,
+      new THREE.Vector3(
+        -2,0,0
+      )
+    );
+
+    result.set(
+      objects[1].id,
+      new THREE.Vector3(
+        2,0,0
+      )
+    );
+
+    return result;
+
+  }
+
+
+  /*
+    Power iteration for principal axes.
+  */
+
+  function covarianceMultiply(v){
+
+    const output =
+      new Array(dimension)
+        .fill(0);
+
 
     for(
-      const previous
-      of previousAxes
+      let i=0;
+      i<centered.length;
+      i++
     ){
 
-      const projection =
-        dot(next,previous);
+      const row =
+        centered[i];
+
+      let projection =
+        0;
 
       for(
-        let j=0;
-        j<next.length;
-        j++
+        let d=0;
+        d<dimension;
+        d++
       ){
 
-        next[j] -=
-          projection *
-          previous[j];
+        projection +=
+          row[d] * v[d];
+
+      }
+
+
+      for(
+        let d=0;
+        d<dimension;
+        d++
+      ){
+
+        output[d] +=
+          row[d] * projection;
 
       }
 
     }
 
-    axis =
-      normalize(next);
+    return output;
 
   }
 
-  return axis;
 
-}
+  function randomVector(){
 
+    const v =
+      new Array(dimension);
 
-function project3D(objects){
+    for(
+      let d=0;
+      d<dimension;
+      d++
+    ){
 
-  if(!objects.length){
-    return [];
-  }
+      v[d] =
+        Math.sin(
+          d * 12.9898 +
+          78.233
+        );
 
-  if(objects.length === 1){
+    }
 
-    return [[0,0,0]];
-
-  }
-
-  if(objects.length === 2){
-
-    return [
-      [-1,0,0],
-      [1,0,0]
-    ];
+    return normalizeVector(v);
 
   }
 
-  const mean =
-    meanVectors(objects);
 
-  const centered =
-    centerVectors(
-      objects,
-      mean
-    );
+  function orthogonalize(
+    vector,
+    previous
+  ){
+
+    let v =
+      vector.slice();
+
+
+    for(
+      const p of previous
+    ){
+
+      const projection =
+        dot(v,p);
+
+
+      for(
+        let d=0;
+        d<dimension;
+        d++
+      ){
+
+        v[d] -=
+          projection * p[d];
+
+      }
+
+    }
+
+    return normalizeVector(v);
+
+  }
+
+
+  function principalAxis(
+    previous
+  ){
+
+    let v =
+      orthogonalize(
+        randomVector(),
+        previous
+      );
+
+
+    for(
+      let iteration=0;
+      iteration<35;
+      iteration++
+    ){
+
+      let next =
+        covarianceMultiply(v);
+
+
+      next =
+        orthogonalize(
+          next,
+          previous
+        );
+
+
+      const n =
+        vectorNorm(next);
+
+
+      if(n < 1e-10){
+
+        return null;
+
+      }
+
+      v =
+        next.map(
+          x =>
+            x/n
+        );
+
+    }
+
+    return v;
+
+  }
+
 
   const axes = [];
 
+
   for(
-    let i=0;
-    i<3;
-    i++
+    let axis=0;
+    axis<3;
+    axis++
   ){
 
-    axes.push(
+    const principal =
       principalAxis(
-        centered,
+        axes
+      );
+
+    if(principal){
+
+      axes.push(
+        principal
+      );
+
+    }
+
+  }
+
+
+  /*
+    Fallback axes.
+  */
+
+  while(
+    axes.length < 3
+  ){
+
+    const fallback =
+      new Array(dimension)
+        .fill(0);
+
+    fallback[
+      axes.length
+    ] = 1;
+
+    axes.push(
+      orthogonalize(
+        fallback,
         axes
       )
     );
 
   }
 
-  const points =
+
+  /*
+    Projection
+  */
+
+  const projected =
     centered.map(
       vector => {
 
@@ -2396,19 +3979,20 @@ function project3D(objects){
       }
     );
 
+
   /*
-    Normierung auf einen
-    brauchbaren visuellen Bereich.
+    Normalize display range.
   */
 
-  let maxAbs = 0;
+  let maxAbs =
+    0;
 
   for(
-    const point of points
+    const p of projected
   ){
 
     for(
-      const value of point
+      const value of p
     ){
 
       maxAbs =
@@ -2421,36 +4005,63 @@ function project3D(objects){
 
   }
 
-  const scale =
-    maxAbs || 1;
 
-  return points.map(
-    point =>
-      point.map(
-        value =>
-          (value / scale) * 8
+  if(
+    maxAbs < 1e-8
+  ){
+
+    maxAbs = 1;
+
+  }
+
+
+  for(
+    let i=0;
+    i<objects.length;
+    i++
+  ){
+
+    const p =
+      projected[i];
+
+
+    result.set(
+      objects[i].id,
+
+      new THREE.Vector3(
+
+        (p[0] / maxAbs) * 5,
+
+        (p[1] / maxAbs) * 5,
+
+        (p[2] / maxAbs) * 5
+
       )
-  );
+
+    );
+
+  }
+
+
+  return result;
 
 }
 
 
-/* =======================================================
-   THREE.JS SCENE
-======================================================= */
+/*
+============================================================
+ THREE.JS INITIALIZATION
+============================================================
+*/
 
 function initScene(){
 
   const container =
     $("scene");
 
+
   state.scene =
     new THREE.Scene();
-
-  state.scene.background =
-    new THREE.Color(
-      0x020308
-    );
 
 
   state.camera =
@@ -2458,21 +4069,24 @@ function initScene(){
       55,
       container.clientWidth /
       container.clientHeight,
-      .1,
+      0.1,
       1000
     );
+
 
   state.camera.position.set(
     0,
     0,
-    20
+    13
   );
 
 
   state.renderer =
     new THREE.WebGLRenderer({
-      antialias:true
+      antialias:true,
+      alpha:true
     });
+
 
   state.renderer.setPixelRatio(
     Math.min(
@@ -2481,74 +4095,61 @@ function initScene(){
     )
   );
 
+
   state.renderer.setSize(
     container.clientWidth,
     container.clientHeight
   );
+
 
   container.appendChild(
     state.renderer.domElement
   );
 
 
-  /*
-    Controls.
-  */
+  state.controls =
+    new OrbitControls(
+      state.camera,
+      state.renderer.domElement
+    );
 
-  if(
-    THREE.OrbitControls
-  ){
 
-    state.controls =
-      new THREE.OrbitControls(
-        state.camera,
-        state.renderer.domElement
-      );
+  state.controls.enableDamping =
+    true;
 
-    state.controls.enableDamping =
-      true;
+  state.controls.dampingFactor =
+    .08;
 
-    state.controls.dampingFactor =
-      .06;
+  state.controls.minDistance =
+    3;
 
-    state.controls.minDistance =
-      4;
-
-    state.controls.maxDistance =
-      50;
-
-  }
+  state.controls.maxDistance =
+    40;
 
 
   /*
-    Licht.
-  */
-
-  state.scene.add(
-    new THREE.AmbientLight(
-      0xffffff,
-      1
-    )
-  );
-
-
-  /*
-    Grid.
+    Ambient grid
   */
 
   const grid =
     new THREE.GridHelper(
-      18,
-      18,
+      14,
+      14,
       0x12313a,
-      0x071018
+      0x09131c
     );
 
   grid.rotation.x =
     Math.PI / 2;
 
   grid.position.z =
-    -4;
+    -3.5;
+
+  grid.material.transparent =
+    true;
+
+  grid.material.opacity =
+    .22;
 
   state.scene.add(
     grid
@@ -2556,19 +4157,19 @@ function initScene(){
 
 
   /*
-    Achsen.
+    Axes
   */
 
   const axes =
     new THREE.AxesHelper(
-      5
+      4
     );
 
   axes.material.transparent =
     true;
 
   axes.material.opacity =
-    .12;
+    .25;
 
   state.scene.add(
     axes
@@ -2576,13 +4177,37 @@ function initScene(){
 
 
   /*
-    Klick.
+    Central space glow
+  */
+
+  const sphere =
+    new THREE.Mesh(
+
+      new THREE.SphereGeometry(
+        0.08,
+        16,
+        16
+      ),
+
+      new THREE.MeshBasicMaterial({
+        color:0x00f5ff
+      })
+
+    );
+
+  state.scene.add(
+    sphere
+  );
+
+
+  /*
+    Events
   */
 
   state.renderer.domElement
     .addEventListener(
       "pointerdown",
-      handlePointer
+      onPointerDown
     );
 
 
@@ -2597,59 +4222,70 @@ function initScene(){
 }
 
 
-function resizeScene(){
+/*
+============================================================
+ SCENE RENDER
+============================================================
+*/
 
-  const container =
-    $("scene");
+function rebuildScene(){
 
-  if(
-    !container.clientWidth ||
-    !container.clientHeight
-  ){
-    return;
-  }
-
-  state.camera.aspect =
-    container.clientWidth /
-    container.clientHeight;
-
-  state.camera.updateProjectionMatrix();
-
-  state.renderer.setSize(
-    container.clientWidth,
-    container.clientHeight
-  );
-
-}
-
-
-/* =======================================================
-   RENDER MEMORY SPACE
-======================================================= */
-
-function clearSpace(){
+  /*
+    Remove old nodes.
+  */
 
   for(
-    const node
-    of state.nodes.values()
+    const mesh of state.nodeMeshes.values()
   ){
 
     state.scene.remove(
-      node
+      mesh
     );
 
-    node.geometry.dispose();
+    mesh.geometry.dispose();
 
-    node.material.dispose();
+    mesh.material.dispose();
 
   }
 
-  state.nodes.clear();
 
+  state.nodeMeshes.clear();
+
+
+  /*
+    Remove old labels.
+  */
 
   for(
-    const line
-    of state.relationLines
+    const sprite of state.nodeLabels.values()
+  ){
+
+    state.scene.remove(
+      sprite
+    );
+
+    if(
+      sprite.material.map
+    ){
+
+      sprite.material.map.dispose();
+
+    }
+
+    sprite.material.dispose();
+
+  }
+
+
+  state.nodeLabels.clear();
+
+
+  /*
+    Remove relation lines.
+  */
+
+  for(
+    const line of state.relationLines
   ){
 
     state.scene.remove(
@@ -2662,134 +4298,167 @@ function clearSpace(){
 
   }
 
-  state.relationLines = [];
+  state.relationLines =
+    [];
 
-}
 
-
-function renderSpace(){
-
-  clearSpace();
-
-  const objects =
-    state.objects;
-
-  if(!objects.length){
-
-    updateSpaceInfo();
-
-    return;
-
-  }
-
-  const positions =
-    project3D(
-      objects
+  state.projected =
+    projectVectors(
+      state.objects
     );
 
 
   /*
-    Nodes.
+    Nodes
   */
 
-  objects.forEach(
-    (object,index)=>{
+  for(
+    const object of state.objects
+  ){
 
-      const point =
-        positions[index];
-
-      const geometry =
-        new THREE.SphereGeometry(
-          object.id ===
-          state.selectedId
-            ? .42
-            : .28,
-          24,
-          24
-        );
-
-      const material =
-        new THREE.MeshBasicMaterial({
-          color:typeColor(
-            object.type
-          )
-        });
-
-      const node =
-        new THREE.Mesh(
-          geometry,
-          material
-        );
-
-      node.position.set(
-        point[0],
-        point[1],
-        point[2]
+    const position =
+      state.projected.get(
+        object.id
       );
 
-      node.userData.objectId =
-        object.id;
+    if(!position){
 
-      state.scene.add(
-        node
-      );
-
-      state.nodes.set(
-        object.id,
-        node
-      );
+      continue;
 
     }
-  );
+
+
+    const geometry =
+      new THREE.SphereGeometry(
+        object.id === state.selectedId
+          ? .24
+          : .16,
+        20,
+        20
+      );
+
+
+    const material =
+      new THREE.MeshBasicMaterial({
+        color:
+          colorForType(
+            object.type
+          )
+      });
+
+
+    const mesh =
+      new THREE.Mesh(
+        geometry,
+        material
+      );
+
+
+    mesh.position.copy(
+      position
+    );
+
+
+    mesh.userData.objectId =
+      object.id;
+
+
+    state.scene.add(
+      mesh
+    );
+
+
+    state.nodeMeshes.set(
+      object.id,
+      mesh
+    );
+
+
+    /*
+      label
+    */
+
+    const label =
+      makeTextSprite(
+        object.label
+      );
+
+
+    label.position.copy(
+      position
+    );
+
+    label.position.y +=
+      .30;
+
+
+    state.scene.add(
+      label
+    );
+
+
+    state.nodeLabels.set(
+      object.id,
+      label
+    );
+
+  }
 
 
   /*
-    Beziehungen.
+    Relations
   */
 
-  const points =
-    [];
-
   for(
-    const object
-    of objects
+    const source of state.objects
   ){
 
+    const sourcePos =
+      state.projected.get(
+        source.id
+      );
+
+    if(!sourcePos){
+
+      continue;
+
+    }
+
+
     for(
-      const relation
-      of object.relations || []
+      const relation of
+      source.relations || []
     ){
 
-      const target =
-        state.nodes.get(
+      const targetPos =
+        state.projected.get(
           relation.target
         );
 
-      const source =
-        state.nodes.get(
-          object.id
-        );
+      if(!targetPos){
 
-      if(
-        !source ||
-        !target
-      ){
         continue;
+
       }
+
 
       const geometry =
         new THREE.BufferGeometry()
           .setFromPoints([
-            source.position,
-            target.position
+
+            sourcePos,
+            targetPos
+
           ]);
+
 
       const material =
         new THREE.LineBasicMaterial({
-          color:0x27465a,
+          color:0xff2bd6,
           transparent:true,
-          opacity:.55
+          opacity:.42
         });
+
 
       const line =
         new THREE.Line(
@@ -2797,9 +4466,11 @@ function renderSpace(){
           material
         );
 
+
       state.scene.add(
         line
       );
+
 
       state.relationLines.push(
         line
@@ -2809,39 +4480,122 @@ function renderSpace(){
 
   }
 
+}
 
-  updateSpaceInfo();
+
+/*
+============================================================
+ TEXT SPRITE
+============================================================
+*/
+
+function makeTextSprite(text){
+
+  const canvas =
+    document.createElement(
+      "canvas"
+    );
+
+  canvas.width =
+    512;
+
+  canvas.height =
+    64;
+
+
+  const context =
+    canvas.getContext(
+      "2d"
+    );
+
+
+  context.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+
+  context.font =
+    "700 24px Inter, Arial";
+
+
+  context.fillStyle =
+    "rgba(230,247,255,.88)";
+
+
+  context.textAlign =
+    "center";
+
+
+  context.textBaseline =
+    "middle";
+
+
+  context.fillText(
+    text,
+    canvas.width/2,
+    canvas.height/2
+  );
+
+
+  const texture =
+    new THREE.CanvasTexture(
+      canvas
+    );
+
+
+  texture.minFilter =
+    THREE.LinearFilter;
+
+
+  const material =
+    new THREE.SpriteMaterial({
+      map:texture,
+      transparent:true
+    });
+
+
+  const sprite =
+    new THREE.Sprite(
+      material
+    );
+
+
+  sprite.scale.set(
+    2.2,
+    .28,
+    1
+  );
+
+
+  return sprite;
 
 }
 
 
-function updateSpaceInfo(){
+/*
+============================================================
+ SELECTED NODE VISUAL
+============================================================
+*/
 
-  spaceInfo.textContent =
-    `${state.objects.length} MEMORY OBJECTS · 384D → 3D`;
+function updateSceneSelection(){
 
-}
-
-
-/* =======================================================
-   NODE FOCUS
-======================================================= */
-
-function focusNode(id){
-
-  const node =
-    state.nodes.get(id);
-
-  if(!node){
-    return;
-  }
-
-  if(
-    state.controls
+  for(
+    const [id,mesh]
+    of state.nodeMeshes
   ){
 
-    state.controls.target.copy(
-      node.position
+    const selected =
+      id === state.selectedId;
+
+
+    mesh.scale.setScalar(
+      selected
+        ? 1.55
+        : 1
     );
 
   }
@@ -2849,27 +4603,38 @@ function focusNode(id){
 }
 
 
-/* =======================================================
-   POINTER
-======================================================= */
+/*
+============================================================
+ POINTER
+============================================================
+*/
 
-function handlePointer(event){
+function onPointerDown(event){
+
+  /*
+    Only inspect on click-like pointer.
+    OrbitControls handles rotation.
+  */
 
   const rect =
     state.renderer
       .domElement
       .getBoundingClientRect();
 
+
   state.mouse.x =
     (
       (event.clientX - rect.left)
-      / rect.width
+      /
+      rect.width
     ) * 2 - 1;
+
 
   state.mouse.y =
     -(
       (event.clientY - rect.top)
-      / rect.height
+      /
+      rect.height
     ) * 2 + 1;
 
 
@@ -2878,31 +4643,85 @@ function handlePointer(event){
     state.camera
   );
 
-  const intersections =
-    state.raycaster.intersectObjects(
-      Array.from(
-        state.nodes.values()
-      )
+
+  const meshes =
+    Array.from(
+      state.nodeMeshes.values()
     );
 
-  if(!intersections.length){
-    return;
+
+  const hits =
+    state.raycaster.intersectObjects(
+      meshes
+    );
+
+
+  if(
+    hits.length
+  ){
+
+    const id =
+      hits[0]
+        .object
+        .userData
+        .objectId;
+
+    selectObject(
+      id
+    );
+
   }
-
-  const node =
-    intersections[0].object;
-
-  const id =
-    node.userData.objectId;
-
-  selectObject(id);
 
 }
 
 
-/* =======================================================
-   ANIMATION
-======================================================= */
+/*
+============================================================
+ RESIZE
+============================================================
+*/
+
+function resizeScene(){
+
+  const container =
+    $("scene");
+
+  if(
+    !state.camera ||
+    !state.renderer
+  ){
+
+    return;
+
+  }
+
+
+  const width =
+    container.clientWidth;
+
+  const height =
+    container.clientHeight;
+
+
+  state.camera.aspect =
+    width / height;
+
+  state.camera.updateProjectionMatrix();
+
+
+  state.renderer.setSize(
+    width,
+    height
+  );
+
+}
+
+
+/*
+============================================================
+ ANIMATION
+============================================================
+*/
 
 function animate(){
 
@@ -2910,295 +4729,73 @@ function animate(){
     animate
   );
 
-  if(
-    state.controls
-  ){
+
+  if(state.controls){
 
     state.controls.update();
 
   }
 
-  state.renderer.render(
-    state.scene,
-    state.camera
-  );
+
+  if(state.renderer){
+
+    state.renderer.render(
+      state.scene,
+      state.camera
+    );
+
+  }
 
 }
 
 
-/* =======================================================
-   IMPORT
-======================================================= */
+/*
+============================================================
+ UPDATE UI
+============================================================
+*/
 
-function normalizeImportedObject(
-  raw
+function updateUI(){
+
+  $("objectCount").textContent =
+    state.objects.length;
+
+
+  $("relationCount").textContent =
+    relationCount();
+
+
+  $("spaceInfo").textContent =
+    `${state.objects.length} MEMORY OBJECTS · 384D → 3D`;
+
+
+  renderExplorer();
+
+  renderInspector();
+
+  rebuildScene();
+
+  updateSceneSelection();
+
+}
+
+
+/*
+============================================================
+ EXPORT
+============================================================
+*/
+
+function downloadJSON(
+  filename,
+  data
 ){
-
-  /*
-    Neues Format.
-  */
-
-  if(
-    raw.embedding &&
-    Array.isArray(
-      raw.embedding
-    )
-  ){
-
-    return {
-
-      id:
-        raw.id ||
-        uid(),
-
-      version:
-        raw.version ||
-        1,
-
-      type:
-        raw.type ||
-        "other",
-
-      label:
-        raw.label ||
-        "Unnamed",
-
-      description:
-        raw.description ||
-        "",
-
-      tags:
-        Array.isArray(raw.tags)
-          ? raw.tags
-          : [],
-
-      relations:
-        Array.isArray(
-          raw.relations
-        )
-          ? raw.relations
-          : [],
-
-      embedding:
-        normalizeVector(
-          raw.embedding
-        ),
-
-      provenance:
-        raw.provenance ||
-        {
-          source:"import"
-        },
-
-      createdAt:
-        raw.createdAt ||
-        new Date().toISOString(),
-
-      updatedAt:
-        raw.updatedAt ||
-        new Date().toISOString()
-
-    };
-
-  }
-
-
-  /*
-    Migration des alten
-    NEURAL-MEMORY-Formats:
-
-      {
-        id,
-        text,
-        vector,
-        created
-      }
-  */
-
-  if(
-    raw.vector &&
-    Array.isArray(
-      raw.vector
-    )
-  ){
-
-    const text =
-      raw.text ||
-      "Imported Memory";
-
-    return {
-
-      id:
-        raw.id ||
-        uid(),
-
-      version:2,
-
-      type:"concept",
-
-      label:
-        text.length > 70
-          ? text.slice(0,70) + "…"
-          : text,
-
-      description:text,
-
-      tags:[],
-
-      relations:[],
-
-      embedding:
-        normalizeVector(
-          raw.vector
-        ),
-
-      provenance:{
-        source:"migration",
-        method:
-          "legacy_neural_memory"
-      },
-
-      createdAt:
-        raw.created ||
-        new Date().toISOString(),
-
-      updatedAt:
-        new Date().toISOString()
-
-    };
-
-  }
-
-
-  return null;
-
-}
-
-
-async function importJSON(file){
-
-  const text =
-    await file.text();
-
-  const data =
-    JSON.parse(text);
-
-  let rawObjects;
-
-  if(
-    Array.isArray(data)
-  ){
-
-    rawObjects = data;
-
-  }else if(
-    Array.isArray(
-      data.objects
-    )
-  ){
-
-    rawObjects =
-      data.objects;
-
-  }else{
-
-    throw new Error(
-      "Keine Memory Objects gefunden."
-    );
-
-  }
-
-  const imported =
-    rawObjects
-      .map(
-        normalizeImportedObject
-      )
-      .filter(Boolean);
-
-
-  if(!imported.length){
-
-    throw new Error(
-      "Keine gültigen Memory Objects."
-    );
-
-  }
-
-
-  /*
-    Bestehende IDs werden aktualisiert,
-    neue IDs werden hinzugefügt.
-  */
-
-  const map =
-    new Map(
-      state.objects.map(
-        object =>
-          [object.id,object]
-      )
-    );
-
-  for(
-    const object
-    of imported
-  ){
-
-    map.set(
-      object.id,
-      object
-    );
-
-  }
-
-  state.objects =
-    Array.from(
-      map.values()
-    );
-
-  await saveAll();
-
-  state.selectedId =
-    imported[0].id;
-
-  updateUI();
-
-  setLog(
-    `${imported.length} OBJECTS IMPORTED`
-  );
-
-}
-
-
-/* =======================================================
-   EXPORT
-======================================================= */
-
-function exportJSON(){
-
-  const payload = {
-
-    format:
-      "NEURAL_MEMORY",
-
-    version:1,
-
-    dimension:
-      EMBEDDING_DIM,
-
-    exportedAt:
-      new Date().toISOString(),
-
-    objects:
-      state.objects
-
-  };
-
 
   const blob =
     new Blob(
       [
         JSON.stringify(
-          payload,
+          data,
           null,
           2
         )
@@ -3215,84 +4812,772 @@ function exportJSON(){
       blob
     );
 
-  const a =
+
+  const anchor =
     document.createElement(
       "a"
     );
 
-  a.href = url;
+  anchor.href =
+    url;
 
-  a.download =
-    "neural-memory-export.json";
+  anchor.download =
+    filename;
 
-  a.click();
+  document.body.appendChild(
+    anchor
+  );
+
+  anchor.click();
+
+  anchor.remove();
 
   URL.revokeObjectURL(
     url
   );
 
+}
+
+
+function exportMemory(){
+
+  const payload = {
+
+    format:
+      "NEURAL_MEMORY",
+
+    version:
+      2,
+
+    dimension:
+      VECTOR_DIM,
+
+    model:
+      MODEL_NAME,
+
+    exportedAt:
+      nowISO(),
+
+    objects:
+      state.objects
+
+  };
+
+
+  downloadJSON(
+    "neural-memory-export.json",
+    payload
+  );
+
+
   setLog(
-    "MEMORY EXPORT CREATED"
+    "MEMORY EXPORTED"
+  );
+
+  toast(
+    "MEMORY JSON EXPORTED"
   );
 
 }
 
 
-/* =======================================================
-   UI
-======================================================= */
+/*
+============================================================
+ IMPORT
+============================================================
+*/
 
-function updateUI(){
+async function importMemoryFile(file){
 
-  objectCount.textContent =
-    state.objects.length;
+  const text =
+    await file.text();
 
-  const relations =
-    state.objects.reduce(
-      (
-        sum,
-        object
-      ) =>
-        sum +
-        (
-          object.relations?.length ||
-          0
-        ),
-      0
+
+  let parsed;
+
+
+  try{
+
+    parsed =
+      JSON.parse(
+        text
+      );
+
+  }catch(error){
+
+    throw new Error(
+      "JSON konnte nicht gelesen werden."
     );
 
-  relationCount.textContent =
-    relations;
+  }
 
-  renderObjectList();
 
-  renderInspector();
+  let rawObjects;
 
-  renderSpace();
+
+  if(
+    Array.isArray(parsed)
+  ){
+
+    rawObjects =
+      parsed;
+
+  }else if(
+    Array.isArray(
+      parsed.objects
+    )
+  ){
+
+    rawObjects =
+      parsed.objects;
+
+  }else if(
+    Array.isArray(
+      parsed.memory
+    )
+  ){
+
+    rawObjects =
+      parsed.memory;
+
+  }else{
+
+    throw new Error(
+      "Keine Memory Objects im JSON gefunden."
+    );
+
+  }
+
+
+  const normalized = [];
+
+
+  for(
+    const raw of rawObjects
+  ){
+
+    normalized.push(
+      normalizeImportedObject(
+        raw
+      )
+    );
+
+  }
+
+
+  await saveAll(
+    normalized
+  );
+
+
+  /*
+    Merge by ID.
+  */
+
+  const map =
+    new Map(
+      state.objects.map(
+        object =>
+          [object.id,object]
+      )
+    );
+
+
+  for(
+    const object of normalized
+  ){
+
+    map.set(
+      object.id,
+      object
+    );
+
+  }
+
+
+  state.objects =
+    Array.from(
+      map.values()
+    );
+
+
+  state.selectedId =
+    normalized[0]?.id ||
+    state.selectedId;
+
+
+  updateUI();
+
+
+  setLog(
+    `${normalized.length} OBJECTS IMPORTED`
+  );
+
+
+  toast(
+    `${normalized.length} Memory Objects importiert`
+  );
 
 }
 
 
-/* =======================================================
-   SEARCH
-======================================================= */
+/*
+============================================================
+ CLEAR DATABASE
+============================================================
+*/
 
-searchInput.addEventListener(
-  "input",
-  event => {
+async function clearDatabase(){
 
-    state.search =
-      event.target.value;
+  if(!state.objects.length){
 
-    renderObjectList();
+    toast(
+      "DATABASE IST BEREITS LEER"
+    );
+
+    return;
 
   }
-);
 
 
-/* =======================================================
-   FILTER
-======================================================= */
+  const confirmed =
+    confirm(
+      "Alle Memory Objects und Relations löschen?"
+    );
+
+
+  if(!confirmed){
+
+    return;
+
+  }
+
+
+  await deleteAll();
+
+
+  state.objects =
+    [];
+
+  state.selectedId =
+    null;
+
+  state.searchResults =
+    null;
+
+
+  updateUI();
+
+
+  setLog(
+    "DATABASE CLEARED"
+  );
+
+  toast(
+    "DATABASE CLEARED"
+  );
+
+}
+
+
+/*
+============================================================
+ OPTIONAL DEMO DATA
+============================================================
+
+ Important:
+ This is explicitly OPTIONAL.
+ Nothing is inserted automatically.
+
+ The embeddings are generated by the same real
+ embedding engine used for normal memory objects.
+============================================================
+*/
+
+async function createOptionalDemo(){
+
+  const demo = [
+
+    {
+      label:
+        "AETHER",
+
+      type:
+        "system",
+
+      description:
+        "System zur Trennung von LLM-Planung und deterministischer Ausführung.",
+
+      tags:
+        ["llm","architecture","execution"]
+
+    },
+
+    {
+      label:
+        "EOTS",
+
+      type:
+        "project",
+
+      description:
+        "Visuelle Schnittstelle zwischen Benutzer, visueller Umgebung und LLM.",
+
+      tags:
+        ["vision","llm","ui"]
+
+    },
+
+    {
+      label:
+        "Semantic Memory",
+
+      type:
+        "concept",
+
+      description:
+        "Strukturierter Speicher aus Objekten, Relationen und semantischen Vektorrepräsentationen.",
+
+      tags:
+        ["memory","embedding","rag"]
+
+    },
+
+    {
+      label:
+        "Transformers.js",
+
+      type:
+        "technology",
+
+      description:
+        "JavaScript Bibliothek zur lokalen Ausführung von Machine-Learning-Modellen im Browser.",
+
+      tags:
+        ["javascript","embedding","local"]
+
+    }
+
+  ];
+
+
+  if(state.objects.length){
+
+    toast(
+      "DATABASE IST NICHT LEER"
+    );
+
+    return;
+
+  }
+
+
+  setLog(
+    "BUILDING OPTIONAL DEMO..."
+  );
+
+
+  for(
+    const item of demo
+  ){
+
+    const embedding =
+      await createEmbedding(
+        [
+          item.label,
+          item.description,
+          item.tags.join(", ")
+        ].join(". ")
+      );
+
+
+    state.objects.push({
+
+      id:
+        createId(),
+
+      version:
+        2,
+
+      type:
+        item.type,
+
+      label:
+        item.label,
+
+      description:
+        item.description,
+
+      tags:
+        item.tags,
+
+      relations:[],
+
+      embedding,
+
+      provenance:{
+        source:"demo",
+        method:"transformers.js",
+        model:MODEL_NAME
+      },
+
+      createdAt:
+        nowISO(),
+
+      updatedAt:
+        nowISO()
+
+    });
+
+  }
+
+
+  /*
+    Add meaningful demo relations.
+  */
+
+  const aether =
+    state.objects.find(
+      x =>
+        x.label ===
+        "AETHER"
+    );
+
+  const eots =
+    state.objects.find(
+      x =>
+        x.label ===
+        "EOTS"
+    );
+
+  const memory =
+    state.objects.find(
+      x =>
+        x.label ===
+        "Semantic Memory"
+    );
+
+  const transformers =
+    state.objects.find(
+      x =>
+        x.label ===
+        "Transformers.js"
+    );
+
+
+  if(aether && memory){
+
+    aether.relations.push({
+      type:"uses",
+      target:memory.id
+    });
+
+  }
+
+  if(eots && memory){
+
+    eots.relations.push({
+      type:"uses",
+      target:memory.id
+    });
+
+  }
+
+  if(memory && transformers){
+
+    memory.relations.push({
+      type:"uses",
+      target:transformers.id
+    });
+
+  }
+
+
+  await saveAll(
+    state.objects
+  );
+
+
+  state.selectedId =
+    aether?.id ||
+    state.objects[0]?.id ||
+    null;
+
+
+  updateUI();
+
+
+  setLog(
+    "OPTIONAL DEMO READY"
+  );
+
+  toast(
+    "OPTIONALE DEMO ERZEUGT"
+  );
+
+}
+
+
+/*
+============================================================
+ DATABASE INITIALIZATION
+============================================================
+*/
+
+async function initialize(){
+
+  setLog(
+    "INITIALIZING..."
+  );
+
+
+  try{
+
+    await openDB();
+
+    let objects =
+      await loadDatabase();
+
+
+    /*
+      Normalize database contents.
+
+      This also upgrades legacy objects
+      if they are found.
+    */
+
+    const normalized = [];
+
+    let migrationNeeded =
+      false;
+
+
+    for(
+      const raw of objects
+    ){
+
+      try{
+
+        const object =
+          normalizeImportedObject(
+            raw
+          );
+
+
+        normalized.push(
+          object
+        );
+
+
+        if(
+          raw.version !== 2 ||
+          raw.vector
+        ){
+
+          migrationNeeded =
+            true;
+
+        }
+
+      }catch(error){
+
+        console.warn(
+          "Skipping invalid object:",
+          raw,
+          error
+        );
+
+      }
+
+    }
+
+
+    if(migrationNeeded){
+
+      await saveAll(
+        normalized
+      );
+
+      setLog(
+        "LEGACY MEMORY MIGRATED"
+      );
+
+    }
+
+
+    state.objects =
+      normalized;
+
+
+    if(state.objects.length){
+
+      state.selectedId =
+        state.objects[0].id;
+
+    }
+
+
+    setEngineStatus(
+      "LOCAL MEMORY ONLINE"
+    );
+
+
+    updateUI();
+
+
+    setLog(
+      "READY"
+    );
+
+
+  }catch(error){
+
+    console.error(error);
+
+    setEngineStatus(
+      "STORAGE ERROR",
+      true
+    );
+
+    setLog(
+      "DATABASE ERROR",
+      true
+    );
+
+    toast(
+      "Persistent Storage konnte nicht initialisiert werden."
+    );
+
+  }
+
+}
+
+
+/*
+============================================================
+ EVENTS
+============================================================
+*/
+
+$("createBtn")
+  .addEventListener(
+    "click",
+    createMemoryObject
+  );
+
+
+$("exportBtn")
+  .addEventListener(
+    "click",
+    exportMemory
+  );
+
+
+$("importBtn")
+  .addEventListener(
+    "click",
+    () =>
+      $("importFile").click()
+  );
+
+
+$("importFile")
+  .addEventListener(
+    "change",
+    async event => {
+
+      const file =
+        event.target.files?.[0];
+
+      if(!file){
+
+        return;
+
+      }
+
+      try{
+
+        await importMemoryFile(
+          file
+        );
+
+      }catch(error){
+
+        console.error(error);
+
+        setLog(
+          "IMPORT ERROR",
+          true
+        );
+
+        toast(
+          error.message ||
+          "Import fehlgeschlagen."
+        );
+
+      }
+
+      event.target.value =
+        "";
+
+    }
+  );
+
+
+$("clearBtn")
+  .addEventListener(
+    "click",
+    clearDatabase
+  );
+
+
+$("demoBtn")
+  .addEventListener(
+    "click",
+    createOptionalDemo
+  );
+
+
+/*
+============================================================
+ SEARCH INPUT
+============================================================
+*/
+
+$("search")
+  .addEventListener(
+    "input",
+    event => {
+
+      state.searchText =
+        event.target.value;
+
+      clearTimeout(
+        searchTimer
+      );
+
+
+      searchTimer =
+        setTimeout(
+          () => {
+
+            semanticSearch(
+              state.searchText
+            );
+
+          },
+          350
+        );
+
+    }
+  );
+
+
+/*
+============================================================
+ FILTERS
+============================================================
+*/
 
 document
   .querySelectorAll(
@@ -3310,20 +5595,23 @@ document
               ".filter"
             )
             .forEach(
-              x =>
-                x.classList.remove(
+              item =>
+                item.classList.remove(
                   "active"
                 )
             );
+
 
           button.classList.add(
             "active"
           );
 
-          state.filter =
+
+          state.activeFilter =
             button.dataset.filter;
 
-          renderObjectList();
+
+          renderExplorer();
 
         }
       );
@@ -3332,85 +5620,80 @@ document
   );
 
 
-/* =======================================================
-   BUTTONS
-======================================================= */
+/*
+============================================================
+ RELATION MODAL
+============================================================
+*/
 
-createBtn.addEventListener(
-  "click",
-  createMemoryObject
-);
-
-
-$("exportBtn").addEventListener(
-  "click",
-  exportJSON
-);
+$("closeRelation")
+  .addEventListener(
+    "click",
+    closeRelationModal
+  );
 
 
-$("importBtn").addEventListener(
-  "click",
-  () =>
-    $("importFile").click()
-);
+$("cancelRelation")
+  .addEventListener(
+    "click",
+    closeRelationModal
+  );
 
 
-$("importFile").addEventListener(
-  "change",
-  async event => {
+$("saveRelation")
+  .addEventListener(
+    "click",
+    createRelation
+  );
 
-    const file =
-      event.target.files[0];
 
-    if(!file){
-      return;
-    }
+$("relationModal")
+  .addEventListener(
+    "click",
+    event => {
 
-    try{
+      if(
+        event.target ===
+        $("relationModal")
+      ){
 
-      setLog(
-        "IMPORT..."
-      );
+        closeRelationModal();
 
-      await importJSON(
-        file
-      );
-
-    }catch(error){
-
-      console.error(error);
-
-      alert(
-        "Import fehlgeschlagen:\n\n" +
-        error.message
-      );
-
-      setLog(
-        "IMPORT ERROR"
-      );
+      }
 
     }
-
-    event.target.value = "";
-
-  }
-);
+  );
 
 
-/* =======================================================
-   ENTER SHORTCUT
-======================================================= */
+/*
+============================================================
+ KEYBOARD
+============================================================
+*/
 
-descriptionInput.addEventListener(
+document.addEventListener(
   "keydown",
   event => {
 
     if(
-      event.ctrlKey &&
-      event.key === "Enter"
+      event.key === "Escape"
     ){
 
-      createMemoryObject();
+      closeRelationModal();
+
+    }
+
+    if(
+      event.key === "/" &&
+      document.activeElement.tagName !==
+      "INPUT" &&
+      document.activeElement.tagName !==
+      "TEXTAREA"
+    ){
+
+      event.preventDefault();
+
+      $("search").focus();
 
     }
 
@@ -3418,62 +5701,15 @@ descriptionInput.addEventListener(
 );
 
 
-/* =======================================================
-   START
-======================================================= */
+/*
+============================================================
+ START
+============================================================
+*/
 
-async function boot(){
+initScene();
 
-  try{
-
-    initScene();
-
-    setLog(
-      "OPENING MEMORY DATABASE..."
-    );
-
-    await loadDatabase();
-
-    updateUI();
-
-    if(
-      state.objects.length
-    ){
-
-      state.selectedId =
-        state.objects[0].id;
-
-      updateUI();
-
-      setLog(
-        `${state.objects.length} MEMORY OBJECTS LOADED`
-      );
-
-    }else{
-
-      setLog(
-        "MEMORY DATABASE EMPTY"
-      );
-
-    }
-
-  }catch(error){
-
-    console.error(error);
-
-    engineStatus.textContent =
-      "STORAGE ERROR";
-
-    setLog(
-      "DATABASE ERROR"
-    );
-
-  }
-
-}
-
-
-boot();
+initialize();
 
 </script>
 
