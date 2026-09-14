@@ -5,66 +5,91 @@
 <meta name="viewport"
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
-<title>NEURAL MEMORY — Semantic Retrieval Lab</title>
+<title>NEURAL MEMORY — Data Ingestion</title>
+
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 
 <style>
+
 :root{
   --bg:#020308;
   --panel:#060914;
   --panel2:#09101d;
+
   --cyan:#00f5ff;
   --cyan2:#00aaff;
   --pink:#ff00aa;
   --green:#4aff88;
   --yellow:#ffe600;
   --red:#ff3355;
+
   --text:#d9faff;
   --muted:#62818c;
+
   --line:rgba(0,245,255,.22);
-  --glow:0 0 12px rgba(0,245,255,.55),
-         0 0 35px rgba(0,245,255,.18);
+
+  --glow:
+    0 0 12px rgba(0,245,255,.55),
+    0 0 35px rgba(0,245,255,.18);
 }
 
 *{
   box-sizing:border-box;
 }
 
-html,body{
+html,
+body{
   margin:0;
   width:100%;
   min-height:100%;
+
   background:var(--bg);
   color:var(--text);
+
   font-family:"Courier New",monospace;
+
   overflow-x:hidden;
 }
 
 body{
+
   background:
+
     radial-gradient(
-      circle at 50% 20%,
+      circle at 50% 15%,
       rgba(0,245,255,.08),
       transparent 35%
     ),
+
     linear-gradient(
       rgba(0,245,255,.018) 1px,
       transparent 1px
     ),
+
     linear-gradient(
       90deg,
       rgba(0,245,255,.018) 1px,
       transparent 1px
     ),
+
     var(--bg);
 
-  background-size:auto,40px 40px,40px 40px;
+  background-size:
+    auto,
+    40px 40px,
+    40px 40px;
 }
 
 body::before{
+
   content:"";
+
   position:fixed;
+
   inset:0;
+
   pointer-events:none;
+
   z-index:9999;
 
   background:
@@ -77,101 +102,138 @@ body::before{
     );
 }
 
-/* HEADER */
+
+/* =====================================================
+   HEADER
+===================================================== */
 
 header{
+
   position:sticky;
+
   top:0;
+
   z-index:100;
 
   height:72px;
 
   display:flex;
+
   align-items:center;
+
   justify-content:space-between;
 
   padding:0 22px;
 
   background:
+
     linear-gradient(
       90deg,
       rgba(0,245,255,.05),
       rgba(255,0,170,.05)
     ),
-    rgba(2,3,8,.92);
 
-  border-bottom:1px solid var(--line);
+    rgba(2,3,8,.94);
+
+  border-bottom:
+    1px solid var(--line);
 
   box-shadow:
     0 0 25px rgba(0,245,255,.08);
 
-  backdrop-filter:blur(8px);
+  backdrop-filter:
+    blur(8px);
 }
 
 .logo{
+
   display:flex;
+
   align-items:center;
+
   gap:14px;
 }
 
 .logoMark{
+
   width:34px;
   height:34px;
 
-  border:1px solid var(--cyan);
-
   display:flex;
+
   align-items:center;
   justify-content:center;
 
+  border:
+    1px solid var(--cyan);
+
   color:var(--cyan);
 
-  box-shadow:var(--glow);
+  box-shadow:
+    var(--glow);
 
   font-size:18px;
 }
 
 .logoText{
+
   letter-spacing:3px;
+
   font-size:15px;
 }
 
 .logoText span{
+
   color:var(--cyan);
 }
 
 .status{
+
   display:flex;
+
   align-items:center;
+
   gap:8px;
 
-  font-size:11px;
   color:var(--muted);
+
+  font-size:10px;
 
   letter-spacing:1px;
 }
 
 .statusDot{
+
   width:8px;
   height:8px;
+
   border-radius:50%;
 
   background:var(--red);
 
-  box-shadow:0 0 10px var(--red);
+  box-shadow:
+    0 0 10px var(--red);
 
   transition:.3s;
 }
 
 .statusDot.online{
+
   background:var(--green);
-  box-shadow:0 0 12px var(--green);
+
+  box-shadow:
+    0 0 12px var(--green);
 }
 
-/* LAYOUT */
+
+/* =====================================================
+   MAIN
+===================================================== */
 
 main{
+
   width:min(1500px,100%);
+
   margin:auto;
 
   padding:22px;
@@ -187,36 +249,49 @@ main{
 }
 
 @media(max-width:1100px){
+
   main{
-    grid-template-columns:1fr;
+
+    grid-template-columns:
+      1fr;
   }
 }
 
-/* PANELS */
+
+/* =====================================================
+   PANEL
+===================================================== */
 
 .panel{
+
   position:relative;
 
   background:
+
     linear-gradient(
       180deg,
       rgba(0,245,255,.025),
       rgba(255,0,170,.018)
     ),
+
     var(--panel);
 
-  border:1px solid var(--line);
+  border:
+    1px solid var(--line);
 
   min-height:100px;
 
   box-shadow:
-    inset 0 0 30px rgba(0,245,255,.025);
+    inset 0 0 30px
+    rgba(0,245,255,.025);
 
   overflow:hidden;
 }
 
 .panel::before{
+
   content:"";
+
   position:absolute;
 
   left:0;
@@ -227,69 +302,116 @@ main{
 
   background:var(--cyan);
 
-  box-shadow:0 0 10px var(--cyan);
+  box-shadow:
+    0 0 10px var(--cyan);
 }
 
 .panelTitle{
+
   padding:14px 16px;
 
-  border-bottom:1px solid rgba(0,245,255,.12);
-
-  font-size:11px;
-  letter-spacing:2px;
+  border-bottom:
+    1px solid rgba(0,245,255,.12);
 
   color:var(--cyan);
+
+  font-size:11px;
+
+  letter-spacing:2px;
 }
 
 .panelBody{
+
   padding:16px;
 }
 
-/* INPUT */
 
-textarea,
-input{
-  width:100%;
+/* =====================================================
+   FILE IMPORT
+===================================================== */
 
-  background:#02050b;
+.dropZone{
 
-  color:var(--text);
+  border:
+    1px dashed
+    rgba(0,245,255,.35);
 
-  border:1px solid rgba(0,245,255,.25);
+  background:
+    rgba(0,245,255,.018);
 
-  outline:none;
+  padding:28px 15px;
 
-  padding:12px;
+  text-align:center;
 
-  font-family:inherit;
-
-  font-size:13px;
-
-  resize:vertical;
+  cursor:pointer;
 
   transition:.2s;
 }
 
-textarea{
-  min-height:120px;
-}
+.dropZone:hover{
 
-textarea:focus,
-input:focus{
-  border-color:var(--cyan);
-
-  box-shadow:
-    0 0 15px rgba(0,245,255,.15);
-}
-
-/* BUTTONS */
-
-button{
-  width:100%;
-
-  border:1px solid var(--cyan);
+  border-color:
+    var(--cyan);
 
   background:
+    rgba(0,245,255,.05);
+
+  box-shadow:
+    0 0 20px
+    rgba(0,245,255,.08);
+}
+
+.dropIcon{
+
+  font-size:28px;
+
+  color:var(--cyan);
+
+  margin-bottom:12px;
+
+  text-shadow:
+    0 0 12px var(--cyan);
+}
+
+.dropTitle{
+
+  color:var(--cyan);
+
+  font-size:11px;
+
+  letter-spacing:2px;
+}
+
+.dropText{
+
+  margin-top:8px;
+
+  color:var(--muted);
+
+  font-size:9px;
+
+  line-height:1.6;
+}
+
+.fileInput{
+
+  display:none;
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+button{
+
+  width:100%;
+
+  border:
+    1px solid var(--cyan);
+
+  background:
+
     linear-gradient(
       90deg,
       rgba(0,245,255,.06),
@@ -304,7 +426,7 @@ button{
 
   font-family:inherit;
 
-  font-size:11px;
+  font-size:10px;
 
   letter-spacing:2px;
 
@@ -314,145 +436,420 @@ button{
 }
 
 button:hover{
-  background:rgba(0,245,255,.12);
+
+  background:
+    rgba(0,245,255,.12);
 
   box-shadow:
-    0 0 18px rgba(0,245,255,.22);
+    0 0 18px
+    rgba(0,245,255,.22);
 }
 
 button:disabled{
+
   opacity:.35;
+
   cursor:not-allowed;
 }
 
 button.pink{
-  border-color:var(--pink);
+
+  border-color:
+    var(--pink);
+
   color:var(--pink);
 }
 
 button.green{
-  border-color:var(--green);
+
+  border-color:
+    var(--green);
+
   color:var(--green);
 }
 
 button.yellow{
-  border-color:var(--yellow);
+
+  border-color:
+    var(--yellow);
+
   color:var(--yellow);
 }
 
-/* FILE */
 
-.fileLabel{
-  display:block;
+/* =====================================================
+   FILE INFO
+===================================================== */
 
-  border:1px dashed rgba(0,245,255,.28);
+.fileInfo{
 
-  padding:12px;
-
-  margin-top:10px;
-
-  color:var(--muted);
-
-  font-size:10px;
-
-  text-align:center;
-
-  cursor:pointer;
-}
-
-.fileLabel:hover{
-  border-color:var(--cyan);
-  color:var(--cyan);
-}
-
-.fileLabel input{
   display:none;
+
+  margin-top:12px;
+
+  padding:10px;
+
+  border:
+    1px solid
+    rgba(74,255,136,.25);
+
+  background:
+    rgba(74,255,136,.025);
+
+  font-size:9px;
+
+  line-height:1.7;
 }
 
-/* PIPELINE */
+.fileInfo.show{
 
-.pipeline{
+  display:block;
+}
+
+.fileName{
+
+  color:var(--green);
+
+  word-break:
+    break-all;
+}
+
+
+/* =====================================================
+   SHEETS
+===================================================== */
+
+.sheetList{
+
   display:flex;
+
   flex-direction:column;
+
   gap:7px;
+
+  max-height:300px;
+
+  overflow:auto;
 }
 
-.stage{
-  position:relative;
+.sheetButton{
 
-  border:1px solid rgba(0,245,255,.12);
+  width:100%;
+
+  margin:0;
+
+  padding:10px;
+
+  text-align:left;
+
+  border:
+    1px solid
+    rgba(0,245,255,.12);
 
   background:#030710;
 
-  padding:10px 12px;
+  color:#6b8a92;
 
-  font-size:11px;
+  font-size:9px;
 
-  color:#47626c;
-
-  transition:.4s;
+  letter-spacing:1px;
 }
 
-.stage.active{
+.sheetButton:hover{
+
+  border-color:
+    var(--cyan);
+
+  color:var(--cyan);
+}
+
+.sheetButton.active{
+
+  border-color:
+    var(--cyan);
+
   color:var(--cyan);
 
-  border-color:var(--cyan);
+  background:
+    rgba(0,245,255,.06);
 
   box-shadow:
-    0 0 14px rgba(0,245,255,.2);
-
-  text-shadow:
-    0 0 8px var(--cyan);
+    0 0 12px
+    rgba(0,245,255,.1);
 }
 
-.stage.done{
-  color:var(--green);
-  border-color:rgba(74,255,136,.4);
+
+/* =====================================================
+   STATS
+===================================================== */
+
+.metrics{
+
+  display:grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap:8px;
 }
 
-.stage::before{
-  content:"";
+.metric{
 
-  display:inline-block;
+  padding:10px;
 
-  width:6px;
-  height:6px;
+  background:#030710;
 
-  margin-right:9px;
-
-  border-radius:50%;
-
-  background:#20343b;
+  border:
+    1px solid
+    rgba(0,245,255,.12);
 }
 
-.stage.active::before{
-  background:var(--cyan);
+.metricLabel{
+
+  color:var(--muted);
+
+  font-size:8px;
+
+  letter-spacing:1px;
+}
+
+.metricValue{
+
+  margin-top:5px;
+
+  color:var(--cyan);
+
+  font-size:16px;
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.tableWrap{
+
+  overflow:auto;
+
+  max-height:650px;
+
+  border:
+    1px solid
+    rgba(0,245,255,.12);
+
+  background:#010207;
+}
+
+table{
+
+  width:100%;
+
+  border-collapse:
+    collapse;
+
+  font-size:9px;
+
+  white-space:nowrap;
+}
+
+th{
+
+  position:sticky;
+
+  top:0;
+
+  z-index:2;
+
+  background:
+    #07111d;
+
+  color:var(--cyan);
+
+  border-bottom:
+    1px solid
+    var(--line);
+
+  padding:9px;
+
+  text-align:left;
+
+  letter-spacing:1px;
+}
+
+td{
+
+  padding:8px 9px;
+
+  border-bottom:
+    1px solid
+    rgba(0,245,255,.07);
+
+  color:#8daab1;
+
+  max-width:260px;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+}
+
+tr:hover td{
+
+  background:
+    rgba(0,245,255,.035);
+
+  color:var(--text);
+}
+
+
+/* =====================================================
+   RECORD
+===================================================== */
+
+.recordList{
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:8px;
+
+  max-height:520px;
+
+  overflow:auto;
+}
+
+.record{
+
+  padding:10px;
+
+  background:#030710;
+
+  border:
+    1px solid
+    rgba(0,245,255,.12);
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+.record:hover{
+
+  border-color:
+    var(--cyan);
 
   box-shadow:
-    0 0 10px var(--cyan);
+    0 0 12px
+    rgba(0,245,255,.1);
 }
 
-.stage.done::before{
-  background:var(--green);
+.recordId{
 
-  box-shadow:
-    0 0 10px var(--green);
+  color:var(--pink);
+
+  font-size:9px;
+
+  margin-bottom:6px;
 }
 
-/* LOG */
+.recordMeta{
+
+  color:#526f78;
+
+  font-size:8px;
+
+  line-height:1.5;
+}
+
+.recordJson{
+
+  margin-top:7px;
+
+  color:#87b7c0;
+
+  font-size:8px;
+
+  line-height:1.5;
+
+  white-space:pre-wrap;
+
+  word-break:break-word;
+}
+
+
+/* =====================================================
+   SCHEMA
+===================================================== */
+
+.schemaList{
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:6px;
+
+  max-height:360px;
+
+  overflow:auto;
+}
+
+.schemaItem{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  gap:10px;
+
+  padding:8px;
+
+  background:#030710;
+
+  border:
+    1px solid
+    rgba(0,245,255,.1);
+
+  font-size:8px;
+}
+
+.schemaName{
+
+  color:#9edce3;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+}
+
+.schemaType{
+
+  color:var(--yellow);
+
+  white-space:nowrap;
+}
+
+
+/* =====================================================
+   LOG
+===================================================== */
 
 .log{
-  height:145px;
+
+  height:180px;
 
   overflow:auto;
 
   background:#010207;
 
-  border:1px solid rgba(0,245,255,.12);
+  border:
+    1px solid
+    rgba(0,245,255,.12);
 
   padding:10px;
 
-  font-size:10px;
+  font-size:9px;
 
   line-height:1.7;
 
@@ -460,420 +857,84 @@ button.yellow{
 }
 
 .logLine.ok{
+
   color:var(--green);
 }
 
 .logLine.info{
+
   color:var(--cyan);
 }
 
 .logLine.warn{
+
   color:var(--yellow);
 }
 
 .logLine.error{
+
   color:var(--red);
 }
 
-/* VECTOR */
 
-.vectorBox{
-  background:#010308;
-
-  border:1px solid rgba(0,245,255,.14);
-
-  padding:12px;
-
-  max-height:250px;
-
-  overflow:auto;
-
-  font-size:10px;
-
-  line-height:1.7;
-
-  word-break:break-all;
-
-  color:#8acdd5;
-}
-
-.vectorDim{
-  color:var(--yellow);
-
-  font-size:13px;
-
-  margin-bottom:8px;
-}
-
-/* 3D */
-
-.scene{
-  position:relative;
-
-  height:520px;
-
-  background:
-    radial-gradient(
-      ellipse at center,
-      rgba(0,245,255,.07),
-      transparent 55%
-    ),
-    #010308;
-
-  overflow:hidden;
-
-  perspective:700px;
-}
-
-.grid3d{
-  position:absolute;
-
-  left:-20%;
-  width:140%;
-
-  bottom:-40px;
-
-  height:70%;
-
-  transform:
-    perspective(400px)
-    rotateX(62deg);
-
-  background:
-    linear-gradient(
-      rgba(0,245,255,.15) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(0,245,255,.15) 1px,
-      transparent 1px
-    );
-
-  background-size:45px 45px;
-
-  box-shadow:
-    0 -20px 60px rgba(0,245,255,.08);
-}
-
-.axis{
-  position:absolute;
-
-  left:50%;
-  top:50%;
-
-  transform-origin:left center;
-
-  height:1px;
-  width:230px;
-
-  background:var(--cyan);
-
-  box-shadow:0 0 10px var(--cyan);
-}
-
-.axis.x{
-  transform:rotate(0deg);
-}
-
-.axis.y{
-  transform:rotate(120deg);
-}
-
-.axis.z{
-  transform:rotate(-120deg);
-}
-
-.axisLabel{
-  position:absolute;
-
-  font-size:10px;
-
-  color:var(--cyan);
-
-  text-shadow:
-    0 0 8px var(--cyan);
-}
-
-.axisLabel.x{
-  right:25px;
-  top:49%;
-}
-
-.axisLabel.y{
-  left:27%;
-  top:29%;
-}
-
-.axisLabel.z{
-  right:27%;
-  top:29%;
-}
-
-.point{
-  position:absolute;
-
-  width:9px;
-  height:9px;
-
-  border-radius:50%;
-
-  background:var(--pink);
-
-  box-shadow:
-    0 0 8px var(--pink),
-    0 0 25px var(--pink);
-
-  transform:
-    translate(-50%,-50%);
-
-  animation:
-    pulse 1.6s infinite ease-in-out;
-}
-
-.point.memoryPoint{
-  background:var(--cyan);
-
-  box-shadow:
-    0 0 8px var(--cyan),
-    0 0 20px var(--cyan);
-}
-
-.point.topPoint{
-  background:var(--green);
-
-  box-shadow:
-    0 0 10px var(--green),
-    0 0 30px var(--green);
-}
-
-@keyframes pulse{
-  0%,100%{
-    opacity:.65;
-    transform:
-      translate(-50%,-50%)
-      scale(.8);
-  }
-
-  50%{
-    opacity:1;
-    transform:
-      translate(-50%,-50%)
-      scale(1.5);
-  }
-}
-
-/* HUD */
-
-.hud{
-  position:absolute;
-
-  top:12px;
-  left:12px;
-  right:12px;
-
-  display:flex;
-  justify-content:space-between;
-
-  pointer-events:none;
-
-  font-size:9px;
-
-  color:var(--muted);
-
-  letter-spacing:1px;
-}
-
-.hudRight{
-  color:var(--pink);
-}
-
-/* MEMORY */
-
-.memoryList{
-  display:flex;
-  flex-direction:column;
-
-  gap:8px;
-
-  max-height:330px;
-
-  overflow:auto;
-}
-
-.memory{
-  padding:10px;
-
-  border:1px solid rgba(0,245,255,.12);
-
-  background:#030710;
-
-  font-size:10px;
-
-  cursor:pointer;
-
-  transition:.2s;
-}
-
-.memory:hover{
-  border-color:var(--cyan);
-
-  box-shadow:
-    0 0 12px rgba(0,245,255,.1);
-}
-
-.memoryId{
-  color:var(--pink);
-
-  font-size:9px;
-
-  margin-bottom:5px;
-}
-
-.memoryText{
-  color:#9bb8bf;
-
-  line-height:1.4;
-}
-
-.memoryMeta{
-  margin-top:7px;
-
-  color:#405861;
-
-  font-size:8px;
-}
-
-/* RANKING */
-
-.rank{
-  border:1px solid rgba(0,245,255,.12);
-
-  padding:10px;
-
-  margin-bottom:8px;
-
-  background:#030710;
-}
-
-.rankTop{
-  display:flex;
-
-  justify-content:space-between;
-
-  gap:10px;
-
-  font-size:10px;
-}
-
-.rankScore{
-  color:var(--green);
-}
-
-.bar{
-  height:3px;
-
-  background:#0b1820;
-
-  margin-top:7px;
-}
-
-.barFill{
-  height:100%;
-
-  background:
-    linear-gradient(
-      90deg,
-      var(--cyan),
-      var(--pink)
-    );
-
-  box-shadow:
-    0 0 8px var(--cyan);
-
-  width:0%;
-
-  transition:1s;
-}
-
-.rankText{
-  margin-top:7px;
-
-  color:#718b92;
-
-  font-size:9px;
-
-  line-height:1.4;
-}
-
-/* ERROR */
+/* =====================================================
+   ERROR
+===================================================== */
 
 .errorBox{
+
   display:none;
 
-  border:1px solid var(--red);
+  border:
+    1px solid
+    var(--red);
 
   color:#ff8a99;
 
-  background:rgba(255,0,50,.05);
+  background:
+    rgba(255,0,50,.05);
 
   padding:12px;
 
   margin-top:12px;
 
-  font-size:10px;
+  font-size:9px;
 
   line-height:1.5;
 }
 
 .errorBox.show{
+
   display:block;
 }
 
-/* METRICS */
 
-.metrics{
-  display:grid;
+/* =====================================================
+   EMPTY
+===================================================== */
 
-  grid-template-columns:1fr 1fr;
+.empty{
 
-  gap:8px;
+  color:#405861;
 
-  margin-top:12px;
+  font-size:9px;
+
+  padding:12px 0;
 }
 
-.metric{
-  padding:10px;
 
-  background:#030710;
-
-  border:1px solid rgba(0,245,255,.12);
-}
-
-.metricLabel{
-  font-size:8px;
-
-  color:var(--muted);
-
-  letter-spacing:1px;
-}
-
-.metricValue{
-  margin-top:5px;
-
-  font-size:14px;
-
-  color:var(--cyan);
-}
-
-/* FOOTER */
+/* =====================================================
+   FOOTER
+===================================================== */
 
 footer{
+
   width:min(1500px,100%);
 
   margin:auto;
 
-  padding:0 22px 30px;
+  padding:
+    0 22px 30px;
 
   color:#304850;
 
@@ -881,22 +942,27 @@ footer{
 
   letter-spacing:1px;
 }
+
 </style>
 </head>
 
 <body>
 
+
 <header>
 
   <div class="logo">
 
-    <div class="logoMark">Σ</div>
+    <div class="logoMark">
+      Σ
+    </div>
 
     <div class="logoText">
       NEURAL <span>MEMORY</span>
     </div>
 
   </div>
+
 
   <div class="status">
 
@@ -906,7 +972,7 @@ footer{
     </div>
 
     <span id="statusText">
-      EMBEDDING CORE OFFLINE
+      DATA CORE READY
     </span>
 
   </div>
@@ -916,48 +982,88 @@ footer{
 
 <main>
 
+
 <!-- =====================================================
-     LEFT
+     LEFT COLUMN
 ===================================================== -->
 
 <section>
 
+
+  <!-- IMPORT -->
+
   <div class="panel">
 
     <div class="panelTitle">
-      01 / MEMORY INPUT
+      01 / DATA INGESTION
     </div>
 
     <div class="panelBody">
 
-      <textarea
-        id="textInput"
-        placeholder="Schreibe hier eine Erinnerung ...">Der Kunde hat am Freitag einen Termin in Stuttgart.</textarea>
+      <label
+        id="dropZone"
+        class="dropZone">
 
-      <button
-        id="embedBtn">
-        GENERATE & STORE MEMORY
-      </button>
-
-      <label class="fileLabel">
-        IMPORT MEMORY JSON
         <input
-          id="importFile"
+          id="fileInput"
+          class="fileInput"
           type="file"
-          accept=".json,application/json">
+          accept=".xlsx,.xls,.csv,text/csv">
+
+        <div class="dropIcon">
+          ⇩
+        </div>
+
+        <div class="dropTitle">
+          IMPORT DATA
+        </div>
+
+        <div class="dropText">
+          XLSX / XLS / CSV<br>
+          Datei auswählen
+        </div>
+
       </label>
 
-      <button
-        id="exportBtn"
-        class="yellow">
-        EXPORT MEMORY JSON
-      </button>
+
+      <div
+        id="fileInfo"
+        class="fileInfo">
+
+        <div>
+          FILE
+        </div>
+
+        <div
+          id="fileName"
+          class="fileName">
+        </div>
+
+        <div>
+          TYPE:
+          <span id="fileType">
+            —
+          </span>
+        </div>
+
+        <div>
+          SIZE:
+          <span id="fileSize">
+            —
+          </span>
+        </div>
+
+      </div>
+
 
       <button
-        id="clearBtn"
+        id="clearDataBtn"
         class="pink">
-        CLEAR MEMORY STORE
+
+        CLEAR IMPORT
+
       </button>
+
 
       <div
         id="errorBox"
@@ -969,52 +1075,24 @@ footer{
   </div>
 
 
+  <!-- SHEETS -->
+
   <div
     class="panel"
     style="margin-top:18px">
 
     <div class="panelTitle">
-      PIPELINE
+      02 / SHEETS
     </div>
 
     <div class="panelBody">
 
-      <div class="pipeline">
+      <div
+        id="sheetList"
+        class="sheetList">
 
-        <div
-          id="stageText"
-          class="stage">
-          TEXT
-        </div>
-
-        <div
-          id="stageToken"
-          class="stage">
-          TOKENIZATION
-        </div>
-
-        <div
-          id="stageModel"
-          class="stage">
-          EMBEDDING MODEL
-        </div>
-
-        <div
-          id="stageVector"
-          class="stage">
-          VECTOR 384D
-        </div>
-
-        <div
-          id="stageStore"
-          class="stage">
-          VECTOR STORE
-        </div>
-
-        <div
-          id="stageSearch"
-          class="stage">
-          COSINE SEARCH
+        <div class="empty">
+          Noch keine Datei importiert.
         </div>
 
       </div>
@@ -1023,6 +1101,8 @@ footer{
 
   </div>
 
+
+  <!-- SYSTEM LOG -->
 
   <div
     class="panel"
@@ -1043,175 +1123,85 @@ footer{
 
   </div>
 
-</section>
-
-
-<!-- =====================================================
-     CENTER
-===================================================== -->
-
-<section>
-
-  <div class="panel">
-
-    <div class="panelTitle">
-      EMBEDDING SPACE / 3D VIEW
-    </div>
-
-    <div class="panelBody"
-         style="padding:0">
-
-      <div
-        id="scene"
-        class="scene">
-
-        <div class="hud">
-
-          <div>
-            VECTOR SPACE // R³ VIEW
-          </div>
-
-          <div
-            id="hudStatus"
-            class="hudRight">
-            NO VECTOR
-          </div>
-
-        </div>
-
-        <div class="grid3d"></div>
-
-        <div class="axis x"></div>
-        <div class="axis y"></div>
-        <div class="axis z"></div>
-
-        <div class="axisLabel x">
-          v₁
-        </div>
-
-        <div class="axisLabel y">
-          v₂
-        </div>
-
-        <div class="axisLabel z">
-          v₃
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div
-    class="panel"
-    style="margin-top:18px">
-
-    <div class="panelTitle">
-      CURRENT EMBEDDING
-    </div>
-
-    <div class="panelBody">
-
-      <div
-        id="vectorDim"
-        class="vectorDim">
-        d = —
-      </div>
-
-      <div
-        id="vectorBox"
-        class="vectorBox">
-        Noch kein Embedding berechnet.
-      </div>
-
-    </div>
-
-  </div>
 
 </section>
 
 
+
 <!-- =====================================================
-     RIGHT
+     CENTER COLUMN
 ===================================================== -->
 
 <section>
 
+
+  <!-- IMPORT STATUS -->
+
   <div class="panel">
 
     <div class="panelTitle">
-      MEMORY BANK
+      DATASET STATUS
     </div>
 
     <div class="panelBody">
-
-      <div
-        id="memoryList"
-        class="memoryList">
-
-        <div
-          style="
-          color:#405861;
-          font-size:10px">
-          VECTOR STORE EMPTY
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div
-    class="panel"
-    style="margin-top:18px">
-
-    <div class="panelTitle">
-      SEMANTIC QUERY
-    </div>
-
-    <div class="panelBody">
-
-      <input
-        id="queryInput"
-        placeholder="z.B. Wann ist der Stuttgart-Termin?">
-
-      <button
-        id="searchBtn"
-        class="pink"
-        disabled>
-        EMBED QUERY → COSINE SEARCH
-      </button>
 
       <div class="metrics">
 
         <div class="metric">
 
           <div class="metricLabel">
-            MEMORY COUNT
+            SHEETS
           </div>
 
           <div
-            id="memoryCount"
+            id="sheetCount"
             class="metricValue">
             0
           </div>
 
         </div>
 
+
         <div class="metric">
 
           <div class="metricLabel">
-            VECTOR DIM
+            ROWS
           </div>
 
           <div
-            id="dimension"
+            id="rowCount"
             class="metricValue">
-            —
+            0
+          </div>
+
+        </div>
+
+
+        <div class="metric">
+
+          <div class="metricLabel">
+            COLUMNS
+          </div>
+
+          <div
+            id="columnCount"
+            class="metricValue">
+            0
+          </div>
+
+        </div>
+
+
+        <div class="metric">
+
+          <div class="metricLabel">
+            RECORDS
+          </div>
+
+          <div
+            id="recordCount"
+            class="metricValue">
+            0
           </div>
 
         </div>
@@ -1222,25 +1212,32 @@ footer{
 
   </div>
 
+
+
+  <!-- TABLE -->
 
   <div
     class="panel"
     style="margin-top:18px">
 
     <div class="panelTitle">
-      RELEVANCE SCANNER
+      03 / RAW TABLE VIEW
     </div>
 
-    <div class="panelBody">
+    <div
+      class="panelBody"
+      style="padding:0">
 
       <div
-        id="ranking">
+        id="tableWrap"
+        class="tableWrap">
 
         <div
-          style="
-          color:#405861;
-          font-size:10px">
-          NO SEARCH RESULT
+          class="empty"
+          style="padding:20px">
+
+          Noch keine Tabelle geladen.
+
         </div>
 
       </div>
@@ -1248,6 +1245,154 @@ footer{
     </div>
 
   </div>
+
+
+
+  <!-- SCHEMA -->
+
+  <div
+    class="panel"
+    style="margin-top:18px">
+
+    <div class="panelTitle">
+      04 / TECHNICAL SCHEMA
+    </div>
+
+    <div class="panelBody">
+
+      <div
+        id="schemaList"
+        class="schemaList">
+
+        <div class="empty">
+          Schema wird nach dem Import erzeugt.
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     RIGHT COLUMN
+===================================================== -->
+
+<section>
+
+
+  <!-- RECORDS -->
+
+  <div class="panel">
+
+    <div class="panelTitle">
+      05 / MEMORY RECORDS
+    </div>
+
+    <div class="panelBody">
+
+      <div
+        id="recordList"
+        class="recordList">
+
+        <div class="empty">
+          Noch keine Records.
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- SELECTED RECORD -->
+
+  <div
+    class="panel"
+    style="margin-top:18px">
+
+    <div class="panelTitle">
+      SELECTED RECORD
+    </div>
+
+    <div class="panelBody">
+
+      <div
+        id="selectedRecord"
+        class="recordJson">
+
+        Kein Record ausgewählt.
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- NEXT STAGE -->
+
+  <div
+    class="panel"
+    style="margin-top:18px">
+
+    <div class="panelTitle">
+      MEMORY PIPELINE
+    </div>
+
+    <div class="panelBody">
+
+      <div class="recordMeta">
+
+        CURRENT STAGE
+
+      </div>
+
+      <div
+        style="
+          margin-top:8px;
+          color:var(--cyan);
+          font-size:11px;
+          letter-spacing:1px">
+
+        INGESTION
+
+      </div>
+
+
+      <div
+        style="
+          margin-top:15px;
+          color:#405861;
+          font-size:9px;
+          line-height:1.8">
+
+        FILE<br>
+        ↓<br>
+        SHEET<br>
+        ↓<br>
+        ROW<br>
+        ↓<br>
+        RECORD<br>
+        ↓<br>
+        SCHEMA<br>
+        ↓<br>
+        <span style="color:var(--yellow)">
+          NEXT: EMBEDDING TEXT
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
 
 </section>
 
@@ -1256,58 +1401,40 @@ footer{
 
 <footer>
 
-  NEURAL MEMORY LAB //
-  TEXT → EMBEDDING → VECTOR STORE → QUERY EMBEDDING → COSINE → RANKING
+  NEURAL MEMORY //
+  DATA INGESTION //
+  ORIGINAL DATA PRESERVED //
+  NO SEMANTIC INTERPRETATION
 
 </footer>
 
 
-<script type="module">
 
-/* =====================================================
-   IMPORT
-===================================================== */
-
-import {
-  pipeline
-} from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
-
-
-/* =====================================================
-   CONFIG
-===================================================== */
-
-const MODEL =
-  "Xenova/multilingual-e5-small";
-
-const EMBEDDING_DIM =
-  384;
-
-const DB_NAME =
-  "NEURAL_MEMORY_DB";
-
-const DB_VERSION =
-  1;
-
-const STORE_NAME =
-  "memories";
-
+<script>
 
 /* =====================================================
    STATE
 ===================================================== */
 
-let extractor = null;
+const state = {
 
-let modelLoading = false;
+  workbook:null,
 
-let modelReady = false;
+  file:null,
 
-let currentVector = null;
+  sheets:[],
 
-let memory = [];
+  currentSheet:null,
 
-let memoryCounter = 0;
+  rows:[],
+
+  records:[],
+
+  schema:[],
+
+  selectedRecord:null
+
+};
 
 
 /* =====================================================
@@ -1317,38 +1444,54 @@ let memoryCounter = 0;
 const $ =
   id => document.getElementById(id);
 
-const textInput =
-  $("textInput");
 
-const queryInput =
-  $("queryInput");
+const fileInput =
+  $("fileInput");
 
-const embedBtn =
-  $("embedBtn");
+const dropZone =
+  $("dropZone");
 
-const searchBtn =
-  $("searchBtn");
+const fileInfo =
+  $("fileInfo");
 
-const exportBtn =
-  $("exportBtn");
+const fileName =
+  $("fileName");
 
-const clearBtn =
-  $("clearBtn");
+const fileType =
+  $("fileType");
 
-const importFile =
-  $("importFile");
+const fileSize =
+  $("fileSize");
 
-const vectorBox =
-  $("vectorBox");
+const sheetList =
+  $("sheetList");
 
-const vectorDim =
-  $("vectorDim");
+const tableWrap =
+  $("tableWrap");
 
-const memoryList =
-  $("memoryList");
+const schemaList =
+  $("schemaList");
 
-const ranking =
-  $("ranking");
+const recordList =
+  $("recordList");
+
+const selectedRecord =
+  $("selectedRecord");
+
+const sheetCount =
+  $("sheetCount");
+
+const rowCount =
+  $("rowCount");
+
+const columnCount =
+  $("columnCount");
+
+const recordCount =
+  $("recordCount");
+
+const clearDataBtn =
+  $("clearDataBtn");
 
 const log =
   $("log");
@@ -1362,15 +1505,6 @@ const statusDot =
 const statusText =
   $("statusText");
 
-const hudStatus =
-  $("hudStatus");
-
-const memoryCount =
-  $("memoryCount");
-
-const dimension =
-  $("dimension");
-
 
 /* =====================================================
    LOG
@@ -1378,14 +1512,16 @@ const dimension =
 
 function addLog(
   message,
-  type = "info"
+  type="info"
 ){
 
   const line =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   line.className =
-    "logLine " + type;
+    `logLine ${type}`;
 
   const time =
     new Date()
@@ -1413,19 +1549,20 @@ function addLog(
 
 function showError(error){
 
-  errorBox.classList.add("show");
+  const message =
+    error?.message ||
+    String(error);
 
-  errorBox.innerHTML = `
-    <strong>ERROR</strong><br><br>
-    ${escapeHtml(
-      error?.message ||
-      String(error)
-    )}
-  `;
+  errorBox.classList.add(
+    "show"
+  );
+
+  errorBox.innerHTML =
+    `<strong>ERROR</strong><br><br>
+     ${escapeHtml(message)}`;
 
   addLog(
-    error?.message ||
-    String(error),
+    message,
     "error"
   );
 
@@ -1434,10 +1571,12 @@ function showError(error){
 
 function clearError(){
 
-  errorBox.classList.remove("show");
+  errorBox.classList.remove(
+    "show"
+  );
 
-  errorBox.innerHTML = "";
-
+  errorBox.innerHTML =
+    "";
 }
 
 
@@ -1448,67 +1587,31 @@ function clearError(){
 function escapeHtml(value){
 
   return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
 
-}
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
 
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
 
-/* =====================================================
-   PIPELINE
-===================================================== */
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
 
-function activateStage(id){
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
 
-  const stages = [
-    "stageText",
-    "stageToken",
-    "stageModel",
-    "stageVector",
-    "stageStore",
-    "stageSearch"
-  ];
-
-  const index =
-    stages.indexOf(id);
-
-  stages.forEach(
-    (stageId,i)=>{
-
-      const el =
-        $(stageId);
-
-      el.classList.remove(
-        "active",
-        "done"
-      );
-
-      if(i < index){
-        el.classList.add("done");
-      }
-
-      if(i === index){
-        el.classList.add("active");
-      }
-
-    }
-  );
-
-}
-
-
-function completeStage(id){
-
-  $(id)
-    .classList
-    .remove("active");
-
-  $(id)
-    .classList
-    .add("done");
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
 
 }
 
@@ -1517,358 +1620,277 @@ function completeStage(id){
    STATUS
 ===================================================== */
 
-function setOffline(){
-
-  statusDot
-    .classList
-    .remove("online");
-
-  statusText.textContent =
-    "EMBEDDING CORE OFFLINE";
-
-}
-
-
 function setOnline(){
 
-  statusDot
-    .classList
-    .add("online");
+  statusDot.classList.add(
+    "online"
+  );
 
   statusText.textContent =
-    "EMBEDDING CORE ONLINE";
+    "DATA CORE ONLINE";
+
+}
+
+
+function setOffline(){
+
+  statusDot.classList.remove(
+    "online"
+  );
+
+  statusText.textContent =
+    "DATA CORE READY";
 
 }
 
 
 /* =====================================================
-   INDEXED DB
+   FILE SIZE
 ===================================================== */
 
-let dbPromise = null;
+function formatFileSize(
+  bytes
+){
 
+  if(bytes < 1024){
 
-function openDB(){
+    return `${bytes} B`;
 
-  if(dbPromise){
-    return dbPromise;
   }
 
-  dbPromise =
-    new Promise(
-      (resolve,reject)=>{
+  if(bytes < 1024*1024){
 
-        const request =
-          indexedDB.open(
-            DB_NAME,
-            DB_VERSION
-          );
+    return `${(
+      bytes / 1024
+    ).toFixed(1)} KB`;
 
-        request.onupgradeneeded =
-          event => {
+  }
 
-            const db =
-              event.target.result;
-
-            if(
-              !db.objectStoreNames.contains(
-                STORE_NAME
-              )
-            ){
-
-              db.createObjectStore(
-                STORE_NAME,
-                {
-                  keyPath:"id"
-                }
-              );
-
-            }
-
-          };
-
-        request.onsuccess =
-          event =>
-            resolve(
-              event.target.result
-            );
-
-        request.onerror =
-          () =>
-            reject(
-              request.error
-            );
-
-      }
-    );
-
-  return dbPromise;
-
-}
-
-
-async function dbGetAll(){
-
-  const db =
-    await openDB();
-
-  return new Promise(
-    (resolve,reject)=>{
-
-      const transaction =
-        db.transaction(
-          STORE_NAME,
-          "readonly"
-        );
-
-      const store =
-        transaction.objectStore(
-          STORE_NAME
-        );
-
-      const request =
-        store.getAll();
-
-      request.onsuccess =
-        () =>
-          resolve(
-            request.result || []
-          );
-
-      request.onerror =
-        () =>
-          reject(
-            request.error
-          );
-
-    }
-  );
-
-}
-
-
-async function dbPut(record){
-
-  const db =
-    await openDB();
-
-  return new Promise(
-    (resolve,reject)=>{
-
-      const transaction =
-        db.transaction(
-          STORE_NAME,
-          "readwrite"
-        );
-
-      transaction.objectStore(
-        STORE_NAME
-      ).put(record);
-
-      transaction.oncomplete =
-        () => resolve();
-
-      transaction.onerror =
-        () =>
-          reject(
-            transaction.error
-          );
-
-    }
-  );
-
-}
-
-
-async function dbClear(){
-
-  const db =
-    await openDB();
-
-  return new Promise(
-    (resolve,reject)=>{
-
-      const transaction =
-        db.transaction(
-          STORE_NAME,
-          "readwrite"
-        );
-
-      transaction.objectStore(
-        STORE_NAME
-      ).clear();
-
-      transaction.oncomplete =
-        () => resolve();
-
-      transaction.onerror =
-        () =>
-          reject(
-            transaction.error
-          );
-
-    }
-  );
+  return `${(
+    bytes /
+    (1024*1024)
+  ).toFixed(2)} MB`;
 
 }
 
 
 /* =====================================================
-   LOAD MEMORY
+   FILE IMPORT
 ===================================================== */
 
-async function loadMemory(){
+fileInput.addEventListener(
+  "change",
+  event => {
 
-  try{
+    const file =
+      event.target.files[0];
 
-    memory =
-      await dbGetAll();
+    if(!file){
 
-    memory.sort(
-      (a,b)=>
-        a.created.localeCompare(
-          b.created
-        )
-    );
+      return;
 
-    memoryCounter =
-      memory.reduce(
-        (max,record)=>{
+    }
 
-          const number =
-            parseInt(
-              String(record.id)
-                .replace("MEM-",""),
-              10
-            );
-
-          return Number.isFinite(number)
-            ? Math.max(max,number)
-            : max;
-
-        },
-        0
-      );
-
-    renderMemory();
-
-    memoryCount.textContent =
-      memory.length;
-
-    searchBtn.disabled =
-      memory.length === 0;
-
-    addLog(
-      `${memory.length} Erinnerungen aus IndexedDB geladen.`,
-      "ok"
-    );
+    importFile(file);
 
   }
-
-  catch(error){
-
-    showError(error);
-
-  }
-
-}
+);
 
 
 /* =====================================================
-   MODEL
+   DROP SUPPORT
 ===================================================== */
 
-async function loadModel(){
+dropZone.addEventListener(
+  "dragover",
+  event => {
 
-  if(modelReady){
-    return;
+    event.preventDefault();
+
+    dropZone.style.borderColor =
+      "var(--cyan)";
+
   }
+);
 
-  if(modelLoading){
-    return;
+
+dropZone.addEventListener(
+  "dragleave",
+  () => {
+
+    dropZone.style.borderColor =
+      "";
+
   }
+);
 
-  modelLoading = true;
+
+dropZone.addEventListener(
+  "drop",
+  event => {
+
+    event.preventDefault();
+
+    dropZone.style.borderColor =
+      "";
+
+    const file =
+      event.dataTransfer.files[0];
+
+    if(file){
+
+      importFile(file);
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   IMPORT FILE
+===================================================== */
+
+async function importFile(
+  file
+){
 
   clearError();
 
-  embedBtn.disabled =
-    true;
-
-  embedBtn.textContent =
-    "LOADING EMBEDDING CORE...";
-
-  activateStage(
-    "stageModel"
-  );
-
-  addLog(
-    "Embedding Core wird gestartet.",
-    "info"
-  );
-
-  addLog(
-    `Modell: ${MODEL}`,
-    "info"
-  );
-
   try{
 
-    extractor =
-      await pipeline(
-        "feature-extraction",
-        MODEL,
+    const extension =
+      file.name
+        .split(".")
+        .pop()
+        .toLowerCase();
+
+
+    const allowed = [
+      "xlsx",
+      "xls",
+      "csv"
+    ];
+
+
+    if(
+      !allowed.includes(
+        extension
+      )
+    ){
+
+      throw new Error(
+        "Nicht unterstütztes Dateiformat. Bitte XLSX, XLS oder CSV verwenden."
+      );
+
+    }
+
+
+    state.file =
+      file;
+
+
+    fileName.textContent =
+      file.name;
+
+    fileType.textContent =
+      extension.toUpperCase();
+
+    fileSize.textContent =
+      formatFileSize(
+        file.size
+      );
+
+    fileInfo.classList.add(
+      "show"
+    );
+
+
+    addLog(
+      `Datei erkannt: ${file.name}`,
+      "info"
+    );
+
+
+    const arrayBuffer =
+      await file.arrayBuffer();
+
+
+    addLog(
+      "Datei wird gelesen.",
+      "info"
+    );
+
+
+    const workbook =
+      XLSX.read(
+        arrayBuffer,
         {
-
-          progress_callback:
-            progress => {
-
-              if(
-                progress &&
-                progress.status === "progress"
-              ){
-
-                const percent =
-                  Math.round(
-                    progress.progress || 0
-                  );
-
-                embedBtn.textContent =
-                  `MODEL DOWNLOAD ${percent}%`;
-
-              }
-
-            }
-
+          type:"array",
+          cellDates:true
         }
       );
 
-    modelReady = true;
 
-    completeStage(
-      "stageModel"
-    );
+    state.workbook =
+      workbook;
+
+
+    state.sheets =
+      workbook.SheetNames
+        .map(
+          name => {
+
+            const worksheet =
+              workbook.Sheets[name];
+
+            const rows =
+              XLSX.utils.sheet_to_json(
+                worksheet,
+                {
+                  header:1,
+                  defval:null,
+                  raw:true
+                }
+              );
+
+            return {
+
+              name,
+
+              rows
+
+            };
+
+          }
+        );
+
+
+    sheetCount.textContent =
+      state.sheets.length;
+
 
     setOnline();
 
+
     addLog(
-      "Embedding Core ONLINE.",
+      `${state.sheets.length} Sheet(s) gefunden.`,
       "ok"
     );
 
-    addLog(
-      `Embedding Dimension: ${EMBEDDING_DIM}`,
-      "ok"
-    );
 
-    dimension.textContent =
-      EMBEDDING_DIM;
+    renderSheetList();
 
-    embedBtn.textContent =
-      "GENERATE & STORE MEMORY";
 
-    embedBtn.disabled =
-      false;
+    if(
+      state.sheets.length > 0
+    ){
+
+      selectSheet(
+        state.sheets[0].name
+      );
+
+    }
 
   }
 
@@ -1880,377 +1902,74 @@ async function loadModel(){
 
     showError(error);
 
-    embedBtn.textContent =
-      "RETRY MODEL LOAD";
-
-    embedBtn.disabled =
-      false;
-
-  }
-
-  finally{
-
-    modelLoading =
-      false;
-
   }
 
 }
 
 
 /* =====================================================
-   EMBEDDING
+   SHEET LIST
 ===================================================== */
 
-async function createEmbedding(
-  text,
-  mode = "passage"
-){
+function renderSheetList(){
 
-  if(!text.trim()){
-
-    throw new Error(
-      "Kein Text vorhanden."
-    );
-
-  }
-
-  await loadModel();
-
-  if(!extractor){
-
-    throw new Error(
-      "Embedding-Modell ist nicht verfügbar."
-    );
-
-  }
-
-  const prepared =
-    `${mode}: ${text.trim()}`;
-
-  const output =
-    await extractor(
-      prepared,
-      {
-        pooling:"mean",
-        normalize:true
-      }
-    );
-
-  const vector =
-    Array.from(
-      output.data
-    );
+  sheetList.innerHTML =
+    "";
 
   if(
-    vector.length !==
-    EMBEDDING_DIM
+    state.sheets.length === 0
   ){
 
-    throw new Error(
-      `Unerwartete Vektordimension: ${
-        vector.length
-      } statt ${
-        EMBEDDING_DIM
-      }.`
-    );
-
-  }
-
-  return vector;
-
-}
-
-
-/* =====================================================
-   GENERATE + STORE
-===================================================== */
-
-async function generateAndStore(){
-
-  const text =
-    textInput.value.trim();
-
-  if(!text){
-
-    showError({
-      message:
-        "Bitte zuerst eine Erinnerung eingeben."
-    });
-
-    return;
-
-  }
-
-  clearError();
-
-  embedBtn.disabled =
-    true;
-
-  activateStage(
-    "stageText"
-  );
-
-  addLog(
-    "Text empfangen.",
-    "info"
-  );
-
-  await sleep(150);
-
-  completeStage(
-    "stageText"
-  );
-
-  activateStage(
-    "stageToken"
-  );
-
-  addLog(
-    "Text → Tokenisierung.",
-    "info"
-  );
-
-  await sleep(200);
-
-  completeStage(
-    "stageToken"
-  );
-
-  try{
-
-    const vector =
-      await createEmbedding(
-        text,
-        "passage"
-      );
-
-    currentVector =
-      vector;
-
-    activateStage(
-      "stageVector"
-    );
-
-    await sleep(150);
-
-    completeStage(
-      "stageVector"
-    );
-
-    showVector(
-      vector
-    );
-
-    renderQueryPoint(
-      vector
-    );
-
-    memoryCounter++;
-
-    const record = {
-
-      id:
-        `MEM-${String(
-          memoryCounter
-        ).padStart(4,"0")}`,
-
-      text,
-
-      vector:[
-        ...vector
-      ],
-
-      dimension:
-        vector.length,
-
-      model:
-        MODEL,
-
-      created:
-        new Date().toISOString()
-
-    };
-
-    activateStage(
-      "stageStore"
-    );
-
-    await dbPut(
-      record
-    );
-
-    completeStage(
-      "stageStore"
-    );
-
-    memory.push(
-      record
-    );
-
-    renderMemory();
-
-    memoryCount.textContent =
-      memory.length;
-
-    searchBtn.disabled =
-      false;
-
-    hudStatus.textContent =
-      record.id;
-
-    addLog(
-      `${record.id} gespeichert.`,
-      "ok"
-    );
-
-    addLog(
-      `Vector Store: ${memory.length} Einträge.`,
-      "info"
-    );
-
-    storeBtnReset();
-
-  }
-
-  catch(error){
-
-    console.error(error);
-
-    showError(error);
-
-  }
-
-  finally{
-
-    embedBtn.disabled =
-      false;
-
-    embedBtn.textContent =
-      "GENERATE & STORE MEMORY";
-
-  }
-
-}
-
-
-function storeBtnReset(){
-
-  embedBtn.textContent =
-    "GENERATE & STORE MEMORY";
-
-}
-
-
-/* =====================================================
-   VECTOR DISPLAY
-===================================================== */
-
-function showVector(vector){
-
-  vectorDim.textContent =
-    `d = ${vector.length}`;
-
-  dimension.textContent =
-    vector.length;
-
-  const preview =
-    vector
-      .slice(0,60)
-      .map(
-        (v,i)=>
-          `v${i+1}=${v.toFixed(6)}`
-      )
-      .join("\n");
-
-  vectorBox.textContent =
-`${preview}
-
-...
-
-[ ${vector.length} DIMENSIONS ]
-
-L2-NORM:
-${vectorNorm(vector).toFixed(8)}`;
-
-}
-
-
-/* =====================================================
-   MEMORY UI
-===================================================== */
-
-function renderMemory(){
-
-  memoryList.innerHTML = "";
-
-  if(memory.length === 0){
-
-    memoryList.innerHTML =
-      `<div style="color:#405861;font-size:10px">
-        VECTOR STORE EMPTY
+    sheetList.innerHTML =
+      `<div class="empty">
+        Keine Sheets gefunden.
        </div>`;
 
     return;
 
   }
 
-  memory.forEach(
-    record => {
 
-      const el =
-        document.createElement("div");
+  state.sheets.forEach(
+    sheet => {
 
-      el.className =
-        "memory";
-
-      el.innerHTML = `
-
-        <div class="memoryId">
-          ${escapeHtml(record.id)}
-        </div>
-
-        <div class="memoryText">
-          ${escapeHtml(record.text)}
-        </div>
-
-        <div class="memoryMeta">
-          d=${record.vector.length}
-          //
-          ${new Date(record.created)
-            .toLocaleString("de-DE")}
-        </div>
-
-      `;
-
-      el.onclick = () => {
-
-        textInput.value =
-          record.text;
-
-        currentVector =
-          [...record.vector];
-
-        showVector(
-          currentVector
+      const button =
+        document.createElement(
+          "button"
         );
 
-        renderQueryPoint(
-          currentVector
+      button.className =
+        "sheetButton";
+
+
+      if(
+        state.currentSheet ===
+        sheet.name
+      ){
+
+        button.classList.add(
+          "active"
         );
 
-        hudStatus.textContent =
-          record.id;
+      }
 
-        addLog(
-          `${record.id} ausgewählt.`,
-          "info"
-        );
 
-      };
+      button.textContent =
+        sheet.name;
 
-      memoryList.appendChild(
-        el
+
+      button.onclick =
+        () => {
+
+          selectSheet(
+            sheet.name
+          );
+
+        };
+
+
+      sheetList.appendChild(
+        button
       );
 
     }
@@ -2260,310 +1979,736 @@ function renderMemory(){
 
 
 /* =====================================================
-   VECTOR MATH
+   SELECT SHEET
 ===================================================== */
 
-function dot(a,b){
+function selectSheet(
+  sheetName
+){
 
-  let sum = 0;
-
-  for(
-    let i=0;
-    i<a.length;
-    i++
-  ){
-
-    sum +=
-      a[i] * b[i];
-
-  }
-
-  return sum;
-
-}
+  const sheet =
+    state.sheets.find(
+      s =>
+        s.name === sheetName
+    );
 
 
-function vectorNorm(v){
-
-  let sum = 0;
-
-  for(
-    let i=0;
-    i<v.length;
-    i++
-  ){
-
-    sum +=
-      v[i] * v[i];
-
-  }
-
-  return Math.sqrt(sum);
-
-}
-
-
-function cosineSimilarity(a,b){
-
-  const numerator =
-    dot(a,b);
-
-  const denominator =
-    vectorNorm(a) *
-    vectorNorm(b);
-
-  if(
-    denominator === 0
-  ){
-
-    return 0;
-
-  }
-
-  return (
-    numerator /
-    denominator
-  );
-
-}
-
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
-async function runSearch(){
-
-  const query =
-    queryInput.value.trim();
-
-  if(!query){
-
-    showError({
-      message:
-        "Bitte eine Suchanfrage eingeben."
-    });
+  if(!sheet){
 
     return;
 
   }
 
-  if(memory.length === 0){
 
-    showError({
-      message:
-        "Der Vector Store ist leer."
-    });
+  state.currentSheet =
+    sheet.name;
 
-    return;
 
-  }
+  renderSheetList();
 
-  clearError();
-
-  searchBtn.disabled =
-    true;
-
-  activateStage(
-    "stageSearch"
-  );
 
   addLog(
-    `Query: "${query}"`,
+    `Sheet ausgewählt: ${sheet.name}`,
     "info"
   );
 
-  try{
 
-    /*
-     * AUTOMATISCHE QUERY-EMBEDDING
-     */
-
-    const queryVector =
-      await createEmbedding(
-        query,
-        "query"
-      );
-
-    currentVector =
-      queryVector;
-
-    showVector(
-      queryVector
-    );
-
-    renderQueryPoint(
-      queryVector
-    );
-
-    /*
-     * DETERMINISTISCHES RETRIEVAL
-     */
-
-    const results =
-      memory
-        .map(
-          record => ({
-
-            ...record,
-
-            score:
-              cosineSimilarity(
-                queryVector,
-                record.vector
-              )
-
-          })
-        )
-        .sort(
-          (a,b)=>
-            b.score - a.score
-        );
-
-    renderRanking(
-      results
-    );
-
-    completeStage(
-      "stageSearch"
-    );
-
-    hudStatus.textContent =
-      "SEARCH COMPLETE";
-
-    addLog(
-      `${results.length} Vektoren verglichen.`,
-      "ok"
-    );
-
-    addLog(
-      `Top-1: ${results[0].id}`,
-      "ok"
-    );
-
-    addLog(
-      `Cosine: ${results[0].score.toFixed(6)}`,
-      "ok"
-    );
-
-  }
-
-  catch(error){
-
-    console.error(error);
-
-    showError(error);
-
-  }
-
-  finally{
-
-    searchBtn.disabled =
-      memory.length === 0
-        ? true
-        : false;
-
-  }
+  processRows(
+    sheet.rows,
+    sheet.name
+  );
 
 }
 
 
 /* =====================================================
-   RANKING
+   PROCESS ROWS
 ===================================================== */
 
-function renderRanking(results){
+function processRows(
+  rawRows,
+  sheetName
+){
 
-  ranking.innerHTML = "";
+  state.rows =
+    rawRows || [];
 
-  if(!results.length){
 
-    ranking.innerHTML =
-      `<div style="color:#405861;font-size:10px">
-        NO RESULT
+  /*
+   * Leere Zeilen entfernen.
+   */
+
+  const nonEmptyRows =
+    state.rows.filter(
+      row =>
+        Array.isArray(row) &&
+        row.some(
+          cell =>
+            cell !== null &&
+            cell !== undefined &&
+            String(cell).trim() !== ""
+        )
+    );
+
+
+  if(
+    nonEmptyRows.length === 0
+  ){
+
+    state.records = [];
+
+    state.schema = [];
+
+    renderAll();
+
+    return;
+
+  }
+
+
+  /*
+   * Erste Zeile = Header.
+   */
+
+  const headerRow =
+    nonEmptyRows[0];
+
+
+  const headers =
+    makeUniqueHeaders(
+      headerRow
+    );
+
+
+  /*
+   * Restliche Zeilen = Daten.
+   */
+
+  const dataRows =
+    nonEmptyRows.slice(1);
+
+
+  state.records =
+    dataRows.map(
+      (row,index) => {
+
+        const record = {
+
+          memory_id:
+            `${sourcePrefix(
+              state.file?.name
+            )}-${String(
+              index + 1
+            ).padStart(
+              6,
+              "0"
+            )}`,
+
+          source: {
+
+            file:
+              state.file?.name ||
+              null,
+
+            sheet:
+              sheetName,
+
+            row:
+              index + 2
+
+          },
+
+          data:{}
+
+        };
+
+
+        headers.forEach(
+          (header,columnIndex) => {
+
+            record.data[
+              header
+            ] =
+              normalizeCell(
+                row[columnIndex]
+              );
+
+          }
+        );
+
+
+        return record;
+
+      }
+    );
+
+
+  state.schema =
+    buildSchema(
+      state.records
+    );
+
+
+  renderAll();
+
+
+  addLog(
+    `${state.records.length} Records aus "${sheetName}" erzeugt.`,
+    "ok"
+  );
+
+}
+
+
+/* =====================================================
+   UNIQUE HEADERS
+===================================================== */
+
+function makeUniqueHeaders(
+  row
+){
+
+  const used =
+    new Map();
+
+  return row.map(
+    (value,index) => {
+
+      let base =
+        value === null ||
+        value === undefined ||
+        String(value).trim() === ""
+
+          ? `column_${index+1}`
+
+          : String(value)
+              .trim();
+
+
+      if(
+        !used.has(base)
+      ){
+
+        used.set(
+          base,
+          1
+        );
+
+        return base;
+
+      }
+
+
+      const number =
+        used.get(base) + 1;
+
+      used.set(
+        base,
+        number
+      );
+
+
+      return `${base}_${number}`;
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   SOURCE PREFIX
+===================================================== */
+
+function sourcePrefix(
+  fileName
+){
+
+  if(!fileName){
+
+    return "DATA";
+
+  }
+
+
+  const base =
+    fileName
+      .replace(
+        /\.[^/.]+$/,
+        ""
+      )
+      .replace(
+        /[^a-zA-Z0-9]+/g,
+        "_"
+      )
+      .replace(
+        /^_+|_+$/g,
+        ""
+      );
+
+
+  return (
+    base
+      .substring(0,20)
+      .toUpperCase() ||
+    "DATA"
+  );
+
+}
+
+
+/* =====================================================
+   CELL NORMALIZATION
+===================================================== */
+
+function normalizeCell(
+  value
+){
+
+  /*
+   * Wichtig:
+   *
+   * Keine semantische Interpretation.
+   * Keine Korrektur.
+   *
+   * Nur technische Repräsentation.
+   */
+
+  if(
+    value === null ||
+    value === undefined
+  ){
+
+    return null;
+
+  }
+
+
+  if(
+    value instanceof Date
+  ){
+
+    return value
+      .toISOString();
+
+  }
+
+
+  if(
+    typeof value === "number"
+  ){
+
+    return value;
+
+  }
+
+
+  if(
+    typeof value === "boolean"
+  ){
+
+    return value;
+
+  }
+
+
+  return String(value);
+
+}
+
+
+/* =====================================================
+   SCHEMA
+===================================================== */
+
+function buildSchema(
+  records
+){
+
+  const fields =
+    new Map();
+
+
+  records.forEach(
+    record => {
+
+      Object.entries(
+        record.data
+      ).forEach(
+        ([name,value]) => {
+
+          if(
+            !fields.has(name)
+          ){
+
+            fields.set(
+              name,
+              {
+                name,
+                types:new Set()
+              }
+            );
+
+          }
+
+
+          fields
+            .get(name)
+            .types
+            .add(
+              detectType(value)
+            );
+
+        }
+      );
+
+    }
+  );
+
+
+  return Array.from(
+    fields.values()
+  ).map(
+    field => {
+
+      const types =
+        Array.from(
+          field.types
+        );
+
+
+      return {
+
+        name:
+          field.name,
+
+        type:
+          resolveSchemaType(
+            types
+          )
+
+      };
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   TYPE DETECTION
+===================================================== */
+
+function detectType(
+  value
+){
+
+  if(value === null){
+
+    return "null";
+
+  }
+
+
+  if(
+    typeof value === "number"
+  ){
+
+    return "number";
+
+  }
+
+
+  if(
+    typeof value === "boolean"
+  ){
+
+    return "boolean";
+
+  }
+
+
+  if(
+    typeof value === "string"
+  ){
+
+    /*
+     * Wir erkennen hier nur
+     * technische String-Muster.
+     *
+     * Keine fachliche Bedeutung.
+     */
+
+    if(
+      /^\d{4}-\d{2}-\d{2}/
+        .test(value)
+    ){
+
+      return "date";
+
+    }
+
+
+    return "string";
+
+  }
+
+
+  return "unknown";
+
+}
+
+
+/* =====================================================
+   RESOLVE SCHEMA TYPE
+===================================================== */
+
+function resolveSchemaType(
+  types
+){
+
+  const filtered =
+    types.filter(
+      type =>
+        type !== "null"
+    );
+
+
+  if(
+    filtered.length === 0
+  ){
+
+    return "null";
+
+  }
+
+
+  if(
+    filtered.length === 1
+  ){
+
+    return filtered[0];
+
+  }
+
+
+  return "mixed";
+
+}
+
+
+/* =====================================================
+   RENDER ALL
+===================================================== */
+
+function renderAll(){
+
+  renderTable();
+
+  renderSchema();
+
+  renderRecords();
+
+  updateMetrics();
+
+}
+
+
+/* =====================================================
+   RENDER TABLE
+===================================================== */
+
+function renderTable(){
+
+  if(
+    state.records.length === 0
+  ){
+
+    tableWrap.innerHTML =
+      `<div
+        class="empty"
+        style="padding:20px">
+        Keine Daten.
        </div>`;
 
     return;
 
   }
 
-  const maxScore =
-    Math.max(
-      ...results.map(
-        r => r.score
-      )
+
+  const headers =
+    Object.keys(
+      state.records[0].data
     );
 
-  results.forEach(
-    (record,index)=>{
+
+  let html =
+    `<table>
+       <thead>
+         <tr>`;
+
+
+  headers.forEach(
+    header => {
+
+      html +=
+        `<th>
+          ${escapeHtml(header)}
+         </th>`;
+
+    }
+  );
+
+
+  html +=
+    `</tr>
+     </thead>
+     <tbody>`;
+
+
+  /*
+   * Für die UI zunächst
+   * maximal 500 Zeilen.
+   *
+   * Die Records selbst
+   * bleiben vollständig.
+   */
+
+  state.records
+    .slice(0,500)
+    .forEach(
+      record => {
+
+        html +=
+          `<tr>`;
+
+
+        headers.forEach(
+          header => {
+
+            const value =
+              record.data[
+                header
+              ];
+
+
+            html +=
+              `<td
+                title="${escapeHtml(
+                  value ?? ""
+                )}">
+                ${escapeHtml(
+                  formatCell(value)
+                )}
+               </td>`;
+
+          }
+        );
+
+
+        html +=
+          `</tr>`;
+
+      }
+    );
+
+
+  html +=
+    `</tbody>
+     </table>`;
+
+
+  tableWrap.innerHTML =
+    html;
+
+}
+
+
+/* =====================================================
+   FORMAT CELL
+===================================================== */
+
+function formatCell(
+  value
+){
+
+  if(value === null){
+
+    return "";
+
+  }
+
+
+  if(
+    typeof value === "object"
+  ){
+
+    return JSON.stringify(
+      value
+    );
+
+  }
+
+
+  return String(value);
+
+}
+
+
+/* =====================================================
+   RENDER SCHEMA
+===================================================== */
+
+function renderSchema(){
+
+  schemaList.innerHTML =
+    "";
+
+
+  if(
+    state.schema.length === 0
+  ){
+
+    schemaList.innerHTML =
+      `<div class="empty">
+        Kein Schema vorhanden.
+       </div>`;
+
+    return;
+
+  }
+
+
+  state.schema.forEach(
+    field => {
 
       const item =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       item.className =
-        "rank";
+        "schemaItem";
 
-      const visualWidth =
-        maxScore > 0
-          ? (
-              record.score /
-              maxScore
-            ) * 100
-          : 0;
 
       item.innerHTML = `
 
-        <div class="rankTop">
+        <span class="schemaName">
+          ${escapeHtml(
+            field.name
+          )}
+        </span>
 
-          <span>
-            #${index+1}
-            ${escapeHtml(record.id)}
-          </span>
-
-          <span class="rankScore">
-            COSINE
-            ${record.score.toFixed(6)}
-          </span>
-
-        </div>
-
-        <div class="bar">
-
-          <div
-            class="barFill"
-            style="width:${visualWidth}%">
-          </div>
-
-        </div>
-
-        <div class="rankText">
-          ${escapeHtml(record.text)}
-        </div>
+        <span class="schemaType">
+          ${escapeHtml(
+            field.type
+          )}
+        </span>
 
       `;
 
-      item.onclick = () => {
 
-        textInput.value =
-          record.text;
-
-        currentVector =
-          [...record.vector];
-
-        showVector(
-          currentVector
-        );
-
-        renderQueryPoint(
-          currentVector
-        );
-
-        hudStatus.textContent =
-          record.id;
-
-      };
-
-      ranking.appendChild(
+      schemaList.appendChild(
         item
       );
 
@@ -2574,299 +2719,172 @@ function renderRanking(results){
 
 
 /* =====================================================
-   3D
+   RENDER RECORDS
 ===================================================== */
 
-function clearPoints(){
+function renderRecords(){
 
-  document
-    .querySelectorAll(
-      "#scene .point"
-    )
-    .forEach(
-      el => el.remove()
-    );
+  recordList.innerHTML =
+    "";
 
-}
-
-
-function renderQueryPoint(
-  vector
-){
 
   if(
-    !vector ||
-    vector.length < 3
+    state.records.length === 0
   ){
+
+    recordList.innerHTML =
+      `<div class="empty">
+        Noch keine Records.
+       </div>`;
+
     return;
+
   }
 
-  clearPoints();
 
-  const x =
-    vector[0];
+  /*
+   * UI zeigt zunächst
+   * die ersten 100 Records.
+   */
 
-  const y =
-    vector[1];
+  state.records
+    .slice(0,100)
+    .forEach(
+      record => {
 
-  const z =
-    vector[2];
+        const item =
+          document.createElement(
+            "div"
+          );
 
-  const sx =
-    50 + x * 35;
-
-  const sy =
-    50 - y * 35;
-
-  const depth =
-    Math.max(
-      .5,
-      Math.min(
-        1.5,
-        1 + z
-      )
-    );
-
-  const point =
-    document.createElement("div");
-
-  point.className =
-    "point";
-
-  point.style.left =
-    `${sx}%`;
-
-  point.style.top =
-    `${sy}%`;
-
-  point.style.transform =
-    `translate(-50%,-50%)
-     scale(${depth})`;
-
-  point.title =
-    `Query
-v1=${x.toFixed(5)}
-v2=${y.toFixed(5)}
-v3=${z.toFixed(5)}`;
-
-  $("scene")
-    .appendChild(
-      point
-    );
-
-}
+        item.className =
+          "record";
 
 
-/* =====================================================
-   EXPORT
-===================================================== */
-
-function exportMemory(){
-
-  const payload = {
-
-    format:
-      "NEURAL_MEMORY_EXPORT",
-
-    version:
-      1,
-
-    model:
-      MODEL,
-
-    dimension:
-      EMBEDDING_DIM,
-
-    exported:
-      new Date().toISOString(),
-
-    memories:
-      memory
-
-  };
-
-  const blob =
-    new Blob(
-      [
-        JSON.stringify(
-          payload,
-          null,
-          2
-        )
-      ],
-      {
-        type:
-          "application/json"
-      }
-    );
-
-  const url =
-    URL.createObjectURL(
-      blob
-    );
-
-  const a =
-    document.createElement("a");
-
-  a.href =
-    url;
-
-  a.download =
-    "neural-memory-export.json";
-
-  a.click();
-
-  URL.revokeObjectURL(
-    url
-  );
-
-  addLog(
-    `${memory.length} Erinnerungen exportiert.`,
-    "ok"
-  );
-
-}
+        const keys =
+          Object.keys(
+            record.data
+          );
 
 
-/* =====================================================
-   IMPORT
-===================================================== */
+        const preview =
+          {};
 
-async function importMemory(
-  event
-){
 
-  const file =
-    event.target.files[0];
+        keys
+          .slice(0,5)
+          .forEach(
+            key => {
 
-  if(!file){
-    return;
-  }
+              preview[key] =
+                record.data[key];
 
-  clearError();
+            }
+          );
 
-  try{
 
-    const text =
-      await file.text();
+        item.innerHTML = `
 
-    const data =
-      JSON.parse(text);
+          <div class="recordId">
+            ${escapeHtml(
+              record.memory_id
+            )}
+          </div>
 
-    const imported =
-      Array.isArray(data)
-        ? data
-        : data.memories;
+          <div class="recordMeta">
+            ${escapeHtml(
+              record.source.file
+            )}
+            //
+            ${escapeHtml(
+              record.source.sheet
+            )}
+            //
+            ROW
+            ${record.source.row}
+          </div>
 
-    if(
-      !Array.isArray(imported)
-    ){
+          <div class="recordJson">
+            ${escapeHtml(
+              JSON.stringify(
+                preview,
+                null,
+                2
+              )
+            )}
+          </div>
 
-      throw new Error(
-        "Keine gültige Memory-Liste gefunden."
-      );
+        `;
 
-    }
 
-    let added = 0;
+        item.onclick =
+          () => {
 
-    for(
-      const record of imported
-    ){
-
-      if(
-        !record.id ||
-        !record.text ||
-        !Array.isArray(record.vector)
-      ){
-        continue;
-      }
-
-      if(
-        record.vector.length !==
-        EMBEDDING_DIM
-      ){
-        continue;
-      }
-
-      await dbPut(record);
-
-      const existing =
-        memory.findIndex(
-          m => m.id === record.id
-        );
-
-      if(existing >= 0){
-
-        memory[existing] =
-          record;
-
-      }
-      else{
-
-        memory.push(
-          record
-        );
-
-      }
-
-      added++;
-
-    }
-
-    memory.sort(
-      (a,b)=>
-        a.created.localeCompare(
-          b.created
-        )
-    );
-
-    memoryCounter =
-      memory.reduce(
-        (max,record)=>{
-
-          const n =
-            parseInt(
-              String(record.id)
-                .replace("MEM-",""),
-              10
+            selectRecord(
+              record
             );
 
-          return Number.isFinite(n)
-            ? Math.max(max,n)
-            : max;
+          };
 
-        },
-        0
-      );
 
-    renderMemory();
+        recordList.appendChild(
+          item
+        );
 
-    memoryCount.textContent =
-      memory.length;
-
-    searchBtn.disabled =
-      memory.length === 0;
-
-    addLog(
-      `${added} Erinnerungen importiert.`,
-      "ok"
+      }
     );
 
-  }
+}
 
-  catch(error){
 
-    showError(error);
+/* =====================================================
+   SELECT RECORD
+===================================================== */
 
-  }
+function selectRecord(
+  record
+){
 
-  finally{
+  state.selectedRecord =
+    record;
 
-    importFile.value =
-      "";
 
-  }
+  selectedRecord.textContent =
+    JSON.stringify(
+      record,
+      null,
+      2
+    );
+
+
+  addLog(
+    `${record.memory_id} ausgewählt.`,
+    "info"
+  );
+
+}
+
+
+/* =====================================================
+   METRICS
+===================================================== */
+
+function updateMetrics(){
+
+  rowCount.textContent =
+    state.records.length;
+
+
+  recordCount.textContent =
+    state.records.length;
+
+
+  columnCount.textContent =
+    state.schema.length;
+
+
+  sheetCount.textContent =
+    state.sheets.length;
 
 }
 
@@ -2875,127 +2893,85 @@ async function importMemory(
    CLEAR
 ===================================================== */
 
-async function clearMemory(){
+clearDataBtn.addEventListener(
+  "click",
+  () => {
 
-  const confirmed =
-    confirm(
-      "Wirklich den kompletten Vector Store löschen?"
-    );
-
-  if(!confirmed){
-    return;
-  }
-
-  try{
-
-    await dbClear();
-
-    memory = [];
-
-    memoryCounter = 0;
-
-    currentVector = null;
-
-    renderMemory();
-
-    memoryCount.textContent =
-      "0";
-
-    searchBtn.disabled =
-      true;
-
-    vectorDim.textContent =
-      "d = —";
-
-    vectorBox.textContent =
-      "Noch kein Embedding berechnet.";
-
-    ranking.innerHTML =
-      `<div style="color:#405861;font-size:10px">
-        NO SEARCH RESULT
-       </div>`;
-
-    clearPoints();
-
-    hudStatus.textContent =
-      "NO VECTOR";
-
-    addLog(
-      "Vector Store geleert.",
-      "warn"
-    );
+    clearImportedData();
 
   }
-
-  catch(error){
-
-    showError(error);
-
-  }
-
-}
+);
 
 
-/* =====================================================
-   UTIL
-===================================================== */
+function clearImportedData(){
 
-function sleep(ms){
+  state.workbook = null;
 
-  return new Promise(
-    resolve =>
-      setTimeout(
-        resolve,
-        ms
-      )
+  state.file = null;
+
+  state.sheets = [];
+
+  state.currentSheet = null;
+
+  state.rows = [];
+
+  state.records = [];
+
+  state.schema = [];
+
+  state.selectedRecord = null;
+
+
+  fileInfo.classList.remove(
+    "show"
+  );
+
+
+  fileInput.value =
+    "";
+
+
+  sheetList.innerHTML =
+    `<div class="empty">
+      Noch keine Datei importiert.
+     </div>`;
+
+
+  tableWrap.innerHTML =
+    `<div
+      class="empty"
+      style="padding:20px">
+      Noch keine Tabelle geladen.
+     </div>`;
+
+
+  schemaList.innerHTML =
+    `<div class="empty">
+      Schema wird nach dem Import erzeugt.
+     </div>`;
+
+
+  recordList.innerHTML =
+    `<div class="empty">
+      Noch keine Records.
+     </div>`;
+
+
+  selectedRecord.textContent =
+    "Kein Record ausgewählt.";
+
+
+  updateMetrics();
+
+  setOffline();
+
+
+  addLog(
+    "Importdaten vollständig entfernt.",
+    "warn"
   );
 
 }
-
-
-/* =====================================================
-   EVENTS
-===================================================== */
-
-embedBtn.addEventListener(
-  "click",
-  generateAndStore
-);
-
-searchBtn.addEventListener(
-  "click",
-  runSearch
-);
-
-exportBtn.addEventListener(
-  "click",
-  exportMemory
-);
-
-clearBtn.addEventListener(
-  "click",
-  clearMemory
-);
-
-importFile.addEventListener(
-  "change",
-  importMemory
-);
-
-queryInput.addEventListener(
-  "keydown",
-  event => {
-
-    if(
-      event.key === "Enter"
-    ){
-
-      runSearch();
-
-    }
-
-  }
-);
 
 
 /* =====================================================
@@ -3003,7 +2979,7 @@ queryInput.addEventListener(
 ===================================================== */
 
 addLog(
-  "NEURAL MEMORY Interface gestartet.",
+  "NEURAL MEMORY Data Ingestion gestartet.",
   "ok"
 );
 
@@ -3013,31 +2989,19 @@ addLog(
 );
 
 addLog(
-  "Embedding Core wartet auf Benutzeraktion.",
+  "Warte auf XLSX / XLS / CSV.",
   "info"
 );
 
 addLog(
-  `Target Model: ${MODEL}`,
+  "Originaldaten werden unverändert übernommen.",
   "info"
 );
 
 addLog(
-  `Dimension: ${EMBEDDING_DIM}`,
+  "Keine semantische Interpretation aktiv.",
   "info"
 );
-
-addLog(
-  "Vector Store: IndexedDB",
-  "info"
-);
-
-addLog(
-  "Cosine Similarity: ACTIVE",
-  "info"
-);
-
-loadMemory();
 
 </script>
 
