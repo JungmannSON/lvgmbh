@@ -1,14 +1,8 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
->
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#020308">
 
 <title>NEURAL MEMORY — DATA INGESTION</title>
@@ -16,7 +10,6 @@
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 
 <style>
-
 :root{
   --bg:#020308;
   --panel:#060914;
@@ -48,7 +41,6 @@ html,
 body{
   margin:0;
   padding:0;
-
   width:100%;
   min-height:100%;
 
@@ -94,7 +86,6 @@ button:disabled{
   display:flex;
   flex-direction:column;
 }
-
 
 /* =========================================================
    HEADER
@@ -182,9 +173,8 @@ header{
     0 0 8px var(--green);
 }
 
-
 /* =========================================================
-   MAIN GRID
+   MAIN
    ========================================================= */
 
 .main{
@@ -193,9 +183,9 @@ header{
   display:grid;
 
   grid-template-columns:
-    minmax(250px, .85fr)
-    minmax(400px, 1.45fr)
-    minmax(270px, .9fr);
+    minmax(250px,.85fr)
+    minmax(400px,1.45fr)
+    minmax(270px,.9fr);
 
   gap:1px;
 
@@ -216,7 +206,6 @@ header{
 
   overflow:hidden;
 }
-
 
 /* =========================================================
    SECTION
@@ -261,7 +250,6 @@ header{
   padding:11px;
 }
 
-
 /* =========================================================
    BUTTONS
    ========================================================= */
@@ -275,8 +263,7 @@ header{
 
   border:1px solid var(--cyan);
 
-  background:
-    rgba(0,245,255,.035);
+  background:rgba(0,245,255,.035);
 
   color:var(--cyan);
 
@@ -315,52 +302,31 @@ header{
   background:#66fbff;
 }
 
-.btn.green{
-  color:#001509;
-
-  border-color:var(--green);
-
-  background:var(--green);
-
-  box-shadow:
-    0 0 15px rgba(74,255,136,.18);
-}
-
 .btn.pink{
   color:var(--pink);
-
   border-color:var(--pink);
 }
 
 .btn.red{
   color:var(--red);
-
   border-color:var(--red);
 }
 
 .btn.yellow{
   color:var(--yellow);
-
   border-color:var(--yellow);
-
-  background:
-    rgba(255,230,0,.025);
 }
 
 .button-row{
   display:grid;
-
   grid-template-columns:1fr 1fr;
-
   gap:7px;
 }
 
 .button-stack{
   display:grid;
-
   gap:7px;
 }
-
 
 /* =========================================================
    DROPZONE
@@ -373,11 +339,9 @@ header{
 
   text-align:center;
 
-  border:1px dashed
-    rgba(0,245,255,.40);
+  border:1px dashed rgba(0,245,255,.40);
 
-  background:
-    rgba(0,245,255,.025);
+  background:rgba(0,245,255,.025);
 
   transition:.15s;
 }
@@ -385,8 +349,7 @@ header{
 .dropzone.drag{
   border-color:var(--cyan);
 
-  background:
-    rgba(0,245,255,.10);
+  background:rgba(0,245,255,.10);
 
   box-shadow:
     inset 0 0 25px rgba(0,245,255,.05),
@@ -395,18 +358,14 @@ header{
 
 .drop-title{
   color:var(--cyan);
-
   font-size:11px;
   font-weight:800;
-
   letter-spacing:1px;
 }
 
 .drop-sub{
   margin-top:7px;
-
   color:var(--muted);
-
   font-size:9px;
 }
 
@@ -414,14 +373,12 @@ header{
   display:none;
 }
 
-
 /* =========================================================
    FILE INFO
    ========================================================= */
 
 .file-info{
   margin-top:9px;
-
   padding:9px;
 
   border:1px solid rgba(0,245,255,.12);
@@ -429,7 +386,6 @@ header{
   color:var(--muted);
 
   font-size:9px;
-
   line-height:1.55;
 
   word-break:break-word;
@@ -439,17 +395,13 @@ header{
   color:var(--text);
 }
 
-
 /* =========================================================
    STATS
    ========================================================= */
 
 .stats{
   display:grid;
-
-  grid-template-columns:
-    repeat(2,1fr);
-
+  grid-template-columns:repeat(2,1fr);
   gap:7px;
 }
 
@@ -463,9 +415,7 @@ header{
 
 .stat-label{
   color:var(--muted);
-
   font-size:8px;
-
   letter-spacing:1px;
 }
 
@@ -475,10 +425,8 @@ header{
   color:var(--cyan);
 
   font-size:18px;
-
   font-weight:800;
 }
-
 
 /* =========================================================
    SHEETS
@@ -486,7 +434,6 @@ header{
 
 .sheet-list{
   max-height:250px;
-
   overflow:auto;
 }
 
@@ -504,20 +451,16 @@ header{
 
 .sheet:hover{
   color:var(--cyan);
-
-  background:
-    rgba(0,245,255,.04);
+  background:rgba(0,245,255,.04);
 }
 
 .sheet.active{
   color:var(--cyan);
 
-  background:
-    rgba(0,245,255,.07);
+  background:rgba(0,245,255,.07);
 
   border-left:2px solid var(--cyan);
 }
-
 
 /* =========================================================
    TABLE
@@ -525,9 +468,7 @@ header{
 
 .table-wrap{
   width:100%;
-
   overflow:auto;
-
   max-height:480px;
 
   border:1px solid rgba(0,245,255,.10);
@@ -535,7 +476,6 @@ header{
 
 table{
   width:max-content;
-
   min-width:100%;
 
   border-collapse:collapse;
@@ -548,19 +488,15 @@ td{
   padding:7px 9px;
 
   border-right:1px solid rgba(0,245,255,.08);
-
   border-bottom:1px solid rgba(0,245,255,.08);
 
   text-align:left;
-
   white-space:nowrap;
 }
 
 th{
   position:sticky;
-
   top:0;
-
   z-index:2;
 
   background:#07111e;
@@ -578,26 +514,21 @@ tr:hover td{
   background:rgba(0,245,255,.035);
 }
 
-
 /* =========================================================
    SCHEMA
    ========================================================= */
 
 .schema{
   display:grid;
-
   gap:5px;
 
   max-height:350px;
-
   overflow:auto;
 }
 
 .schema-item{
   display:flex;
-
   justify-content:space-between;
-
   gap:10px;
 
   padding:7px;
@@ -611,16 +542,13 @@ tr:hover td{
   color:var(--text);
 
   overflow:hidden;
-
   text-overflow:ellipsis;
 }
 
 .schema-type{
   color:var(--cyan);
-
   flex-shrink:0;
 }
-
 
 /* =========================================================
    LOG
@@ -636,13 +564,11 @@ tr:hover td{
   background:#010205;
 
   font-size:9px;
-
   line-height:1.6;
 }
 
 .log-line{
   margin-bottom:2px;
-
   color:#8db0b8;
 }
 
@@ -662,7 +588,6 @@ tr:hover td{
   color:var(--cyan);
 }
 
-
 /* =========================================================
    MEMORY
    ========================================================= */
@@ -674,15 +599,13 @@ tr:hover td{
 
   overflow:hidden;
 
-  border:
-    1px solid rgba(0,245,255,.20);
+  border:1px solid rgba(0,245,255,.20);
 
   background:#020409;
 }
 
 .progress-bar{
   width:0%;
-
   height:100%;
 
   background:var(--cyan);
@@ -695,7 +618,6 @@ tr:hover td{
 
 .memory-list{
   max-height:420px;
-
   overflow:auto;
 }
 
@@ -713,9 +635,7 @@ tr:hover td{
 
 .memory-id{
   color:var(--cyan);
-
   font-size:9px;
-
   font-weight:800;
 }
 
@@ -727,14 +647,12 @@ tr:hover td{
   font-size:8px;
 }
 
-
 /* =========================================================
    RECORD DETAIL
    ========================================================= */
 
 .detail{
   max-height:430px;
-
   overflow:auto;
 
   background:#010205;
@@ -748,16 +666,13 @@ pre{
   margin:0;
 
   white-space:pre-wrap;
-
   word-break:break-word;
 
   color:#b7dce2;
 
   font-size:9px;
-
   line-height:1.55;
 }
-
 
 /* =========================================================
    PIPELINE
@@ -765,7 +680,6 @@ pre{
 
 .pipeline{
   display:grid;
-
   gap:4px;
 }
 
@@ -782,8 +696,7 @@ pre{
 .pipeline-step.active{
   color:var(--cyan);
 
-  border-color:
-    rgba(0,245,255,.35);
+  border-color:rgba(0,245,255,.35);
 
   box-shadow:
     inset 0 0 14px rgba(0,245,255,.035);
@@ -792,18 +705,14 @@ pre{
 .pipeline-step.done{
   color:var(--green);
 
-  border-color:
-    rgba(74,255,136,.20);
+  border-color:rgba(74,255,136,.20);
 }
 
 .arrow{
   color:var(--muted);
-
   text-align:center;
-
   font-size:9px;
 }
-
 
 /* =========================================================
    MODEL
@@ -811,9 +720,7 @@ pre{
 
 .model-grid{
   display:grid;
-
   grid-template-columns:1fr 1fr;
-
   gap:7px;
 }
 
@@ -827,7 +734,6 @@ pre{
   color:var(--muted);
 
   font-size:8px;
-
   letter-spacing:1px;
 }
 
@@ -840,7 +746,6 @@ pre{
 
   word-break:break-word;
 }
-
 
 /* =========================================================
    EMPTY
@@ -856,7 +761,6 @@ pre{
   font-size:9px;
 }
 
-
 /* =========================================================
    BUILD SUMMARY
    ========================================================= */
@@ -866,8 +770,7 @@ pre{
 
   display:grid;
 
-  grid-template-columns:
-    repeat(2,1fr);
+  grid-template-columns:repeat(2,1fr);
 
   gap:5px;
 }
@@ -884,7 +787,6 @@ pre{
   color:var(--muted);
 
   font-size:7px;
-
   letter-spacing:1px;
 }
 
@@ -894,10 +796,8 @@ pre{
   color:var(--cyan);
 
   font-size:13px;
-
   font-weight:800;
 }
-
 
 /* =========================================================
    FOOTER
@@ -909,7 +809,6 @@ footer{
   display:flex;
 
   align-items:center;
-
   justify-content:space-between;
 
   padding:0 15px;
@@ -919,10 +818,8 @@ footer{
   color:var(--muted);
 
   font-size:8px;
-
   letter-spacing:1px;
 }
-
 
 /* =========================================================
    RESPONSIVE
@@ -944,7 +841,6 @@ footer{
 
   header{
     height:auto;
-
     min-height:65px;
 
     padding:10px 12px;
@@ -981,19 +877,12 @@ footer{
   }
 
 }
-
 </style>
 </head>
-
 
 <body>
 
 <div class="app">
-
-
-<!-- =======================================================
-     HEADER
-     ======================================================= -->
 
 <header>
 
@@ -1017,7 +906,6 @@ footer{
 
   </div>
 
-
   <div class="online">
 
     <span class="online-dot"></span>
@@ -1030,46 +918,24 @@ footer{
 
 </header>
 
-
-
-<!-- =======================================================
-     MAIN
-     ======================================================= -->
-
 <main class="main">
 
-
 <!-- =====================================================
-     LEFT COLUMN
+     LEFT
      ===================================================== -->
 
 <section class="column">
 
-
-  <!-- DATA INGESTION -->
-
   <div class="section">
 
     <div class="section-head">
-
-      <span>
-        01 / DATA INGESTION
-      </span>
-
-      <span>
-        INPUT
-      </span>
-
+      <span>01 / DATA INGESTION</span>
+      <span>INPUT</span>
     </div>
-
 
     <div class="section-body">
 
-
-      <div
-        id="dropzone"
-        class="dropzone"
-      >
+      <div id="dropzone" class="dropzone">
 
         <div class="drop-title">
           IMPORT DATA
@@ -1091,7 +957,6 @@ footer{
 
       </div>
 
-
       <input
         id="fileInput"
         class="file-input"
@@ -1099,17 +964,11 @@ footer{
         accept=".xlsx,.xls,.csv"
       >
 
-
-      <div
-        id="fileInfo"
-        class="file-info"
-      >
+      <div id="fileInfo" class="file-info">
         Keine Datei geladen.
       </div>
 
-
       <div style="height:7px"></div>
-
 
       <div class="button-row">
 
@@ -1131,29 +990,21 @@ footer{
 
       </div>
 
-
     </div>
 
   </div>
-
-
-
-  <!-- SHEETS -->
 
   <div class="section">
 
     <div class="section-head">
 
-      <span>
-        02 / SHEETS
-      </span>
+      <span>02 / SHEETS</span>
 
       <span id="sheetCount">
         0
       </span>
 
     </div>
-
 
     <div
       id="sheetList"
@@ -1168,20 +1019,11 @@ footer{
 
   </div>
 
-
-
-  <!-- LOG -->
-
   <div class="section">
 
     <div class="section-head">
-
-      <span>
-        SYSTEM LOG
-      </span>
-
+      <span>SYSTEM LOG</span>
     </div>
-
 
     <div
       id="systemLog"
@@ -1190,19 +1032,13 @@ footer{
 
   </div>
 
-
 </section>
 
-
-
 <!-- =====================================================
-     CENTER COLUMN
+     CENTER
      ===================================================== -->
 
 <section class="column">
-
-
-  <!-- DATASET STATUS -->
 
   <div class="section">
 
@@ -1218,17 +1054,12 @@ footer{
 
     </div>
 
-
     <div class="section-body">
 
       <div class="stats">
 
-
         <div class="stat">
-
-          <div class="stat-label">
-            RUNTIME
-          </div>
+          <div class="stat-label">RUNTIME</div>
 
           <div
             id="runtimeStat"
@@ -1236,15 +1067,10 @@ footer{
           >
             —
           </div>
-
         </div>
 
-
         <div class="stat">
-
-          <div class="stat-label">
-            SHEETS
-          </div>
+          <div class="stat-label">SHEETS</div>
 
           <div
             id="statSheets"
@@ -1252,15 +1078,10 @@ footer{
           >
             0
           </div>
-
         </div>
 
-
         <div class="stat">
-
-          <div class="stat-label">
-            ROWS
-          </div>
+          <div class="stat-label">ROWS</div>
 
           <div
             id="statRows"
@@ -1268,15 +1089,10 @@ footer{
           >
             0
           </div>
-
         </div>
 
-
         <div class="stat">
-
-          <div class="stat-label">
-            COLUMNS
-          </div>
+          <div class="stat-label">COLUMNS</div>
 
           <div
             id="statColumns"
@@ -1284,15 +1100,10 @@ footer{
           >
             0
           </div>
-
         </div>
 
-
         <div class="stat">
-
-          <div class="stat-label">
-            RECORDS
-          </div>
+          <div class="stat-label">RECORDS</div>
 
           <div
             id="statRecords"
@@ -1300,19 +1111,13 @@ footer{
           >
             0
           </div>
-
         </div>
-
 
       </div>
 
     </div>
 
   </div>
-
-
-
-  <!-- RAW DATA -->
 
   <div class="section">
 
@@ -1327,7 +1132,6 @@ footer{
       </span>
 
     </div>
-
 
     <div class="section-body">
 
@@ -1346,10 +1150,6 @@ footer{
 
   </div>
 
-
-
-  <!-- TECHNICAL SCHEMA -->
-
   <div class="section">
 
     <div class="section-head">
@@ -1363,7 +1163,6 @@ footer{
       </span>
 
     </div>
-
 
     <div class="section-body">
 
@@ -1382,16 +1181,12 @@ footer{
 
   </div>
 
-
-
-  <!-- EMBEDDING PREVIEW -->
-
   <div class="section">
 
     <div class="section-head">
 
       <span>
-        EMBEDDING TEXT
+        MEMORY REPRESENTATION
       </span>
 
       <span>
@@ -1400,13 +1195,12 @@ footer{
 
     </div>
 
-
     <div class="section-body">
 
       <div
         id="embeddingPreview"
         class="detail"
-        style="max-height:260px"
+        style="max-height:300px"
       >
 
         <div class="empty">
@@ -1419,19 +1213,13 @@ footer{
 
   </div>
 
-
 </section>
 
-
-
 <!-- =====================================================
-     RIGHT COLUMN
+     RIGHT
      ===================================================== -->
 
 <section class="column">
-
-
-  <!-- MEMORY BUILD -->
 
   <div class="section">
 
@@ -1447,12 +1235,9 @@ footer{
 
     </div>
 
-
     <div class="section-body">
 
-
       <div class="model-grid">
-
 
         <div class="model-box">
 
@@ -1466,7 +1251,6 @@ footer{
 
         </div>
 
-
         <div class="model-box">
 
           <div class="model-label">
@@ -1478,7 +1262,6 @@ footer{
           </div>
 
         </div>
-
 
         <div class="model-box">
 
@@ -1492,7 +1275,6 @@ footer{
 
         </div>
 
-
         <div class="model-box">
 
           <div class="model-label">
@@ -1505,12 +1287,9 @@ footer{
 
         </div>
 
-
       </div>
 
-
       <div style="height:10px"></div>
-
 
       <div class="button-stack">
 
@@ -1522,7 +1301,6 @@ footer{
           TEST 384D EMBEDDING
         </button>
 
-
         <button
           id="stopBuildBtn"
           class="btn yellow"
@@ -1532,7 +1310,6 @@ footer{
           STOP BUILD
         </button>
 
-
         <button
           id="clearMemoryBtn"
           class="btn red"
@@ -1540,7 +1317,6 @@ footer{
         >
           CLEAR MEMORY DB
         </button>
-
 
         <button
           id="exportMemoryBtn"
@@ -1551,7 +1327,6 @@ footer{
         </button>
 
       </div>
-
 
       <div
         id="progressText"
@@ -1564,7 +1339,6 @@ footer{
         0 / 0
       </div>
 
-
       <div class="progress">
 
         <div
@@ -1573,7 +1347,6 @@ footer{
         ></div>
 
       </div>
-
 
       <div class="build-summary">
 
@@ -1592,7 +1365,6 @@ footer{
 
         </div>
 
-
         <div class="build-stat">
 
           <div class="build-stat-label">
@@ -1608,7 +1380,6 @@ footer{
 
         </div>
 
-
         <div class="build-stat">
 
           <div class="build-stat-label">
@@ -1623,7 +1394,6 @@ footer{
           </div>
 
         </div>
-
 
         <div class="build-stat">
 
@@ -1642,14 +1412,9 @@ footer{
 
       </div>
 
-
     </div>
 
   </div>
-
-
-
-  <!-- MEMORY RECORDS -->
 
   <div class="section">
 
@@ -1664,7 +1429,6 @@ footer{
       </span>
 
     </div>
-
 
     <div class="section-body">
 
@@ -1683,20 +1447,11 @@ footer{
 
   </div>
 
-
-
-  <!-- SELECTED RECORD -->
-
   <div class="section">
 
     <div class="section-head">
-
-      <span>
-        SELECTED RECORD
-      </span>
-
+      <span>SELECTED RECORD</span>
     </div>
-
 
     <div class="section-body">
 
@@ -1715,25 +1470,15 @@ footer{
 
   </div>
 
-
-
-  <!-- PIPELINE -->
-
   <div class="section">
 
     <div class="section-head">
-
-      <span>
-        MEMORY PIPELINE
-      </span>
-
+      <span>MEMORY PIPELINE</span>
     </div>
-
 
     <div class="section-body">
 
       <div class="pipeline">
-
 
         <div
           id="pipe-ingestion"
@@ -1742,83 +1487,57 @@ footer{
           CURRENT STAGE
         </div>
 
-
         <div class="pipeline-step">
           INGESTION
         </div>
 
-        <div class="arrow">
-          ↓
-        </div>
-
+        <div class="arrow">↓</div>
 
         <div class="pipeline-step">
           FILE
         </div>
 
-        <div class="arrow">
-          ↓
-        </div>
-
+        <div class="arrow">↓</div>
 
         <div class="pipeline-step">
           SHEET
         </div>
 
-        <div class="arrow">
-          ↓
-        </div>
-
+        <div class="arrow">↓</div>
 
         <div class="pipeline-step">
           ROW
         </div>
 
-        <div class="arrow">
-          ↓
-        </div>
-
+        <div class="arrow">↓</div>
 
         <div class="pipeline-step">
           RECORD
         </div>
 
-        <div class="arrow">
-          ↓
-        </div>
-
+        <div class="arrow">↓</div>
 
         <div class="pipeline-step">
-          SCHEMA
+          STRUCTURED MEMORY
         </div>
 
-        <div class="arrow">
-          ↓
-        </div>
-
+        <div class="arrow">↓</div>
 
         <div class="pipeline-step">
           EMBEDDING TEXT
         </div>
 
-        <div class="arrow">
-          ↓
-        </div>
-
+        <div class="arrow">↓</div>
 
         <div class="pipeline-step">
           384D EMBEDDING
         </div>
 
-        <div class="arrow">
-          ↓
-        </div>
-
+        <div class="arrow">↓</div>
 
         <div class="pipeline-step">
           INDEXEDDB
         </div>
-
 
       </div>
 
@@ -1826,17 +1545,9 @@ footer{
 
   </div>
 
-
 </section>
 
-
 </main>
-
-
-
-<!-- =======================================================
-     FOOTER
-     ======================================================= -->
 
 <footer>
 
@@ -1850,13 +1561,9 @@ footer{
 
 </footer>
 
-
 </div>
 
-
-
 <script>
-
 
 /* =========================================================
    CONFIGURATION
@@ -1874,16 +1581,8 @@ const DB_NAME =
 const STORE_NAME =
   "memories";
 
-
-/*
- * ROBUSTER BUILD-BETRIEB
- *
- * Kleine Batches sind absichtlich gewählt.
- *
- * Besonders auf iOS/Safari kann WebAssembly /
- * Transformers.js bei längeren Serien unter
- * Speicherdruck geraten.
- */
+const MEMORY_SCHEMA_VERSION =
+  "1.1";
 
 const BUILD_BATCH_SIZE =
   2;
@@ -1929,18 +1628,16 @@ const state = {
 
 
 /* =========================================================
-   DOM HELPER
+   DOM
    ========================================================= */
 
 function $(id){
-
   return document.getElementById(id);
-
 }
 
 
 /* =========================================================
-   BROWSER YIELD
+   YIELD
    ========================================================= */
 
 function yieldToBrowser(
@@ -1962,7 +1659,7 @@ function yieldToBrowser(
 
 
 /* =========================================================
-   LOGGING
+   LOG
    ========================================================= */
 
 function log(
@@ -2014,26 +1711,15 @@ function clearLog(){
    ========================================================= */
 
 function setRuntimeStatus(text){
-
-  $("runtimeStatus").textContent =
-    text;
-
+  $("runtimeStatus").textContent = text;
 }
-
 
 function setBuildState(text){
-
-  $("buildState").textContent =
-    text;
-
+  $("buildState").textContent = text;
 }
 
-
 function setDatasetState(text){
-
-  $("datasetState").textContent =
-    text;
-
+  $("datasetState").textContent = text;
 }
 
 
@@ -2043,17 +1729,10 @@ function setDatasetState(text){
 
 function resetBuildSummary(){
 
-  $("buildExisting").textContent =
-    "0";
-
-  $("buildNew").textContent =
-    "0";
-
-  $("buildFailed").textContent =
-    "0";
-
-  $("buildStored").textContent =
-    "0";
+  $("buildExisting").textContent = "0";
+  $("buildNew").textContent = "0";
+  $("buildFailed").textContent = "0";
+  $("buildStored").textContent = "0";
 
 }
 
@@ -2125,7 +1804,7 @@ function setDetailedProgress(
     `${percent}%`;
 
   $("progressText").textContent =
-    `${current} / ${total}  |  EXISTING ${existing}  |  NEW ${newlyBuilt}  |  FAILED ${failed}  |  STORED ${stored}`;
+    `${current} / ${total} | EXISTING ${existing} | NEW ${newlyBuilt} | FAILED ${failed} | STORED ${stored}`;
 
 }
 
@@ -2145,7 +1824,6 @@ function safeString(value){
 
   }
 
-
   if(
     typeof value === "object"
   ){
@@ -2164,1245 +1842,7 @@ function safeString(value){
 
   }
 
-
   return String(value);
-
-}
-
-
-/* =========================================================
-   CREATE EMBEDDING TEXT
-   ========================================================= */
-
-function createEmbeddingText(
-  record
-){
-
-  const lines = [];
-
-
-  lines.push(
-    `SOURCE FILE: ${safeString(record.source.file)}`
-  );
-
-
-  lines.push(
-    `SHEET: ${safeString(record.source.sheet)}`
-  );
-
-
-  lines.push(
-    `ROW: ${safeString(record.source.row)}`
-  );
-
-
-  for(
-    const [field,value]
-    of Object.entries(record.data)
-  ){
-
-    lines.push(
-      `FIELD "${field}": ${safeString(value)}`
-    );
-
-  }
-
-
-  return lines.join(
-    "\n"
-  );
-
-}
-
-
-/* =========================================================
-   LOAD TRANSFORMERS.JS
-   ========================================================= */
-
-async function loadEmbeddingModel(){
-
-  if(state.extractor){
-
-    return state.extractor;
-
-  }
-
-
-  log(
-    "Embedding Runtime wird geladen ...",
-    "info"
-  );
-
-
-  setRuntimeStatus(
-    "LOADING MODEL"
-  );
-
-
-  $("runtimeStat").textContent =
-    "LOADING";
-
-
-  try{
-
-    const transformers =
-      await import(
-        "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1"
-      );
-
-
-    log(
-      "Transformers.js geladen.",
-      "ok"
-    );
-
-
-    state.extractor =
-      await transformers.pipeline(
-        "feature-extraction",
-        MODEL
-      );
-
-
-    log(
-      `${MODEL} ist bereit.`,
-      "ok"
-    );
-
-
-    setRuntimeStatus(
-      "MODEL READY"
-    );
-
-
-    $("runtimeStat").textContent =
-      "MODEL READY";
-
-
-    return state.extractor;
-
-
-  }catch(error){
-
-    state.extractor =
-      null;
-
-
-    setRuntimeStatus(
-      "MODEL ERROR"
-    );
-
-
-    $("runtimeStat").textContent =
-      "ERROR";
-
-
-    log(
-      `Embedding-Modell konnte nicht geladen werden: ${error.message || error}`,
-      "error"
-    );
-
-
-    throw error;
-
-  }
-
-}
-
-
-/* =========================================================
-   CREATE PASSAGE EMBEDDING
-   ========================================================= */
-
-async function createEmbedding(
-  text
-){
-
-  const model =
-    await loadEmbeddingModel();
-
-
-  const prepared =
-    `passage: ${String(text).trim()}`;
-
-
-  const output =
-    await model(
-      prepared,
-      {
-        pooling:"mean",
-        normalize:true
-      }
-    );
-
-
-  const vector =
-    Array.from(
-      output.data
-    );
-
-
-  if(
-    vector.length !== EMBEDDING_DIM
-  ){
-
-    throw new Error(
-      `Embedding-Dimension ${vector.length}; erwartet ${EMBEDDING_DIM}.`
-    );
-
-  }
-
-
-  const norm =
-    Math.sqrt(
-      vector.reduce(
-        (sum,value) =>
-          sum + value * value,
-        0
-      )
-    );
-
-
-  if(
-    !Number.isFinite(norm) ||
-    norm === 0
-  ){
-
-    throw new Error(
-      "Embedding besitzt keine gültige Norm."
-    );
-
-  }
-
-
-  return vector;
-
-}
-
-
-/* =========================================================
-   QUERY EMBEDDING
-   ========================================================= */
-
-async function createQueryEmbedding(
-  question
-){
-
-  const model =
-    await loadEmbeddingModel();
-
-
-  const prepared =
-    `query: ${String(question).trim()}`;
-
-
-  const output =
-    await model(
-      prepared,
-      {
-        pooling:"mean",
-        normalize:true
-      }
-    );
-
-
-  const vector =
-    Array.from(
-      output.data
-    );
-
-
-  if(
-    vector.length !== EMBEDDING_DIM
-  ){
-
-    throw new Error(
-      `Query-Dimension ${vector.length}; erwartet ${EMBEDDING_DIM}.`
-    );
-
-  }
-
-
-  return vector;
-
-}
-
-
-/* =========================================================
-   COSINE SIMILARITY
-   ========================================================= */
-
-function cosineSimilarity(
-  a,
-  b
-){
-
-  if(
-    !Array.isArray(a) ||
-    !Array.isArray(b)
-  ){
-
-    throw new Error(
-      "Cosine Similarity benötigt zwei Vektoren."
-    );
-
-  }
-
-
-  if(
-    a.length !== b.length
-  ){
-
-    throw new Error(
-      `Vektordimensionen unterscheiden sich: ${a.length} / ${b.length}`
-    );
-
-  }
-
-
-  let dot =
-    0;
-
-  let normA =
-    0;
-
-  let normB =
-    0;
-
-
-  for(
-    let i = 0;
-    i < a.length;
-    i++
-  ){
-
-    dot +=
-      a[i] * b[i];
-
-    normA +=
-      a[i] * a[i];
-
-    normB +=
-      b[i] * b[i];
-
-  }
-
-
-  if(
-    normA === 0 ||
-    normB === 0
-  ){
-
-    return 0;
-
-  }
-
-
-  return (
-    dot /
-    (
-      Math.sqrt(normA) *
-      Math.sqrt(normB)
-    )
-  );
-
-}
-
-
-/* =========================================================
-   VALID MEMORY RECORD
-   ========================================================= */
-
-function isValidMemoryRecord(
-  record
-){
-
-  if(!record){
-
-    return false;
-
-  }
-
-
-  if(
-    !record.id ||
-    !record.memory_id
-  ){
-
-    return false;
-
-  }
-
-
-  if(
-    !Array.isArray(
-      record.embedding
-    )
-  ){
-
-    return false;
-
-  }
-
-
-  if(
-    record.embedding.length !==
-    EMBEDDING_DIM
-  ){
-
-    return false;
-
-  }
-
-
-  return true;
-
-}
-
-
-/* =========================================================
-   CREATE MEMORY RECORD
-   ========================================================= */
-
-async function buildMemoryRecord(
-  record
-){
-
-  if(
-    !record ||
-    !record.data
-  ){
-
-    throw new Error(
-      "Ungültiger Record."
-    );
-
-  }
-
-
-  const memoryId =
-    record.memory_id;
-
-
-  if(!memoryId){
-
-    throw new Error(
-      "Record besitzt keine memory_id."
-    );
-
-  }
-
-
-  /*
-   * Originaldaten werden NICHT verändert.
-   */
-
-  const embeddingText =
-    createEmbeddingText(
-      record
-    );
-
-
-  /*
-   * Diagnostik:
-   * Die Textlänge wird geloggt,
-   * aber der Text wird NICHT verändert.
-   */
-
-  log(
-    `${memoryId} | embedding_text=${embeddingText.length} Zeichen`,
-    "info"
-  );
-
-
-  /*
-   * ECHTES EMBEDDING
-   */
-
-  const embedding =
-    await createEmbedding(
-      embeddingText
-    );
-
-
-  /*
-   * IndexedDB-Key MUSS vorhanden sein.
-   */
-
-  const memoryRecord = {
-
-    id:
-      memoryId,
-
-    memory_id:
-      memoryId,
-
-    source:{
-      file:
-        record.source.file,
-
-      sheet:
-        record.source.sheet,
-
-      row:
-        record.source.row
-    },
-
-
-    /*
-     * ORIGINALDATEN
-     */
-
-    data:
-      record.data,
-
-
-    /*
-     * DETERMINISTISCHE TEXTREPRÄSENTATION
-     */
-
-    embedding_text:
-      embeddingText,
-
-
-    /*
-     * ECHTER 384D VEKTOR
-     */
-
-    embedding:
-      embedding,
-
-
-    dimension:
-      embedding.length,
-
-    model:
-      MODEL,
-
-    created:
-      new Date().toISOString()
-
-  };
-
-
-  if(
-    !isValidMemoryRecord(
-      memoryRecord
-    )
-  ){
-
-    throw new Error(
-      "Erzeugter Memory Record ist ungültig."
-    );
-
-  }
-
-
-  return memoryRecord;
-
-}
-
-
-/* =========================================================
-   INDEXEDDB
-   =========================================================
-
-   WICHTIG:
-
-   Die Datenbank wird NICHT beim Boot geöffnet.
-
-   Dadurch kann eine alte DB-Version die UI
-   nicht bereits beim Start blockieren.
-
-   ========================================================= */
-
-
-/* =========================================================
-   OPEN DATABASE
-   ========================================================= */
-
-function openDatabase(
-  version
-){
-
-  return new Promise(
-    (resolve,reject)=>{
-
-      const request =
-        indexedDB.open(
-          DB_NAME,
-          version
-        );
-
-
-      request.onerror = () => {
-
-        reject(
-          request.error ||
-          new Error(
-            "IndexedDB konnte nicht geöffnet werden."
-          )
-        );
-
-      };
-
-
-      request.onupgradeneeded =
-        event => {
-
-          const db =
-            event.target.result;
-
-
-          if(
-            !db.objectStoreNames.contains(
-              STORE_NAME
-            )
-          ){
-
-            const store =
-              db.createObjectStore(
-                STORE_NAME,
-                {
-                  keyPath:"id"
-                }
-              );
-
-
-            store.createIndex(
-              "memory_id",
-              "memory_id",
-              {
-                unique:true
-              }
-            );
-
-
-            store.createIndex(
-              "source_file",
-              "source.file",
-              {
-                unique:false
-              }
-            );
-
-
-            store.createIndex(
-              "source_sheet",
-              "source.sheet",
-              {
-                unique:false
-              }
-            );
-
-          }
-
-        };
-
-
-      request.onsuccess = () => {
-
-        const db =
-          request.result;
-
-
-        db.onversionchange =
-          () => {
-
-            db.close();
-
-          };
-
-
-        resolve(
-          db
-        );
-
-      };
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   OPEN EXISTING DB SAFELY
-   ========================================================= */
-
-async function openMemoryDB(){
-
-  if(state.db){
-
-    return state.db;
-
-  }
-
-
-  if(
-    !window.indexedDB
-  ){
-
-    throw new Error(
-      "IndexedDB ist in diesem Browser nicht verfügbar."
-    );
-
-  }
-
-
-  try{
-
-    const db =
-      await new Promise(
-        (resolve,reject)=>{
-
-          const request =
-            indexedDB.open(
-              DB_NAME
-            );
-
-
-          request.onerror =
-            () => {
-
-              reject(
-                request.error
-              );
-
-            };
-
-
-          request.onupgradeneeded =
-            event => {
-
-              const database =
-                event.target.result;
-
-
-              if(
-                !database.objectStoreNames.contains(
-                  STORE_NAME
-                )
-              ){
-
-                const store =
-                  database.createObjectStore(
-                    STORE_NAME,
-                    {
-                      keyPath:"id"
-                    }
-                  );
-
-
-                store.createIndex(
-                  "memory_id",
-                  "memory_id",
-                  {
-                    unique:true
-                  }
-                );
-
-              }
-
-            };
-
-
-          request.onsuccess =
-            () => {
-
-              resolve(
-                request.result
-              );
-
-            };
-
-        }
-      );
-
-
-    /*
-     * Vorhandenes Schema prüfen.
-     */
-
-    if(
-      !db.objectStoreNames.contains(
-        STORE_NAME
-      )
-    ){
-
-      db.close();
-
-      throw new Error(
-        `IndexedDB Store "${STORE_NAME}" fehlt.`
-      );
-
-    }
-
-
-    const transaction =
-      db.transaction(
-        STORE_NAME,
-        "readonly"
-      );
-
-
-    const store =
-      transaction.objectStore(
-        STORE_NAME
-      );
-
-
-    if(
-      store.keyPath !== "id"
-    ){
-
-      db.close();
-
-      throw new Error(
-        `Inkompatibles IndexedDB-Schema: keyPath="${store.keyPath}". Erwartet wird "id".`
-      );
-
-    }
-
-
-    state.db =
-      db;
-
-
-    log(
-      `IndexedDB verbunden. Version ${db.version}.`,
-      "ok"
-    );
-
-
-    return db;
-
-
-  }catch(error){
-
-    log(
-      `IndexedDB Öffnen fehlgeschlagen: ${error.message || error}`,
-      "error"
-    );
-
-
-    throw error;
-
-  }
-
-}
-
-
-/* =========================================================
-   STORE MEMORY
-   ========================================================= */
-
-async function putMemoryRecord(
-  record
-){
-
-  if(
-    !isValidMemoryRecord(
-      record
-    )
-  ){
-
-    throw new Error(
-      "Ungültiger Memory Record kann nicht gespeichert werden."
-    );
-
-  }
-
-
-  const db =
-    await openMemoryDB();
-
-
-  return new Promise(
-    (resolve,reject)=>{
-
-      let transaction;
-
-
-      try{
-
-        transaction =
-          db.transaction(
-            STORE_NAME,
-            "readwrite"
-          );
-
-      }catch(error){
-
-        reject(
-          error
-        );
-
-        return;
-
-      }
-
-
-      const store =
-        transaction.objectStore(
-          STORE_NAME
-        );
-
-
-      const request =
-        store.put(
-          record
-        );
-
-
-      request.onsuccess =
-        () => resolve();
-
-
-      request.onerror =
-        () => reject(
-          request.error
-        );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   LOAD ALL MEMORY
-   ========================================================= */
-
-async function loadAllMemory(){
-
-  const db =
-    await openMemoryDB();
-
-
-  return new Promise(
-    (resolve,reject)=>{
-
-      let transaction;
-
-
-      try{
-
-        transaction =
-          db.transaction(
-            STORE_NAME,
-            "readonly"
-          );
-
-      }catch(error){
-
-        reject(
-          error
-        );
-
-        return;
-
-      }
-
-
-      const store =
-        transaction.objectStore(
-          STORE_NAME
-        );
-
-
-      const request =
-        store.getAll();
-
-
-      request.onsuccess =
-        () => resolve(
-          request.result || []
-        );
-
-
-      request.onerror =
-        () => reject(
-          request.error
-        );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   DELETE MEMORY DATABASE
-   ========================================================= */
-
-async function resetMemoryDatabase(){
-
-  if(state.db){
-
-    try{
-
-      state.db.close();
-
-    }catch{}
-
-    state.db =
-      null;
-
-  }
-
-
-  return new Promise(
-    (resolve,reject)=>{
-
-      const request =
-        indexedDB.deleteDatabase(
-          DB_NAME
-        );
-
-
-      request.onsuccess =
-        () => resolve();
-
-
-      request.onerror =
-        () => reject(
-          request.error
-        );
-
-
-      request.onblocked =
-        () => {
-
-          log(
-            "IndexedDB DELETE ist blockiert. Andere Verbindung noch offen.",
-            "warn"
-          );
-
-        };
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   IMPORT WORKBOOK
-   ========================================================= */
-
-async function importWorkbook(
-  file
-){
-
-  if(!file){
-
-    return;
-
-  }
-
-
-  log(
-    `Datei wird gelesen: ${file.name}`,
-    "info"
-  );
-
-
-  setDatasetState(
-    "IMPORT"
-  );
-
-
-  try{
-
-    const buffer =
-      await file.arrayBuffer();
-
-
-    const workbook =
-      XLSX.read(
-        buffer,
-        {
-          type:"array",
-          cellDates:true
-        }
-      );
-
-
-    state.file =
-      file;
-
-    state.workbook =
-      workbook;
-
-    state.sheets =
-      workbook.SheetNames || [];
-
-
-    $("fileInfo").innerHTML =
-      `
-      <strong>${escapeHtml(file.name)}</strong><br>
-      Größe: ${formatBytes(file.size)}<br>
-      Worksheets: ${state.sheets.length}
-      `;
-
-
-    renderSheets();
-
-
-    $("statSheets").textContent =
-      state.sheets.length;
-
-
-    $("sheetCount").textContent =
-      state.sheets.length;
-
-
-    log(
-      `${state.sheets.length} Worksheet(s) erkannt.`,
-      "ok"
-    );
-
-
-    if(
-      state.sheets.length > 0
-    ){
-
-      selectSheet(
-        state.sheets[0]
-      );
-
-    }
-
-
-    setDatasetState(
-      "READY"
-    );
-
-
-  }catch(error){
-
-    log(
-      `Import fehlgeschlagen: ${error.message || error}`,
-      "error"
-    );
-
-
-    setDatasetState(
-      "ERROR"
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   SELECT SHEET
-   ========================================================= */
-
-function selectSheet(
-  sheetName
-){
-
-  if(
-    !state.workbook
-  ){
-
-    return;
-
-  }
-
-
-  state.currentSheet =
-    sheetName;
-
-
-  const worksheet =
-    state.workbook.Sheets[
-      sheetName
-    ];
-
-
-  if(!worksheet){
-
-    return;
-
-  }
-
-
-  const rows =
-    XLSX.utils.sheet_to_json(
-      worksheet,
-      {
-        defval:null,
-        raw:false
-      }
-    );
-
-
-  state.rows =
-    rows;
-
-
-  state.schema =
-    inferSchema(
-      rows
-    );
-
-
-  /*
-   * Jeder Datensatz bekommt eine
-   * interne Memory-ID.
-   */
-
-  state.records =
-    rows.map(
-      (row,index)=>({
-
-        memory_id:
-          createMemoryId(
-            state.file?.name ||
-            "DATA",
-            index + 2
-          ),
-
-        source:{
-          file:
-            state.file?.name ||
-            "",
-
-          sheet:
-            sheetName,
-
-          row:
-            index + 2
-        },
-
-        data:
-          row
-
-      })
-    );
-
-
-  renderSheets();
-
-  renderRawTable();
-
-  renderSchema();
-
-  updateStats();
-
-
-  $("rawTitle").textContent =
-    sheetName;
-
-
-  log(
-    `Worksheet "${sheetName}" geladen: ${rows.length} Datenzeilen.`,
-    "ok"
-  );
 
 }
 
@@ -3436,7 +1876,6 @@ function createMemoryId(
         24
       );
 
-
   return (
     `${base || "DATA"}-` +
     String(rowNumber)
@@ -3450,7 +1889,1128 @@ function createMemoryId(
 
 
 /* =========================================================
-   INFER SCHEMA
+   DETERMINISTIC MEMORY REPRESENTATION
+   ========================================================= */
+
+function createMemoryRepresentation(
+  record
+){
+
+  if(
+    !record ||
+    !record.data
+  ){
+
+    throw new Error(
+      "Ungültiger Record für Memory Representation."
+    );
+
+  }
+
+  const fields =
+    Object.entries(
+      record.data
+    ).map(
+      ([name,value]) => ({
+
+        name:
+          String(name),
+
+        value:
+          value,
+
+        value_type:
+          detectValueType(value)
+
+      })
+    );
+
+  return {
+
+    representation_version:
+      MEMORY_SCHEMA_VERSION,
+
+    type:
+      "tabular-row",
+
+    identity:{
+      memory_id:
+        record.memory_id
+    },
+
+    provenance:{
+      file:
+        record.source?.file || "",
+
+      sheet:
+        record.source?.sheet || "",
+
+      row:
+        record.source?.row ?? null
+    },
+
+    fields
+
+  };
+
+}
+
+
+/* =========================================================
+   VALUE TYPE
+   ========================================================= */
+
+function detectValueType(
+  value
+){
+
+  if(
+    value === null ||
+    value === undefined
+  ){
+
+    return "null";
+
+  }
+
+  if(
+    typeof value === "number"
+  ){
+
+    return "number";
+
+  }
+
+  if(
+    typeof value === "boolean"
+  ){
+
+    return "boolean";
+
+  }
+
+  if(
+    typeof value === "string"
+  ){
+
+    return "string";
+
+  }
+
+  if(
+    Array.isArray(value)
+  ){
+
+    return "array";
+
+  }
+
+  if(
+    typeof value === "object"
+  ){
+
+    return "object";
+
+  }
+
+  return typeof value;
+
+}
+
+
+/* =========================================================
+   EMBEDDING TEXT
+   ========================================================= */
+
+function createEmbeddingText(
+  record
+){
+
+  const representation =
+    record.memory || 
+    createMemoryRepresentation(
+      record
+    );
+
+  const lines = [];
+
+  lines.push(
+    `MEMORY TYPE: ${representation.type}`
+  );
+
+  lines.push(
+    `MEMORY VERSION: ${representation.representation_version}`
+  );
+
+  lines.push(
+    `MEMORY ID: ${representation.identity.memory_id}`
+  );
+
+  lines.push(
+    `SOURCE FILE: ${safeString(representation.provenance.file)}`
+  );
+
+  lines.push(
+    `SOURCE SHEET: ${safeString(representation.provenance.sheet)}`
+  );
+
+  lines.push(
+    `SOURCE ROW: ${safeString(representation.provenance.row)}`
+  );
+
+  for(
+    const field of representation.fields
+  ){
+
+    lines.push(
+      `FIELD "${field.name}": ${safeString(field.value)}`
+    );
+
+  }
+
+  return lines.join(
+    "\n"
+  );
+
+}
+
+
+/* =========================================================
+   TRANSFORMERS
+   ========================================================= */
+
+async function loadEmbeddingModel(){
+
+  if(
+    state.extractor
+  ){
+
+    return state.extractor;
+
+  }
+
+  log(
+    "Embedding Runtime wird geladen ...",
+    "info"
+  );
+
+  setRuntimeStatus(
+    "LOADING MODEL"
+  );
+
+  $("runtimeStat").textContent =
+    "LOADING";
+
+  try{
+
+    const transformers =
+      await import(
+        "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1"
+      );
+
+    log(
+      "Transformers.js geladen.",
+      "ok"
+    );
+
+    state.extractor =
+      await transformers.pipeline(
+        "feature-extraction",
+        MODEL
+      );
+
+    log(
+      `${MODEL} ist bereit.`,
+      "ok"
+    );
+
+    setRuntimeStatus(
+      "MODEL READY"
+    );
+
+    $("runtimeStat").textContent =
+      "MODEL READY";
+
+    return state.extractor;
+
+  }catch(error){
+
+    state.extractor =
+      null;
+
+    setRuntimeStatus(
+      "MODEL ERROR"
+    );
+
+    $("runtimeStat").textContent =
+      "ERROR";
+
+    log(
+      `Embedding-Modell konnte nicht geladen werden: ${error.message || error}`,
+      "error"
+    );
+
+    throw error;
+
+  }
+
+}
+
+
+/* =========================================================
+   CREATE EMBEDDING
+   ========================================================= */
+
+async function createEmbedding(
+  text
+){
+
+  const model =
+    await loadEmbeddingModel();
+
+  const prepared =
+    `passage: ${String(text).trim()}`;
+
+  const output =
+    await model(
+      prepared,
+      {
+        pooling:"mean",
+        normalize:true
+      }
+    );
+
+  const vector =
+    Array.from(
+      output.data
+    );
+
+  if(
+    vector.length !== EMBEDDING_DIM
+  ){
+
+    throw new Error(
+      `Embedding-Dimension ${vector.length}; erwartet ${EMBEDDING_DIM}.`
+    );
+
+  }
+
+  const norm =
+    Math.sqrt(
+      vector.reduce(
+        (sum,value) =>
+          sum + value * value,
+        0
+      )
+    );
+
+  if(
+    !Number.isFinite(norm) ||
+    norm === 0
+  ){
+
+    throw new Error(
+      "Embedding besitzt keine gültige Norm."
+    );
+
+  }
+
+  return vector;
+
+}
+
+
+/* =========================================================
+   QUERY EMBEDDING
+   ========================================================= */
+
+async function createQueryEmbedding(
+  question
+){
+
+  const model =
+    await loadEmbeddingModel();
+
+  const prepared =
+    `query: ${String(question).trim()}`;
+
+  const output =
+    await model(
+      prepared,
+      {
+        pooling:"mean",
+        normalize:true
+      }
+    );
+
+  const vector =
+    Array.from(
+      output.data
+    );
+
+  if(
+    vector.length !== EMBEDDING_DIM
+  ){
+
+    throw new Error(
+      `Query-Dimension ${vector.length}; erwartet ${EMBEDDING_DIM}.`
+    );
+
+  }
+
+  return vector;
+
+}
+
+
+/* =========================================================
+   COSINE
+   ========================================================= */
+
+function cosineSimilarity(
+  a,
+  b
+){
+
+  if(
+    !Array.isArray(a) ||
+    !Array.isArray(b)
+  ){
+
+    throw new Error(
+      "Cosine Similarity benötigt zwei Vektoren."
+    );
+
+  }
+
+  if(
+    a.length !== b.length
+  ){
+
+    throw new Error(
+      `Vektordimensionen unterscheiden sich: ${a.length} / ${b.length}`
+    );
+
+  }
+
+  let dot = 0;
+  let normA = 0;
+  let normB = 0;
+
+  for(
+    let i = 0;
+    i < a.length;
+    i++
+  ){
+
+    dot +=
+      a[i] * b[i];
+
+    normA +=
+      a[i] * a[i];
+
+    normB +=
+      b[i] * b[i];
+
+  }
+
+  if(
+    normA === 0 ||
+    normB === 0
+  ){
+
+    return 0;
+
+  }
+
+  return (
+    dot /
+    (
+      Math.sqrt(normA) *
+      Math.sqrt(normB)
+    )
+  );
+
+}
+
+
+/* =========================================================
+   VALID MEMORY
+   ========================================================= */
+
+function isValidMemoryRecord(
+  record
+){
+
+  if(!record){
+    return false;
+  }
+
+  if(
+    !record.id ||
+    !record.memory_id
+  ){
+
+    return false;
+
+  }
+
+  if(
+    !Array.isArray(
+      record.embedding
+    )
+  ){
+
+    return false;
+
+  }
+
+  if(
+    record.embedding.length !==
+    EMBEDDING_DIM
+  ){
+
+    return false;
+
+  }
+
+  if(
+    !record.memory
+  ){
+
+    return false;
+
+  }
+
+  if(
+    record.memory.representation_version !==
+    MEMORY_SCHEMA_VERSION
+  ){
+
+    return false;
+
+  }
+
+  return true;
+
+}
+
+
+/* =========================================================
+   BUILD MEMORY RECORD
+   ========================================================= */
+
+async function buildMemoryRecord(
+  record
+){
+
+  if(
+    !record ||
+    !record.data
+  ){
+
+    throw new Error(
+      "Ungültiger Record."
+    );
+
+  }
+
+  const memoryId =
+    record.memory_id;
+
+  if(!memoryId){
+
+    throw new Error(
+      "Record besitzt keine memory_id."
+    );
+
+  }
+
+  /*
+   * ORIGINALDATEN BLEIBEN UNVERÄNDERT.
+   */
+
+  const memory =
+    createMemoryRepresentation(
+      record
+    );
+
+  /*
+   * DETERMINISTISCHE REPRÄSENTATION.
+   */
+
+  const embeddingText =
+    createEmbeddingText({
+      ...record,
+      memory
+    });
+
+  log(
+    `${memoryId} | embedding_text=${embeddingText.length} Zeichen`,
+    "info"
+  );
+
+  /*
+   * ECHTES EMBEDDING.
+   */
+
+  const embedding =
+    await createEmbedding(
+      embeddingText
+    );
+
+  /*
+   * VOLLSTÄNDIGER MEMORY RECORD.
+   */
+
+  const memoryRecord = {
+
+    id:
+      memoryId,
+
+    memory_id:
+      memoryId,
+
+    memory_schema_version:
+      MEMORY_SCHEMA_VERSION,
+
+    source:{
+      file:
+        record.source.file,
+
+      sheet:
+        record.source.sheet,
+
+      row:
+        record.source.row
+    },
+
+    /*
+     * ORIGINALDATEN
+     */
+
+    data:
+      record.data,
+
+    /*
+     * STRUKTURIERTE MEMORY-REPRÄSENTATION
+     */
+
+    memory:
+
+      memory,
+
+    /*
+     * DETERMINISTISCHER TEXT
+     */
+
+    embedding_text:
+      embeddingText,
+
+    /*
+     * SEMANTISCHER INDEX
+     */
+
+    embedding:
+      embedding,
+
+    dimension:
+      embedding.length,
+
+    model:
+      MODEL,
+
+    created:
+      new Date().toISOString()
+
+  };
+
+  if(
+    !isValidMemoryRecord(
+      memoryRecord
+    )
+  ){
+
+    throw new Error(
+      "Erzeugter Memory Record ist ungültig."
+    );
+
+  }
+
+  return memoryRecord;
+
+}
+
+
+/* =========================================================
+   INDEXEDDB
+   ========================================================= */
+
+function openMemoryDB(){
+
+  return new Promise(
+    (resolve,reject)=>{
+
+      const request =
+        indexedDB.open(
+          DB_NAME
+        );
+
+      request.onerror =
+        () => {
+
+          reject(
+            request.error ||
+            new Error(
+              "IndexedDB konnte nicht geöffnet werden."
+            )
+          );
+
+        };
+
+      request.onupgradeneeded =
+        event => {
+
+          const db =
+            event.target.result;
+
+          if(
+            !db.objectStoreNames.contains(
+              STORE_NAME
+            )
+          ){
+
+            const store =
+              db.createObjectStore(
+                STORE_NAME,
+                {
+                  keyPath:"id"
+                }
+              );
+
+            store.createIndex(
+              "memory_id",
+              "memory_id",
+              {
+                unique:true
+              }
+            );
+
+            store.createIndex(
+              "source_file",
+              "source.file",
+              {
+                unique:false
+              }
+            );
+
+            store.createIndex(
+              "source_sheet",
+              "source.sheet",
+              {
+                unique:false
+              }
+            );
+
+          }
+
+        };
+
+      request.onsuccess =
+        () => {
+
+          const db =
+            request.result;
+
+          db.onversionchange =
+            () => {
+
+              db.close();
+
+            };
+
+          resolve(
+            db
+          );
+
+        };
+
+    }
+  );
+
+}
+
+
+async function openExistingMemoryDB(){
+
+  if(state.db){
+
+    return state.db;
+
+  }
+
+  if(
+    !window.indexedDB
+  ){
+
+    throw new Error(
+      "IndexedDB ist in diesem Browser nicht verfügbar."
+    );
+
+  }
+
+  const db =
+    await openMemoryDB();
+
+  state.db =
+    db;
+
+  log(
+    `IndexedDB verbunden. Version ${db.version}.`,
+    "ok"
+  );
+
+  return db;
+
+}
+
+
+/* =========================================================
+   PUT MEMORY
+   ========================================================= */
+
+async function putMemoryRecord(
+  record
+){
+
+  if(
+    !isValidMemoryRecord(
+      record
+    )
+  ){
+
+    throw new Error(
+      "Ungültiger Memory Record kann nicht gespeichert werden."
+    );
+
+  }
+
+  const db =
+    await openExistingMemoryDB();
+
+  return new Promise(
+    (resolve,reject)=>{
+
+      const transaction =
+        db.transaction(
+          STORE_NAME,
+          "readwrite"
+        );
+
+      const store =
+        transaction.objectStore(
+          STORE_NAME
+        );
+
+      const request =
+        store.put(
+          record
+        );
+
+      request.onsuccess =
+        () => resolve();
+
+      request.onerror =
+        () => reject(
+          request.error
+        );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   LOAD MEMORY
+   ========================================================= */
+
+async function loadAllMemory(){
+
+  const db =
+    await openExistingMemoryDB();
+
+  return new Promise(
+    (resolve,reject)=>{
+
+      const transaction =
+        db.transaction(
+          STORE_NAME,
+          "readonly"
+        );
+
+      const store =
+        transaction.objectStore(
+          STORE_NAME
+        );
+
+      const request =
+        store.getAll();
+
+      request.onsuccess =
+        () => resolve(
+          request.result || []
+        );
+
+      request.onerror =
+        () => reject(
+          request.error
+        );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   DELETE DATABASE
+   ========================================================= */
+
+async function resetMemoryDatabase(){
+
+  if(state.db){
+
+    try{
+      state.db.close();
+    }catch{}
+
+    state.db =
+      null;
+
+  }
+
+  return new Promise(
+    (resolve,reject)=>{
+
+      const request =
+        indexedDB.deleteDatabase(
+          DB_NAME
+        );
+
+      request.onsuccess =
+        () => resolve();
+
+      request.onerror =
+        () => reject(
+          request.error
+        );
+
+      request.onblocked =
+        () => {
+
+          log(
+            "IndexedDB DELETE ist blockiert.",
+            "warn"
+          );
+
+        };
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   IMPORT
+   ========================================================= */
+
+async function importWorkbook(
+  file
+){
+
+  if(!file){
+    return;
+  }
+
+  log(
+    `Datei wird gelesen: ${file.name}`,
+    "info"
+  );
+
+  setDatasetState(
+    "IMPORT"
+  );
+
+  try{
+
+    const buffer =
+      await file.arrayBuffer();
+
+    const workbook =
+      XLSX.read(
+        buffer,
+        {
+          type:"array",
+          cellDates:true
+        }
+      );
+
+    state.file =
+      file;
+
+    state.workbook =
+      workbook;
+
+    state.sheets =
+      workbook.SheetNames || [];
+
+    $("fileInfo").innerHTML =
+      `
+      <strong>${escapeHtml(file.name)}</strong><br>
+      Größe: ${formatBytes(file.size)}<br>
+      Worksheets: ${state.sheets.length}
+      `;
+
+    renderSheets();
+
+    $("statSheets").textContent =
+      state.sheets.length;
+
+    $("sheetCount").textContent =
+      state.sheets.length;
+
+    log(
+      `${state.sheets.length} Worksheet(s) erkannt.`,
+      "ok"
+    );
+
+    if(
+      state.sheets.length > 0
+    ){
+
+      selectSheet(
+        state.sheets[0]
+      );
+
+    }
+
+    setDatasetState(
+      "READY"
+    );
+
+  }catch(error){
+
+    log(
+      `Import fehlgeschlagen: ${error.message || error}`,
+      "error"
+    );
+
+    setDatasetState(
+      "ERROR"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SELECT SHEET
+   ========================================================= */
+
+function selectSheet(
+  sheetName
+){
+
+  if(
+    !state.workbook
+  ){
+
+    return;
+
+  }
+
+  state.currentSheet =
+    sheetName;
+
+  const worksheet =
+    state.workbook.Sheets[
+      sheetName
+    ];
+
+  if(!worksheet){
+    return;
+  }
+
+  const rows =
+    XLSX.utils.sheet_to_json(
+      worksheet,
+      {
+        defval:null,
+        raw:false
+      }
+    );
+
+  state.rows =
+    rows;
+
+  state.schema =
+    inferSchema(
+      rows
+    );
+
+  state.records =
+    rows.map(
+      (row,index)=>({
+
+        memory_id:
+          createMemoryId(
+            state.file?.name ||
+            "DATA",
+            index + 2
+          ),
+
+        source:{
+          file:
+            state.file?.name ||
+            "",
+
+          sheet:
+            sheetName,
+
+          row:
+            index + 2
+        },
+
+        data:
+          row
+
+      })
+    );
+
+  renderSheets();
+
+  renderRawTable();
+
+  renderSchema();
+
+  updateStats();
+
+  $("rawTitle").textContent =
+    sheetName;
+
+  log(
+    `Worksheet "${sheetName}" geladen: ${rows.length} Datenzeilen.`,
+    "ok"
+  );
+
+}
+
+
+/* =========================================================
+   SCHEMA
    ========================================================= */
 
 function inferSchema(
@@ -3459,7 +3019,6 @@ function inferSchema(
 
   const fields =
     new Set();
-
 
   for(
     const row of rows
@@ -3477,9 +3036,7 @@ function inferSchema(
 
   }
 
-
   const schema = [];
-
 
   for(
     const field of fields
@@ -3487,7 +3044,6 @@ function inferSchema(
 
     let type =
       "string";
-
 
     const values =
       rows
@@ -3502,7 +3058,6 @@ function inferSchema(
             value !== ""
         );
 
-
     if(
       values.length > 0
     ){
@@ -3514,22 +3069,18 @@ function inferSchema(
             Number.isFinite(value)
         );
 
-
       if(allNumbers){
 
         type =
           "number";
 
-      }
-
-      else{
+      }else{
 
         const allBoolean =
           values.every(
             value =>
               typeof value === "boolean"
           );
-
 
         if(allBoolean){
 
@@ -3542,8 +3093,8 @@ function inferSchema(
 
     }
 
-
     schema.push({
+
       name:
         field,
 
@@ -3556,7 +3107,6 @@ function inferSchema(
     });
 
   }
-
 
   return schema;
 
@@ -3572,10 +3122,8 @@ function renderSheets(){
   const container =
     $("sheetList");
 
-
   container.innerHTML =
     "";
-
 
   if(
     state.sheets.length === 0
@@ -3592,7 +3140,6 @@ function renderSheets(){
 
   }
 
-
   for(
     const sheet of state.sheets
   ){
@@ -3602,7 +3149,6 @@ function renderSheets(){
         "div"
       );
 
-
     item.className =
       "sheet" +
       (
@@ -3611,10 +3157,8 @@ function renderSheets(){
           : ""
       );
 
-
     item.textContent =
       sheet;
-
 
     item.addEventListener(
       "click",
@@ -3623,7 +3167,6 @@ function renderSheets(){
           sheet
         )
     );
-
 
     container.appendChild(
       item
@@ -3635,14 +3178,13 @@ function renderSheets(){
 
 
 /* =========================================================
-   RENDER RAW TABLE
+   RAW TABLE
    ========================================================= */
 
 function renderRawTable(){
 
   const container =
     $("rawTable");
-
 
   if(
     state.rows.length === 0
@@ -3659,31 +3201,26 @@ function renderRawTable(){
 
   }
 
-
   const columns =
     state.schema.map(
       item =>
         item.name
     );
 
-
   const table =
     document.createElement(
       "table"
     );
-
 
   const thead =
     document.createElement(
       "thead"
     );
 
-
   const headerRow =
     document.createElement(
       "tr"
     );
-
 
   for(
     const column of columns
@@ -3694,10 +3231,8 @@ function renderRawTable(){
         "th"
       );
 
-
     th.textContent =
       column;
-
 
     headerRow.appendChild(
       th
@@ -3705,29 +3240,24 @@ function renderRawTable(){
 
   }
 
-
   thead.appendChild(
     headerRow
   );
 
-
   table.appendChild(
     thead
   );
-
 
   const tbody =
     document.createElement(
       "tbody"
     );
 
-
   const previewRows =
     state.rows.slice(
       0,
       100
     );
-
 
   for(
     const row of previewRows
@@ -3738,7 +3268,6 @@ function renderRawTable(){
         "tr"
       );
 
-
     for(
       const column of columns
     ){
@@ -3748,12 +3277,10 @@ function renderRawTable(){
           "td"
         );
 
-
       td.textContent =
         safeString(
           row[column]
         );
-
 
       tr.appendChild(
         td
@@ -3761,18 +3288,15 @@ function renderRawTable(){
 
     }
 
-
     tbody.appendChild(
       tr
     );
 
   }
 
-
   table.appendChild(
     tbody
   );
-
 
   container.innerHTML =
     "";
@@ -3785,7 +3309,7 @@ function renderRawTable(){
 
 
 /* =========================================================
-   RENDER SCHEMA
+   SCHEMA RENDER
    ========================================================= */
 
 function renderSchema(){
@@ -3793,14 +3317,11 @@ function renderSchema(){
   const container =
     $("schema");
 
-
   $("schemaCount").textContent =
     `${state.schema.length} FIELDS`;
 
-
   container.innerHTML =
     "";
-
 
   if(
     state.schema.length === 0
@@ -3817,7 +3338,6 @@ function renderSchema(){
 
   }
 
-
   for(
     const field of state.schema
   ){
@@ -3827,48 +3347,38 @@ function renderSchema(){
         "div"
       );
 
-
     item.className =
       "schema-item";
-
 
     const name =
       document.createElement(
         "div"
       );
 
-
     name.className =
       "schema-name";
 
-
     name.textContent =
       field.name;
-
 
     const type =
       document.createElement(
         "div"
       );
 
-
     type.className =
       "schema-type";
 
-
     type.textContent =
       field.type;
-
 
     item.appendChild(
       name
     );
 
-
     item.appendChild(
       type
     );
-
 
     container.appendChild(
       item
@@ -3880,7 +3390,7 @@ function renderSchema(){
 
 
 /* =========================================================
-   UPDATE STATS
+   STATS
    ========================================================= */
 
 function updateStats(){
@@ -3888,14 +3398,11 @@ function updateStats(){
   $("statRows").textContent =
     state.rows.length;
 
-
   $("statColumns").textContent =
     state.schema.length;
 
-
   $("statRecords").textContent =
     state.records.length;
-
 
   $("statSheets").textContent =
     state.sheets.length;
@@ -3904,7 +3411,7 @@ function updateStats(){
 
 
 /* =========================================================
-   TEST ONE EMBEDDING
+   TEST EMBEDDING
    ========================================================= */
 
 async function testOneEmbedding(){
@@ -3922,7 +3429,6 @@ async function testOneEmbedding(){
 
   }
 
-
   if(
     state.records.length === 0
   ){
@@ -3936,15 +3442,12 @@ async function testOneEmbedding(){
 
   }
 
-
   const record =
     state.records[0];
-
 
   setBuildState(
     "TESTING"
   );
-
 
   try{
 
@@ -3953,36 +3456,39 @@ async function testOneEmbedding(){
       "info"
     );
 
-
     log(
       "REAL 384D EMBEDDING TEST",
       "info"
     );
 
-
-    const embeddingText =
-      createEmbeddingText(
+    const memory =
+      createMemoryRepresentation(
         record
       );
 
+    const embeddingText =
+      createEmbeddingText({
+        ...record,
+        memory
+      });
 
     $("embeddingPreview").innerHTML =
       `<pre>${escapeHtml(
-        embeddingText
+        JSON.stringify(
+          {
+            memory,
+            embedding_text:
+              embeddingText
+          },
+          null,
+          2
+        )
       )}</pre>`;
-
-
-    log(
-      "Embedding Text erzeugt.",
-      "ok"
-    );
-
 
     const vector =
       await createEmbedding(
         embeddingText
       );
-
 
     const norm =
       Math.sqrt(
@@ -3993,68 +3499,60 @@ async function testOneEmbedding(){
         )
       );
 
-
     log(
       `Embedding erfolgreich: ${vector.length} Dimensionen.`,
       "ok"
     );
-
 
     log(
       `Norm des Vektors: ${norm.toFixed(8)}`,
       "ok"
     );
 
-
     log(
       `Erste 8 Werte: ${vector.slice(0,8).map(v=>v.toFixed(6)).join(", ")}`,
       "info"
     );
 
-
     $("embeddingPreview").innerHTML =
       `
       <pre>${escapeHtml(
-        embeddingText
-      )}
+        JSON.stringify(
+          {
+            memory,
+            embedding_text:
+              embeddingText,
 
---------------------------------
-REAL 384D EMBEDDING
---------------------------------
+            embedding:{
+              dimension:
+                vector.length,
 
-DIMENSION:
-${vector.length}
+              norm:
+                norm,
 
-NORM:
-${norm}
+              first_16:
+                vector.slice(0,16)
+            },
 
-FIRST 16 VALUES:
-${vector
-  .slice(0,16)
-  .map(
-    (v,i)=>
-      `[${i}] ${v}`
-  )
-  .join("\n")}
+            model:
+              MODEL
 
---------------------------------
-MODEL:
-${MODEL}
-      </pre>
+          },
+          null,
+          2
+        )
+      )}</pre>
       `;
-
 
     setBuildState(
       "384D READY"
     );
-
 
   }catch(error){
 
     setBuildState(
       "ERROR"
     );
-
 
     log(
       `Embedding-Test fehlgeschlagen: ${error.message || error}`,
@@ -4067,17 +3565,14 @@ ${MODEL}
 
 
 /* =========================================================
-   BUILD COMPLETE MEMORY
+   BUILD MEMORY
    ========================================================= */
 
 async function buildMemory(){
 
   if(state.building){
-
     return;
-
   }
-
 
   if(
     state.records.length === 0
@@ -4092,48 +3587,38 @@ async function buildMemory(){
 
   }
 
-
   state.building =
     true;
 
   state.buildAbortRequested =
     false;
 
-
   $("buildMemoryBtn").disabled =
     true;
-
 
   $("testEmbeddingBtn").disabled =
     true;
 
-
   $("clearMemoryBtn").disabled =
     true;
-
 
   $("stopBuildBtn").disabled =
     false;
 
-
   resetBuildSummary();
-
 
   setBuildState(
     "LOADING"
   );
 
-
   setDatasetState(
     "BUILD"
   );
-
 
   setProgress(
     0,
     state.records.length
   );
-
 
   try{
 
@@ -4142,98 +3627,49 @@ async function buildMemory(){
       "info"
     );
 
-
     log(
       "ROBUST MEMORY BUILD GESTARTET",
       "info"
     );
-
 
     log(
       `${state.records.length} Records im aktuellen Dataset.`,
       "info"
     );
 
-
     log(
-      `Batch-Größe: ${BUILD_BATCH_SIZE}`,
+      `Memory Representation Version: ${MEMORY_SCHEMA_VERSION}`,
       "info"
     );
-
-
-    log(
-      `Yield pro Record: ${BUILD_RECORD_YIELD_MS} ms`,
-      "info"
-    );
-
-
-    log(
-      `Yield pro Batch: ${BUILD_BATCH_YIELD_MS} ms`,
-      "info"
-    );
-
-
-    /*
-     * =====================================================
-     * 1. MODEL LADEN
-     * =====================================================
-     */
 
     setBuildState(
       "LOADING MODEL"
     );
 
-
     await loadEmbeddingModel();
 
-
-    await yieldToBrowser(
-      50
-    );
-
-
-    /*
-     * =====================================================
-     * 2. DATABASE
-     * =====================================================
-     */
+    await yieldToBrowser(50);
 
     setBuildState(
       "OPENING DB"
     );
 
-
-    await openMemoryDB();
-
+    await openExistingMemoryDB();
 
     log(
       "IndexedDB bereit.",
       "ok"
     );
 
-
-    /*
-     * =====================================================
-     * 3. EXISTIERENDE MEMORY LADEN
-     *
-     * Das ist der Checkpoint.
-     * Bereits gültige 384D Records werden
-     * nicht erneut eingebettet.
-     * =====================================================
-     */
-
     setBuildState(
       "CHECKING MEMORY"
     );
 
-
     const existingRecords =
       await loadAllMemory();
 
-
     const validExistingIds =
       new Set();
-
 
     for(
       const existing of existingRecords
@@ -4253,7 +3689,6 @@ async function buildMemory(){
 
     }
 
-
     let existingCount =
       0;
 
@@ -4271,18 +3706,15 @@ async function buildMemory(){
           )
       ).length;
 
-
     log(
       `IndexedDB enthält ${existingRecords.length} Records.`,
       "info"
     );
 
-
     log(
-      `${validExistingIds.size} gültige 384D Memory Records bereits vorhanden.`,
+      `${validExistingIds.size} gültige Memory Records bereits vorhanden.`,
       "ok"
     );
-
 
     updateBuildSummary(
       validExistingIds.size,
@@ -4291,27 +3723,15 @@ async function buildMemory(){
       storedCount
     );
 
-
-    /*
-     * =====================================================
-     * 4. RECORDS VERARBEITEN
-     * =====================================================
-     */
-
     setBuildState(
       "EMBEDDING"
     );
-
 
     for(
       let i = 0;
       i < state.records.length;
       i++
     ){
-
-      /*
-       * Benutzer kann Build kontrolliert stoppen.
-       */
 
       if(
         state.buildAbortRequested
@@ -4326,57 +3746,17 @@ async function buildMemory(){
 
       }
 
-
       const record =
         state.records[i];
-
 
       if(!record){
 
         failedCount++;
 
-
         log(
           `Record ${i + 1}: Record ist leer.`,
           "error"
         );
-
-
-        setDetailedProgress(
-          i + 1,
-          state.records.length,
-          validExistingIds.size,
-          newlyBuilt,
-          failedCount,
-          storedCount
-        );
-
-
-        continue;
-
-      }
-
-
-      /*
-       * ===================================================
-       * RESUME / CHECKPOINT
-       * ===================================================
-       */
-
-      if(
-        validExistingIds.has(
-          record.memory_id
-        )
-      ){
-
-        existingCount++;
-
-
-        log(
-          `SKIP ${i + 1}/${state.records.length} | ${record.memory_id} | bereits vorhanden`,
-          "info"
-        );
-
 
         setDetailedProgress(
           i + 1,
@@ -4387,25 +3767,43 @@ async function buildMemory(){
           storedCount
         );
 
+        continue;
+
+      }
+
+      /*
+       * RESUME / CHECKPOINT
+       */
+
+      if(
+        validExistingIds.has(
+          record.memory_id
+        )
+      ){
+
+        existingCount++;
+
+        log(
+          `SKIP ${i + 1}/${state.records.length} | ${record.memory_id} | bereits vorhanden`,
+          "info"
+        );
+
+        setDetailedProgress(
+          i + 1,
+          state.records.length,
+          existingCount,
+          newlyBuilt,
+          failedCount,
+          storedCount
+        );
 
         await yieldToBrowser(
           BUILD_RECORD_YIELD_MS
         );
 
-
         continue;
 
       }
-
-
-      /*
-       * ===================================================
-       * EINZELN EMBEDDING ERZEUGEN
-       *
-       * Jeder Record besitzt seinen eigenen try/catch.
-       * Ein Fehler kann den Gesamtprozess nicht stoppen.
-       * ===================================================
-       */
 
       try{
 
@@ -4414,17 +3812,16 @@ async function buildMemory(){
           "info"
         );
 
-
-        const embeddingText =
-          createEmbeddingText(
+        const memory =
+          createMemoryRepresentation(
             record
           );
 
-
-        /*
-         * Preview des ersten tatsächlich
-         * verarbeiteten Records.
-         */
+        const embeddingText =
+          createEmbeddingText({
+            ...record,
+            memory
+          });
 
         if(
           newlyBuilt === 0 &&
@@ -4434,55 +3831,40 @@ async function buildMemory(){
           $("embeddingPreview").innerHTML =
             `
             <pre>${escapeHtml(
-              embeddingText
+              JSON.stringify(
+                {
+                  memory,
+                  embedding_text:
+                    embeddingText
+                },
+                null,
+                2
+              )
             )}</pre>
             `;
 
         }
-
 
         const memoryRecord =
           await buildMemoryRecord(
             record
           );
 
-
-        /*
-         * =================================================
-         * SOFORT SPEICHERN
-         *
-         * Nicht erst nach 237 Records.
-         * =================================================
-         */
-
         await putMemoryRecord(
           memoryRecord
         );
 
-
         newlyBuilt++;
-
         storedCount++;
-
-
-        /*
-         * Checkpoint sofort aktualisieren.
-         */
 
         validExistingIds.add(
           record.memory_id
         );
 
-
         log(
           `GESPEICHERT ${i + 1}/${state.records.length} | ${record.memory_id} | 384D`,
           "ok"
         );
-
-
-        /*
-         * Ersten echten Vector sichtbar machen.
-         */
 
         if(
           newlyBuilt === 1
@@ -4491,62 +3873,50 @@ async function buildMemory(){
           const vector =
             memoryRecord.embedding;
 
-
           $("embeddingPreview").innerHTML =
             `
             <pre>${escapeHtml(
-              memoryRecord.embedding_text
-            )}
+              JSON.stringify(
+                {
+                  memory:
+                    memoryRecord.memory,
 
---------------------------------
-REAL 384D EMBEDDING
---------------------------------
+                  embedding_text:
+                    memoryRecord.embedding_text,
 
-DIMENSION:
-${vector.length}
+                  embedding:{
+                    dimension:
+                      vector.length,
 
-FIRST 16 VALUES:
-${vector
-  .slice(0,16)
-  .map(
-    (v,i)=>
-      `[${i}] ${v}`
-  )
-  .join("\n")}
+                    first_16:
+                      vector.slice(0,16)
+                  },
 
---------------------------------
-MODEL:
-${MODEL}
+                  model:
+                    memoryRecord.model,
 
-STORED:
-INDEXEDDB
-            </pre>
+                  stored:
+                    "INDEXEDDB"
+
+                },
+                null,
+                2
+              )
+            )}</pre>
             `;
 
         }
 
-
       }catch(error){
 
         failedCount++;
-
 
         log(
           `FEHLER ${i + 1}/${state.records.length} | ${record.memory_id} | ROW ${record.source?.row} | ${error.message || error}`,
           "error"
         );
 
-
-        /*
-         * Der nächste Record darf weiterlaufen.
-         */
-
       }
-
-
-      /*
-       * Fortschritt immer aktualisieren.
-       */
 
       setDetailedProgress(
         i + 1,
@@ -4557,21 +3927,9 @@ INDEXEDDB
         storedCount
       );
 
-
-      /*
-       * Browser-Zeit geben.
-       *
-       * Wichtig auf iOS/Safari.
-       */
-
       await yieldToBrowser(
         BUILD_RECORD_YIELD_MS
       );
-
-
-      /*
-       * Nach jedem kleinen Batch zusätzliche Pause.
-       */
 
       if(
         (
@@ -4586,7 +3944,6 @@ INDEXEDDB
           "info"
         );
 
-
         await yieldToBrowser(
           BUILD_BATCH_YIELD_MS
         );
@@ -4595,29 +3952,18 @@ INDEXEDDB
 
     }
 
-
-    /*
-     * =====================================================
-     * 5. ABSCHLUSS / RESUME-STATUS
-     * =====================================================
-     */
-
     const finalRecords =
       await loadAllMemory();
-
 
     renderMemoryList(
       finalRecords
     );
 
-
     $("memoryCount").textContent =
       `${finalRecords.length} STORED`;
 
-
     state.selectedRecord =
       null;
-
 
     $("selectedRecord").innerHTML =
       `
@@ -4626,14 +3972,12 @@ INDEXEDDB
       </div>
       `;
 
-
     updateBuildSummary(
       existingCount,
       newlyBuilt,
       failedCount,
       finalRecords.length
     );
-
 
     if(
       state.buildAbortRequested
@@ -4643,26 +3987,21 @@ INDEXEDDB
         "STOPPED"
       );
 
-
       setDatasetState(
         "PAUSED"
       );
-
 
       log(
         `Build kontrolliert gestoppt. ${finalRecords.length} Records sind dauerhaft gespeichert.`,
         "warn"
       );
 
-
       log(
         "BUILD MEMORY erneut starten, um fortzusetzen.",
         "info"
       );
 
-    }
-
-    else{
+    }else{
 
       setBuildState(
         failedCount > 0
@@ -4670,19 +4009,16 @@ INDEXEDDB
           : "READY"
       );
 
-
       setDatasetState(
         failedCount > 0
           ? "DONE / ERRORS"
           : "READY"
       );
 
-
       log(
         "========================================",
         "info"
       );
-
 
       log(
         `BUILD ABGESCHLOSSEN | EXISTING=${existingCount} | NEW=${newlyBuilt} | FAILED=${failedCount} | STORED=${finalRecords.length}`,
@@ -4691,108 +4027,44 @@ INDEXEDDB
           : "ok"
       );
 
-
-      if(
-        failedCount > 0
-      ){
-
-        log(
-          "Fehlerhafte Records können beim nächsten BUILD erneut versucht werden.",
-          "warn"
-        );
-
-      }
-
     }
 
-
   }catch(error){
-
-    /*
-     * GLOBALER FEHLER
-     *
-     * Wichtig:
-     * Bereits erfolgreich gespeicherte Records
-     * bleiben in IndexedDB erhalten.
-     */
 
     setBuildState(
       "ERROR"
     );
 
-
     setDatasetState(
       "ERROR"
     );
-
 
     log(
       `GLOBALER BUILD-FEHLER: ${error.message || error}`,
       "error"
     );
 
-
     log(
       "Bereits gespeicherte Memory Records bleiben erhalten.",
       "warn"
     );
-
-
-    if(
-      error &&
-      String(
-        error.message
-      ).includes(
-        "lower version"
-      )
-    ){
-
-      log(
-        "Die vorhandene IndexedDB besitzt ein inkompatibles Schema. CLEAR MEMORY DB ausführen und danach BUILD MEMORY erneut starten.",
-        "warn"
-      );
-
-    }
-
-
-    if(
-      error &&
-      String(
-        error.message
-      ).toLowerCase()
-        .includes(
-          "key path"
-        )
-    ){
-
-      log(
-        "IndexedDB-Key-Schema ist inkompatibel. CLEAR MEMORY DB ausführen und danach BUILD MEMORY erneut starten.",
-        "warn"
-      );
-
-    }
 
   }finally{
 
     state.building =
       false;
 
-
     $("buildMemoryBtn").disabled =
       false;
-
 
     $("testEmbeddingBtn").disabled =
       false;
 
-
     $("clearMemoryBtn").disabled =
       false;
 
-
     $("stopBuildBtn").disabled =
       true;
-
 
     state.buildAbortRequested =
       false;
@@ -4803,7 +4075,7 @@ INDEXEDDB
 
 
 /* =========================================================
-   STOP BUILD
+   STOP
    ========================================================= */
 
 function stopBuild(){
@@ -4816,15 +4088,12 @@ function stopBuild(){
 
   }
 
-
   state.buildAbortRequested =
     true;
-
 
   setBuildState(
     "STOPPING"
   );
-
 
   log(
     "STOP BUILD gesetzt. Der aktuelle Record darf noch sauber abgeschlossen werden.",
@@ -4835,7 +4104,7 @@ function stopBuild(){
 
 
 /* =========================================================
-   RENDER MEMORY LIST
+   MEMORY LIST
    ========================================================= */
 
 function renderMemoryList(
@@ -4845,10 +4114,8 @@ function renderMemoryList(
   const container =
     $("memoryList");
 
-
   container.innerHTML =
     "";
-
 
   if(
     records.length === 0
@@ -4865,7 +4132,6 @@ function renderMemoryList(
 
   }
 
-
   for(
     const record of records
   ){
@@ -4875,48 +4141,38 @@ function renderMemoryList(
         "div"
       );
 
-
     item.className =
       "memory-item";
-
 
     const id =
       document.createElement(
         "div"
       );
 
-
     id.className =
       "memory-id";
 
-
     id.textContent =
       record.memory_id;
-
 
     const meta =
       document.createElement(
         "div"
       );
 
-
     meta.className =
       "memory-meta";
 
-
     meta.textContent =
       `${record.source.file} / ${record.source.sheet} / ROW ${record.source.row} / ${record.dimension}D`;
-
 
     item.appendChild(
       id
     );
 
-
     item.appendChild(
       meta
     );
-
 
     item.addEventListener(
       "click",
@@ -4925,14 +4181,12 @@ function renderMemoryList(
         state.selectedRecord =
           record;
 
-
         renderSelectedRecord(
           record
         );
 
       }
     );
-
 
     container.appendChild(
       item
@@ -4964,25 +4218,18 @@ function renderSelectedRecord(
 
   }
 
-
   const previewVector =
     Array.isArray(
       record.embedding
     )
       ? record.embedding
-          .slice(
-            0,
-            20
-          )
+          .slice(0,20)
           .map(
             (v,i)=>
               `[${i}] ${v}`
           )
-          .join(
-            "\n"
-          )
+          .join("\n")
       : "kein Embedding";
-
 
   const display = {
 
@@ -4992,11 +4239,17 @@ function renderSelectedRecord(
     memory_id:
       record.memory_id,
 
+    memory_schema_version:
+      record.memory_schema_version,
+
     source:
       record.source,
 
     data:
       record.data,
+
+    memory:
+      record.memory,
 
     embedding_text:
       record.embedding_text,
@@ -5014,7 +4267,6 @@ function renderSelectedRecord(
       record.created
 
   };
-
 
   $("selectedRecord").innerHTML =
     `
@@ -5049,39 +4301,20 @@ function clearImport(){
 
   }
 
-
-  state.workbook =
-    null;
-
-  state.file =
-    null;
-
-  state.sheets =
-    [];
-
-  state.currentSheet =
-    null;
-
-  state.rows =
-    [];
-
-  state.records =
-    [];
-
-  state.schema =
-    [];
-
-  state.selectedRecord =
-    null;
-
+  state.workbook = null;
+  state.file = null;
+  state.sheets = [];
+  state.currentSheet = null;
+  state.rows = [];
+  state.records = [];
+  state.schema = [];
+  state.selectedRecord = null;
 
   $("fileInput").value =
     "";
 
-
   $("fileInfo").textContent =
     "Keine Datei geladen.";
-
 
   $("sheetList").innerHTML =
     `
@@ -5090,14 +4323,12 @@ function clearImport(){
     </div>
     `;
 
-
   $("rawTable").innerHTML =
     `
     <div class="empty">
       Noch keine Daten geladen.
     </div>
     `;
-
 
   $("schema").innerHTML =
     `
@@ -5106,14 +4337,12 @@ function clearImport(){
     </div>
     `;
 
-
   $("embeddingPreview").innerHTML =
     `
     <div class="empty">
       Wird beim Memory Build erzeugt.
     </div>
     `;
-
 
   $("selectedRecord").innerHTML =
     `
@@ -5122,49 +4351,38 @@ function clearImport(){
     </div>
     `;
 
-
   $("sheetCount").textContent =
     "0";
-
 
   $("statSheets").textContent =
     "0";
 
-
   $("statRows").textContent =
     "0";
-
 
   $("statColumns").textContent =
     "0";
 
-
   $("statRecords").textContent =
     "0";
 
-
   $("schemaCount").textContent =
     "0 FIELDS";
-
 
   setDatasetState(
     "READY"
   );
 
-
   setBuildState(
     "READY"
   );
-
 
   setProgress(
     0,
     0
   );
 
-
   resetBuildSummary();
-
 
   log(
     "Import zurückgesetzt.",
@@ -5175,7 +4393,7 @@ function clearImport(){
 
 
 /* =========================================================
-   CLEAR MEMORY DB
+   CLEAR MEMORY
    ========================================================= */
 
 async function clearMemoryDB(){
@@ -5193,24 +4411,18 @@ async function clearMemoryDB(){
 
   }
 
-
   const confirmed =
     window.confirm(
       "Die lokale NEURAL MEMORY IndexedDB wird vollständig gelöscht. Fortfahren?"
     );
 
-
   if(!confirmed){
-
     return;
-
   }
-
 
   try{
 
     await resetMemoryDatabase();
-
 
     $("memoryList").innerHTML =
       `
@@ -5219,10 +4431,8 @@ async function clearMemoryDB(){
       </div>
       `;
 
-
     $("memoryCount").textContent =
       "0 STORED";
-
 
     $("selectedRecord").innerHTML =
       `
@@ -5231,30 +4441,24 @@ async function clearMemoryDB(){
       </div>
       `;
 
-
     state.selectedRecord =
       null;
 
-
     resetBuildSummary();
-
 
     setProgress(
       0,
       state.records.length
     );
 
-
     log(
       "Lokale Memory-Datenbank gelöscht.",
       "ok"
     );
 
-
     setBuildState(
       "READY"
     );
-
 
   }catch(error){
 
@@ -5269,7 +4473,7 @@ async function clearMemoryDB(){
 
 
 /* =========================================================
-   EXPORT MEMORY
+   EXPORT
    ========================================================= */
 
 async function exportMemory(){
@@ -5287,12 +4491,10 @@ async function exportMemory(){
 
   }
 
-
   try{
 
     const records =
       await loadAllMemory();
-
 
     if(
       records.length === 0
@@ -5307,7 +4509,6 @@ async function exportMemory(){
 
     }
 
-
     const json =
       JSON.stringify(
         records,
@@ -5315,58 +4516,46 @@ async function exportMemory(){
         2
       );
 
-
     const blob =
       new Blob(
         [json],
         {
-          type:
-            "application/json"
+          type:"application/json"
         }
       );
-
 
     const url =
       URL.createObjectURL(
         blob
       );
 
-
     const a =
       document.createElement(
         "a"
       );
 
-
     a.href =
       url;
 
-
     a.download =
       "neural-memory-export.json";
-
 
     document.body.appendChild(
       a
     );
 
-
     a.click();
 
-
     a.remove();
-
 
     URL.revokeObjectURL(
       url
     );
 
-
     log(
       `${records.length} Memory Records exportiert.`,
       "ok"
     );
-
 
   }catch(error){
 
@@ -5396,7 +4585,6 @@ $("chooseFileBtn")
     }
   );
 
-
 $("fileInput")
   .addEventListener(
     "change",
@@ -5404,7 +4592,6 @@ $("fileInput")
 
       const file =
         event.target.files?.[0];
-
 
       if(file){
 
@@ -5437,12 +4624,10 @@ $("dropzone")
 
       }
 
-
       $("fileInput").click();
 
     }
   );
-
 
 $("dropzone")
   .addEventListener(
@@ -5458,7 +4643,6 @@ $("dropzone")
     }
   );
 
-
 $("dropzone")
   .addEventListener(
     "dragleave",
@@ -5471,7 +4655,6 @@ $("dropzone")
     }
   );
 
-
 $("dropzone")
   .addEventListener(
     "drop",
@@ -5479,16 +4662,13 @@ $("dropzone")
 
       event.preventDefault();
 
-
       $("dropzone")
         .classList
         .remove("drag");
 
-
       const file =
         event.dataTransfer
           ?.files?.[0];
-
 
       if(file){
 
@@ -5512,13 +4692,11 @@ $("clearImportBtn")
     clearImport
   );
 
-
 $("buildMemoryBtn")
   .addEventListener(
     "click",
     buildMemory
   );
-
 
 $("stopBuildBtn")
   .addEventListener(
@@ -5526,20 +4704,17 @@ $("stopBuildBtn")
     stopBuild
   );
 
-
 $("testEmbeddingBtn")
   .addEventListener(
     "click",
     testOneEmbedding
   );
 
-
 $("clearMemoryBtn")
   .addEventListener(
     "click",
     clearMemoryDB
   );
-
 
 $("exportMemoryBtn")
   .addEventListener(
@@ -5549,7 +4724,7 @@ $("exportMemoryBtn")
 
 
 /* =========================================================
-   ESCAPE HTML
+   ESCAPE
    ========================================================= */
 
 function escapeHtml(
@@ -5597,7 +4772,6 @@ function formatBytes(
 
   }
 
-
   if(
     bytes < 1024
   ){
@@ -5605,7 +4779,6 @@ function formatBytes(
     return `${bytes} B`;
 
   }
-
 
   if(
     bytes < 1024 * 1024
@@ -5617,7 +4790,6 @@ function formatBytes(
 
   }
 
-
   return `${(
     bytes /
     (1024 * 1024)
@@ -5628,99 +4800,76 @@ function formatBytes(
 
 /* =========================================================
    BOOT
-   =========================================================
-
-   KEIN IndexedDB-Aufruf.
-
-   KEIN Modell-Download.
-
-   Nur UI initialisieren.
-
    ========================================================= */
 
 function boot(){
 
   clearLog();
 
-
   log(
     "NEURAL MEMORY Data Ingestion gestartet.",
     "info"
   );
-
 
   log(
     "UI bereit.",
     "ok"
   );
 
-
   log(
     "Warte auf XLSX / XLS / CSV.",
     "info"
   );
-
 
   log(
     "Originaldaten werden unverändert übernommen.",
     "info"
   );
 
+  log(
+    "Memory Representation wird deterministisch erzeugt.",
+    "info"
+  );
 
   log(
     "Keine semantische Interpretation aktiv.",
     "info"
   );
 
-
   log(
     "IndexedDB wird erst bei BUILD MEMORY geöffnet.",
     "ok"
   );
-
 
   log(
     "Embedding-Modell wird erst bei TEST / BUILD geladen.",
     "ok"
   );
 
-
   log(
-    `Robuster Build: ${BUILD_BATCH_SIZE} Records/Batch.`,
+    `Memory Schema Version ${MEMORY_SCHEMA_VERSION}.`,
     "info"
   );
 
-
-  log(
-    "Bereits gespeicherte 384D Records werden beim nächsten Build übersprungen.",
-    "ok"
-  );
-
-
   $("runtimeStat").textContent =
     "UI READY";
-
 
   setRuntimeStatus(
     "ONLINE"
   );
 
-
   setDatasetState(
     "READY"
   );
-
 
   setBuildState(
     "READY"
   );
 
-
   setProgress(
     0,
     0
   );
-
 
   resetBuildSummary();
 
@@ -5735,7 +4884,7 @@ boot();
 
 
 /* =========================================================
-   PUBLIC DEBUG API
+   PUBLIC DEBUG / LLM INTEGRATION API
    ========================================================= */
 
 window.NEURAL_MEMORY = {
@@ -5748,6 +4897,8 @@ window.NEURAL_MEMORY = {
 
   createQueryEmbedding,
 
+  createMemoryRepresentation,
+
   createEmbeddingText,
 
   buildMemoryRecord,
@@ -5755,6 +4906,8 @@ window.NEURAL_MEMORY = {
   cosineSimilarity,
 
   isValidMemoryRecord,
+
+  loadAllMemory,
 
   searchMemory:
     async function(
@@ -5765,7 +4918,6 @@ window.NEURAL_MEMORY = {
       const records =
         await loadAllMemory();
 
-
       const validRecords =
         records.filter(
           record =>
@@ -5774,12 +4926,10 @@ window.NEURAL_MEMORY = {
             )
         );
 
-
       const queryVector =
         await createQueryEmbedding(
           question
         );
-
 
       const results =
         validRecords.map(
@@ -5796,13 +4946,11 @@ window.NEURAL_MEMORY = {
           })
         );
 
-
       results.sort(
         (a,b)=>
           b.similarity -
           a.similarity
       );
-
 
       return results.slice(
         0,
