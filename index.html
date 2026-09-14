@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
-      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
 <title>NEURAL MEMORY — Data Ingestion</title>
 
@@ -15,17 +15,14 @@
   --bg:#020308;
   --panel:#060914;
   --panel2:#09101d;
-
   --cyan:#00f5ff;
   --cyan2:#00aaff;
   --pink:#ff00aa;
   --green:#4aff88;
   --yellow:#ffe600;
   --red:#ff3355;
-
   --text:#d9faff;
   --muted:#62818c;
-
   --line:rgba(0,245,255,.22);
 
   --glow:
@@ -40,947 +37,718 @@
 html,
 body{
   margin:0;
+  padding:0;
   width:100%;
   min-height:100%;
-
   background:var(--bg);
   color:var(--text);
-
-  font-family:"Courier New",monospace;
-
-  overflow-x:hidden;
-
-  /*
-   * Verhindert, dass Browser beim
-   * DOM-Update unnötig versuchen,
-   * den Fokus sichtbar zu machen.
-   */
-  scroll-behavior:auto;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
 }
 
 body{
-
-  background:
-
-    radial-gradient(
-      circle at 50% 15%,
-      rgba(0,245,255,.08),
-      transparent 35%
-    ),
-
-    linear-gradient(
-      rgba(0,245,255,.018) 1px,
-      transparent 1px
-    ),
-
-    linear-gradient(
-      90deg,
-      rgba(0,245,255,.018) 1px,
-      transparent 1px
-    ),
-
-    var(--bg);
-
-  background-size:
-    auto,
-    40px 40px,
-    40px 40px;
-
-  /*
-   * Wichtig für iOS Safari.
-   */
-  overscroll-behavior-x:none;
+  overflow-x:hidden;
 }
 
-body::before{
-
-  content:"";
-
-  position:fixed;
-
-  inset:0;
-
-  pointer-events:none;
-
-  z-index:9999;
-
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      rgba(255,255,255,.018) 0px,
-      rgba(255,255,255,.018) 1px,
-      transparent 2px,
-      transparent 5px
-    );
+button,
+input{
+  font:inherit;
 }
 
+button{
+  cursor:pointer;
+}
 
-/* =====================================================
+.app{
+  min-height:100vh;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+}
+
+/* =========================================================
    HEADER
-===================================================== */
+   ========================================================= */
 
 header{
-
-  position:sticky;
-
-  top:0;
-
-  z-index:100;
-
   height:72px;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:space-between;
-
-  padding:0 22px;
-
+  border-bottom:1px solid var(--line);
   background:
-
     linear-gradient(
       90deg,
-      rgba(0,245,255,.05),
-      rgba(255,0,170,.05)
-    ),
-
-    rgba(2,3,8,.94);
-
-  border-bottom:
-    1px solid var(--line);
-
-  box-shadow:
-    0 0 25px rgba(0,245,255,.08);
-
-  backdrop-filter:
-    blur(8px);
+      rgba(0,245,255,.04),
+      rgba(255,0,170,.03),
+      rgba(0,245,255,.04)
+    );
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 22px;
+  box-shadow:0 0 30px rgba(0,245,255,.06);
 }
 
-.logo{
-
+.brand{
   display:flex;
-
   align-items:center;
-
   gap:14px;
 }
 
-.logoMark{
-
-  width:34px;
-  height:34px;
-
+.logo{
+  width:42px;
+  height:42px;
+  border:1px solid var(--cyan);
+  color:var(--cyan);
   display:flex;
-
   align-items:center;
   justify-content:center;
-
-  border:
-    1px solid var(--cyan);
-
-  color:var(--cyan);
-
-  box-shadow:
-    var(--glow);
-
-  font-size:18px;
+  font-size:24px;
+  box-shadow:var(--glow);
 }
 
-.logoText{
+.title{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
 
-  letter-spacing:3px;
-
+.title strong{
+  color:var(--cyan);
   font-size:15px;
+  letter-spacing:2px;
 }
 
-.logoText span{
-
-  color:var(--cyan);
+.title span{
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:1.5px;
 }
 
 .status{
-
   display:flex;
-
   align-items:center;
-
-  gap:8px;
-
-  color:var(--muted);
-
+  gap:9px;
+  color:var(--green);
   font-size:10px;
-
-  letter-spacing:1px;
+  letter-spacing:1.5px;
 }
 
-.statusDot{
-
+.status-dot{
   width:8px;
   height:8px;
-
   border-radius:50%;
-
-  background:var(--red);
-
-  box-shadow:
-    0 0 10px var(--red);
-
-  transition:.3s;
-}
-
-.statusDot.online{
-
   background:var(--green);
-
-  box-shadow:
-    0 0 12px var(--green);
+  box-shadow:0 0 10px var(--green);
 }
 
+/* =========================================================
+   MAIN GRID
+   ========================================================= */
 
-/* =====================================================
-   MAIN
-===================================================== */
-
-main{
-
-  width:min(1500px,100%);
-
-  margin:auto;
-
-  padding:22px;
-
+.main{
   display:grid;
-
   grid-template-columns:
-    minmax(280px,360px)
-    minmax(420px,1fr)
-    minmax(280px,360px);
+    minmax(260px,300px)
+    minmax(400px,1fr)
+    minmax(320px,400px);
 
-  gap:18px;
+  min-height:0;
 }
 
-@media(max-width:1100px){
-
-  main{
-
-    grid-template-columns:
-      1fr;
-  }
+.column{
+  min-width:0;
+  min-height:0;
+  border-right:1px solid var(--line);
+  display:flex;
+  flex-direction:column;
 }
 
-
-/* =====================================================
-   PANEL
-===================================================== */
-
-.panel{
-
-  position:relative;
-
-  background:
-
-    linear-gradient(
-      180deg,
-      rgba(0,245,255,.025),
-      rgba(255,0,170,.018)
-    ),
-
-    var(--panel);
-
-  border:
-    1px solid var(--line);
-
-  min-height:100px;
-
-  box-shadow:
-    inset 0 0 30px
-    rgba(0,245,255,.025);
-
-  overflow:hidden;
+.column:last-child{
+  border-right:none;
 }
 
-.panel::before{
+/* =========================================================
+   SECTION
+   ========================================================= */
 
-  content:"";
-
-  position:absolute;
-
-  left:0;
-  top:0;
-
-  width:70px;
-  height:1px;
-
-  background:var(--cyan);
-
-  box-shadow:
-    0 0 10px var(--cyan);
+.section{
+  border-bottom:1px solid var(--line);
+  padding:14px;
 }
 
-.panelTitle{
-
-  padding:14px 16px;
-
-  border-bottom:
-    1px solid rgba(0,245,255,.12);
-
-  color:var(--cyan);
-
-  font-size:11px;
-
-  letter-spacing:2px;
+.section:last-child{
+  border-bottom:none;
 }
 
-.panelBody{
-
-  padding:16px;
-}
-
-
-/* =====================================================
-   FILE IMPORT
-===================================================== */
-
-.dropZone{
-
-  border:
-    1px dashed
-    rgba(0,245,255,.35);
-
-  background:
-    rgba(0,245,255,.018);
-
-  padding:28px 15px;
-
-  text-align:center;
-
-  cursor:pointer;
-
-  transition:.2s;
-
-  /*
-   * Wichtig:
-   * Der Label-Bereich darf selbst
-   * keinen Textauswahl-/Scroll-Effekt
-   * erzeugen.
-   */
-  -webkit-tap-highlight-color:transparent;
-
-  user-select:none;
-
-  touch-action:manipulation;
-}
-
-.dropZone:hover{
-
-  border-color:
-    var(--cyan);
-
-  background:
-    rgba(0,245,255,.05);
-
-  box-shadow:
-    0 0 20px
-    rgba(0,245,255,.08);
-}
-
-.dropIcon{
-
-  font-size:28px;
-
-  color:var(--cyan);
-
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   margin-bottom:12px;
-
-  text-shadow:
-    0 0 12px var(--cyan);
-}
-
-.dropTitle{
-
   color:var(--cyan);
-
-  font-size:11px;
-
-  letter-spacing:2px;
-}
-
-.dropText{
-
-  margin-top:8px;
-
-  color:var(--muted);
-
-  font-size:9px;
-
-  line-height:1.6;
-}
-
-.fileInput{
-
-  /*
-   * Nicht mit visibility:hidden verstecken.
-   * iOS kann damit beim Datei-Picker
-   * teilweise seltsame Fokus-/Viewport-Effekte erzeugen.
-   */
-  position:absolute;
-
-  width:1px;
-  height:1px;
-
-  opacity:0;
-
-  pointer-events:none;
-}
-
-
-/* =====================================================
-   BUTTONS
-===================================================== */
-
-button{
-
-  width:100%;
-
-  border:
-    1px solid var(--cyan);
-
-  background:
-
-    linear-gradient(
-      90deg,
-      rgba(0,245,255,.06),
-      rgba(255,0,170,.06)
-    );
-
-  color:var(--cyan);
-
-  padding:13px;
-
-  margin-top:10px;
-
-  font-family:inherit;
-
   font-size:10px;
-
-  letter-spacing:2px;
-
-  cursor:pointer;
-
-  transition:.2s;
-
-  -webkit-tap-highlight-color:transparent;
-
-  touch-action:manipulation;
+  letter-spacing:1.6px;
 }
 
-button:hover{
-
-  background:
-    rgba(0,245,255,.12);
-
-  box-shadow:
-    0 0 18px
-    rgba(0,245,255,.22);
-}
-
-button:disabled{
-
-  opacity:.35;
-
-  cursor:not-allowed;
-}
-
-button.pink{
-
-  border-color:
-    var(--pink);
-
+.section-title .index{
   color:var(--pink);
 }
 
-button.green{
+.section-title .small{
+  color:var(--muted);
+  font-size:9px;
+  letter-spacing:1px;
+}
 
-  border-color:
-    var(--green);
+/* =========================================================
+   FILE INPUT
+   ========================================================= */
 
+.dropzone{
+  border:1px dashed rgba(0,245,255,.45);
+  background:rgba(0,245,255,.025);
+  padding:18px 12px;
+  text-align:center;
+  transition:.15s;
+}
+
+.dropzone:hover,
+.dropzone.dragover{
+  border-color:var(--cyan);
+  background:rgba(0,245,255,.07);
+  box-shadow:var(--glow);
+}
+
+.dropzone strong{
+  display:block;
+  color:var(--cyan);
+  font-size:12px;
+  margin-bottom:7px;
+}
+
+.dropzone span{
+  color:var(--muted);
+  font-size:9px;
+}
+
+.file-input{
+  display:none;
+}
+
+.file-button{
+  display:inline-block;
+  margin-top:12px;
+  padding:8px 12px;
+  border:1px solid var(--cyan);
+  color:var(--cyan);
+  background:transparent;
+  font-size:10px;
+  letter-spacing:1px;
+}
+
+.file-button:hover{
+  background:rgba(0,245,255,.1);
+  box-shadow:var(--glow);
+}
+
+.file-info{
+  margin-top:12px;
+  padding:10px;
+  background:var(--panel2);
+  border-left:2px solid var(--cyan);
+  font-size:9px;
+  line-height:1.7;
+  color:var(--muted);
+  word-break:break-word;
+}
+
+.file-info strong{
+  color:var(--text);
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.button-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px;
+}
+
+button.action{
+  min-height:38px;
+  padding:8px 10px;
+  border:1px solid var(--cyan);
+  color:var(--cyan);
+  background:rgba(0,245,255,.035);
+  font-size:9px;
+  letter-spacing:1px;
+  transition:.15s;
+}
+
+button.action:hover:not(:disabled){
+  background:rgba(0,245,255,.1);
+  box-shadow:var(--glow);
+}
+
+button.action:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+
+button.action.primary{
+  border-color:var(--green);
   color:var(--green);
 }
 
-button.yellow{
+button.action.primary:hover:not(:disabled){
+  background:rgba(74,255,136,.08);
+  box-shadow:
+    0 0 12px rgba(74,255,136,.4),
+    0 0 35px rgba(74,255,136,.12);
+}
 
-  border-color:
-    var(--yellow);
+button.action.danger{
+  border-color:var(--red);
+  color:var(--red);
+}
 
+button.action.pink{
+  border-color:var(--pink);
+  color:var(--pink);
+}
+
+/* =========================================================
+   SHEETS
+   ========================================================= */
+
+.sheet-list{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  max-height:260px;
+  overflow:auto;
+}
+
+.sheet-item{
+  padding:8px 10px;
+  border:1px solid rgba(0,245,255,.12);
+  background:rgba(0,245,255,.015);
+  color:var(--muted);
+  font-size:9px;
+  cursor:pointer;
+}
+
+.sheet-item:hover{
+  border-color:var(--cyan);
+  color:var(--text);
+}
+
+.sheet-item.active{
+  border-color:var(--cyan);
+  color:var(--cyan);
+  background:rgba(0,245,255,.06);
+  box-shadow:inset 2px 0 0 var(--cyan);
+}
+
+/* =========================================================
+   LOG
+   ========================================================= */
+
+.log{
+  height:220px;
+  overflow:auto;
+  background:#010207;
+  border:1px solid rgba(0,245,255,.12);
+  padding:9px;
+  font-size:9px;
+  line-height:1.6;
+}
+
+.log-line{
+  margin-bottom:3px;
+  word-break:break-word;
+}
+
+.log-time{
+  color:#3b6670;
+}
+
+.log-info{
+  color:var(--muted);
+}
+
+.log-ok{
+  color:var(--green);
+}
+
+.log-warn{
   color:var(--yellow);
 }
 
-
-/* =====================================================
-   FILE INFO
-===================================================== */
-
-.fileInfo{
-
-  display:none;
-
-  margin-top:12px;
-
-  padding:10px;
-
-  border:
-    1px solid
-    rgba(74,255,136,.25);
-
-  background:
-    rgba(74,255,136,.025);
-
-  font-size:9px;
-
-  line-height:1.7;
+.log-error{
+  color:var(--red);
 }
 
-.fileInfo.show{
-
-  display:block;
-}
-
-.fileName{
-
-  color:var(--green);
-
-  word-break:
-    break-all;
-}
-
-
-/* =====================================================
-   SHEETS
-===================================================== */
-
-.sheetList{
-
-  display:flex;
-
-  flex-direction:column;
-
-  gap:7px;
-
-  max-height:300px;
-
-  overflow:auto;
-}
-
-.sheetButton{
-
-  width:100%;
-
-  margin:0;
-
-  padding:10px;
-
-  text-align:left;
-
-  border:
-    1px solid
-    rgba(0,245,255,.12);
-
-  background:#030710;
-
-  color:#6b8a92;
-
-  font-size:9px;
-
-  letter-spacing:1px;
-}
-
-.sheetButton:hover{
-
-  border-color:
-    var(--cyan);
-
-  color:var(--cyan);
-}
-
-.sheetButton.active{
-
-  border-color:
-    var(--cyan);
-
-  color:var(--cyan);
-
-  background:
-    rgba(0,245,255,.06);
-
-  box-shadow:
-    0 0 12px
-    rgba(0,245,255,.1);
-}
-
-
-/* =====================================================
-   STATS
-===================================================== */
+/* =========================================================
+   METRICS
+   ========================================================= */
 
 .metrics{
-
   display:grid;
-
-  grid-template-columns:
-    1fr 1fr;
-
-  gap:8px;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
 }
 
 .metric{
-
-  padding:10px;
-
-  background:#030710;
-
-  border:
-    1px solid
-    rgba(0,245,255,.12);
+  min-width:0;
+  padding:10px 7px;
+  background:var(--panel2);
+  border:1px solid rgba(0,245,255,.1);
 }
 
-.metricLabel{
-
+.metric-label{
   color:var(--muted);
-
   font-size:8px;
-
-  letter-spacing:1px;
+  margin-bottom:5px;
 }
 
-.metricValue{
-
-  margin-top:5px;
-
+.metric-value{
   color:var(--cyan);
-
   font-size:16px;
 }
 
-
-/* =====================================================
+/* =========================================================
    TABLE
-===================================================== */
+   ========================================================= */
 
-.tableWrap{
-
+.table-wrap{
   overflow:auto;
-
-  max-height:650px;
-
-  border:
-    1px solid
-    rgba(0,245,255,.12);
-
+  max-height:440px;
+  border:1px solid rgba(0,245,255,.12);
   background:#010207;
 }
 
 table{
-
-  width:100%;
-
-  border-collapse:
-    collapse;
-
+  border-collapse:collapse;
+  min-width:100%;
   font-size:9px;
+}
 
+th,
+td{
+  border-bottom:1px solid rgba(0,245,255,.08);
+  border-right:1px solid rgba(0,245,255,.05);
+  padding:7px 9px;
+  text-align:left;
   white-space:nowrap;
 }
 
 th{
-
   position:sticky;
-
   top:0;
-
   z-index:2;
-
-  background:
-    #07111d;
-
+  background:#07101c;
   color:var(--cyan);
-
-  border-bottom:
-    1px solid
-    var(--line);
-
-  padding:9px;
-
-  text-align:left;
-
-  letter-spacing:1px;
+  font-weight:normal;
 }
 
 td{
-
-  padding:8px 9px;
-
-  border-bottom:
-    1px solid
-    rgba(0,245,255,.07);
-
-  color:#8daab1;
-
-  max-width:260px;
-
-  overflow:hidden;
-
-  text-overflow:ellipsis;
+  color:#b5d6dc;
 }
 
 tr:hover td{
-
-  background:
-    rgba(0,245,255,.035);
-
-  color:var(--text);
+  background:rgba(0,245,255,.035);
 }
 
+/* =========================================================
+   SCHEMA
+   ========================================================= */
 
-/* =====================================================
-   RECORD
-===================================================== */
-
-.recordList{
-
-  display:flex;
-
-  flex-direction:column;
-
-  gap:8px;
-
-  max-height:520px;
-
+.schema{
+  display:grid;
+  grid-template-columns:1fr 100px;
+  gap:3px;
+  max-height:270px;
   overflow:auto;
 }
 
-.record{
-
-  padding:10px;
-
-  background:#030710;
-
-  border:
-    1px solid
-    rgba(0,245,255,.12);
-
-  cursor:pointer;
-
-  transition:.2s;
+.schema-row{
+  display:contents;
 }
 
-.record:hover{
-
-  border-color:
-    var(--cyan);
-
-  box-shadow:
-    0 0 12px
-    rgba(0,245,255,.1);
-}
-
-.recordId{
-
-  color:var(--pink);
-
+.schema-row > div{
+  padding:5px 7px;
+  background:rgba(0,245,255,.018);
+  border-bottom:1px solid rgba(0,245,255,.06);
   font-size:9px;
-
-  margin-bottom:6px;
 }
 
-.recordMeta{
-
-  color:#526f78;
-
-  font-size:8px;
-
-  line-height:1.5;
-}
-
-.recordJson{
-
-  margin-top:7px;
-
-  color:#87b7c0;
-
-  font-size:8px;
-
-  line-height:1.5;
-
-  white-space:pre-wrap;
-
+.schema-name{
+  color:var(--text);
   word-break:break-word;
 }
 
-
-/* =====================================================
-   SCHEMA
-===================================================== */
-
-.schemaList{
-
-  display:flex;
-
-  flex-direction:column;
-
-  gap:6px;
-
-  max-height:360px;
-
-  overflow:auto;
+.schema-type{
+  color:var(--cyan);
+  text-align:right;
 }
 
-.schemaItem{
+/* =========================================================
+   MEMORY RECORDS
+   ========================================================= */
 
+.records{
+  max-height:300px;
+  overflow:auto;
   display:flex;
+  flex-direction:column;
+  gap:5px;
+}
 
-  justify-content:space-between;
-
-  gap:10px;
-
+.record-item{
+  border:1px solid rgba(0,245,255,.11);
+  background:rgba(0,245,255,.018);
   padding:8px;
+  cursor:pointer;
+}
 
-  background:#030710;
+.record-item:hover{
+  border-color:rgba(0,245,255,.45);
+}
 
-  border:
-    1px solid
-    rgba(0,245,255,.1);
+.record-item.active{
+  border-color:var(--pink);
+  background:rgba(255,0,170,.045);
+  box-shadow:inset 2px 0 0 var(--pink);
+}
 
+.record-id{
+  color:var(--cyan);
+  font-size:9px;
+  margin-bottom:4px;
+}
+
+.record-source{
+  color:var(--muted);
   font-size:8px;
 }
 
-.schemaName{
-
-  color:#9edce3;
-
-  overflow:hidden;
-
-  text-overflow:ellipsis;
-}
-
-.schemaType{
-
-  color:var(--yellow);
-
-  white-space:nowrap;
-}
-
-
-/* =====================================================
-   LOG
-===================================================== */
-
-.log{
-
-  height:180px;
-
-  overflow:auto;
-
-  background:#010207;
-
-  border:
-    1px solid
-    rgba(0,245,255,.12);
-
-  padding:10px;
-
-  font-size:9px;
-
-  line-height:1.7;
-
-  color:#59737b;
-}
-
-.logLine.ok{
-
+.record-status{
+  margin-top:5px;
+  font-size:8px;
   color:var(--green);
 }
 
-.logLine.info{
-
-  color:var(--cyan);
-}
-
-.logLine.warn{
-
+.record-status.pending{
   color:var(--yellow);
 }
 
-.logLine.error{
+/* =========================================================
+   JSON
+   ========================================================= */
 
-  color:var(--red);
+.json-view{
+  background:#010207;
+  border:1px solid rgba(0,245,255,.12);
+  padding:10px;
+  max-height:420px;
+  overflow:auto;
 }
 
-
-/* =====================================================
-   ERROR
-===================================================== */
-
-.errorBox{
-
-  display:none;
-
-  border:
-    1px solid
-    var(--red);
-
-  color:#ff8a99;
-
-  background:
-    rgba(255,0,50,.05);
-
-  padding:12px;
-
-  margin-top:12px;
-
+pre{
+  margin:0;
+  white-space:pre-wrap;
+  word-break:break-word;
+  color:#bdeef5;
   font-size:9px;
-
-  line-height:1.5;
+  line-height:1.55;
 }
 
-.errorBox.show{
+/* =========================================================
+   MEMORY BUILD
+   ========================================================= */
 
+.build-box{
+  border:1px solid rgba(74,255,136,.2);
+  background:rgba(74,255,136,.025);
+  padding:11px;
+}
+
+.build-status{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
+}
+
+.build-status strong{
+  color:var(--green);
+  font-size:10px;
+  letter-spacing:1px;
+}
+
+.build-count{
+  color:var(--muted);
+  font-size:9px;
+}
+
+.progress{
+  height:5px;
+  background:#020509;
+  border:1px solid rgba(74,255,136,.15);
+  overflow:hidden;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:var(--green);
+  box-shadow:0 0 10px rgba(74,255,136,.7);
+  transition:width:.12s linear;
+}
+
+.model-info{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:5px;
+  margin-top:10px;
+}
+
+.model-cell{
+  padding:7px;
+  background:rgba(0,0,0,.2);
+}
+
+.model-cell span{
   display:block;
+  color:var(--muted);
+  font-size:7px;
+  margin-bottom:3px;
 }
 
+.model-cell strong{
+  color:var(--text);
+  font-size:8px;
+  word-break:break-word;
+}
 
-/* =====================================================
-   EMPTY
-===================================================== */
+/* =========================================================
+   PIPELINE
+   ========================================================= */
 
-.empty{
+.pipeline{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+}
 
-  color:#405861;
+.pipeline-step{
+  padding:6px 9px;
+  border:1px solid rgba(0,245,255,.08);
+  background:rgba(0,245,255,.018);
+  color:var(--muted);
+  font-size:8px;
+}
 
+.pipeline-step.active{
+  border-color:var(--green);
+  color:var(--green);
+  background:rgba(74,255,136,.035);
+}
+
+.pipeline-arrow{
+  height:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--cyan);
   font-size:9px;
-
-  padding:12px 0;
 }
 
-
-/* =====================================================
+/* =========================================================
    FOOTER
-===================================================== */
+   ========================================================= */
 
 footer{
+  height:34px;
+  border-top:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 15px;
+  color:var(--muted);
+  font-size:8px;
+  letter-spacing:.7px;
+}
 
-  width:min(1500px,100%);
+footer strong{
+  color:var(--cyan);
+}
 
-  margin:auto;
+/* =========================================================
+   EMPTY
+   ========================================================= */
 
-  padding:
-    0 22px 30px;
-
-  color:#304850;
-
+.empty{
+  color:var(--muted);
   font-size:9px;
+  padding:12px;
+  border:1px dashed rgba(0,245,255,.1);
+  text-align:center;
+}
 
-  letter-spacing:1px;
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:1100px){
+
+  .main{
+    grid-template-columns:1fr;
+  }
+
+  .column{
+    border-right:none;
+    border-bottom:1px solid var(--line);
+  }
+
+  .column:last-child{
+    border-bottom:none;
+  }
+
+}
+
+@media(max-width:650px){
+
+  header{
+    height:62px;
+    padding:0 12px;
+  }
+
+  .logo{
+    width:34px;
+    height:34px;
+    font-size:19px;
+  }
+
+  .title strong{
+    font-size:12px;
+  }
+
+  .status{
+    font-size:8px;
+  }
+
+  .metrics{
+    grid-template-columns:repeat(2,1fr);
+  }
+
 }
 
 </style>
@@ -988,264 +756,149 @@ footer{
 
 <body>
 
+<div class="app">
 
 <header>
 
-  <div class="logo">
+  <div class="brand">
 
-    <div class="logoMark">
-      Σ
-    </div>
+    <div class="logo">Σ</div>
 
-    <div class="logoText">
-      NEURAL <span>MEMORY</span>
+    <div class="title">
+      <strong>NEURAL MEMORY</strong>
+      <span>DATA INGESTION / EMBEDDING CORE</span>
     </div>
 
   </div>
 
-
   <div class="status">
-
-    <div
-      id="statusDot"
-      class="statusDot">
-    </div>
-
-    <span id="statusText">
-      DATA CORE READY
-    </span>
-
+    <span class="status-dot"></span>
+    <span id="systemStatus">ONLINE</span>
   </div>
 
 </header>
 
 
-<main>
-
+<main class="main">
 
 <!-- =====================================================
      LEFT COLUMN
-===================================================== -->
+     ===================================================== -->
 
-<section>
+<section class="column">
 
+  <div class="section">
 
-  <!-- IMPORT -->
-
-  <div class="panel">
-
-    <div class="panelTitle">
-      01 / DATA INGESTION
+    <div class="section-title">
+      <span><span class="index">01</span> / DATA INGESTION</span>
+      <span class="small">INPUT</span>
     </div>
 
-    <div class="panelBody">
+    <div class="dropzone" id="dropzone">
 
-      <label
-        id="dropZone"
-        class="dropZone">
+      <strong>IMPORT DATA</strong>
 
+      <span>XLSX / XLS / CSV</span>
+
+      <br>
+
+      <label class="file-button">
+        DATEI AUSWÄHLEN
         <input
           id="fileInput"
-          class="fileInput"
+          class="file-input"
           type="file"
-          accept=".xlsx,.xls,.csv,text/csv">
-
-        <div class="dropIcon">
-          ⇩
-        </div>
-
-        <div class="dropTitle">
-          IMPORT DATA
-        </div>
-
-        <div class="dropText">
-          XLSX / XLS / CSV<br>
-          Datei auswählen
-        </div>
-
+          accept=".xlsx,.xls,.csv">
       </label>
 
+    </div>
 
-      <div
-        id="fileInfo"
-        class="fileInfo">
+    <div id="fileInfo" class="file-info">
+      Keine Datei geladen.
+    </div>
 
-        <div>
-          FILE
-        </div>
-
-        <div
-          id="fileName"
-          class="fileName">
-        </div>
-
-        <div>
-          TYPE:
-          <span id="fileType">
-            —
-          </span>
-        </div>
-
-        <div>
-          SIZE:
-          <span id="fileSize">
-            —
-          </span>
-        </div>
-
-      </div>
-
+    <div class="button-row">
 
       <button
-        id="clearDataBtn"
-        class="pink">
-
+        id="clearImportBtn"
+        class="action danger">
         CLEAR IMPORT
-
       </button>
 
-
-      <div
-        id="errorBox"
-        class="errorBox">
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- SHEETS -->
-
-  <div
-    class="panel"
-    style="margin-top:18px">
-
-    <div class="panelTitle">
-      02 / SHEETS
-    </div>
-
-    <div class="panelBody">
-
-      <div
-        id="sheetList"
-        class="sheetList">
-
-        <div class="empty">
-          Noch keine Datei importiert.
-        </div>
-
-      </div>
+      <button
+        id="buildMemoryBtn"
+        class="action primary"
+        disabled>
+        BUILD MEMORY
+      </button>
 
     </div>
 
   </div>
 
 
-  <!-- SYSTEM LOG -->
+  <div class="section">
 
-  <div
-    class="panel"
-    style="margin-top:18px">
-
-    <div class="panelTitle">
-      SYSTEM LOG
+    <div class="section-title">
+      <span><span class="index">02</span> / SHEETS</span>
+      <span id="sheetCount" class="small">0</span>
     </div>
 
-    <div class="panelBody">
-
-      <div
-        id="log"
-        class="log">
+    <div id="sheetList" class="sheet-list">
+      <div class="empty">
+        Keine Worksheets.
       </div>
-
     </div>
 
   </div>
 
+
+  <div class="section">
+
+    <div class="section-title">
+      <span><span class="index">SYSTEM</span> LOG</span>
+    </div>
+
+    <div id="log" class="log"></div>
+
+  </div>
 
 </section>
-
 
 
 <!-- =====================================================
      CENTER COLUMN
-===================================================== -->
+     ===================================================== -->
 
-<section>
+<section class="column">
 
+  <div class="section">
 
-  <!-- IMPORT STATUS -->
-
-  <div class="panel">
-
-    <div class="panelTitle">
-      DATASET STATUS
+    <div class="section-title">
+      <span>DATASET STATUS</span>
+      <span class="small">RUNTIME</span>
     </div>
 
-    <div class="panelBody">
+    <div class="metrics">
 
-      <div class="metrics">
+      <div class="metric">
+        <div class="metric-label">SHEETS</div>
+        <div id="metricSheets" class="metric-value">0</div>
+      </div>
 
-        <div class="metric">
+      <div class="metric">
+        <div class="metric-label">ROWS</div>
+        <div id="metricRows" class="metric-value">0</div>
+      </div>
 
-          <div class="metricLabel">
-            SHEETS
-          </div>
+      <div class="metric">
+        <div class="metric-label">COLUMNS</div>
+        <div id="metricColumns" class="metric-value">0</div>
+      </div>
 
-          <div
-            id="sheetCount"
-            class="metricValue">
-            0
-          </div>
-
-        </div>
-
-
-        <div class="metric">
-
-          <div class="metricLabel">
-            ROWS
-          </div>
-
-          <div
-            id="rowCount"
-            class="metricValue">
-            0
-          </div>
-
-        </div>
-
-
-        <div class="metric">
-
-          <div class="metricLabel">
-            COLUMNS
-          </div>
-
-          <div
-            id="columnCount"
-            class="metricValue">
-            0
-          </div>
-
-        </div>
-
-
-        <div class="metric">
-
-          <div class="metricLabel">
-            RECORDS
-          </div>
-
-          <div
-            id="recordCount"
-            class="metricValue">
-            0
-          </div>
-
-        </div>
-
+      <div class="metric">
+        <div class="metric-label">RECORDS</div>
+        <div id="metricRecords" class="metric-value">0</div>
       </div>
 
     </div>
@@ -1253,33 +906,17 @@ footer{
   </div>
 
 
+  <div class="section">
 
-  <!-- TABLE -->
-
-  <div
-    class="panel"
-    style="margin-top:18px">
-
-    <div class="panelTitle">
-      03 / RAW TABLE VIEW
+    <div class="section-title">
+      <span>03 / RAW DATA</span>
+      <span id="currentSheetLabel" class="small">—</span>
     </div>
 
-    <div
-      class="panelBody"
-      style="padding:0">
+    <div id="tableContainer" class="table-wrap">
 
-      <div
-        id="tableWrap"
-        class="tableWrap">
-
-        <div
-          class="empty"
-          style="padding:20px">
-
-          Noch keine Tabelle geladen.
-
-        </div>
-
+      <div class="empty">
+        Noch keine Daten geladen.
       </div>
 
     </div>
@@ -1287,88 +924,124 @@ footer{
   </div>
 
 
+  <div class="section">
 
-  <!-- SCHEMA -->
-
-  <div
-    class="panel"
-    style="margin-top:18px">
-
-    <div class="panelTitle">
-      04 / TECHNICAL SCHEMA
+    <div class="section-title">
+      <span>04 / TECHNICAL SCHEMA</span>
+      <span id="schemaCount" class="small">0 FIELDS</span>
     </div>
 
-    <div class="panelBody">
+    <div id="schemaContainer" class="schema">
 
-      <div
-        id="schemaList"
-        class="schemaList">
-
-        <div class="empty">
-          Schema wird nach dem Import erzeugt.
-        </div>
-
+      <div class="empty">
+        Noch kein Schema erkannt.
       </div>
 
     </div>
 
   </div>
-
 
 </section>
 
 
-
 <!-- =====================================================
      RIGHT COLUMN
-===================================================== -->
+     ===================================================== -->
 
-<section>
+<section class="column">
 
+  <div class="section">
 
-  <!-- RECORDS -->
-
-  <div class="panel">
-
-    <div class="panelTitle">
-      05 / MEMORY RECORDS
+    <div class="section-title">
+      <span>MEMORY BUILD</span>
+      <span class="small">DETERMINISTIC</span>
     </div>
 
-    <div class="panelBody">
+    <div class="build-box">
 
-      <div
-        id="recordList"
-        class="recordList">
+      <div class="build-status">
 
-        <div class="empty">
-          Noch keine Records.
+        <strong id="buildStage">
+          READY
+        </strong>
+
+        <span
+          id="buildCount"
+          class="build-count">
+          0 / 0
+        </span>
+
+      </div>
+
+      <div class="progress">
+        <div
+          id="progressBar"
+          class="progress-bar">
+        </div>
+      </div>
+
+      <div class="model-info">
+
+        <div class="model-cell">
+          <span>MODEL</span>
+          <strong>
+            Xenova/multilingual-e5-small
+          </strong>
+        </div>
+
+        <div class="model-cell">
+          <span>DIMENSION</span>
+          <strong>384</strong>
+        </div>
+
+        <div class="model-cell">
+          <span>STORE</span>
+          <strong>IndexedDB</strong>
+        </div>
+
+        <div class="model-cell">
+          <span>VECTOR</span>
+          <strong>NORMALIZED</strong>
         </div>
 
       </div>
 
     </div>
 
+    <div class="button-row">
+
+      <button
+        id="clearMemoryBtn"
+        class="action danger">
+        CLEAR MEMORY DB
+      </button>
+
+      <button
+        id="exportMemoryBtn"
+        class="action pink">
+        EXPORT MEMORY
+      </button>
+
+    </div>
+
   </div>
 
 
-  <!-- SELECTED RECORD -->
+  <div class="section">
 
-  <div
-    class="panel"
-    style="margin-top:18px">
-
-    <div class="panelTitle">
-      SELECTED RECORD
+    <div class="section-title">
+      <span>05 / MEMORY RECORDS</span>
+      <span
+        id="storedCount"
+        class="small">
+        0 STORED
+      </span>
     </div>
 
-    <div class="panelBody">
+    <div id="recordList" class="records">
 
-      <div
-        id="selectedRecord"
-        class="recordJson">
-
-        Kein Record ausgewählt.
-
+      <div class="empty">
+        Noch keine Memory Records.
       </div>
 
     </div>
@@ -1376,61 +1049,95 @@ footer{
   </div>
 
 
-  <!-- NEXT STAGE -->
+  <div class="section">
 
-  <div
-    class="panel"
-    style="margin-top:18px">
-
-    <div class="panelTitle">
-      MEMORY PIPELINE
+    <div class="section-title">
+      <span>SELECTED RECORD</span>
     </div>
 
-    <div class="panelBody">
+    <div id="selectedRecord" class="json-view">
 
-      <div class="recordMeta">
-        CURRENT STAGE
-      </div>
+      <pre>
+Kein Record ausgewählt.
+      </pre>
+
+    </div>
+
+  </div>
+
+
+  <div class="section">
+
+    <div class="section-title">
+      <span>MEMORY PIPELINE</span>
+      <span class="small">CURRENT STAGE</span>
+    </div>
+
+    <div class="pipeline">
 
       <div
-        style="
-          margin-top:8px;
-          color:var(--cyan);
-          font-size:11px;
-          letter-spacing:1px">
-
+        id="pipeIngestion"
+        class="pipeline-step active">
         INGESTION
-
       </div>
 
+      <div class="pipeline-arrow">↓</div>
+
+      <div class="pipeline-step">
+        FILE
+      </div>
+
+      <div class="pipeline-arrow">↓</div>
+
+      <div class="pipeline-step">
+        SHEET
+      </div>
+
+      <div class="pipeline-arrow">↓</div>
+
+      <div class="pipeline-step">
+        ROW
+      </div>
+
+      <div class="pipeline-arrow">↓</div>
+
+      <div class="pipeline-step">
+        RECORD
+      </div>
+
+      <div class="pipeline-arrow">↓</div>
+
+      <div class="pipeline-step">
+        SCHEMA
+      </div>
+
+      <div class="pipeline-arrow">↓</div>
 
       <div
-        style="
-          margin-top:15px;
-          color:#405861;
-          font-size:9px;
-          line-height:1.8">
+        id="pipeText"
+        class="pipeline-step">
+        EMBEDDING TEXT
+      </div>
 
-        FILE<br>
-        ↓<br>
-        SHEET<br>
-        ↓<br>
-        ROW<br>
-        ↓<br>
-        RECORD<br>
-        ↓<br>
-        SCHEMA<br>
-        ↓<br>
-        <span style="color:var(--yellow)">
-          NEXT: EMBEDDING TEXT
-        </span>
+      <div class="pipeline-arrow">↓</div>
 
+      <div
+        id="pipeEmbedding"
+        class="pipeline-step">
+        384D EMBEDDING
+      </div>
+
+      <div class="pipeline-arrow">↓</div>
+
+      <div
+        id="pipeStore"
+        class="pipeline-step">
+        INDEXEDDB
       </div>
 
     </div>
 
   </div>
-
 
 </section>
 
@@ -1439,20 +1146,50 @@ footer{
 
 <footer>
 
-  NEURAL MEMORY //
-  DATA INGESTION //
-  ORIGINAL DATA PRESERVED //
-  NO SEMANTIC INTERPRETATION
+  <span>
+    <strong>NEURAL MEMORY</strong>
+    — deterministic memory representation
+  </span>
+
+  <span>
+    RAW DATA ≠ SEMANTIC INTERPRETATION
+  </span>
 
 </footer>
 
+</div>
 
 
-<script>
+<script type="module">
 
-/* =====================================================
+import {
+  pipeline
+} from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
+
+
+/* =========================================================
+   CONFIG
+   ========================================================= */
+
+const MODEL =
+  "Xenova/multilingual-e5-small";
+
+const EMBEDDING_DIM =
+  384;
+
+const DB_NAME =
+  "NEURAL_MEMORY_DB";
+
+const DB_VERSION =
+  1;
+
+const STORE_NAME =
+  "memories";
+
+
+/* =========================================================
    STATE
-===================================================== */
+   ========================================================= */
 
 const state = {
 
@@ -1472,1189 +1209,271 @@ const state = {
 
   selectedRecord:null,
 
-  /*
-   * Verhindert parallele Imports.
-   */
-  importing:false
+  extractor:null,
+
+  building:false
 
 };
 
 
-/* =====================================================
-   VIEWPORT PROTECTION
-===================================================== */
-
-/*
- * iOS Safari kann beim Datei-Upload und
- * beim anschließenden DOM-Rendering den
- * visuellen Viewport verschieben.
- *
- * Wir speichern deshalb den Zustand vor
- * dem Import und stellen ihn danach wieder her.
- */
-
-let savedViewport = null;
-
-
-function captureViewport(){
-
-  savedViewport = {
-
-    scrollX:
-      window.scrollX || 0,
-
-    scrollY:
-      window.scrollY || 0,
-
-    visualTop:
-      window.visualViewport
-        ? window.visualViewport.pageTop
-        : null
-
-  };
-
-}
-
-
-function restoreViewport(){
-
-  if(!savedViewport){
-
-    return;
-
-  }
-
-
-  const x =
-    savedViewport.scrollX || 0;
-
-  const y =
-    savedViewport.scrollY || 0;
-
-
-  /*
-   * Mehrfach wiederherstellen:
-   *
-   * 1. direkt
-   * 2. nach einem Paint
-   * 3. nach dem nächsten Frame
-   *
-   * Das ist absichtlich robust gegen
-   * Safari's asynchrones Layoutverhalten.
-   */
-
-  window.scrollTo(
-    x,
-    y
-  );
-
-
-  requestAnimationFrame(
-    () => {
-
-      window.scrollTo(
-        x,
-        y
-      );
-
-
-      requestAnimationFrame(
-        () => {
-
-          window.scrollTo(
-            x,
-            y
-          );
-
-        }
-      );
-
-    }
-  );
-
-}
-
-
-function runWithoutViewportJump(
-  callback
-){
-
-  captureViewport();
-
-  return Promise
-    .resolve()
-    .then(
-      callback
-    )
-    .finally(
-      () => {
-
-        restoreViewport();
-
-      }
-    );
-
-}
-
-
-/* =====================================================
+/* =========================================================
    DOM
-===================================================== */
+   ========================================================= */
 
-const $ =
-  id => document.getElementById(id);
-
-
-const fileInput =
-  $("fileInput");
-
-const dropZone =
-  $("dropZone");
-
-const fileInfo =
-  $("fileInfo");
-
-const fileName =
-  $("fileName");
-
-const fileType =
-  $("fileType");
-
-const fileSize =
-  $("fileSize");
-
-const sheetList =
-  $("sheetList");
-
-const tableWrap =
-  $("tableWrap");
-
-const schemaList =
-  $("schemaList");
-
-const recordList =
-  $("recordList");
-
-const selectedRecord =
-  $("selectedRecord");
-
-const sheetCount =
-  $("sheetCount");
-
-const rowCount =
-  $("rowCount");
-
-const columnCount =
-  $("columnCount");
-
-const recordCount =
-  $("recordCount");
-
-const clearDataBtn =
-  $("clearDataBtn");
-
-const log =
-  $("log");
-
-const errorBox =
-  $("errorBox");
-
-const statusDot =
-  $("statusDot");
-
-const statusText =
-  $("statusText");
+const $ = id =>
+  document.getElementById(id);
 
 
-/* =====================================================
+/* =========================================================
    LOG
-===================================================== */
+   ========================================================= */
 
 function addLog(
   message,
   type="info"
 ){
 
-  const line =
-    document.createElement(
-      "div"
-    );
+  const log =
+    $("log");
 
-  line.className =
-    `logLine ${type}`;
+  const now =
+    new Date();
 
   const time =
-    new Date()
-      .toLocaleTimeString(
-        "de-DE",
-        {
-          hour12:false
-        }
-      );
+    now.toLocaleTimeString(
+      "de-DE",
+      {
+        hour:"2-digit",
+        minute:"2-digit",
+        second:"2-digit"
+      }
+    );
 
-  line.textContent =
-    `[${time}] ${message}`;
+  const line =
+    document.createElement("div");
+
+  line.className =
+    `log-line log-${type}`;
+
+  line.innerHTML =
+    `<span class="log-time">[${time}]</span> ${escapeHtml(message)}`;
 
   log.appendChild(line);
 
   log.scrollTop =
     log.scrollHeight;
-
 }
 
 
-/* =====================================================
-   ERROR
-===================================================== */
-
-function showError(error){
-
-  const message =
-    error?.message ||
-    String(error);
-
-  errorBox.classList.add(
-    "show"
-  );
-
-  errorBox.innerHTML =
-    `<strong>ERROR</strong><br><br>
-     ${escapeHtml(message)}`;
-
-  addLog(
-    message,
-    "error"
-  );
-
-}
-
-
-function clearError(){
-
-  errorBox.classList.remove(
-    "show"
-  );
-
-  errorBox.innerHTML =
-    "";
-
-}
-
-
-/* =====================================================
+/* =========================================================
    ESCAPE
-===================================================== */
+   ========================================================= */
 
 function escapeHtml(value){
 
   return String(value)
-
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
-
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 
 
-/* =====================================================
-   STATUS
-===================================================== */
+/* =========================================================
+   FILE
+   ========================================================= */
 
-function setOnline(){
+function formatBytes(bytes){
 
-  statusDot.classList.add(
-    "online"
-  );
-
-  statusText.textContent =
-    "DATA CORE ONLINE";
-
-}
-
-
-function setOffline(){
-
-  statusDot.classList.remove(
-    "online"
-  );
-
-  statusText.textContent =
-    "DATA CORE READY";
-
-}
-
-
-/* =====================================================
-   FILE SIZE
-===================================================== */
-
-function formatFileSize(
-  bytes
-){
-
-  if(bytes < 1024){
-
+  if(bytes < 1024)
     return `${bytes} B`;
 
-  }
+  if(bytes < 1024*1024)
+    return `${(bytes/1024).toFixed(1)} KB`;
 
-  if(bytes < 1024*1024){
-
-    return `${(
-      bytes / 1024
-    ).toFixed(1)} KB`;
-
-  }
-
-  return `${(
-    bytes /
-    (1024*1024)
-  ).toFixed(2)} MB`;
-
+  return `${(bytes/1024/1024).toFixed(2)} MB`;
 }
 
 
-/* =====================================================
-   FILE IMPORT
-===================================================== */
-
-fileInput.addEventListener(
-  "change",
-  async event => {
-
-    /*
-     * Safari kann beim Zurückkehren
-     * vom Datei-Picker den Viewport
-     * verändern.
-     *
-     * Deshalb sofort sichern.
-     */
-    captureViewport();
-
-
-    const file =
-      event.target.files[0];
-
-
-    if(!file){
-
-      restoreViewport();
-
-      return;
-
-    }
-
-
-    /*
-     * Sofort sperren, damit kein zweiter
-     * Import parallel läuft.
-     */
-    if(state.importing){
-
-      addLog(
-        "Import bereits aktiv — weiterer Import wird ignoriert.",
-        "warn"
-      );
-
-      restoreViewport();
-
-      return;
-
-    }
-
-
-    /*
-     * Input nach dem Lesen zurücksetzen.
-     *
-     * Dadurch kann dieselbe Datei später
-     * erneut ausgewählt werden.
-     */
-    fileInput.value = "";
-
-
-    await importFile(
-      file
-    );
-
-  }
-);
-
-
-/* =====================================================
-   DROP SUPPORT
-===================================================== */
-
-dropZone.addEventListener(
-  "dragover",
-  event => {
-
-    event.preventDefault();
-
-    dropZone.style.borderColor =
-      "var(--cyan)";
-
-  }
-);
-
-
-dropZone.addEventListener(
-  "dragleave",
-  () => {
-
-    dropZone.style.borderColor =
-      "";
-
-  }
-);
-
-
-dropZone.addEventListener(
-  "drop",
-  event => {
-
-    event.preventDefault();
-
-    dropZone.style.borderColor =
-      "";
-
-    const file =
-      event.dataTransfer.files[0];
-
-    if(file){
-
-      importFile(
-        file
-      );
-
-    }
-
-  }
-);
-
-
-/* =====================================================
-   IMPORT FILE
-===================================================== */
-
-async function importFile(
-  file
-){
-
-  /*
-   * Zweite Sicherung gegen
-   * parallele Imports.
-   */
-  if(state.importing){
-
-    addLog(
-      "Import bereits aktiv.",
-      "warn"
-    );
-
-    restoreViewport();
-
-    return;
-
-  }
-
-
-  state.importing =
-    true;
-
-
-  /*
-   * Viewport unmittelbar vor der
-   * eigentlichen Verarbeitung sichern.
-   */
-  captureViewport();
-
-
-  clearError();
-
-
-  try{
-
-    const extension =
-      file.name
-        .split(".")
-        .pop()
-        .toLowerCase();
-
-
-    const allowed = [
-      "xlsx",
-      "xls",
-      "csv"
-    ];
-
-
-    if(
-      !allowed.includes(
-        extension
-      )
-    ){
-
-      throw new Error(
-        "Nicht unterstütztes Dateiformat. Bitte XLSX, XLS oder CSV verwenden."
-      );
-
-    }
-
-
-    state.file =
-      file;
-
-
-    fileName.textContent =
-      file.name;
-
-    fileType.textContent =
-      extension.toUpperCase();
-
-    fileSize.textContent =
-      formatFileSize(
-        file.size
-      );
-
-
-    fileInfo.classList.add(
-      "show"
-    );
-
-
-    addLog(
-      `Datei erkannt: ${file.name}`,
-      "info"
-    );
-
-
-    const arrayBuffer =
-      await file.arrayBuffer();
-
-
-    addLog(
-      "Datei wird gelesen.",
-      "info"
-    );
-
-
-    const workbook =
-      XLSX.read(
-        arrayBuffer,
-        {
-          type:"array",
-          cellDates:true
-        }
-      );
-
-
-    state.workbook =
-      workbook;
-
-
-    state.sheets =
-      workbook.SheetNames
-        .map(
-          name => {
-
-            const worksheet =
-              workbook.Sheets[name];
-
-            const rows =
-              XLSX.utils.sheet_to_json(
-                worksheet,
-                {
-                  header:1,
-                  defval:null,
-                  raw:true
-                }
-              );
-
-            return {
-
-              name,
-
-              rows
-
-            };
-
-          }
-        );
-
-
-    sheetCount.textContent =
-      state.sheets.length;
-
-
-    setOnline();
-
-
-    addLog(
-      `${state.sheets.length} Sheet(s) gefunden.`,
-      "ok"
-    );
-
-
-    renderSheetList();
-
-
-    if(
-      state.sheets.length > 0
-    ){
-
-      /*
-       * Sheet-Verarbeitung gehört
-       * weiterhin zum selben Import.
-       */
-      selectSheet(
-        state.sheets[0].name
-      );
-
-    }
-
-
-  }
-
-  catch(error){
-
-    console.error(error);
-
-    setOffline();
-
-    showError(error);
-
-  }
-
-  finally{
-
-    state.importing =
-      false;
-
-
-    /*
-     * Ganz wichtig:
-     * Erst nachdem der gesamte DOM-Aufbau
-     * abgeschlossen ist, den ursprünglichen
-     * Viewport wiederherstellen.
-     */
-    restoreViewport();
-
-  }
-
-}
-
-
-/* =====================================================
-   SHEET LIST
-===================================================== */
-
-function renderSheetList(){
-
-  sheetList.innerHTML =
-    "";
-
-  if(
-    state.sheets.length === 0
-  ){
-
-    sheetList.innerHTML =
-      `<div class="empty">
-        Keine Sheets gefunden.
-       </div>`;
-
-    return;
-
-  }
-
-
-  state.sheets.forEach(
-    sheet => {
-
-      const button =
-        document.createElement(
-          "button"
-        );
-
-      button.className =
-        "sheetButton";
-
-
-      if(
-        state.currentSheet ===
-        sheet.name
-      ){
-
-        button.classList.add(
-          "active"
-        );
-
-      }
-
-
-      button.textContent =
-        sheet.name;
-
-
-      button.onclick =
-        () => {
-
-          /*
-           * Sheetwechsel soll ebenfalls
-           * keinen Seiten-Sprung verursachen.
-           */
-          captureViewport();
-
-
-          selectSheet(
-            sheet.name
-          );
-
-
-          restoreViewport();
-
-        };
-
-
-      sheetList.appendChild(
-        button
-      );
-
-    }
-  );
-
-}
-
-
-/* =====================================================
-   SELECT SHEET
-===================================================== */
-
-function selectSheet(
-  sheetName
-){
-
-  const sheet =
-    state.sheets.find(
-      s =>
-        s.name === sheetName
-    );
-
-
-  if(!sheet){
-
-    return;
-
-  }
-
-
-  state.currentSheet =
-    sheet.name;
-
-
-  renderSheetList();
-
-
-  addLog(
-    `Sheet ausgewählt: ${sheet.name}`,
-    "info"
-  );
-
-
-  processRows(
-    sheet.rows,
-    sheet.name
-  );
-
-}
-
-
-/* =====================================================
-   PROCESS ROWS
-===================================================== */
-
-function processRows(
-  rawRows,
-  sheetName
-){
-
-  state.rows =
-    rawRows || [];
-
-
-  /*
-   * Leere Zeilen entfernen.
-   */
-
-  const nonEmptyRows =
-    state.rows.filter(
-      row =>
-        Array.isArray(row) &&
-        row.some(
-          cell =>
-            cell !== null &&
-            cell !== undefined &&
-            String(cell).trim() !== ""
-        )
-    );
-
-
-  if(
-    nonEmptyRows.length === 0
-  ){
-
-    state.records = [];
-
-    state.schema = [];
-
-    renderAll();
-
-    return;
-
-  }
-
-
-  /*
-   * Erste Zeile = Header.
-   */
-
-  const headerRow =
-    nonEmptyRows[0];
-
-
-  const headers =
-    makeUniqueHeaders(
-      headerRow
-    );
-
-
-  /*
-   * Restliche Zeilen = Daten.
-   */
-
-  const dataRows =
-    nonEmptyRows.slice(1);
-
-
-  state.records =
-    dataRows.map(
-      (row,index) => {
-
-        const record = {
-
-          memory_id:
-            `${sourcePrefix(
-              state.file?.name
-            )}-${String(
-              index + 1
-            ).padStart(
-              6,
-              "0"
-            )}`,
-
-          source: {
-
-            file:
-              state.file?.name ||
-              null,
-
-            sheet:
-              sheetName,
-
-            row:
-              index + 2
-
-          },
-
-          data:{}
-
-        };
-
-
-        headers.forEach(
-          (header,columnIndex) => {
-
-            record.data[
-              header
-            ] =
-              normalizeCell(
-                row[columnIndex]
-              );
-
-          }
-        );
-
-
-        return record;
-
-      }
-    );
-
-
-  state.schema =
-    buildSchema(
-      state.records
-    );
-
-
-  renderAll();
-
-
-  addLog(
-    `${state.records.length} Records aus "${sheetName}" erzeugt.`,
-    "ok"
-  );
-
-}
-
-
-/* =====================================================
-   UNIQUE HEADERS
-===================================================== */
-
-function makeUniqueHeaders(
-  row
-){
-
-  const used =
-    new Map();
-
-  return row.map(
-    (value,index) => {
-
-      let base =
-        value === null ||
-        value === undefined ||
-        String(value).trim() === ""
-
-          ? `column_${index+1}`
-
-          : String(value)
-              .trim();
-
-
-      if(
-        !used.has(base)
-      ){
-
-        used.set(
-          base,
-          1
-        );
-
-        return base;
-
-      }
-
-
-      const number =
-        used.get(base) + 1;
-
-      used.set(
-        base,
-        number
-      );
-
-
-      return `${base}_${number}`;
-
-    }
-  );
-
-}
-
-
-/* =====================================================
-   SOURCE PREFIX
-===================================================== */
-
-function sourcePrefix(
-  fileName
-){
-
-  if(!fileName){
-
-    return "DATA";
-
-  }
-
+function sourcePrefix(filename){
 
   const base =
-    fileName
-      .replace(
-        /\.[^/.]+$/,
-        ""
-      )
-      .replace(
-        /[^a-zA-Z0-9]+/g,
-        "_"
-      )
-      .replace(
-        /^_+|_+$/g,
-        ""
-      );
+    String(filename || "MEMORY")
+      .replace(/\.[^.]+$/,"")
+      .replace(/[^a-zA-Z0-9]+/g,"_")
+      .replace(/^_+|_+$/g,"")
+      .toUpperCase();
 
-
-  return (
-    base
-      .substring(0,20)
-      .toUpperCase() ||
-    "DATA"
-  );
-
+  return base.slice(0,24) || "MEMORY";
 }
 
 
-/* =====================================================
-   CELL NORMALIZATION
-===================================================== */
+/* =========================================================
+   NORMALIZATION
+   ========================================================= */
 
-function normalizeCell(
-  value
-){
-
-  /*
-   * Wichtig:
-   *
-   * Keine semantische Interpretation.
-   * Keine Korrektur.
-   *
-   * Nur technische Repräsentation.
-   */
+function normalizeValue(value){
 
   if(
     value === null ||
-    value === undefined
+    value === undefined ||
+    value === ""
   ){
-
     return null;
-
   }
 
+  if(value instanceof Date){
 
-  if(
-    value instanceof Date
-  ){
+    if(!isNaN(value.getTime())){
+      return value.toISOString();
+    }
 
-    return value
-      .toISOString();
-
+    return String(value);
   }
 
-
-  if(
-    typeof value === "number"
-  ){
-
+  if(typeof value === "number")
     return value;
 
-  }
-
-
-  if(
-    typeof value === "boolean"
-  ){
-
+  if(typeof value === "boolean")
     return value;
-
-  }
-
 
   return String(value);
-
 }
 
 
-/* =====================================================
+/* =========================================================
+   DATE DETECTION
+   ========================================================= */
+
+function looksLikeDate(value){
+
+  if(typeof value !== "string")
+    return false;
+
+  const s =
+    value.trim();
+
+  if(!s)
+    return false;
+
+  if(
+    /^\d{4}-\d{2}-\d{2}/.test(s)
+  ){
+    return !isNaN(Date.parse(s));
+  }
+
+  if(
+    /^\d{2}\.\d{2}\.\d{4}/.test(s)
+  ){
+    const parts =
+      s.split(/[. ]/);
+
+    const iso =
+      `${parts[2]}-${parts[1]}-${parts[0]}`;
+
+    return !isNaN(Date.parse(iso));
+  }
+
+  return false;
+}
+
+
+/* =========================================================
    SCHEMA
-===================================================== */
+   ========================================================= */
 
-function buildSchema(
-  records
-){
+function detectType(value){
 
-  const fields =
+  if(
+    value === null ||
+    value === undefined ||
+    value === ""
+  ){
+    return "null";
+  }
+
+  if(value instanceof Date)
+    return "date";
+
+  if(typeof value === "number")
+    return "number";
+
+  if(typeof value === "boolean")
+    return "boolean";
+
+  if(
+    typeof value === "string" &&
+    looksLikeDate(value)
+  ){
+    return "date";
+  }
+
+  if(typeof value === "string")
+    return "string";
+
+  return "unknown";
+}
+
+
+function buildSchema(rows){
+
+  const fieldMap =
     new Map();
 
+  rows.forEach(row => {
 
-  records.forEach(
-    record => {
+    Object.keys(row).forEach(field => {
 
-      Object.entries(
-        record.data
-      ).forEach(
-        ([name,value]) => {
+      if(!fieldMap.has(field)){
+        fieldMap.set(
+          field,
+          new Set()
+        );
+      }
 
-          if(
-            !fields.has(name)
-          ){
+      fieldMap
+        .get(field)
+        .add(
+          detectType(row[field])
+        );
+    });
 
-            fields.set(
-              name,
-              {
-                name,
-                types:new Set()
-              }
-            );
-
-          }
-
-
-          fields
-            .get(name)
-            .types
-            .add(
-              detectType(value)
-            );
-
-        }
-      );
-
-    }
-  );
-
+  });
 
   return Array.from(
-    fields.values()
+    fieldMap.entries()
   ).map(
-    field => {
+    ([name,types]) => {
 
-      const types =
-        Array.from(
-          field.types
-        );
+      const nonNull =
+        [...types]
+          .filter(
+            type => type !== "null"
+          );
 
+      let type =
+        "unknown";
+
+      if(nonNull.length === 0){
+
+        type = "null";
+
+      }else if(
+        nonNull.length === 1
+      ){
+
+        type = nonNull[0];
+
+      }else{
+
+        type = "mixed";
+
+      }
 
       return {
-
-        name:
-          field.name,
-
-        type:
-          resolveSchemaType(
-            types
-          )
-
+        name,
+        type
       };
 
     }
@@ -2663,285 +1482,1048 @@ function buildSchema(
 }
 
 
-/* =====================================================
-   TYPE DETECTION
-===================================================== */
+/* =========================================================
+   RECORD BUILDER
+   ========================================================= */
 
-function detectType(
-  value
+function buildRecords(
+  rows,
+  sheetName
 ){
 
-  if(value === null){
-
-    return "null";
-
-  }
-
-
-  if(
-    typeof value === "number"
-  ){
-
-    return "number";
-
-  }
-
-
-  if(
-    typeof value === "boolean"
-  ){
-
-    return "boolean";
-
-  }
-
-
-  if(
-    typeof value === "string"
-  ){
-
-    if(
-      /^\d{4}-\d{2}-\d{2}/
-        .test(value)
-    ){
-
-      return "date";
-
-    }
-
-
-    return "string";
-
-  }
-
-
-  return "unknown";
-
-}
-
-
-/* =====================================================
-   RESOLVE SCHEMA TYPE
-===================================================== */
-
-function resolveSchemaType(
-  types
-){
-
-  const filtered =
-    types.filter(
-      type =>
-        type !== "null"
+  const prefix =
+    sourcePrefix(
+      state.file?.name
     );
 
+  return rows.map(
+    (row,index) => {
 
-  if(
-    filtered.length === 0
-  ){
+      const record = {
 
-    return "null";
+        memory_id:
+          `${prefix}-${String(index+1).padStart(6,"0")}`,
 
-  }
+        source:{
+          file:
+            state.file?.name || null,
 
+          sheet:
+            sheetName,
 
-  if(
-    filtered.length === 1
-  ){
+          row:
+            index + 2
+        },
 
-    return filtered[0];
+        data:{}
 
-  }
+      };
 
+      Object.entries(row)
+        .forEach(
+          ([key,value]) => {
 
-  return "mixed";
-
-}
-
-
-/* =====================================================
-   RENDER ALL
-===================================================== */
-
-function renderAll(){
-
-  renderTable();
-
-  renderSchema();
-
-  renderRecords();
-
-  updateMetrics();
-
-}
-
-
-/* =====================================================
-   RENDER TABLE
-===================================================== */
-
-function renderTable(){
-
-  if(
-    state.records.length === 0
-  ){
-
-    tableWrap.innerHTML =
-      `<div
-        class="empty"
-        style="padding:20px">
-        Keine Daten.
-       </div>`;
-
-    return;
-
-  }
-
-
-  const headers =
-    Object.keys(
-      state.records[0].data
-    );
-
-
-  let html =
-    `<table>
-       <thead>
-         <tr>`;
-
-
-  headers.forEach(
-    header => {
-
-      html +=
-        `<th>
-          ${escapeHtml(header)}
-         </th>`;
-
-    }
-  );
-
-
-  html +=
-    `</tr>
-     </thead>
-     <tbody>`;
-
-
-  /*
-   * Für die UI zunächst
-   * maximal 500 Zeilen.
-   *
-   * Die Records selbst
-   * bleiben vollständig.
-   */
-
-  state.records
-    .slice(0,500)
-    .forEach(
-      record => {
-
-        html +=
-          `<tr>`;
-
-
-        headers.forEach(
-          header => {
-
-            const value =
-              record.data[
-                header
-              ];
-
-
-            html +=
-              `<td
-                title="${escapeHtml(
-                  value ?? ""
-                )}">
-                ${escapeHtml(
-                  formatCell(value)
-                )}
-               </td>`;
+            record.data[key] =
+              normalizeValue(value);
 
           }
         );
 
+      return record;
 
-        html +=
-          `</tr>`;
+    }
+  );
+
+}
+
+
+/* =========================================================
+   EMBEDDING TEXT
+   ========================================================= */
+
+function scalarToText(value){
+
+  if(value === null)
+    return "null";
+
+  if(value === undefined)
+    return "undefined";
+
+  if(typeof value === "object"){
+
+    try{
+      return JSON.stringify(value);
+    }catch{
+      return String(value);
+    }
+
+  }
+
+  return String(value);
+}
+
+
+function buildEmbeddingText(record){
+
+  const lines = [];
+
+  lines.push(
+    `SOURCE FILE: ${scalarToText(record.source.file)}`
+  );
+
+  lines.push(
+    `SHEET: ${scalarToText(record.source.sheet)}`
+  );
+
+  lines.push(
+    `ROW: ${scalarToText(record.source.row)}`
+  );
+
+  Object.entries(record.data)
+    .forEach(
+      ([field,value]) => {
+
+        lines.push(
+          `FIELD "${field}": ${scalarToText(value)}`
+        );
 
       }
     );
 
-
-  html +=
-    `</tbody>
-     </table>`;
+  return lines.join("\n");
+}
 
 
-  tableWrap.innerHTML =
-    html;
+/* =========================================================
+   INDEXED DB
+   ========================================================= */
+
+function openMemoryDB(){
+
+  return new Promise(
+    (resolve,reject) => {
+
+      const request =
+        indexedDB.open(
+          DB_NAME,
+          DB_VERSION
+        );
+
+      request.onupgradeneeded =
+        () => {
+
+          const db =
+            request.result;
+
+          if(
+            !db.objectStoreNames.contains(
+              STORE_NAME
+            )
+          ){
+
+            db.createObjectStore(
+              STORE_NAME,
+              {
+                keyPath:"id"
+              }
+            );
+
+          }
+
+        };
+
+      request.onsuccess =
+        () => {
+
+          resolve(
+            request.result
+          );
+
+        };
+
+      request.onerror =
+        () => {
+
+          reject(
+            request.error
+          );
+
+        };
+
+    }
+  );
 
 }
 
 
-/* =====================================================
-   FORMAT CELL
-===================================================== */
+/* =========================================================
+   STORE BATCH
+   ========================================================= */
 
-function formatCell(
-  value
+async function putMemories(
+  records
 ){
 
-  if(value === null){
+  if(!Array.isArray(records))
+    throw new Error(
+      "Records müssen ein Array sein."
+    );
 
-    return "";
+  records.forEach(
+    record => {
 
-  }
+      if(!record?.memory_id){
+
+        throw new Error(
+          "Memory Record ohne memory_id."
+        );
+
+      }
+
+      /*
+       * WICHTIG:
+       *
+       * IndexedDB verwendet keyPath "id".
+       *
+       * memory_id ist unsere fachliche/systemische
+       * Memory-ID.
+       *
+       * data.ID bleibt dagegen der originale
+       * Wert aus der Tabelle.
+       */
+
+      record.id =
+        record.memory_id;
+
+    }
+  );
+
+  const db =
+    await openMemoryDB();
+
+  return new Promise(
+    (resolve,reject) => {
+
+      const tx =
+        db.transaction(
+          STORE_NAME,
+          "readwrite"
+        );
+
+      const store =
+        tx.objectStore(
+          STORE_NAME
+        );
+
+      records.forEach(
+        record => {
+
+          store.put(record);
+
+        }
+      );
+
+      tx.oncomplete =
+        () => {
+
+          db.close();
+
+          resolve(
+            records.length
+          );
+
+        };
+
+      tx.onerror =
+        () => {
+
+          const error =
+            tx.error ||
+            new Error(
+              "IndexedDB transaction failed."
+            );
+
+          db.close();
+
+          reject(error);
+
+        };
+
+      tx.onabort =
+        () => {
+
+          const error =
+            tx.error ||
+            new Error(
+              "IndexedDB transaction aborted."
+            );
+
+          db.close();
+
+          reject(error);
+
+        };
+
+    }
+  );
+
+}
 
 
-  if(
-    typeof value === "object"
-  ){
+/* =========================================================
+   GET ALL
+   ========================================================= */
 
-    return JSON.stringify(
-      value
+async function getAllMemories(){
+
+  const db =
+    await openMemoryDB();
+
+  return new Promise(
+    (resolve,reject) => {
+
+      const tx =
+        db.transaction(
+          STORE_NAME,
+          "readonly"
+        );
+
+      const request =
+        tx.objectStore(
+          STORE_NAME
+        ).getAll();
+
+      request.onsuccess =
+        () => {
+
+          resolve(
+            request.result || []
+          );
+
+        };
+
+      request.onerror =
+        () => {
+
+          reject(
+            request.error
+          );
+
+        };
+
+      tx.oncomplete =
+        () => {
+
+          db.close();
+
+        };
+
+      tx.onerror =
+        () => {
+
+          db.close();
+
+        };
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   CLEAR DB
+   ========================================================= */
+
+async function clearMemoryDB(){
+
+  const db =
+    await openMemoryDB();
+
+  return new Promise(
+    (resolve,reject) => {
+
+      const tx =
+        db.transaction(
+          STORE_NAME,
+          "readwrite"
+        );
+
+      tx.objectStore(
+        STORE_NAME
+      ).clear();
+
+      tx.oncomplete =
+        () => {
+
+          db.close();
+
+          resolve();
+
+        };
+
+      tx.onerror =
+        () => {
+
+          db.close();
+
+          reject(
+            tx.error
+          );
+
+        };
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   COUNT DB
+   ========================================================= */
+
+async function getMemoryCount(){
+
+  const db =
+    await openMemoryDB();
+
+  return new Promise(
+    (resolve,reject) => {
+
+      const tx =
+        db.transaction(
+          STORE_NAME,
+          "readonly"
+        );
+
+      const request =
+        tx.objectStore(
+          STORE_NAME
+        ).count();
+
+      request.onsuccess =
+        () => {
+
+          resolve(
+            request.result
+          );
+
+        };
+
+      request.onerror =
+        () => {
+
+          reject(
+            request.error
+          );
+
+        };
+
+      tx.oncomplete =
+        () => {
+
+          db.close();
+
+        };
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   EMBEDDING ENGINE
+   ========================================================= */
+
+async function getExtractor(){
+
+  if(state.extractor)
+    return state.extractor;
+
+  addLog(
+    `Embedding-Modell wird geladen: ${MODEL}`,
+    "info"
+  );
+
+  $("buildStage").textContent =
+    "LOADING MODEL";
+
+  $("systemStatus").textContent =
+    "LOADING MODEL";
+
+  try{
+
+    state.extractor =
+      await pipeline(
+        "feature-extraction",
+        MODEL
+      );
+
+  }catch(error){
+
+    state.extractor =
+      null;
+
+    throw new Error(
+      `Embedding-Modell konnte nicht geladen werden: ${error.message}`
     );
 
   }
 
+  addLog(
+    `Embedding Core ONLINE — ${EMBEDDING_DIM}D.`,
+    "ok"
+  );
 
-  return String(value);
+  $("systemStatus").textContent =
+    "EMBEDDING CORE ONLINE";
+
+  return state.extractor;
 
 }
 
 
-/* =====================================================
-   RENDER SCHEMA
-===================================================== */
+/* =========================================================
+   EMBED SINGLE TEXT
+   ========================================================= */
 
-function renderSchema(){
-
-  schemaList.innerHTML =
-    "";
-
+async function embedText(
+  text
+){
 
   if(
-    state.schema.length === 0
+    typeof text !== "string" ||
+    !text.trim()
   ){
 
-    schemaList.innerHTML =
-      `<div class="empty">
-        Kein Schema vorhanden.
-       </div>`;
+    throw new Error(
+      "Embedding Text ist leer."
+    );
+
+  }
+
+  const extractor =
+    await getExtractor();
+
+  /*
+   * E5:
+   *
+   * gespeicherter Datensatz:
+   * passage:
+   *
+   * spätere Suchanfrage:
+   * query:
+   */
+
+  const prepared =
+    `passage: ${text.trim()}`;
+
+  const output =
+    await extractor(
+      prepared,
+      {
+        pooling:"mean",
+        normalize:true
+      }
+    );
+
+  const vector =
+    Array.from(
+      output.data
+    );
+
+  if(
+    vector.length !==
+    EMBEDDING_DIM
+  ){
+
+    throw new Error(
+      `Embedding-Dimension unerwartet: ${vector.length} statt ${EMBEDDING_DIM}.`
+    );
+
+  }
+
+  return vector;
+
+}
+
+
+/* =========================================================
+   BUILD MEMORY
+   ========================================================= */
+
+async function buildMemory(){
+
+  if(state.building)
+    return;
+
+  if(!state.records.length){
+
+    addLog(
+      "Keine Records für Memory Build vorhanden.",
+      "warn"
+    );
 
     return;
 
   }
 
+  state.building =
+    true;
 
-  state.schema.forEach(
-    field => {
+  const button =
+    $("buildMemoryBtn");
+
+  button.disabled =
+    true;
+
+  $("clearImportBtn").disabled =
+    true;
+
+  $("clearMemoryBtn").disabled =
+    true;
+
+  $("exportMemoryBtn").disabled =
+    true;
+
+  try{
+
+    const total =
+      state.records.length;
+
+    $("buildStage").textContent =
+      "BUILDING";
+
+    $("systemStatus").textContent =
+      "MEMORY BUILD";
+
+    setPipelineStage(
+      "text"
+    );
+
+    addLog(
+      "Memory Build gestartet.",
+      "info"
+    );
+
+    addLog(
+      `${total} Records werden verarbeitet.`,
+      "info"
+    );
+
+    /*
+     * Wir bauen zunächst alle Records
+     * vollständig im Speicher.
+     *
+     * Erst wenn alle Embeddings erfolgreich
+     * erzeugt wurden, schreiben wir sie in
+     * einer IndexedDB-Transaktion.
+     *
+     * Dadurch vermeiden wir einen halb
+     * geschriebenen Memory Store.
+     */
+
+    const builtRecords = [];
+
+    for(
+      let i = 0;
+      i < total;
+      i++
+    ){
+
+      const sourceRecord =
+        state.records[i];
+
+      const embeddingText =
+        buildEmbeddingText(
+          sourceRecord
+        );
+
+      const record = {
+
+        id:
+          sourceRecord.memory_id,
+
+        memory_id:
+          sourceRecord.memory_id,
+
+        source:
+          structuredClone(
+            sourceRecord.source
+          ),
+
+        data:
+          structuredClone(
+            sourceRecord.data
+          ),
+
+        embedding_text:
+          embeddingText,
+
+        embedding_status:
+          "building"
+
+      };
+
+      setPipelineStage(
+        "text"
+      );
+
+      $("buildCount").textContent =
+        `${i} / ${total}`;
+
+      addLog(
+        `${sourceRecord.memory_id}: embedding_text erzeugt.`,
+        "info"
+      );
+
+      setPipelineStage(
+        "embedding"
+      );
+
+      const vector =
+        await embedText(
+          embeddingText
+        );
+
+      record.embedding =
+        vector;
+
+      record.dimension =
+        vector.length;
+
+      record.model =
+        MODEL;
+
+      record.embedding_status =
+        "ready";
+
+      record.created =
+        new Date().toISOString();
+
+      builtRecords.push(
+        record
+      );
+
+      const progress =
+        ((i + 1) / total) * 100;
+
+      $("progressBar").style.width =
+        `${progress}%`;
+
+      $("buildCount").textContent =
+        `${i + 1} / ${total}`;
+
+      addLog(
+        `${sourceRecord.memory_id}: 384D embedding erzeugt.`,
+        "ok"
+      );
+
+      /*
+       * Browser UI darf zwischen den
+       * Embeddings wieder rendern.
+       */
+
+      await new Promise(
+        resolve =>
+          setTimeout(
+            resolve,
+            0
+          )
+      );
+
+    }
+
+    addLog(
+      "Alle Embeddings erfolgreich erzeugt.",
+      "ok"
+    );
+
+    setPipelineStage(
+      "store"
+    );
+
+    $("buildStage").textContent =
+      "STORING";
+
+    addLog(
+      "IndexedDB-Transaktion wird vorbereitet.",
+      "info"
+    );
+
+    const stored =
+      await putMemories(
+        builtRecords
+      );
+
+    addLog(
+      `${stored} Memory Records in IndexedDB gespeichert.`,
+      "ok"
+    );
+
+    /*
+     * State aktualisieren
+     */
+
+    state.records =
+      builtRecords;
+
+    state.selectedRecord =
+      builtRecords[0] || null;
+
+    renderRecords();
+
+    if(state.selectedRecord){
+      renderSelectedRecord(
+        state.selectedRecord
+      );
+    }
+
+    const count =
+      await getMemoryCount();
+
+    $("storedCount").textContent =
+      `${count} STORED`;
+
+    $("buildStage").textContent =
+      "COMPLETE";
+
+    $("systemStatus").textContent =
+      "ONLINE";
+
+    setPipelineStage(
+      "store"
+    );
+
+    addLog(
+      `MEMORY BUILD abgeschlossen — ${count} Records im Store.`,
+      "ok"
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    $("buildStage").textContent =
+      "ERROR";
+
+    $("systemStatus").textContent =
+      "BUILD ERROR";
+
+    addLog(
+      error.message,
+      "error"
+    );
+
+  }finally{
+
+    state.building =
+      false;
+
+    button.disabled =
+      state.records.length === 0;
+
+    $("clearImportBtn").disabled =
+      false;
+
+    $("clearMemoryBtn").disabled =
+      false;
+
+    $("exportMemoryBtn").disabled =
+      false;
+
+  }
+
+}
+
+
+/* =========================================================
+   PIPELINE STATE
+   ========================================================= */
+
+function setPipelineStage(
+  stage
+){
+
+  [
+    "pipeIngestion",
+    "pipeText",
+    "pipeEmbedding",
+    "pipeStore"
+  ]
+  .forEach(
+    id => {
+
+      $(id)
+        .classList
+        .remove("active");
+
+    }
+  );
+
+  if(stage === "ingestion"){
+
+    $("pipeIngestion")
+      .classList
+      .add("active");
+
+  }
+
+  if(stage === "text"){
+
+    $("pipeIngestion")
+      .classList
+      .add("active");
+
+    $("pipeText")
+      .classList
+      .add("active");
+
+  }
+
+  if(stage === "embedding"){
+
+    $("pipeIngestion")
+      .classList
+      .add("active");
+
+    $("pipeText")
+      .classList
+      .add("active");
+
+    $("pipeEmbedding")
+      .classList
+      .add("active");
+
+  }
+
+  if(stage === "store"){
+
+    $("pipeIngestion")
+      .classList
+      .add("active");
+
+    $("pipeText")
+      .classList
+      .add("active");
+
+    $("pipeEmbedding")
+      .classList
+      .add("active");
+
+    $("pipeStore")
+      .classList
+      .add("active");
+
+  }
+
+}
+
+
+/* =========================================================
+   FILE PARSER
+   ========================================================= */
+
+async function processFile(
+  file
+){
+
+  if(!file)
+    return;
+
+  state.file =
+    file;
+
+  $("fileInfo").innerHTML = `
+    <strong>${escapeHtml(file.name)}</strong><br>
+    TYPE: ${escapeHtml(file.type || "unknown")}<br>
+    SIZE: ${formatBytes(file.size)}
+  `;
+
+  addLog(
+    `Datei erkannt: ${file.name}`,
+    "ok"
+  );
+
+  addLog(
+    "Datei wird gelesen.",
+    "info"
+  );
+
+  try{
+
+    const buffer =
+      await file.arrayBuffer();
+
+    const workbook =
+      XLSX.read(
+        buffer,
+        {
+          type:"array",
+          cellDates:true
+        }
+      );
+
+    state.workbook =
+      workbook;
+
+    state.sheets =
+      workbook.SheetNames || [];
+
+    addLog(
+      `${state.sheets.length} Sheet(s) gefunden.`,
+      "ok"
+    );
+
+    renderSheets();
+
+    updateMetrics();
+
+    if(state.sheets.length){
+
+      selectSheet(
+        state.sheets[0]
+      );
+
+    }
+
+  }catch(error){
+
+    addLog(
+      `Importfehler: ${error.message}`,
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SHEETS
+   ========================================================= */
+
+function renderSheets(){
+
+  const container =
+    $("sheetList");
+
+  container.innerHTML =
+    "";
+
+  if(!state.sheets.length){
+
+    container.innerHTML =
+      `<div class="empty">Keine Worksheets.</div>`;
+
+    return;
+
+  }
+
+  state.sheets.forEach(
+    sheetName => {
 
       const item =
         document.createElement(
@@ -2949,27 +2531,465 @@ function renderSchema(){
         );
 
       item.className =
-        "schemaItem";
+        "sheet-item";
+
+      if(
+        sheetName ===
+        state.currentSheet
+      ){
+
+        item.classList.add(
+          "active"
+        );
+
+      }
+
+      item.textContent =
+        sheetName;
+
+      item.addEventListener(
+        "click",
+        () => {
+
+          selectSheet(
+            sheetName
+          );
+
+        }
+      );
+
+      container.appendChild(
+        item
+      );
+
+    }
+  );
+
+  $("sheetCount").textContent =
+    state.sheets.length;
+
+}
 
 
-      item.innerHTML = `
+/* =========================================================
+   SELECT SHEET
+   ========================================================= */
 
-        <span class="schemaName">
-          ${escapeHtml(
-            field.name
-          )}
-        </span>
+function selectSheet(
+  sheetName
+){
 
-        <span class="schemaType">
-          ${escapeHtml(
-            field.type
-          )}
-        </span>
+  if(!state.workbook)
+    return;
 
-      `;
+  state.currentSheet =
+    sheetName;
+
+  const worksheet =
+    state.workbook.Sheets[
+      sheetName
+    ];
+
+  if(!worksheet)
+    return;
+
+  const rows =
+    XLSX.utils.sheet_to_json(
+      worksheet,
+      {
+        defval:null,
+        raw:true
+      }
+    );
+
+  state.rows =
+    rows;
+
+  state.schema =
+    buildSchema(
+      rows
+    );
+
+  state.records =
+    buildRecords(
+      rows,
+      sheetName
+    );
+
+  state.selectedRecord =
+    null;
+
+  addLog(
+    `Sheet ausgewählt: ${sheetName}`,
+    "ok"
+  );
+
+  addLog(
+    `${rows.length} Records aus "${sheetName}" erzeugt.`,
+    "ok"
+  );
+
+  addLog(
+    `${state.schema.length} technische Felder erkannt.`,
+    "info"
+  );
+
+  renderSheets();
+
+  renderTable();
+
+  renderSchema();
+
+  renderRecords();
+
+  renderSelectedRecord(
+    null
+  );
+
+  updateMetrics();
+
+  $("buildMemoryBtn").disabled =
+    state.records.length === 0;
+
+  setPipelineStage(
+    "ingestion"
+  );
+
+}
 
 
-      schemaList.appendChild(
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+function renderTable(){
+
+  const container =
+    $("tableContainer");
+
+  container.innerHTML =
+    "";
+
+  $("currentSheetLabel").textContent =
+    state.currentSheet || "—";
+
+  if(!state.rows.length){
+
+    container.innerHTML =
+      `<div class="empty">Keine Datenzeilen.</div>`;
+
+    return;
+
+  }
+
+  const fields =
+    Array.from(
+      new Set(
+        state.rows.flatMap(
+          row =>
+            Object.keys(row)
+        )
+      )
+    );
+
+  const table =
+    document.createElement(
+      "table"
+    );
+
+  const thead =
+    document.createElement(
+      "thead"
+    );
+
+  const headRow =
+    document.createElement(
+      "tr"
+    );
+
+  fields.forEach(
+    field => {
+
+      const th =
+        document.createElement(
+          "th"
+        );
+
+      th.textContent =
+        field;
+
+      headRow.appendChild(
+        th
+      );
+
+    }
+  );
+
+  thead.appendChild(
+    headRow
+  );
+
+  table.appendChild(
+    thead
+  );
+
+  const tbody =
+    document.createElement(
+      "tbody"
+    );
+
+  state.rows.forEach(
+    row => {
+
+      const tr =
+        document.createElement(
+          "tr"
+        );
+
+      fields.forEach(
+        field => {
+
+          const td =
+            document.createElement(
+              "td"
+            );
+
+          const value =
+            row[field];
+
+          td.textContent =
+            value === null ||
+            value === undefined
+              ? ""
+              : String(value);
+
+          tr.appendChild(
+            td
+          );
+
+        }
+      );
+
+      tbody.appendChild(
+        tr
+      );
+
+    }
+  );
+
+  table.appendChild(
+    tbody
+  );
+
+  container.appendChild(
+    table
+  );
+
+}
+
+
+/* =========================================================
+   SCHEMA VIEW
+   ========================================================= */
+
+function renderSchema(){
+
+  const container =
+    $("schemaContainer");
+
+  container.innerHTML =
+    "";
+
+  $("schemaCount").textContent =
+    `${state.schema.length} FIELDS`;
+
+  if(!state.schema.length){
+
+    container.innerHTML =
+      `<div class="empty">Noch kein Schema erkannt.</div>`;
+
+    return;
+
+  }
+
+  state.schema.forEach(
+    field => {
+
+      const name =
+        document.createElement(
+          "div"
+        );
+
+      name.className =
+        "schema-name";
+
+      name.textContent =
+        field.name;
+
+      const type =
+        document.createElement(
+          "div"
+        );
+
+      type.className =
+        "schema-type";
+
+      type.textContent =
+        field.type;
+
+      const row =
+        document.createElement(
+          "div"
+        );
+
+      row.className =
+        "schema-row";
+
+      row.appendChild(
+        name
+      );
+
+      row.appendChild(
+        type
+      );
+
+      container.appendChild(
+        row
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   RECORD LIST
+   ========================================================= */
+
+function renderRecords(){
+
+  const container =
+    $("recordList");
+
+  container.innerHTML =
+    "";
+
+  if(!state.records.length){
+
+    container.innerHTML =
+      `<div class="empty">Noch keine Memory Records.</div>`;
+
+    return;
+
+  }
+
+  state.records.forEach(
+    record => {
+
+      const item =
+        document.createElement(
+          "div"
+        );
+
+      item.className =
+        "record-item";
+
+      if(
+        state.selectedRecord &&
+        state.selectedRecord.memory_id ===
+        record.memory_id
+      ){
+
+        item.classList.add(
+          "active"
+        );
+
+      }
+
+      const id =
+        document.createElement(
+          "div"
+        );
+
+      id.className =
+        "record-id";
+
+      id.textContent =
+        record.memory_id;
+
+      const source =
+        document.createElement(
+          "div"
+        );
+
+      source.className =
+        "record-source";
+
+      source.textContent =
+        `${record.source.file} // ${record.source.sheet} // ROW ${record.source.row}`;
+
+      item.appendChild(
+        id
+      );
+
+      item.appendChild(
+        source
+      );
+
+      if(record.embedding){
+
+        const status =
+          document.createElement(
+            "div"
+          );
+
+        status.className =
+          "record-status";
+
+        status.textContent =
+          "● 384D EMBEDDING READY";
+
+        item.appendChild(
+          status
+        );
+
+      }else{
+
+        const status =
+          document.createElement(
+            "div"
+          );
+
+        status.className =
+          "record-status pending";
+
+        status.textContent =
+          "○ EMBEDDING PENDING";
+
+        item.appendChild(
+          status
+        );
+
+      }
+
+      item.addEventListener(
+        "click",
+        () => {
+
+          state.selectedRecord =
+            record;
+
+          renderRecords();
+
+          renderSelectedRecord(
+            record
+          );
+
+        }
+      );
+
+      container.appendChild(
         item
       );
 
@@ -2979,298 +2999,513 @@ function renderSchema(){
 }
 
 
-/* =====================================================
-   RENDER RECORDS
-===================================================== */
+/* =========================================================
+   SELECTED RECORD
+   ========================================================= */
 
-function renderRecords(){
+function renderSelectedRecord(
+  record
+){
 
-  recordList.innerHTML =
-    "";
+  const container =
+    $("selectedRecord");
 
+  if(!record){
 
-  if(
-    state.records.length === 0
-  ){
-
-    recordList.innerHTML =
-      `<div class="empty">
-        Noch keine Records.
-       </div>`;
+    container.innerHTML =
+      `<pre>Kein Record ausgewählt.</pre>`;
 
     return;
 
   }
 
-
   /*
-   * UI zeigt zunächst
-   * die ersten 100 Records.
+   * Nicht alle 384 Werte direkt darstellen.
+   * Wir zeigen die ersten 12 Dimensionen
+   * als technischen Vektor-Preview.
    */
 
-  state.records
-    .slice(0,100)
-    .forEach(
-      record => {
+  const display =
+    {
+      id:
+        record.id,
 
-        const item =
-          document.createElement(
-            "div"
-          );
+      memory_id:
+        record.memory_id,
 
-        item.className =
-          "record";
+      source:
+        record.source,
 
+      data:
+        record.data,
 
-        const keys =
-          Object.keys(
-            record.data
-          );
+      embedding_text:
+        record.embedding_text,
 
+      embedding_status:
+        record.embedding_status,
 
-        const preview =
-          {};
+      dimension:
+        record.dimension,
 
+      model:
+        record.model,
 
-        keys
-          .slice(0,5)
-          .forEach(
-            key => {
+      embedding_preview:
+        record.embedding
+          ? record.embedding
+              .slice(0,12)
+          : null,
 
-              preview[key] =
-                record.data[key];
+      embedding_values:
+        record.embedding
+          ? record.embedding.length
+          : 0,
 
-            }
-          );
+      created:
+        record.created
 
+    };
 
-        item.innerHTML = `
-
-          <div class="recordId">
-            ${escapeHtml(
-              record.memory_id
-            )}
-          </div>
-
-          <div class="recordMeta">
-            ${escapeHtml(
-              record.source.file
-            )}
-            //
-            ${escapeHtml(
-              record.source.sheet
-            )}
-            //
-            ROW
-            ${record.source.row}
-          </div>
-
-          <div class="recordJson">
-            ${escapeHtml(
-              JSON.stringify(
-                preview,
-                null,
-                2
-              )
-            )}
-          </div>
-
-        `;
-
-
-        item.onclick =
-          () => {
-
-            captureViewport();
-
-            selectRecord(
-              record
-            );
-
-            restoreViewport();
-
-          };
-
-
-        recordList.appendChild(
-          item
-        );
-
-      }
-    );
+  container.innerHTML =
+    `<pre>${escapeHtml(
+      JSON.stringify(
+        display,
+        null,
+        2
+      )
+    )}</pre>`;
 
 }
 
 
-/* =====================================================
-   SELECT RECORD
-===================================================== */
+/* =========================================================
+   METRICS
+   ========================================================= */
 
-function selectRecord(
-  record
-){
+function updateMetrics(){
+
+  $("metricSheets").textContent =
+    state.sheets.length;
+
+  $("metricRows").textContent =
+    state.rows.length;
+
+  $("metricColumns").textContent =
+    state.schema.length;
+
+  $("metricRecords").textContent =
+    state.records.length;
+
+}
+
+
+/* =========================================================
+   CLEAR IMPORT
+   ========================================================= */
+
+function clearImport(){
+
+  if(state.building)
+    return;
+
+  state.workbook =
+    null;
+
+  state.file =
+    null;
+
+  state.sheets =
+    [];
+
+  state.currentSheet =
+    null;
+
+  state.rows =
+    [];
+
+  state.records =
+    [];
+
+  state.schema =
+    [];
 
   state.selectedRecord =
-    record;
+    null;
 
+  $("fileInput").value =
+    "";
 
-  selectedRecord.textContent =
-    JSON.stringify(
-      record,
-      null,
-      2
-    );
+  $("fileInfo").innerHTML =
+    "Keine Datei geladen.";
 
+  $("sheetList").innerHTML =
+    `<div class="empty">Keine Worksheets.</div>`;
+
+  $("tableContainer").innerHTML =
+    `<div class="empty">Noch keine Daten geladen.</div>`;
+
+  $("schemaContainer").innerHTML =
+    `<div class="empty">Noch kein Schema erkannt.</div>`;
+
+  $("recordList").innerHTML =
+    `<div class="empty">Noch keine Memory Records.</div>`;
+
+  $("selectedRecord").innerHTML =
+    `<pre>Kein Record ausgewählt.</pre>`;
+
+  $("sheetCount").textContent =
+    "0";
+
+  $("schemaCount").textContent =
+    "0 FIELDS";
+
+  $("currentSheetLabel").textContent =
+    "—";
+
+  $("buildMemoryBtn").disabled =
+    true;
+
+  $("progressBar").style.width =
+    "0%";
+
+  $("buildCount").textContent =
+    "0 / 0";
+
+  $("buildStage").textContent =
+    "READY";
+
+  $("systemStatus").textContent =
+    "ONLINE";
+
+  updateMetrics();
+
+  setPipelineStage(
+    "ingestion"
+  );
 
   addLog(
-    `${record.memory_id} ausgewählt.`,
-    "info"
+    "Importdaten vollständig entfernt.",
+    "ok"
   );
 
 }
 
 
-/* =====================================================
-   METRICS
-===================================================== */
+/* =========================================================
+   CLEAR MEMORY
+   ========================================================= */
 
-function updateMetrics(){
+async function clearMemory(){
 
-  rowCount.textContent =
-    state.records.length;
+  if(state.building)
+    return;
 
+  const confirmed =
+    confirm(
+      "Alle NEURAL MEMORY Records aus IndexedDB löschen?"
+    );
 
-  recordCount.textContent =
-    state.records.length;
+  if(!confirmed)
+    return;
 
+  try{
 
-  columnCount.textContent =
-    state.schema.length;
+    await clearMemoryDB();
 
+    const count =
+      await getMemoryCount();
 
-  sheetCount.textContent =
-    state.sheets.length;
+    $("storedCount").textContent =
+      `${count} STORED`;
+
+    addLog(
+      "IndexedDB Memory Store geleert.",
+      "ok"
+    );
+
+  }catch(error){
+
+    addLog(
+      `Memory Store konnte nicht gelöscht werden: ${error.message}`,
+      "error"
+    );
+
+  }
 
 }
 
 
-/* =====================================================
-   CLEAR
-===================================================== */
+/* =========================================================
+   EXPORT MEMORY
+   ========================================================= */
 
-clearDataBtn.addEventListener(
-  "click",
+async function exportMemory(){
+
+  try{
+
+    const records =
+      await getAllMemories();
+
+    const payload = {
+
+      format:
+        "NEURAL_MEMORY_EXPORT",
+
+      version:
+        1,
+
+      model:
+        MODEL,
+
+      dimension:
+        EMBEDDING_DIM,
+
+      exported:
+        new Date().toISOString(),
+
+      count:
+        records.length,
+
+      memories:
+        records
+
+    };
+
+    const blob =
+      new Blob(
+        [
+          JSON.stringify(
+            payload,
+            null,
+            2
+          )
+        ],
+        {
+          type:"application/json"
+        }
+      );
+
+    const url =
+      URL.createObjectURL(
+        blob
+      );
+
+    const link =
+      document.createElement(
+        "a"
+      );
+
+    link.href =
+      url;
+
+    link.download =
+      `neural-memory-${new Date()
+        .toISOString()
+        .replace(/[:.]/g,"-")}.json`;
+
+    document.body.appendChild(
+      link
+    );
+
+    link.click();
+
+    link.remove();
+
+    URL.revokeObjectURL(
+      url
+    );
+
+    addLog(
+      `${records.length} Memory Records exportiert.`,
+      "ok"
+    );
+
+  }catch(error){
+
+    addLog(
+      `Exportfehler: ${error.message}`,
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   DROPZONE
+   ========================================================= */
+
+const dropzone =
+  $("dropzone");
+
+dropzone.addEventListener(
+  "dragover",
+  event => {
+
+    event.preventDefault();
+
+    dropzone.classList.add(
+      "dragover"
+    );
+
+  }
+);
+
+dropzone.addEventListener(
+  "dragleave",
   () => {
 
-    captureViewport();
+    dropzone.classList.remove(
+      "dragover"
+    );
 
-    clearImportedData();
+  }
+);
 
-    restoreViewport();
+dropzone.addEventListener(
+  "drop",
+  event => {
+
+    event.preventDefault();
+
+    dropzone.classList.remove(
+      "dragover"
+    );
+
+    const file =
+      event.dataTransfer.files[0];
+
+    if(file){
+
+      processFile(
+        file
+      );
+
+    }
 
   }
 );
 
 
-function clearImportedData(){
+/* =========================================================
+   EVENTS
+   ========================================================= */
 
-  state.workbook = null;
+$("fileInput")
+  .addEventListener(
+    "change",
+    event => {
 
-  state.file = null;
+      const file =
+        event.target.files[0];
 
-  state.sheets = [];
+      if(file){
 
-  state.currentSheet = null;
+        processFile(
+          file
+        );
 
-  state.rows = [];
+      }
 
-  state.records = [];
-
-  state.schema = [];
-
-  state.selectedRecord = null;
-
-
-  fileInfo.classList.remove(
-    "show"
+    }
   );
 
 
-  fileInput.value =
-    "";
+$("clearImportBtn")
+  .addEventListener(
+    "click",
+    clearImport
+  );
 
 
-  sheetList.innerHTML =
-    `<div class="empty">
-      Noch keine Datei importiert.
-     </div>`;
+$("buildMemoryBtn")
+  .addEventListener(
+    "click",
+    buildMemory
+  );
 
 
-  tableWrap.innerHTML =
-    `<div
-      class="empty"
-      style="padding:20px">
-      Noch keine Tabelle geladen.
-     </div>`;
+$("clearMemoryBtn")
+  .addEventListener(
+    "click",
+    clearMemory
+  );
 
 
-  schemaList.innerHTML =
-    `<div class="empty">
-      Schema wird nach dem Import erzeugt.
-     </div>`;
+$("exportMemoryBtn")
+  .addEventListener(
+    "click",
+    exportMemory
+  );
 
 
-  recordList.innerHTML =
-    `<div class="empty">
-      Noch keine Records.
-     </div>`;
+/* =========================================================
+   INITIAL BOOT
+   ========================================================= */
 
-
-  selectedRecord.textContent =
-    "Kein Record ausgewählt.";
-
-
-  updateMetrics();
-
-  setOffline();
-
+async function boot(){
 
   addLog(
-    "Importdaten vollständig entfernt.",
-    "warn"
+    "NEURAL MEMORY Data Ingestion gestartet.",
+    "ok"
   );
+
+  addLog(
+    "UI bereit.",
+    "info"
+  );
+
+  addLog(
+    "Warte auf XLSX / XLS / CSV.",
+    "info"
+  );
+
+  addLog(
+    "Originaldaten werden unverändert übernommen.",
+    "info"
+  );
+
+  addLog(
+    "Keine semantische Interpretation aktiv.",
+    "info"
+  );
+
+  try{
+
+    const count =
+      await getMemoryCount();
+
+    $("storedCount").textContent =
+      `${count} STORED`;
+
+    if(count > 0){
+
+      addLog(
+        `${count} bestehende Memory Records in IndexedDB gefunden.`,
+        "ok"
+      );
+
+    }
+
+  }catch(error){
+
+    addLog(
+      `IndexedDB nicht verfügbar: ${error.message}`,
+      "error"
+    );
+
+  }
 
 }
 
 
-/* =====================================================
-   INITIAL BOOT
-===================================================== */
+/* =========================================================
+   START
+   ========================================================= */
 
-addLog(
-  "NEURAL MEMORY Data Ingestion gestartet.",
-  "ok"
-);
-
-addLog(
-  "UI bereit.",
-  "ok"
-);
-
-addLog(
-  "Warte auf XLSX / XLS / CSV.",
-  "info"
-);
-
-addLog(
-  "Originaldaten werden unverändert übernommen.",
-  "info"
-);
-
-addLog(
-  "Keine semantische Interpretation aktiv.",
-  "info"
-);
+boot();
 
 </script>
 
