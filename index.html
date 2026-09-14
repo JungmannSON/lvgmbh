@@ -2,204 +2,2198 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>NEURAL MEMORY — CYBERPULSE v3.0</title>
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
-<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.tailwindcss.com"></script>
+<title>NEURAL MEMORY — Semantic Memory Space</title>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
+:root{
+  --bg:#020308;
+  --panel:#070b12;
+  --panel2:#0b111b;
+  --line:#182532;
+  --cyan:#00f5ff;
+  --green:#4ade80;
+  --pink:#ff2bd6;
+  --yellow:#ffe66d;
+  --text:#e7faff;
+  --muted:#718796;
+  --danger:#ff5370;
+}
 
-  :root {
-    --neon-cyan: #00f5ff;
-    --neon-purple: #ff2d9b;
-    --neon-pink: #ff2d9b;
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:var(--bg);
+  color:var(--text);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+button,
+input,
+textarea,
+select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+#app{
+  width:100%;
+  height:100%;
+  display:grid;
+  grid-template-rows:62px 1fr;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+  border-bottom:1px solid var(--line);
+  background:
+    linear-gradient(90deg,
+      rgba(0,245,255,.06),
+      transparent 35%,
+      rgba(255,43,214,.04));
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.logo{
+  width:34px;
+  height:34px;
+  border:1px solid var(--cyan);
+  display:grid;
+  place-items:center;
+  color:var(--cyan);
+  font-weight:900;
+  box-shadow:0 0 18px rgba(0,245,255,.2);
+}
+
+.brand-title{
+  font-weight:800;
+  letter-spacing:.12em;
+  font-size:14px;
+}
+
+.brand-sub{
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:.16em;
+  margin-top:2px;
+}
+
+.system-status{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:10px;
+  color:var(--green);
+  letter-spacing:.12em;
+}
+
+.status-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 12px var(--green);
+}
+
+/* =========================================================
+   MAIN LAYOUT
+========================================================= */
+
+main{
+  min-height:0;
+  display:grid;
+  grid-template-columns:310px minmax(0,1fr) 310px;
+}
+
+/* =========================================================
+   PANELS
+========================================================= */
+
+.panel{
+  min-width:0;
+  min-height:0;
+  background:var(--panel);
+  border-right:1px solid var(--line);
+  display:flex;
+  flex-direction:column;
+}
+
+.panel.right{
+  border-right:0;
+  border-left:1px solid var(--line);
+}
+
+.panel-header{
+  height:46px;
+  min-height:46px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 14px;
+  border-bottom:1px solid var(--line);
+}
+
+.panel-title{
+  font-size:10px;
+  letter-spacing:.16em;
+  color:var(--cyan);
+  font-weight:800;
+}
+
+.panel-content{
+  padding:14px;
+  overflow:auto;
+}
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+label{
+  display:block;
+  font-size:9px;
+  color:var(--muted);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin:0 0 6px;
+}
+
+.field{
+  margin-bottom:12px;
+}
+
+input,
+textarea,
+select{
+  width:100%;
+  color:var(--text);
+  background:#03070c;
+  border:1px solid #20313d;
+  outline:none;
+  border-radius:3px;
+  padding:10px;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 1px rgba(0,245,255,.12);
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+  line-height:1.45;
+}
+
+button{
+  border:1px solid #23404c;
+  background:#07131a;
+  color:var(--text);
+  padding:10px 12px;
+  border-radius:3px;
+  transition:.15s ease;
+}
+
+button:hover{
+  border-color:var(--cyan);
+  color:var(--cyan);
+  background:#07191f;
+}
+
+button.primary{
+  width:100%;
+  color:#001113;
+  background:var(--cyan);
+  border-color:var(--cyan);
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+button.primary:hover{
+  box-shadow:0 0 22px rgba(0,245,255,.25);
+}
+
+button.danger{
+  color:var(--danger);
+  border-color:rgba(255,83,112,.35);
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+/* =========================================================
+   MEMORY TYPE
+========================================================= */
+
+.type-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+}
+
+.type-btn{
+  font-size:10px;
+  padding:8px;
+  color:var(--muted);
+}
+
+.type-btn.active{
+  color:var(--cyan);
+  border-color:var(--cyan);
+  background:rgba(0,245,255,.07);
+}
+
+/* =========================================================
+   CENTER / 3D
+========================================================= */
+
+#space{
+  position:relative;
+  min-width:0;
+  min-height:0;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 45%,
+      rgba(0,245,255,.07),
+      transparent 32%),
+    radial-gradient(circle at 70% 20%,
+      rgba(255,43,214,.04),
+      transparent 25%),
+    #02050a;
+}
+
+#space canvas{
+  display:block;
+}
+
+.space-top{
+  position:absolute;
+  z-index:5;
+  left:18px;
+  top:16px;
+  pointer-events:none;
+}
+
+.space-title{
+  font-size:11px;
+  letter-spacing:.2em;
+  color:var(--cyan);
+  font-weight:900;
+}
+
+.space-meta{
+  margin-top:4px;
+  font-size:9px;
+  color:var(--muted);
+}
+
+.legend{
+  position:absolute;
+  z-index:5;
+  left:18px;
+  bottom:18px;
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  pointer-events:none;
+}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  font-size:9px;
+  color:var(--muted);
+}
+
+.legend-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+}
+
+.help{
+  position:absolute;
+  z-index:5;
+  right:18px;
+  bottom:18px;
+  font-size:9px;
+  color:#506674;
+  text-align:right;
+  pointer-events:none;
+}
+
+.axis-label{
+  position:absolute;
+  z-index:5;
+  color:#284653;
+  font-size:8px;
+  letter-spacing:.12em;
+  pointer-events:none;
+}
+
+/* =========================================================
+   RIGHT SEARCH
+========================================================= */
+
+.search-box{
+  position:relative;
+  margin-bottom:12px;
+}
+
+.search-box input{
+  padding-right:36px;
+}
+
+.search-icon{
+  position:absolute;
+  right:11px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--cyan);
+  font-size:13px;
+}
+
+.results{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.result{
+  border:1px solid #182932;
+  background:#050a10;
+  padding:10px;
+  cursor:pointer;
+}
+
+.result:hover,
+.result.selected{
+  border-color:var(--cyan);
+  background:rgba(0,245,255,.045);
+}
+
+.result-head{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.result-name{
+  font-size:11px;
+  font-weight:800;
+}
+
+.result-score{
+  color:var(--green);
+  font-size:9px;
+}
+
+.result-type{
+  color:var(--muted);
+  font-size:8px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  margin-top:3px;
+}
+
+.result-description{
+  color:#8399a5;
+  font-size:9px;
+  line-height:1.4;
+  margin-top:7px;
+}
+
+/* =========================================================
+   INSPECTOR
+========================================================= */
+
+.inspector{
+  margin-top:16px;
+  border-top:1px solid var(--line);
+  padding-top:14px;
+}
+
+.inspector-empty{
+  color:#506674;
+  font-size:10px;
+  line-height:1.5;
+}
+
+.inspector-id{
+  color:var(--cyan);
+  font-size:9px;
+  letter-spacing:.12em;
+}
+
+.inspector-name{
+  font-size:19px;
+  font-weight:900;
+  margin-top:4px;
+}
+
+.inspector-type{
+  color:var(--pink);
+  font-size:9px;
+  letter-spacing:.12em;
+  margin-top:4px;
+}
+
+.inspector-description{
+  color:#91a5b0;
+  font-size:10px;
+  line-height:1.55;
+  margin-top:12px;
+}
+
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:12px;
+}
+
+.tag{
+  padding:4px 6px;
+  border:1px solid #20343d;
+  color:#7e9aa5;
+  font-size:8px;
+}
+
+.relations{
+  margin-top:14px;
+}
+
+.relation{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:8px;
+  padding:7px 0;
+  border-bottom:1px solid #111d25;
+}
+
+.relation-type{
+  color:var(--pink);
+  font-size:8px;
+  text-transform:uppercase;
+}
+
+.relation-target{
+  color:#a9bac2;
+  font-size:9px;
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  margin-top:16px;
+}
+
+.stat{
+  background:#050a10;
+  border:1px solid #172630;
+  padding:9px;
+}
+
+.stat-label{
+  color:#526a76;
+  font-size:8px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+}
+
+.stat-value{
+  color:var(--cyan);
+  font-size:17px;
+  font-weight:900;
+  margin-top:3px;
+}
+
+/* =========================================================
+   LOG
+========================================================= */
+
+.log{
+  margin-top:16px;
+  border-top:1px solid var(--line);
+  padding-top:12px;
+}
+
+.log-line{
+  font-family:monospace;
+  font-size:8px;
+  color:#55707c;
+  padding:3px 0;
+}
+
+.log-line span{
+  color:var(--green);
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:900px){
+  body{
+    overflow:auto;
   }
 
-  body {
-    background: radial-gradient(circle at center, #0a0a0f 0%, #000000 80%);
-    font-family: 'Space Grotesk', sans-serif;
+  #app{
+    height:auto;
+    min-height:100%;
+    grid-template-rows:62px auto;
   }
 
-  .header {
-    background: linear-gradient(90deg, #0f0f1a, #1a1a2e);
-    box-shadow: 0 0 40px rgba(0, 245, 255, 0.6);
+  main{
+    grid-template-columns:1fr;
   }
 
-  .panel {
-    background: rgba(10, 10, 20, 0.85);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(0, 245, 255, 0.3);
-    box-shadow: 0 0 30px rgba(0, 245, 255, 0.2);
+  .panel{
+    min-height:420px;
+    border-right:0;
+    border-bottom:1px solid var(--line);
   }
 
-  .flow-item {
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  .panel.right{
+    border-left:0;
   }
 
-  .flow-item:hover {
-    transform: scale(1.08) rotate(2deg);
-    box-shadow: 0 0 40px #00f5ff;
+  #space{
+    height:600px;
+    order:-1;
   }
-
-  .progress-bar {
-    background: linear-gradient(90deg, #00f5ff, #ff2d9b);
-    box-shadow: 0 0 25px #00f5ff;
-  }
-
-  .result {
-    background: rgba(15, 15, 35, 0.9);
-    border: 2px solid #00f5ff;
-    box-shadow: 0 0 25px rgba(0, 245, 255, 0.4);
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-  }
-
-  .result:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 0 50px #00f5ff;
-  }
-
-  .memory-view {
-    background: #0a0a1a;
-    border-left: 4px solid #00f5ff;
-    box-shadow: inset 0 0 20px rgba(0, 245, 255, 0.3);
-  }
-
-  .neon-text {
-    text-shadow: 0 0 15px #00f5ff;
-  }
-
-  button {
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-  }
-
-  button:hover {
-    box-shadow: 0 0 30px #ff2d9b;
-    transform: translateY(-3px);
-  }
-
-  .glow-cyan {
-    box-shadow: 0 0 25px #00f5ff;
-  }
+}
 </style>
 </head>
 
-<body class="text-white">
+<body>
 
-<header class="header border-b border-[#00f5ff]/30 py-6">
-  <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+<div id="app">
+
+<header>
+  <div class="brand">
+    <div class="logo">N</div>
     <div>
-      <div class="flex items-center gap-4">
-        <div class="w-11 h-11 bg-gradient-to-br from-cyan-400 to-pink-500 rounded-2xl flex items-center justify-center text-3xl neon-text">🌐</div>
-        <div>
-          <div class="text-4xl font-bold tracking-tighter neon-text">NEURAL MEMORY</div>
-          <div class="text-[#00f5ff] text-xs tracking-[6px] font-mono">CYBERPULSE v3.0 — BAD URACH</div>
-        </div>
-      </div>
+      <div class="brand-title">NEURAL MEMORY</div>
+      <div class="brand-sub">SEMANTIC MEMORY SPACE</div>
     </div>
-    <div class="flex items-center gap-8 text-sm">
-      <div id="recordCount" class="flex items-center gap-3">
-        <span class="text-[#00f5ff] text-xl font-bold">0</span>
-        <span class="text-[#71829a]">RECORDS</span>
-      </div>
-      <div class="h-8 w-px bg-[#17263c]"></div>
-      <button onclick="resetDatabase()" class="px-6 py-3 text-xs font-medium tracking-widest border border-[#ff2d9b]/50 hover:border-[#ff2d9b] rounded-3xl transition-all">CLEAR MATRIX</button>
-    </div>
+  </div>
+
+  <div class="system-status">
+    <span class="status-dot"></span>
+    LOCAL MEMORY ONLINE
   </div>
 </header>
 
-<main class="max-w-7xl mx-auto px-6 py-10">
 
-  <!-- FLOW -->
-  <div class="panel p-8 mb-12">
-    <div class="flex items-center gap-4 mb-8">
-      <div class="w-8 h-8 bg-[#00f5ff] text-black font-bold rounded-2xl flex items-center justify-center text-xl">01</div>
-      <div class="text-2xl font-semibold tracking-tight">CYBER FLOW</div>
-    </div>
-    <div class="grid grid-cols-5 gap-4">
-      <div class="flow-item panel p-6 text-center border-2 border-[#00f5ff]/40 hover:border-[#00f5ff] rounded-3xl">
-        <div class="text-[#00f5ff] text-xs mb-1">RAW DATA</div>
-        <div class="text-4xl font-bold">📦</div>
-      </div>
-      <div class="flow-item panel p-6 text-center border-2 border-[#ff2d9b]/40 hover:border-[#ff2d9b] rounded-3xl">
-        <div class="text-[#ff2d9b] text-xs mb-1">MEMORY TEXT</div>
-        <div class="text-4xl font-bold">🧠</div>
-      </div>
-      <div class="flow-item panel p-6 text-center border-2 border-[#00f5ff]/40 hover:border-[#00f5ff] rounded-3xl">
-        <div class="text-[#00f5ff] text-xs mb-1">EMBEDDING</div>
-        <div class="text-4xl font-bold">⚡</div>
-      </div>
-      <div class="flow-item panel p-6 text-center border-2 border-[#ff2d9b]/40 hover:border-[#ff2d9b] rounded-3xl">
-        <div class="text-[#ff2d9b] text-xs mb-1">INDEXED DB</div>
-        <div class="text-4xl font-bold">🗄️</div>
-      </div>
-      <div class="flow-item panel p-6 text-center border-2 border-[#00f5ff]/40 hover:border-[#00f5ff] rounded-3xl">
-        <div class="text-[#00f5ff] text-xs mb-1">RETRIEVAL</div>
-        <div class="text-4xl font-bold">🌐</div>
-      </div>
+<main>
+
+<!-- =====================================================
+     LEFT
+===================================================== -->
+
+<section class="panel">
+
+  <div class="panel-header">
+    <div class="panel-title">MEMORY INPUT</div>
+    <div id="pipelineState"
+         style="font-size:8px;color:#506674">
+      READY
     </div>
   </div>
 
-  <!-- IMPORT -->
-  <div class="panel p-10 mb-12">
-    <div class="flex justify-between items-end mb-8">
-      <div>
-        <div class="text-3xl font-bold tracking-tighter">01 • MATRIX INGESTION</div>
-        <div class="text-[#71829a]">EXCEL + CSV • 2023–2026</div>
+  <div class="panel-content">
+
+    <form id="memoryForm">
+
+      <div class="field">
+        <label for="memoryName">Name</label>
+        <input id="memoryName"
+               placeholder="z.B. AETHER"
+               required>
       </div>
-      <button id="importButton" class="px-10 py-6 text-lg font-semibold bg-gradient-to-r from-[#00f5ff] to-[#ff2d9b] text-black rounded-3xl shadow-2xl shadow-[#00f5ff]/50 hover:shadow-[#ff2d9b]/50 transition-all glow-cyan">
-        INGEST + EMBED
-      </button>
-    </div>
 
-    <div class="file-box border-2 border-dashed border-[#00f5ff]/50 hover:border-[#00f5ff] rounded-3xl p-8 text-center transition-all">
-      <input id="fileInput" type="file" multiple accept=".xlsx,.xls,.csv" class="hidden">
-      <div class="flex flex-col items-center gap-4 cursor-pointer" onclick="document.getElementById('fileInput').click()">
-        <div class="text-6xl">📤</div>
-        <div class="text-xl">Drag here or click to upload</div>
-        <div class="text-[#71829a] text-sm">Mai23 • Sep26 • Schaltungsliste-4</div>
-      </div>
-    </div>
-  </div>
+      <div class="field">
+        <label>Typ</label>
 
-  <!-- STATUS + RETRIEVAL -->
-  <div class="grid grid-cols-12 gap-8">
+        <div class="type-grid">
 
-    <!-- Left Column: Status -->
-    <div class="col-span-12 md:col-span-5 space-y-8">
-      <!-- Dein originaler Status Grid + Model + System -->
-      <!-- ... (ich habe ihn in neon-optimiert) ... -->
-    </div>
+          <button type="button"
+                  class="type-btn active"
+                  data-type="concept">
+            CONCEPT
+          </button>
 
-    <!-- Right Column: Query -->
-    <div class="col-span-12 md:col-span-7">
-      <div class="panel p-8">
-        <div class="text-[#00f5ff] text-sm mb-2">03 • NEURAL QUERY</div>
-        <input id="query" placeholder="VVL mit iPhone in Bad Urach..." class="w-full bg-black/70 border border-[#00f5ff]/30 focus:border-[#00f5ff] rounded-3xl px-8 py-7 text-xl outline-none">
-        <div class="flex gap-4 mt-6">
-          <select id="topK" class="flex-1 bg-black/70 border border-[#00f5ff]/30 rounded-3xl px-6 py-4">
-            <option>TOP 5</option>
-            <option>TOP 10</option>
-            <option>TOP 20</option>
-          </select>
-          <button id="retrieveButton" class="px-12 bg-[#00f5ff] text-black font-bold rounded-3xl">RETRIEVE</button>
+          <button type="button"
+                  class="type-btn"
+                  data-type="system">
+            SYSTEM
+          </button>
+
+          <button type="button"
+                  class="type-btn"
+                  data-type="person">
+            PERSON
+          </button>
+
+          <button type="button"
+                  class="type-btn"
+                  data-type="project">
+            PROJECT
+          </button>
+
+          <button type="button"
+                  class="type-btn"
+                  data-type="technology">
+            TECHNOLOGY
+          </button>
+
+          <button type="button"
+                  class="type-btn"
+                  data-type="other">
+            OTHER
+          </button>
+
         </div>
       </div>
+
+      <div class="field">
+        <label for="memoryDescription">
+          Beschreibung
+        </label>
+
+        <textarea id="memoryDescription"
+          placeholder="Was ist dieses Objekt? Welche Bedeutung hat es?"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="memoryTags">
+          Tags
+        </label>
+
+        <input id="memoryTags"
+          placeholder="AI, Architektur, LLM">
+      </div>
+
+      <button class="primary"
+              type="submit">
+        + MEMORY OBJECT ERZEUGEN
+      </button>
+
+    </form>
+
+
+    <div class="stats">
+
+      <div class="stat">
+        <div class="stat-label">Objects</div>
+        <div class="stat-value"
+             id="objectCount">
+          0
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">Relations</div>
+        <div class="stat-value"
+             id="relationCount">
+          0
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">Dimensions</div>
+        <div class="stat-value">
+          384D
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">View</div>
+        <div class="stat-value">
+          3D
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="log">
+
+      <div class="log-line">
+        <span>01</span> MEMORY ENGINE INITIALIZED
+      </div>
+
+      <div class="log-line">
+        <span>02</span> VECTOR SPACE READY
+      </div>
+
+      <div class="log-line">
+        <span>03</span> GRAPH LAYER READY
+      </div>
+
+      <div class="log-line">
+        <span>04</span> 3D SPACE READY
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     3D SPACE
+===================================================== -->
+
+<section id="space">
+
+  <div class="space-top">
+    <div class="space-title">
+      SEMANTIC SPACE
+    </div>
+
+    <div class="space-meta"
+         id="spaceMeta">
+      0 MEMORY OBJECTS · 384D → 3D
     </div>
   </div>
 
-  <!-- Results -->
-  <div id="results" class="mt-12"></div>
+  <div class="legend">
+
+    <div class="legend-item">
+      <span class="legend-dot"
+            style="background:#00f5ff"></span>
+      CONCEPT
+    </div>
+
+    <div class="legend-item">
+      <span class="legend-dot"
+            style="background:#ff2bd6"></span>
+      SYSTEM
+    </div>
+
+    <div class="legend-item">
+      <span class="legend-dot"
+            style="background:#4ade80"></span>
+      PROJECT
+    </div>
+
+    <div class="legend-item">
+      <span class="legend-dot"
+            style="background:#ffe66d"></span>
+      TECHNOLOGY
+    </div>
+
+  </div>
+
+  <div class="help">
+    DRAG = ROTATE<br>
+    SCROLL = ZOOM<br>
+    CLICK = INSPECT
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     RIGHT
+===================================================== -->
+
+<section class="panel right">
+
+  <div class="panel-header">
+    <div class="panel-title">MEMORY EXPLORER</div>
+  </div>
+
+  <div class="panel-content">
+
+    <div class="search-box">
+
+      <input id="searchInput"
+             placeholder="Semantisch suchen...">
+
+      <div class="search-icon">⌕</div>
+
+    </div>
+
+    <div style="
+      display:flex;
+      gap:5px;
+      margin-bottom:12px;
+    ">
+
+      <button id="showAll"
+              type="button"
+              style="flex:1;font-size:9px">
+        ALLE
+      </button>
+
+      <button id="clearSearch"
+              type="button"
+              style="flex:1;font-size:9px">
+        RESET
+      </button>
+
+    </div>
+
+
+    <div class="results"
+         id="results">
+
+      <div class="inspector-empty">
+        Noch keine Memory Objects vorhanden.
+        <br><br>
+        Lege links dein erstes Objekt an.
+      </div>
+
+    </div>
+
+
+    <div class="inspector"
+         id="inspector">
+
+      <div class="inspector-empty">
+        Klicke einen Node im semantischen Raum
+        oder einen Treffer an.
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
 
 </main>
+</div>
+
 
 <script>
-// ... (dein kompletter Script mit den Cyberpunk-Styles eingebaut)
-// Ich habe ihn hier nicht doppelt eingefügt, damit die Antwort nicht zu riesig wird.
-// Der Script-Teil ist exakt wie in der letzten Version, nur mit Tailwind + Neon-Klassen versehen.
 
-console.log('%c🚀 NEURAL MEMORY CYBERPULSE v3.0 LOADED — BE ENLIGHTENED', 'color:#00f5ff; font-size:13px;');
+/* =========================================================
+   NEURAL MEMORY ENGINE
+========================================================= */
+
+const memory = [];
+
+let selectedType = "concept";
+let selectedMemoryId = null;
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const form =
+  document.getElementById("memoryForm");
+
+const nameInput =
+  document.getElementById("memoryName");
+
+const descriptionInput =
+  document.getElementById("memoryDescription");
+
+const tagsInput =
+  document.getElementById("memoryTags");
+
+const results =
+  document.getElementById("results");
+
+const inspector =
+  document.getElementById("inspector");
+
+const objectCount =
+  document.getElementById("objectCount");
+
+const relationCount =
+  document.getElementById("relationCount");
+
+const spaceMeta =
+  document.getElementById("spaceMeta");
+
+const searchInput =
+  document.getElementById("searchInput");
+
+const pipelineState =
+  document.getElementById("pipelineState");
+
+
+/* =========================================================
+   TYPE COLORS
+========================================================= */
+
+const TYPE_COLORS = {
+
+  concept: 0x00f5ff,
+
+  system: 0xff2bd6,
+
+  person: 0x4ade80,
+
+  project: 0x4ade80,
+
+  technology: 0xffe66d,
+
+  other: 0xffffff
+
+};
+
+
+/* =========================================================
+   TYPE BUTTONS
+========================================================= */
+
+document
+  .querySelectorAll(".type-btn")
+  .forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      document
+        .querySelectorAll(".type-btn")
+        .forEach(b =>
+          b.classList.remove("active")
+        );
+
+      button.classList.add("active");
+
+      selectedType =
+        button.dataset.type;
+
+    });
+
+  });
+
+
+/* =========================================================
+   THREE.JS
+========================================================= */
+
+const container =
+  document.getElementById("space");
+
+const scene =
+  new THREE.Scene();
+
+scene.background =
+  new THREE.Color(0x02050a);
+
+
+/* CAMERA */
+
+const camera =
+  new THREE.PerspectiveCamera(
+    55,
+    container.clientWidth /
+    container.clientHeight,
+    0.1,
+    2000
+  );
+
+camera.position.set(
+  0,
+  0,
+  18
+);
+
+
+/* RENDERER */
+
+const renderer =
+  new THREE.WebGLRenderer({
+    antialias:true,
+    alpha:true
+  });
+
+renderer.setPixelRatio(
+  Math.min(window.devicePixelRatio,2)
+);
+
+renderer.setSize(
+  container.clientWidth,
+  container.clientHeight
+);
+
+container.appendChild(
+  renderer.domElement
+);
+
+
+/* CONTROLS */
+
+const controls =
+  new THREE.OrbitControls(
+    camera,
+    renderer.domElement
+  );
+
+controls.enableDamping = true;
+controls.dampingFactor = .07;
+controls.minDistance = 5;
+controls.maxDistance = 60;
+
+
+/* =========================================================
+   LIGHT
+========================================================= */
+
+scene.add(
+  new THREE.AmbientLight(
+    0xffffff,
+    .7
+  )
+);
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+const grid =
+  new THREE.GridHelper(
+    20,
+    20,
+    0x17323c,
+    0x0a1820
+  );
+
+grid.rotation.x =
+  Math.PI / 2;
+
+grid.position.z = -4;
+
+grid.material.opacity = .25;
+grid.material.transparent = true;
+
+scene.add(grid);
+
+
+/* =========================================================
+   AXES
+========================================================= */
+
+function axisLine(
+  start,
+  end,
+  color
+){
+
+  const geometry =
+    new THREE.BufferGeometry()
+      .setFromPoints([
+        start,
+        end
+      ]);
+
+  const material =
+    new THREE.LineBasicMaterial({
+      color,
+      transparent:true,
+      opacity:.28
+    });
+
+  return new THREE.Line(
+    geometry,
+    material
+  );
+}
+
+scene.add(
+  axisLine(
+    new THREE.Vector3(-9,0,0),
+    new THREE.Vector3(9,0,0),
+    0x00f5ff
+  )
+);
+
+scene.add(
+  axisLine(
+    new THREE.Vector3(0,-9,0),
+    new THREE.Vector3(0,9,0),
+    0xff2bd6
+  )
+);
+
+scene.add(
+  axisLine(
+    new THREE.Vector3(0,0,-9),
+    new THREE.Vector3(0,0,9),
+    0x4ade80
+  )
+);
+
+
+/* =========================================================
+   MEMORY GROUPS
+========================================================= */
+
+const nodeGroup =
+  new THREE.Group();
+
+const edgeGroup =
+  new THREE.Group();
+
+scene.add(edgeGroup);
+scene.add(nodeGroup);
+
+
+/* =========================================================
+   RAYCASTING
+========================================================= */
+
+const raycaster =
+  new THREE.Raycaster();
+
+const pointer =
+  new THREE.Vector2();
+
+renderer.domElement.addEventListener(
+  "pointerdown",
+  event => {
+
+    const rect =
+      renderer.domElement
+        .getBoundingClientRect();
+
+    pointer.x =
+      ((event.clientX - rect.left)
+       / rect.width) * 2 - 1;
+
+    pointer.y =
+      -((event.clientY - rect.top)
+       / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(
+      pointer,
+      camera
+    );
+
+    const hits =
+      raycaster.intersectObjects(
+        nodeGroup.children,
+        true
+      );
+
+    if(!hits.length)
+      return;
+
+    const object =
+      hits[0].object;
+
+    if(!object.userData.memoryId)
+      return;
+
+    selectMemory(
+      object.userData.memoryId
+    );
+
+  }
+);
+
+
+/* =========================================================
+   CREATE MEMORY
+========================================================= */
+
+form.addEventListener(
+  "submit",
+  event => {
+
+    event.preventDefault();
+
+    const name =
+      nameInput.value.trim();
+
+    const description =
+      descriptionInput.value.trim();
+
+    const tags =
+      tagsInput.value
+        .split(",")
+        .map(x => x.trim())
+        .filter(Boolean);
+
+    if(!name)
+      return;
+
+    pipelineState.textContent =
+      "STRUCTURING";
+
+    const object = {
+
+      id:
+        "MEM-" +
+        String(memory.length + 1)
+          .padStart(4,"0"),
+
+      type:
+        selectedType,
+
+      label:
+        name,
+
+      description:
+        description,
+
+      tags:
+        tags,
+
+      relations: [],
+
+      vector:
+        createDeterministicVector(
+          name +
+          " " +
+          description +
+          " " +
+          tags.join(" ")
+        ),
+
+      createdAt:
+        new Date().toISOString()
+
+    };
+
+    memory.push(object);
+
+    pipelineState.textContent =
+      "VECTOR READY";
+
+    form.reset();
+
+    selectedType =
+      "concept";
+
+    document
+      .querySelectorAll(".type-btn")
+      .forEach(b =>
+        b.classList.remove("active")
+      );
+
+    document
+      .querySelector('[data-type="concept"]')
+      .classList.add("active");
+
+    rebuildSpace();
+
+    updateUI();
+
+    selectMemory(object.id);
+
+    pipelineState.textContent =
+      "READY";
+
+  }
+);
+
+
+/* =========================================================
+   DETERMINISTIC VECTOR
+   ---------------------------------------------------------
+   Demo embedding layer.
+
+   IMPORTANT:
+   This is deliberately deterministic.
+   It does NOT pretend that a hash is a semantic
+   embedding model.
+
+   The architecture leaves the vector layer replaceable
+   by a real embedding model such as multilingual-e5.
+========================================================= */
+
+function createDeterministicVector(text){
+
+  const DIM = 384;
+
+  const vector =
+    new Float32Array(DIM);
+
+  let seed = 2166136261;
+
+  for(let i=0;i<text.length;i++){
+
+    seed ^= text.charCodeAt(i);
+
+    seed +=
+      (seed << 1) +
+      (seed << 4) +
+      (seed << 7) +
+      (seed << 8) +
+      (seed << 24);
+
+    seed >>>= 0;
+  }
+
+  for(let i=0;i<DIM;i++){
+
+    seed += 0x6D2B79F5;
+
+    let t = seed;
+
+    t = Math.imul(
+      t ^ t >>> 15,
+      t | 1
+    );
+
+    t ^= t +
+      Math.imul(
+        t ^ t >>> 7,
+        t | 61
+      );
+
+    const r =
+      ((t ^ t >>> 14) >>> 0)
+      / 4294967296;
+
+    vector[i] =
+      r * 2 - 1;
+  }
+
+  normalize(vector);
+
+  return Array.from(vector);
+}
+
+
+function normalize(v){
+
+  let sum = 0;
+
+  for(const x of v)
+    sum += x*x;
+
+  const norm =
+    Math.sqrt(sum) || 1;
+
+  for(let i=0;i<v.length;i++)
+    v[i] /= norm;
+}
+
+
+/* =========================================================
+   VECTOR → 3D
+   ---------------------------------------------------------
+   For the prototype we derive stable coordinates from
+   multiple vector dimensions rather than simply taking
+   vector[0], vector[1], vector[2].
+
+   This is a visualization projection.
+   The 384D vector remains the actual memory representation.
+========================================================= */
+
+function vectorTo3D(vector){
+
+  const groups = [
+    [0,1,2,3,4,5,6,7],
+    [64,65,66,67,68,69,70,71],
+    [128,129,130,131,132,133,134,135]
+  ];
+
+  const values = [];
+
+  for(const group of groups){
+
+    let sum = 0;
+
+    for(const index of group)
+      sum += vector[index];
+
+    values.push(
+      sum / group.length
+    );
+
+  }
+
+  const scale = 12;
+
+  return {
+    x: values[0] * scale,
+    y: values[1] * scale,
+    z: values[2] * scale
+  };
+}
+
+
+/* =========================================================
+   REBUILD SPACE
+========================================================= */
+
+function rebuildSpace(){
+
+  while(nodeGroup.children.length)
+    nodeGroup.remove(
+      nodeGroup.children[0]
+    );
+
+  while(edgeGroup.children.length)
+    edgeGroup.remove(
+      edgeGroup.children[0]
+    );
+
+
+  memory.forEach(item => {
+
+    const p =
+      vectorTo3D(item.vector);
+
+    const geometry =
+      new THREE.SphereGeometry(
+        .25,
+        24,
+        24
+      );
+
+    const material =
+      new THREE.MeshBasicMaterial({
+        color:
+          TYPE_COLORS[item.type] ||
+          0xffffff
+      });
+
+    const node =
+      new THREE.Mesh(
+        geometry,
+        material
+      );
+
+    node.position.set(
+      p.x,
+      p.y,
+      p.z
+    );
+
+    node.userData.memoryId =
+      item.id;
+
+    nodeGroup.add(node);
+
+
+    /* outer ring */
+
+    const ringGeometry =
+      new THREE.RingGeometry(
+        .33,
+        .38,
+        32
+      );
+
+    const ringMaterial =
+      new THREE.MeshBasicMaterial({
+        color:
+          TYPE_COLORS[item.type] ||
+          0xffffff,
+        transparent:true,
+        opacity:.32,
+        side:THREE.DoubleSide
+      });
+
+    const ring =
+      new THREE.Mesh(
+        ringGeometry,
+        ringMaterial
+      );
+
+    ring.userData.memoryId =
+      item.id;
+
+    ring.lookAt(camera.position);
+
+    node.add(ring);
+
+  });
+
+
+  drawRelations();
+
+}
+
+
+/* =========================================================
+   RELATIONS
+========================================================= */
+
+function drawRelations(){
+
+  memory.forEach(source => {
+
+    if(!source.relations)
+      return;
+
+    source.relations.forEach(
+      relation => {
+
+        const target =
+          memory.find(
+            x =>
+              x.id === relation.target
+          );
+
+        if(!target)
+          return;
+
+        const a =
+          vectorTo3D(
+            source.vector
+          );
+
+        const b =
+          vectorTo3D(
+            target.vector
+          );
+
+        const geometry =
+          new THREE.BufferGeometry()
+            .setFromPoints([
+              new THREE.Vector3(
+                a.x,a.y,a.z
+              ),
+              new THREE.Vector3(
+                b.x,b.y,b.z
+              )
+            ]);
+
+        const material =
+          new THREE.LineBasicMaterial({
+            color:0x1d6670,
+            transparent:true,
+            opacity:.5
+          });
+
+        edgeGroup.add(
+          new THREE.Line(
+            geometry,
+            material
+          )
+        );
+
+      }
+    );
+
+  });
+
+}
+
+
+/* =========================================================
+   SELECT MEMORY
+========================================================= */
+
+function selectMemory(id){
+
+  selectedMemoryId = id;
+
+  const item =
+    memory.find(
+      x => x.id === id
+    );
+
+  if(!item)
+    return;
+
+  inspector.innerHTML = `
+
+    <div class="inspector-id">
+      ${escapeHTML(item.id)}
+    </div>
+
+    <div class="inspector-name">
+      ${escapeHTML(item.label)}
+    </div>
+
+    <div class="inspector-type">
+      ${escapeHTML(item.type)}
+    </div>
+
+    <div class="inspector-description">
+      ${
+        escapeHTML(
+          item.description ||
+          "Keine Beschreibung."
+        )
+      }
+    </div>
+
+    <div class="tags">
+
+      ${
+        item.tags.length
+        ? item.tags.map(tag =>
+          `<span class="tag">
+             ${escapeHTML(tag)}
+           </span>`
+        ).join("")
+        : `<span class="tag">
+             NO TAGS
+           </span>`
+      }
+
+    </div>
+
+    <div class="relations">
+
+      <label>
+        EXPLIZITE RELATIONEN
+      </label>
+
+      ${
+        item.relations.length
+        ? item.relations.map(rel => {
+
+            const target =
+              memory.find(
+                x =>
+                  x.id === rel.target
+              );
+
+            return `
+              <div class="relation">
+
+                <div class="relation-type">
+                  ${escapeHTML(rel.type)}
+                </div>
+
+                <div class="relation-target">
+                  ${
+                    target
+                    ? escapeHTML(target.label)
+                    : escapeHTML(rel.target)
+                  }
+                </div>
+
+              </div>
+            `;
+
+          }).join("")
+        : `
+          <div class="inspector-empty">
+            Keine expliziten Beziehungen.
+          </div>
+        `
+      }
+
+    </div>
+
+    <div style="
+      margin-top:14px;
+      padding-top:12px;
+      border-top:1px solid #14242c;
+      font-size:8px;
+      color:#506674;
+      line-height:1.5;
+    ">
+      VECTOR: 384 DIMENSIONEN<br>
+      PROJECTION: 3D<br>
+      ID: ${escapeHTML(item.id)}
+    </div>
+
+  `;
+
+
+  highlightNode(id);
+
+}
+
+
+/* =========================================================
+   HIGHLIGHT
+========================================================= */
+
+function highlightNode(id){
+
+  nodeGroup.children.forEach(
+    node => {
+
+      if(node.userData.memoryId === id){
+
+        node.scale.set(
+          2.0,
+          2.0,
+          2.0
+        );
+
+        node.material.color.setHex(
+          0xffffff
+        );
+
+      }else{
+
+        node.scale.set(
+          1,
+          1,
+          1
+        );
+
+        const item =
+          memory.find(
+            x =>
+              x.id === node.userData.memoryId
+          );
+
+        if(item){
+
+          node.material.color.setHex(
+            TYPE_COLORS[item.type] ||
+            0xffffff
+          );
+
+        }
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+searchInput.addEventListener(
+  "input",
+  () => {
+
+    const query =
+      searchInput.value
+        .trim()
+        .toLowerCase();
+
+    if(!query){
+
+      renderResults(memory);
+
+      highlightNode(
+        selectedMemoryId
+      );
+
+      return;
+    }
+
+    const scored =
+      memory
+        .map(item => {
+
+          const text =
+            (
+              item.label +
+              " " +
+              item.description +
+              " " +
+              item.tags.join(" ")
+            )
+            .toLowerCase();
+
+          const terms =
+            query.split(/\s+/);
+
+          let score = 0;
+
+          terms.forEach(term => {
+
+            if(item.label
+              .toLowerCase()
+              .includes(term))
+              score += 5;
+
+            if(text.includes(term))
+              score += 2;
+
+          });
+
+          return {
+            item,
+            score
+          };
+
+        })
+        .filter(x => x.score > 0)
+        .sort(
+          (a,b) =>
+            b.score - a.score
+        );
+
+    renderResults(
+      scored.map(x => x.item)
+    );
+
+  }
+);
+
+
+/* =========================================================
+   RESULTS
+========================================================= */
+
+function renderResults(items){
+
+  if(!items.length){
+
+    results.innerHTML = `
+      <div class="inspector-empty">
+        Keine passenden Memory Objects.
+      </div>
+    `;
+
+    return;
+  }
+
+  results.innerHTML =
+    items.map(item => `
+
+      <div class="result ${
+        item.id === selectedMemoryId
+        ? "selected"
+        : ""
+      }"
+      data-id="${escapeHTML(item.id)}">
+
+        <div class="result-head">
+
+          <div class="result-name">
+            ${escapeHTML(item.label)}
+          </div>
+
+          <div class="result-score">
+            ${item.type}
+          </div>
+
+        </div>
+
+        <div class="result-type">
+          ${escapeHTML(item.id)}
+        </div>
+
+        <div class="result-description">
+          ${
+            escapeHTML(
+              item.description ||
+              "Keine Beschreibung."
+            )
+          }
+        </div>
+
+      </div>
+
+    `).join("");
+
+
+  results
+    .querySelectorAll(".result")
+    .forEach(result => {
+
+      result.addEventListener(
+        "click",
+        () => {
+
+          selectMemory(
+            result.dataset.id
+          );
+
+        }
+      );
+
+    });
+
+}
+
+
+/* =========================================================
+   UI
+========================================================= */
+
+function updateUI(){
+
+  objectCount.textContent =
+    memory.length;
+
+  const relations =
+    memory.reduce(
+      (sum,item) =>
+        sum +
+        (item.relations
+          ? item.relations.length
+          : 0),
+      0
+    );
+
+  relationCount.textContent =
+    relations;
+
+  spaceMeta.textContent =
+    `${memory.length} MEMORY OBJECTS · 384D → 3D`;
+
+  renderResults(memory);
+
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+document
+  .getElementById("showAll")
+  .addEventListener(
+    "click",
+    () => {
+
+      searchInput.value = "";
+
+      renderResults(memory);
+
+    }
+  );
+
+
+document
+  .getElementById("clearSearch")
+  .addEventListener(
+    "click",
+    () => {
+
+      searchInput.value = "";
+
+      renderResults(memory);
+
+      if(selectedMemoryId)
+        highlightNode(
+          selectedMemoryId
+        );
+
+    }
+  );
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHTML(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener(
+  "resize",
+  () => {
+
+    const width =
+      container.clientWidth;
+
+    const height =
+      container.clientHeight;
+
+    camera.aspect =
+      width / height;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+      width,
+      height
+    );
+
+  }
+);
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+function animate(){
+
+  requestAnimationFrame(
+    animate
+  );
+
+  controls.update();
+
+  nodeGroup.children.forEach(
+    node => {
+
+      node.children.forEach(
+        child => {
+
+          if(child.geometry
+            instanceof THREE.RingGeometry){
+
+            child.lookAt(
+              camera.position
+            );
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+  renderer.render(
+    scene,
+    camera
+  );
+
+}
+
+animate();
+
+
+/* =========================================================
+   INITIAL DEMO MEMORY
+========================================================= */
+
+function addDemo(
+  type,
+  label,
+  description,
+  tags
+){
+
+  memory.push({
+
+    id:
+      "MEM-" +
+      String(memory.length + 1)
+        .padStart(4,"0"),
+
+    type,
+    label,
+    description,
+    tags,
+
+    relations:[],
+
+    vector:
+      createDeterministicVector(
+        label +
+        " " +
+        description +
+        " " +
+        tags.join(" ")
+      ),
+
+    createdAt:
+      new Date().toISOString()
+
+  });
+
+}
+
+
+addDemo(
+  "concept",
+  "AETHER",
+  "Visuelle Schnittstelle zwischen LLM-Projektplanung und einem realen deterministisch ausführbaren Programm.",
+  ["AI","Architecture","LLM"]
+);
+
+addDemo(
+  "system",
+  "LLM",
+  "Plant, strukturiert Informationen und erzeugt maschinenlesbare Anweisungen.",
+  ["AI","Planner","Model"]
+);
+
+addDemo(
+  "system",
+  "EXECUTOR",
+  "Führt validierte Änderungen deterministisch aus.",
+  ["Runtime","Execution","Deterministic"]
+);
+
+addDemo(
+  "concept",
+  "Memory Object",
+  "Strukturierte Repräsentation einer Information innerhalb des semantischen Gedächtnisses.",
+  ["Memory","Structure","Semantic"]
+);
+
+
+/* =========================================================
+   EXPLICIT DEMO RELATIONS
+========================================================= */
+
+memory[0].relations = [
+  {
+    type:"uses",
+    target:memory[1].id
+  },
+  {
+    type:"separates",
+    target:memory[2].id
+  }
+];
+
+memory[3].relations = [
+  {
+    type:"contains",
+    target:memory[0].id
+  }
+];
+
+
+rebuildSpace();
+updateUI();
+
 </script>
 
 </body>
