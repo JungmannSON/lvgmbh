@@ -1,534 +1,1182 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport"
       content="width=device-width,
                initial-scale=1,
                maximum-scale=1,
                user-scalable=no">
-<title>NEURAL MEMORY — v2.0</title>
+
+<title>NEURAL MEMORY — v2.1</title>
+
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+
 <style>
+
 :root{
   --bg:#020308;
   --panel:#070b14;
   --panel2:#0b1220;
   --border:#17263c;
+
   --cyan:#00f5ff;
   --cyan2:#00b7ff;
+
   --green:#4ade80;
   --pink:#ff2d9b;
+
   --text:#e6f4ff;
   --muted:#71829a;
+
   --yellow:#ffd166;
 }
+
 *{
   box-sizing:border-box;
 }
-html,body{
+
+html,
+body{
   margin:0;
   padding:0;
   background:var(--bg);
   color:var(--text);
+
   font-family:
     Arial,
     Helvetica,
     sans-serif;
 }
+
 body{
   min-height:100vh;
 }
+
 header{
-  border-bottom:1px solid var(--border);
+
+  border-bottom:
+    1px solid var(--border);
+
   background:#03050b;
+
   padding:18px;
 }
+
 .logo{
+
   color:var(--cyan);
+
   font-size:21px;
+
   font-weight:bold;
+
   letter-spacing:3px;
 }
+
 .version{
+
   color:var(--muted);
+
   font-size:11px;
+
   margin-top:5px;
+
   letter-spacing:1px;
 }
+
 main{
+
   width:100%;
+
   max-width:1200px;
+
   margin:auto;
+
   padding:16px;
 }
+
 .panel{
+
   background:var(--panel);
-  border:1px solid var(--border);
+
+  border:
+    1px solid var(--border);
+
   border-radius:10px;
+
   padding:16px;
+
   margin-bottom:16px;
 }
+
 .panel-title{
+
   color:var(--cyan);
+
   font-size:13px;
+
   letter-spacing:1.5px;
+
   font-weight:bold;
+
   margin-bottom:14px;
 }
+
 .grid{
+
   display:grid;
+
   grid-template-columns:
-    repeat(auto-fit,minmax(160px,1fr));
+    repeat(
+      auto-fit,
+      minmax(160px,1fr)
+    );
+
   gap:10px;
 }
+
 .stat{
+
   background:#040810;
-  border:1px solid var(--border);
+
+  border:
+    1px solid var(--border);
+
   border-radius:8px;
+
   padding:12px;
 }
+
 .stat-value{
+
   color:var(--cyan);
+
   font-size:20px;
+
   font-weight:bold;
 }
+
 .stat-label{
+
   color:var(--muted);
+
   font-size:10px;
+
   margin-top:5px;
+
   letter-spacing:.7px;
 }
+
 input,
 select,
 button{
+
   width:100%;
+
   min-height:42px;
+
   background:var(--panel2);
+
   color:var(--text);
-  border:1px solid var(--border);
+
+  border:
+    1px solid var(--border);
+
   border-radius:7px;
+
   padding:10px;
+
   font-size:14px;
 }
+
 button{
+
   cursor:pointer;
 }
+
 button:hover{
-  border-color:var(--cyan2);
+
+  border-color:
+    var(--cyan2);
 }
+
 button.primary{
+
   color:var(--cyan);
-  border-color:var(--cyan);
+
+  border-color:
+    var(--cyan);
+
   background:#042027;
 }
+
 button.green{
+
   color:var(--green);
-  border-color:var(--green);
+
+  border-color:
+    var(--green);
 }
+
 button.danger{
+
   color:var(--pink);
-  border-color:var(--pink);
+
+  border-color:
+    var(--pink);
 }
+
 .controls{
+
   display:grid;
+
   grid-template-columns:
-    repeat(auto-fit,minmax(180px,1fr));
+    repeat(
+      auto-fit,
+      minmax(180px,1fr)
+    );
+
   gap:10px;
 }
+
 .file-box{
-  border:1px dashed var(--border);
+
+  border:
+    1px dashed var(--border);
+
   border-radius:8px;
+
   padding:14px;
 }
+
 .status{
+
   color:var(--green);
 }
+
 .status.busy{
+
   color:var(--yellow);
 }
+
 .status.error{
+
   color:var(--pink);
 }
+
 .log{
+
   height:220px;
+
   overflow:auto;
+
   background:#010204;
-  border:1px solid var(--border);
+
+  border:
+    1px solid var(--border);
+
   border-radius:7px;
+
   padding:12px;
-  font-family:
-    monospace;
+
+  font-family:monospace;
+
   font-size:11px;
+
   white-space:pre-wrap;
 }
+
 .result{
+
   margin-top:10px;
+
   background:#040914;
-  border:1px solid var(--border);
+
+  border:
+    1px solid var(--border);
+
   border-radius:9px;
+
   padding:14px;
 }
+
 .result-top{
+
   display:flex;
+
   justify-content:space-between;
+
   gap:10px;
+
   flex-wrap:wrap;
 }
+
 .rank{
+
   color:var(--cyan);
+
   font-weight:bold;
 }
+
 .score{
+
   color:var(--green);
+
   font-family:monospace;
 }
+
 .meta{
+
   color:var(--muted);
+
   font-size:11px;
+
   line-height:1.5;
 }
+
 .memory-view{
+
   margin-top:12px;
+
   border-left:
     2px solid var(--cyan);
+
   padding-left:12px;
+
   font-family:monospace;
+
   font-size:12px;
+
   line-height:1.55;
+
   white-space:pre-wrap;
+
   color:#d8efff;
 }
+
 .raw{
+
   margin-top:12px;
 }
+
 .raw summary{
+
   cursor:pointer;
+
   color:var(--muted);
+
   font-size:12px;
 }
+
 pre{
+
   white-space:pre-wrap;
+
   word-break:break-word;
+
   font-size:11px;
+
   color:#bcd1e5;
 }
+
 .flow{
+
   display:grid;
+
   grid-template-columns:
     repeat(5,1fr);
+
   gap:5px;
+
   margin-top:10px;
 }
+
 .flow-item{
+
   text-align:center;
+
   padding:12px 5px;
-  border:1px solid var(--border);
+
+  border:
+    1px solid var(--border);
+
   background:#040810;
+
   border-radius:6px;
+
   font-size:10px;
+
   color:var(--muted);
 }
+
 .flow-item strong{
+
   display:block;
+
   color:var(--cyan);
+
   margin-bottom:4px;
 }
+
 .note{
+
   color:var(--muted);
+
   font-size:11px;
+
   line-height:1.5;
+
   margin-top:10px;
 }
+
+
+/* =====================================================
+   3D NEURAL VIEW
+===================================================== */
+
+#neural3d{
+
+  width:100%;
+
+  height:520px;
+
+  position:relative;
+
+  overflow:hidden;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:9px;
+
+  background:
+    radial-gradient(
+      circle at center,
+      #071323 0%,
+      #02050b 65%,
+      #010204 100%
+    );
+}
+
+#neuralCanvas{
+
+  width:100%;
+
+  height:100%;
+
+  display:block;
+}
+
+.neural-overlay{
+
+  position:absolute;
+
+  left:14px;
+
+  top:14px;
+
+  pointer-events:none;
+
+  background:
+    rgba(2,5,12,.75);
+
+  border:
+    1px solid var(--border);
+
+  border-radius:7px;
+
+  padding:10px 12px;
+
+  font-family:monospace;
+
+  font-size:11px;
+
+  line-height:1.6;
+}
+
+.neural-title{
+
+  color:var(--cyan);
+
+  letter-spacing:1px;
+
+  margin-bottom:4px;
+}
+
+.neural-state{
+
+  color:var(--green);
+}
+
+.neural-help{
+
+  position:absolute;
+
+  right:14px;
+
+  bottom:14px;
+
+  color:var(--muted);
+
+  font-size:10px;
+
+  pointer-events:none;
+}
+
+
+/* =====================================================
+   MEMORY PIPELINE
+===================================================== */
+
+.pipeline{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:7px;
+
+  flex-wrap:wrap;
+
+  margin-top:12px;
+}
+
+.pipeline-node{
+
+  padding:
+    8px 12px;
+
+  border:
+    1px solid var(--border);
+
+  background:#040810;
+
+  border-radius:6px;
+
+  font-size:10px;
+
+  color:var(--muted);
+}
+
+.pipeline-node.active{
+
+  color:var(--cyan);
+
+  border-color:
+    var(--cyan);
+
+  box-shadow:
+    0 0 10px
+    rgba(0,245,255,.25);
+}
+
+.pipeline-arrow{
+
+  color:var(--muted);
+
+  font-size:12px;
+}
+
+
 @media(max-width:700px){
+
   .flow{
+
     grid-template-columns:1fr;
   }
+
+  #neural3d{
+
+    height:420px;
+  }
+
 }
+
 </style>
+
 </head>
+
+
 <body>
+
+
 <header>
+
   <div class="logo">
     NEURAL MEMORY
   </div>
+
   <div class="version">
-    DATA INGESTION · RETRIEVAL · v2.0
+    DATA INGESTION · RETRIEVAL · 3D NEURAL VIEW · v2.1
   </div>
+
 </header>
+
+
 <main>
+
+
 <!-- =====================================================
-     ARCHITECTURE
+     ARCHITEKTUR
 ====================================================== -->
+
 <section class="panel">
+
   <div class="panel-title">
     ARCHITEKTUR
   </div>
+
   <div class="flow">
+
     <div class="flow-item">
       <strong>01</strong>
       RAW DATA
     </div>
+
     <div class="flow-item">
       <strong>02</strong>
       MEMORY TEXT
     </div>
+
     <div class="flow-item">
       <strong>03</strong>
       EMBEDDING
     </div>
+
     <div class="flow-item">
       <strong>04</strong>
       INDEXED DB
     </div>
+
     <div class="flow-item">
       <strong>05</strong>
       RETRIEVAL
     </div>
+
   </div>
+
+  <div class="pipeline">
+
+    <div class="pipeline-node">
+      QUERY
+    </div>
+
+    <div class="pipeline-arrow">
+      →
+    </div>
+
+    <div class="pipeline-node">
+      384D
+    </div>
+
+    <div class="pipeline-arrow">
+      →
+    </div>
+
+    <div class="pipeline-node">
+      COSINE
+    </div>
+
+    <div class="pipeline-arrow">
+      →
+    </div>
+
+    <div class="pipeline-node">
+      TOP-K
+    </div>
+
+    <div class="pipeline-arrow">
+      →
+    </div>
+
+    <div class="pipeline-node">
+      MEMORY
+    </div>
+
+  </div>
+
   <div class="note">
-    <b>Wichtig:</b>
-    Die Memory-Darstellung wird nicht als zweiter Datenbestand gespeichert.
-    Sie wird bei Bedarf deterministisch aus den gespeicherten Rohdaten erzeugt.
+
+    <b>Speicherprinzip:</b>
+
+    RAW DATA und Embedding werden gespeichert.
+
+    Der sprachliche MEMORY TEXT wird nur temporär erzeugt,
+    für das Embedding verwendet und bei der Anzeige erneut
+    deterministisch aus RAW DATA erzeugt.
+
   </div>
+
 </section>
+
+
+
 <!-- =====================================================
      IMPORT
 ====================================================== -->
+
 <section class="panel">
+
   <div class="panel-title">
     01 · DATEN IMPORT
   </div>
+
   <div class="file-box">
+
     <input
       id="fileInput"
       type="file"
       multiple
       accept=".xlsx,.xls,.csv"
     >
+
   </div>
+
+
   <div
     class="controls"
     style="margin-top:10px"
   >
+
     <button
       id="importButton"
       class="primary"
     >
       IMPORTIEREN + EMBEDDEN
     </button>
+
+
     <button
       id="modelButton"
     >
       EMBEDDING-MODELL LADEN
     </button>
+
+
     <button
       id="clearButton"
       class="danger"
     >
       DATENBANK LÖSCHEN
     </button>
+
   </div>
+
 </section>
+
+
+
 <!-- =====================================================
      STATUS
 ====================================================== -->
+
 <section class="panel">
+
   <div class="panel-title">
     02 · SYSTEM STATUS
   </div>
+
+
   <div class="grid">
+
+
     <div class="stat">
+
       <div
         id="recordCount"
         class="stat-value"
       >
         0
       </div>
+
       <div class="stat-label">
         GESPEICHERTE RECORDS
       </div>
+
     </div>
+
+
     <div class="stat">
+
       <div
         id="datasetCount"
         class="stat-value"
       >
         0
       </div>
+
       <div class="stat-label">
         DATASETS
       </div>
+
     </div>
+
+
     <div class="stat">
+
       <div
         id="dimension"
         class="stat-value"
       >
         384
       </div>
+
       <div class="stat-label">
         EMBEDDING DIMENSION
       </div>
+
     </div>
+
+
     <div class="stat">
+
       <div
         id="modelStatus"
         class="stat-value"
       >
         OFF
       </div>
+
       <div class="stat-label">
         EMBEDDING MODEL
       </div>
+
     </div>
+
+
     <div class="stat">
+
       <div
         id="systemStatus"
         class="stat-value status"
       >
         READY
       </div>
+
       <div class="stat-label">
         SYSTEM
       </div>
+
     </div>
+
+
   </div>
+
 </section>
+
+
+
+<!-- =====================================================
+     3D NEURAL SYSTEM
+====================================================== -->
+
+<section class="panel">
+
+  <div class="panel-title">
+    03 · 3D NEURAL RETRIEVAL SYSTEM
+  </div>
+
+
+  <div id="neural3d">
+
+    <canvas id="neuralCanvas"></canvas>
+
+
+    <div class="neural-overlay">
+
+      <div class="neural-title">
+        NEURAL PATHWAY
+      </div>
+
+      <div id="neuralState"
+           class="neural-state">
+
+        WAITING FOR QUERY
+
+      </div>
+
+      <div id="neuralInfo">
+
+        Keine Aktivierung
+
+      </div>
+
+    </div>
+
+
+    <div class="neural-help">
+
+      DRAG = ROTATE · PINCH = ZOOM
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
 <!-- =====================================================
      RETRIEVAL
 ====================================================== -->
+
 <section class="panel">
+
   <div class="panel-title">
-    03 · MEMORY RETRIEVAL
+    04 · MEMORY RETRIEVAL
   </div>
+
+
   <input
     id="query"
     placeholder="z.B. VVL mit iPhone in Bad Urach"
   >
+
+
   <div
     class="controls"
     style="margin-top:10px"
   >
+
     <select id="datasetSelect">
+
       <option value="">
         ALLE DATASETS
       </option>
+
     </select>
+
+
     <select id="topK">
+
       <option value="5">
         TOP 5
       </option>
+
       <option value="10">
         TOP 10
       </option>
+
       <option value="20">
         TOP 20
       </option>
+
     </select>
+
+
     <button
       id="retrieveButton"
       class="primary"
     >
       RETRIEVE
     </button>
+
   </div>
+
+
   <div
     id="results"
     style="margin-top:12px"
   ></div>
+
 </section>
+
+
+
 <!-- =====================================================
      LOG
 ====================================================== -->
+
 <section class="panel">
+
   <div class="panel-title">
-    04 · SYSTEM LOG
+    05 · SYSTEM LOG
   </div>
+
+
   <div
     id="log"
     class="log"
   ></div>
+
 </section>
+
+
 </main>
+
+
+
+<!-- =====================================================
+     THREE.JS
+====================================================== -->
+
 <script type="module">
+
+import * as THREE
+  from
+  "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+
+import {
+  OrbitControls
+}
+from
+  "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js";
+
+
 /* =====================================================
    CONFIGURATION
-====================================================== */
+===================================================== */
+
 const CONFIG = {
+
   DB_NAME:
-    "NEURAL_MEMORY_V2",
+    "NEURAL_MEMORY_V3",
+
   DB_VERSION:
     1,
+
   STORE:
     "records",
+
   MODEL:
     "Xenova/multilingual-e5-small",
+
   DIMENSION:
     384,
+
   SCHEMA:
-    "2.0"
+    "3.0"
+
 };
+
+
 /* =====================================================
    STATE
-====================================================== */
+===================================================== */
+
 const state = {
+
   extractor:
     null,
+
   modelLoaded:
     false,
+
   processing:
-    false
+    false,
+
+  neuralScene:
+    null,
+
+  neuralCamera:
+    null,
+
+  neuralRenderer:
+    null,
+
+  neuralControls:
+    null,
+
+  neuralGroup:
+    null,
+
+  neuralPulses:
+    [],
+
+  neuralNodes:
+    [],
+
+  neuralEdges:
+    []
+
 };
+
+
 /* =====================================================
    DOM
-====================================================== */
-const $ = id =>
-  document.getElementById(id);
+===================================================== */
+
+const $ =
+  id =>
+    document.getElementById(id);
+
+
 /* =====================================================
    LOGGING
-====================================================== */
+===================================================== */
+
 function log(message){
+
   const time =
     new Date()
-      .toLocaleTimeString("de-DE");
+      .toLocaleTimeString(
+        "de-DE"
+      );
+
   $("log").textContent +=
     `[${time}] ${message}\n`;
+
   $("log").scrollTop =
     $("log").scrollHeight;
+
 }
+
+
 /* =====================================================
    STATUS
-====================================================== */
+===================================================== */
+
 function setStatus(
   text,
   type=""
 ){
-  $("systemStatus").textContent =
-    text;
-  $("systemStatus").className =
-    "stat-value status " + type;
+
+  $("systemStatus")
+    .textContent =
+      text;
+
+  $("systemStatus")
+    .className =
+      "stat-value status " +
+      type;
+
 }
+
+
 /* =====================================================
    INDEXED DB
-====================================================== */
+===================================================== */
+
 function openDB(){
+
   return new Promise(
     (resolve,reject)=>{
+
       const request =
         indexedDB.open(
           CONFIG.DB_NAME,
           CONFIG.DB_VERSION
         );
+
+
       request.onupgradeneeded =
         event => {
+
           const db =
             event.target.result;
+
+
           if(
             !db.objectStoreNames.contains(
               CONFIG.STORE
             )
           ){
+
             const store =
               db.createObjectStore(
                 CONFIG.STORE,
@@ -536,6 +1184,8 @@ function openDB(){
                   keyPath:"id"
                 }
               );
+
+
             store.createIndex(
               "dataset_id",
               "dataset_id",
@@ -543,6 +1193,8 @@ function openDB(){
                 unique:false
               }
             );
+
+
             store.createIndex(
               "memory_id",
               "memory_id",
@@ -550,157 +1202,309 @@ function openDB(){
                 unique:false
               }
             );
+
           }
+
         };
+
+
       request.onsuccess =
         () => {
+
           resolve(
             request.result
           );
+
         };
+
+
       request.onerror =
         () => {
+
           reject(
             request.error
           );
+
         };
+
     }
   );
+
 }
+
+
 /* =====================================================
-   DB PUT
-====================================================== */
+   DB SAVE
+===================================================== */
+
 async function saveRecord(record){
+
   const db =
     await openDB();
+
   return new Promise(
     (resolve,reject)=>{
+
       const tx =
         db.transaction(
           CONFIG.STORE,
           "readwrite"
         );
+
       tx.objectStore(
         CONFIG.STORE
       ).put(record);
+
+
       tx.oncomplete =
-        () => resolve();
+        () =>
+          resolve();
+
+
       tx.onerror =
-        () => reject(tx.error);
+        () =>
+          reject(
+            tx.error
+          );
+
     }
   );
+
 }
+
+
 /* =====================================================
    DB GET ALL
-====================================================== */
+===================================================== */
+
 async function getAllRecords(){
+
   const db =
     await openDB();
+
   return new Promise(
     (resolve,reject)=>{
+
       const tx =
         db.transaction(
           CONFIG.STORE,
           "readonly"
         );
+
+
       const request =
         tx.objectStore(
           CONFIG.STORE
         ).getAll();
+
+
       request.onsuccess =
-        () => resolve(
-          request.result
-        );
+        () =>
+          resolve(
+            request.result
+          );
+
+
       request.onerror =
-        () => reject(
-          request.error
-        );
+        () =>
+          reject(
+            request.error
+          );
+
     }
   );
+
 }
+
+
 /* =====================================================
-   DB CLEAR
-====================================================== */
-async function clearDB(){
+   DB GET
+===================================================== */
+
+async function getRecord(id){
+
   const db =
     await openDB();
+
   return new Promise(
     (resolve,reject)=>{
+
+      const tx =
+        db.transaction(
+          CONFIG.STORE,
+          "readonly"
+        );
+
+
+      const request =
+        tx.objectStore(
+          CONFIG.STORE
+        ).get(id);
+
+
+      request.onsuccess =
+        () =>
+          resolve(
+            request.result
+          );
+
+
+      request.onerror =
+        () =>
+          reject(
+            request.error
+          );
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   DB CLEAR
+===================================================== */
+
+async function clearDB(){
+
+  const db =
+    await openDB();
+
+  return new Promise(
+    (resolve,reject)=>{
+
       const tx =
         db.transaction(
           CONFIG.STORE,
           "readwrite"
         );
+
+
       tx.objectStore(
         CONFIG.STORE
       ).clear();
+
+
       tx.oncomplete =
-        () => resolve();
+        () =>
+          resolve();
+
+
       tx.onerror =
-        () => reject(
-          tx.error
-        );
+        () =>
+          reject(
+            tx.error
+          );
+
     }
   );
+
 }
+
+
 /* =====================================================
    EMBEDDING MODEL
-====================================================== */
+===================================================== */
+
 async function loadEmbeddingModel(){
-  if(state.modelLoaded){
+
+  if(
+    state.modelLoaded
+  ){
     return;
   }
+
+
   setStatus(
     "LOADING",
     "busy"
   );
-  $("modelStatus").textContent =
-    "LOAD";
+
+
+  $("modelStatus")
+    .textContent =
+      "LOAD";
+
+
   log(
     "Transformers.js wird geladen..."
   );
+
+
   try{
+
     const module =
       await import(
         "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1"
       );
+
+
     log(
-      "Modul geladen."
+      "Transformers.js geladen."
     );
+
+
     state.extractor =
       await module.pipeline(
         "feature-extraction",
         CONFIG.MODEL
       );
+
+
     state.modelLoaded =
       true;
-    $("modelStatus").textContent =
-      "ON";
+
+
+    $("modelStatus")
+      .textContent =
+        "ON";
+
+
     setStatus(
       "READY"
     );
+
+
     log(
       `Modell bereit: ${CONFIG.MODEL}`
     );
-  }catch(error){
+
+  }
+  catch(error){
+
     setStatus(
       "ERROR",
       "error"
     );
-    $("modelStatus").textContent =
-      "ERROR";
+
+
+    $("modelStatus")
+      .textContent =
+        "ERROR";
+
+
     log(
       "MODEL ERROR: " +
       error.message
     );
+
+
     throw error;
+
   }
+
 }
+
+
 /* =====================================================
    EMBED PASSAGE
-====================================================== */
+===================================================== */
+
 async function embedPassage(text){
+
   await loadEmbeddingModel();
+
+
   const result =
     await state.extractor(
       "passage: " + text,
@@ -709,25 +1513,40 @@ async function embedPassage(text){
         normalize:true
       }
     );
+
+
   const vector =
     Array.from(
       result.data
     );
+
+
   if(
     vector.length !==
     CONFIG.DIMENSION
   ){
+
     throw new Error(
       `Falsche Dimension: ${vector.length}`
     );
+
   }
+
+
   return vector;
+
 }
+
+
 /* =====================================================
    EMBED QUERY
-====================================================== */
+===================================================== */
+
 async function embedQuery(text){
+
   await loadEmbeddingModel();
+
+
   const result =
     await state.extractor(
       "query: " + text,
@@ -736,14 +1555,37 @@ async function embedQuery(text){
         normalize:true
       }
     );
-  return Array.from(
-    result.data
-  );
+
+
+  const vector =
+    Array.from(
+      result.data
+    );
+
+
+  if(
+    vector.length !==
+    CONFIG.DIMENSION
+  ){
+
+    throw new Error(
+      `Falsche Query-Dimension: ${vector.length}`
+    );
+
+  }
+
+
+  return vector;
+
 }
+
+
 /* =====================================================
    HEADER DETECTION
-====================================================== */
+===================================================== */
+
 const KNOWN_HEADERS = [
+
   "Tag",
   "Datum",
   "Art",
@@ -765,6 +1607,7 @@ const KNOWN_HEADERS = [
   "To Do",
   "Grund",
   "Summe",
+
   "ID",
   "VO",
   "Netzbetreiber",
@@ -796,68 +1639,114 @@ const KNOWN_HEADERS = [
   "Bemerkung",
   "AU",
   "GU"
+
 ];
+
+
 function normalizeHeader(value){
+
   return String(
     value ?? ""
   )
   .trim()
   .toLowerCase();
+
 }
+
+
 function detectHeaderRow(rows){
+
   let bestIndex =
     0;
+
   let bestScore =
     -1;
+
+
   const known =
     KNOWN_HEADERS.map(
       normalizeHeader
     );
+
+
   const limit =
     Math.min(
       rows.length,
       30
     );
+
+
   for(
     let i=0;
     i<limit;
     i++
   ){
+
     const row =
       rows[i] || [];
+
+
     let score =
       0;
+
+
     for(
-      const cell of row
+      const cell
+      of row
     ){
+
       const value =
-        normalizeHeader(cell);
+        normalizeHeader(
+          cell
+        );
+
+
       if(
         known.includes(value)
       ){
+
         score++;
+
       }
+
     }
+
+
     if(
-      score > bestScore
+      score >
+      bestScore
     ){
+
       bestScore =
         score;
+
       bestIndex =
         i;
+
     }
+
   }
+
+
   return {
+
     index:
       bestIndex,
+
     score:
       bestScore
+
   };
+
 }
+
+
 /* =====================================================
    DATASET ID
-====================================================== */
+===================================================== */
+
 function slug(value){
+
   return String(
     value ?? ""
   )
@@ -871,87 +1760,147 @@ function slug(value){
     /[^A-Z0-9ÄÖÜß_-]/g,
     ""
   );
+
 }
+
+
 function datasetId(
   fileName,
   sheetName
 ){
+
   return (
+
     slug(
       fileName.replace(
         /\.[^.]+$/,
         ""
       )
     )
+
     +
+
     "__"
+
     +
+
     slug(sheetName)
+
   );
+
 }
+
+
 /* =====================================================
    MEMORY ID
-====================================================== */
+===================================================== */
+
 function memoryId(
   dataset,
   excelRow
 ){
+
   return (
-    dataset +
-    "__ROW-" +
+
+    dataset
+
+    +
+
+    "__ROW-"
+
+    +
+
     String(excelRow)
       .padStart(
         6,
         "0"
       )
+
   );
+
 }
+
+
 /* =====================================================
    RAW ROW
-====================================================== */
+===================================================== */
+
 function createRawRow(
   headers,
   values
 ){
+
   const row = {};
+
+
   headers.forEach(
     (header,index)=>{
+
       const name =
         String(
           header ??
           `COLUMN_${index+1}`
         )
         .trim();
-      row[name || `COLUMN_${index+1}`] =
+
+
+      row[
+        name ||
+        `COLUMN_${index+1}`
+      ] =
         values[index] ??
         null;
+
     }
   );
+
+
   return row;
+
 }
+
+
 /* =====================================================
-   MEMORY TEXT
-====================================================== */
+   TEMPORARY MEMORY TEXT
+===================================================== */
+
 /*
-   Diese Funktion ist zentral.
-   Sie erzeugt die sprachliche Memory-Darstellung
-   ausschließlich aus RAW DATA.
-   Das Ergebnis wird NICHT gespeichert.
+
+  WICHTIG:
+
+  Diese Funktion erzeugt den Text
+  nur im RAM.
+
+  Der Text wird NICHT in IndexedDB
+  gespeichert.
+
 */
+
 function createMemoryText(record){
+
   const lines = [];
+
+
   lines.push(
     `Dataset: ${record.dataset_id}`
   );
+
+
   lines.push(
     `Datei: ${record.source.file}`
   );
+
+
   lines.push(
     `Tabelle: ${record.source.sheet}`
   );
+
+
   lines.push(
     `Excel-Zeile: ${record.source.row}`
   );
+
+
   for(
     const [
       key,
@@ -961,49 +1910,83 @@ function createMemoryText(record){
       record.data
     )
   ){
+
     if(
       value === null ||
       value === undefined ||
       value === ""
     ){
+
       continue;
+
     }
+
+
     lines.push(
       `${key}: ${value}`
     );
+
   }
+
+
   return lines.join(
     ". "
   );
+
 }
+
+
 /* =====================================================
-   MEMORY DISPLAY
-====================================================== */
+   MEMORY VIEW
+===================================================== */
+
 /*
-   Das hier ist KEIN gespeicherter Memory Record.
-   Es ist nur die aktuell erzeugte Darstellung.
+
+  MEMORY wird hier erzeugt.
+
+  Nicht aus einem gespeicherten Memory-Feld,
+  sondern erneut aus RAW DATA.
+
 */
+
 function createMemoryView(record){
+
   const lines = [];
+
+
   lines.push(
     "MEMORY"
   );
+
+
   lines.push(
     `ID: ${record.memory_id}`
   );
+
+
   lines.push(
     `DATASET: ${record.dataset_id}`
   );
+
+
   lines.push(
     `SOURCE: ${record.source.file}`
   );
+
+
   lines.push(
     `SHEET: ${record.source.sheet}`
   );
+
+
   lines.push(
     `ROW: ${record.source.row}`
   );
+
+
   lines.push("");
+
+
   for(
     const [
       key,
@@ -1013,121 +1996,173 @@ function createMemoryView(record){
       record.data
     )
   ){
+
     if(
       value === null ||
       value === undefined ||
       value === ""
     ){
+
       continue;
+
     }
+
+
     lines.push(
       `${key}: ${value}`
     );
+
   }
-  return lines.join("\n");
+
+
+  return lines.join(
+    "\n"
+  );
+
 }
+
+
 /* =====================================================
-   STORED RECORD
-====================================================== */
-/*
-   DAS ist der tatsächliche Datenbankinhalt.
-   Kein "memory"-Objekt.
-   Nur:
-   - raw data
-   - embedding
-   - technische Metadaten
-*/
+   RECORD BUILD
+===================================================== */
+
 async function buildRecord({
+
   fileName,
   sheetName,
   excelRow,
   data
+
 }){
-  const id =
-    memoryId(
-      datasetId(
-        fileName,
-        sheetName
-      ),
-      excelRow
-    );
+
   const ds =
     datasetId(
       fileName,
       sheetName
     );
+
+
+  const id =
+    memoryId(
+      ds,
+      excelRow
+    );
+
+
   const temporaryRecord = {
+
     memory_id:
       id,
+
     dataset_id:
       ds,
+
     source:{
+
       file:
         fileName,
+
       sheet:
         sheetName,
+
       row:
         excelRow
+
     },
+
     data
+
   };
+
+
   /*
-     Memory Text wird aus RAW DATA erzeugt.
+    MEMORY TEXT existiert nur temporär.
   */
-  const embeddingText =
+
+  const temporaryMemoryText =
     createMemoryText(
       temporaryRecord
     );
+
+
   /*
-     Daraus wird der Suchvektor erzeugt.
+    Aus diesem Text wird der
+    384-dimensionale Suchvektor erzeugt.
   */
+
   const embedding =
     await embedPassage(
-      embeddingText
+      temporaryMemoryText
     );
+
+
   /*
-     Nur dieser Record wird gespeichert.
+    WICHTIG:
+
+    temporaryMemoryText wird NICHT
+    Bestandteil des gespeicherten Records.
   */
+
   return {
+
     id,
+
     memory_id:
       id,
+
     dataset_id:
       ds,
+
     schema_version:
       CONFIG.SCHEMA,
+
     source:{
+
       file:
         fileName,
+
       sheet:
         sheetName,
+
       row:
         excelRow
+
     },
+
     data,
-    embedding_text:
-      embeddingText,
+
     embedding,
+
     dimension:
       embedding.length,
+
     model:
       CONFIG.MODEL,
+
     created:
       new Date()
         .toISOString()
+
   };
+
 }
+
+
 /* =====================================================
    IMPORT FILE
-====================================================== */
-async function importFile(
-  file
-){
+===================================================== */
+
+async function importFile(file){
+
   log(
     `Datei: ${file.name}`
   );
+
+
   const buffer =
     await file.arrayBuffer();
+
+
   const workbook =
     XLSX.read(
       buffer,
@@ -1136,19 +2171,28 @@ async function importFile(
         cellDates:true
       }
     );
+
+
   log(
     `${workbook.SheetNames.length} Worksheet(s) erkannt.`
   );
+
+
   let total =
     0;
+
+
   for(
     const sheetName
     of workbook.SheetNames
   ){
+
     const sheet =
       workbook.Sheets[
         sheetName
       ];
+
+
     const rows =
       XLSX.utils.sheet_to_json(
         sheet,
@@ -1158,39 +2202,60 @@ async function importFile(
           raw:true
         }
       );
+
+
     if(
       !rows.length
     ){
+
       continue;
+
     }
+
+
     const headerInfo =
       detectHeaderRow(
         rows
       );
+
+
     const headerIndex =
       headerInfo.index;
+
+
     const headers =
       rows[
         headerIndex
       ] || [];
+
+
     const dataRows =
       rows.slice(
         headerIndex + 1
       );
+
+
     log(
       `Worksheet "${sheetName}" | Header Zeile ${headerIndex+1} | ${dataRows.length} Datenzeilen`
     );
+
+
     let excelRow =
       headerIndex + 2;
+
+
     for(
       const values
       of dataRows
     ){
+
       const data =
         createRawRow(
           headers,
           values
         );
+
+
       const hasData =
         Object.values(
           data
@@ -1199,348 +2264,1384 @@ async function importFile(
             value !== null &&
             value !== ""
         );
+
+
       if(
         !hasData
       ){
+
         excelRow++;
+
         continue;
+
       }
+
+
       const ds =
         datasetId(
           file.name,
           sheetName
         );
+
+
       const id =
         memoryId(
           ds,
           excelRow
         );
-      /*
-         Prüfen, ob exakt dieser Record bereits
-         vorhanden und kompatibel ist.
-      */
+
+
       const existing =
         await getRecord(
           id
         );
+
+
       if(
+
         existing &&
+
         existing.schema_version ===
           CONFIG.SCHEMA &&
+
         Array.isArray(
           existing.embedding
         ) &&
+
         existing.embedding.length ===
           CONFIG.DIMENSION
+
       ){
+
         total++;
+
         excelRow++;
+
         continue;
+
       }
+
+
       const record =
         await buildRecord({
+
           fileName:
             file.name,
+
           sheetName,
+
           excelRow,
+
           data
+
         });
+
+
       await saveRecord(
         record
       );
+
+
       total++;
+
+
       if(
         total % 25 === 0
       ){
+
         log(
           `${total} Records verarbeitet...`
         );
+
       }
+
+
       excelRow++;
+
     }
+
   }
+
+
   log(
     `${file.name}: ${total} Records verarbeitet.`
   );
+
 }
-/* =====================================================
-   GET SINGLE RECORD
-====================================================== */
-async function getRecord(id){
-  const db =
-    await openDB();
-  return new Promise(
-    (resolve,reject)=>{
-      const tx =
-        db.transaction(
-          CONFIG.STORE,
-          "readonly"
-        );
-      const request =
-        tx.objectStore(
-          CONFIG.STORE
-        ).get(id);
-      request.onsuccess =
-        () => resolve(
-          request.result
-        );
-      request.onerror =
-        () => reject(
-          request.error
-        );
-    }
-  );
-}
+
+
 /* =====================================================
    COSINE
-====================================================== */
+===================================================== */
+
 function cosine(
   a,
   b
 ){
+
   if(
+
     !Array.isArray(a) ||
+
     !Array.isArray(b) ||
-    a.length !== b.length
+
+    a.length !==
+      b.length
+
   ){
+
     return -1;
+
   }
+
+
   let dot =
     0;
+
   let aNorm =
     0;
+
   let bNorm =
     0;
+
+
   for(
     let i=0;
     i<a.length;
     i++
   ){
+
     dot +=
       a[i] *
       b[i];
+
+
     aNorm +=
       a[i] *
       a[i];
+
+
     bNorm +=
       b[i] *
       b[i];
+
   }
+
+
   if(
     aNorm === 0 ||
     bNorm === 0
   ){
+
     return 0;
+
   }
+
+
   return (
+
     dot /
+
     (
       Math.sqrt(aNorm) *
       Math.sqrt(bNorm)
     )
+
   );
+
 }
+
+
 /* =====================================================
    RETRIEVAL
-====================================================== */
+===================================================== */
+
 async function retrieve(
   question,
   topK,
   dataset
 ){
+
   const queryVector =
     await embedQuery(
       question
     );
+
+
   const records =
     await getAllRecords();
+
+
   let candidates =
     records.filter(
       record =>
+
         record.schema_version ===
           CONFIG.SCHEMA &&
+
         Array.isArray(
           record.embedding
         ) &&
+
         record.embedding.length ===
           CONFIG.DIMENSION
+
     );
+
+
   if(
     dataset
   ){
+
     candidates =
       candidates.filter(
         record =>
           record.dataset_id ===
           dataset
       );
+
   }
+
+
   const ranked =
     candidates.map(
       record => ({
+
         record,
+
         score:
           cosine(
             queryVector,
             record.embedding
           )
+
       })
     );
+
+
   ranked.sort(
     (a,b) =>
       b.score -
       a.score
   );
-  return ranked.slice(
-    0,
-    topK
-  );
+
+
+  return {
+
+    queryVector,
+
+    results:
+      ranked.slice(
+        0,
+        topK
+      )
+
+  };
+
 }
+
+
+/* =====================================================
+   3D NEURAL SYSTEM
+===================================================== */
+
+function initNeural3D(){
+
+  const container =
+    $("neural3d");
+
+
+  const canvas =
+    $("neuralCanvas");
+
+
+  const width =
+    container.clientWidth;
+
+
+  const height =
+    container.clientHeight;
+
+
+  const scene =
+    new THREE.Scene();
+
+
+  scene.background =
+    new THREE.Color(
+      0x02050b
+    );
+
+
+  const camera =
+    new THREE.PerspectiveCamera(
+      50,
+      width / height,
+      0.1,
+      1000
+    );
+
+
+  camera.position.set(
+    0,
+    0,
+    42
+  );
+
+
+  const renderer =
+    new THREE.WebGLRenderer({
+
+      canvas,
+
+      antialias:true,
+
+      alpha:true
+
+    });
+
+
+  renderer.setPixelRatio(
+    Math.min(
+      window.devicePixelRatio,
+      2
+    )
+  );
+
+
+  renderer.setSize(
+    width,
+    height
+  );
+
+
+  const controls =
+    new OrbitControls(
+      camera,
+      renderer.domElement
+    );
+
+
+  controls.enableDamping =
+    true;
+
+
+  controls.dampingFactor =
+    0.08;
+
+
+  controls.minDistance =
+    12;
+
+
+  controls.maxDistance =
+    100;
+
+
+  const group =
+    new THREE.Group();
+
+
+  scene.add(
+    group
+  );
+
+
+  const ambient =
+    new THREE.AmbientLight(
+      0xffffff,
+      0.8
+    );
+
+
+  scene.add(
+    ambient
+  );
+
+
+  state.neuralScene =
+    scene;
+
+
+  state.neuralCamera =
+    camera;
+
+
+  state.neuralRenderer =
+    renderer;
+
+
+  state.neuralControls =
+    controls;
+
+
+  state.neuralGroup =
+    group;
+
+
+  animateNeural3D();
+
+
+  window.addEventListener(
+    "resize",
+    resizeNeural3D
+  );
+
+}
+
+
+/* =====================================================
+   RESIZE
+===================================================== */
+
+function resizeNeural3D(){
+
+  if(
+    !state.neuralRenderer
+  ){
+
+    return;
+
+  }
+
+
+  const container =
+    $("neural3d");
+
+
+  const width =
+    container.clientWidth;
+
+
+  const height =
+    container.clientHeight;
+
+
+  state.neuralCamera.aspect =
+    width / height;
+
+
+  state.neuralCamera.updateProjectionMatrix();
+
+
+  state.neuralRenderer.setSize(
+    width,
+    height
+  );
+
+}
+
+
+/* =====================================================
+   CLEAR 3D
+===================================================== */
+
+function clearNeural3D(){
+
+  const group =
+    state.neuralGroup;
+
+
+  if(
+    !group
+  ){
+
+    return;
+
+  }
+
+
+  while(
+    group.children.length
+  ){
+
+    const object =
+      group.children.pop();
+
+
+    if(
+      object.geometry
+    ){
+
+      object.geometry.dispose();
+
+    }
+
+
+    if(
+      object.material
+    ){
+
+      if(
+        Array.isArray(
+          object.material
+        )
+      ){
+
+        object.material.forEach(
+          material =>
+            material.dispose()
+        );
+
+      }
+      else{
+
+        object.material.dispose();
+
+      }
+
+    }
+
+  }
+
+
+  state.neuralPulses =
+    [];
+
+  state.neuralNodes =
+    [];
+
+  state.neuralEdges =
+    [];
+
+}
+
+
+/* =====================================================
+   CREATE NODE
+===================================================== */
+
+function createNeuron(
+  position,
+  radius,
+  color,
+  label
+){
+
+  const geometry =
+    new THREE.SphereGeometry(
+      radius,
+      20,
+      20
+    );
+
+
+  const material =
+    new THREE.MeshBasicMaterial({
+      color
+    });
+
+
+  const mesh =
+    new THREE.Mesh(
+      geometry,
+      material
+    );
+
+
+  mesh.position.copy(
+    position
+  );
+
+
+  mesh.userData.label =
+    label;
+
+
+  state.neuralGroup.add(
+    mesh
+  );
+
+
+  state.neuralNodes.push(
+    mesh
+  );
+
+
+  return mesh;
+
+}
+
+
+/* =====================================================
+   CREATE CONNECTION
+===================================================== */
+
+function createConnection(
+  a,
+  b,
+  strength
+){
+
+  const geometry =
+    new THREE.BufferGeometry()
+      .setFromPoints([
+        a,
+        b
+      ]);
+
+
+  const material =
+    new THREE.LineBasicMaterial({
+
+      color:
+        new THREE.Color(
+          0x00b7ff
+        ),
+
+      transparent:true,
+
+      opacity:
+        0.15 +
+        strength * 0.55
+
+    });
+
+
+  const line =
+    new THREE.Line(
+      geometry,
+      material
+    );
+
+
+  state.neuralGroup.add(
+    line
+  );
+
+
+  state.neuralEdges.push({
+
+    a,
+
+    b,
+
+    strength,
+
+    line
+
+  });
+
+
+  return line;
+
+}
+
+
+/* =====================================================
+   CREATE PULSE
+===================================================== */
+
+function createPulse(
+  edge,
+  delay
+){
+
+  const geometry =
+    new THREE.SphereGeometry(
+      0.22,
+      12,
+      12
+    );
+
+
+  const material =
+    new THREE.MeshBasicMaterial({
+
+      color:
+        0x00f5ff
+
+    });
+
+
+  const pulse =
+    new THREE.Mesh(
+      geometry,
+      material
+    );
+
+
+  pulse.position.copy(
+    edge.a
+  );
+
+
+  pulse.userData = {
+
+    edge,
+
+    progress:
+      -delay,
+
+    speed:
+      0.003 +
+      edge.strength *
+      0.009
+
+  };
+
+
+  state.neuralGroup.add(
+    pulse
+  );
+
+
+  state.neuralPulses.push(
+    pulse
+  );
+
+}
+
+
+/* =====================================================
+   BUILD RETRIEVAL NETWORK
+===================================================== */
+
+function buildNeuralNetwork(
+  results,
+  question
+){
+
+  clearNeural3D();
+
+
+  $("neuralState")
+    .textContent =
+      "RETRIEVAL ACTIVE";
+
+
+  $("neuralInfo")
+    .textContent =
+      `${results.length} Memory-Knoten aktiviert`;
+
+
+  /*
+    ZENTRALES QUERY-NEURON
+  */
+
+  const queryPosition =
+    new THREE.Vector3(
+      0,
+      0,
+      0
+    );
+
+
+  const queryNode =
+    createNeuron(
+
+      queryPosition,
+
+      1.0,
+
+      0xff2d9b,
+
+      "QUERY"
+
+    );
+
+
+  /*
+    MEMORY-KNOTEN
+  */
+
+  const count =
+    results.length;
+
+
+  results.forEach(
+    (item,index)=>{
+
+      const angle =
+        (
+          index /
+          count
+        ) *
+        Math.PI *
+        2;
+
+
+      const radius =
+        10 +
+        (index % 3) * 2;
+
+
+      const height =
+        (
+          index % 2 === 0
+          ? 1
+          : -1
+        )
+        *
+        (
+          3 +
+          index * 0.7
+        );
+
+
+      const position =
+        new THREE.Vector3(
+
+          Math.cos(angle) *
+            radius,
+
+          height,
+
+          Math.sin(angle) *
+            radius
+
+        );
+
+
+      /*
+        Similarity bestimmt die
+        Stärke der Verbindung.
+      */
+
+      const strength =
+        Math.max(
+          0,
+          Math.min(
+            1,
+            item.score
+          )
+        );
+
+
+      const node =
+        createNeuron(
+
+          position,
+
+          0.35 +
+            strength * 0.65,
+
+          0x00f5ff,
+
+          item.record.memory_id
+
+        );
+
+
+      /*
+        Query → Memory
+      */
+
+      createConnection(
+
+        queryPosition,
+
+        position,
+
+        strength
+
+      );
+
+
+      /*
+        Signal läuft tatsächlich
+        über diese Verbindung.
+      */
+
+      createPulse(
+
+        {
+          a:
+            queryPosition.clone(),
+
+          b:
+            position.clone(),
+
+          strength
+
+        },
+
+        index * 0.35
+
+      );
+
+
+      /*
+        Zusatzverbindungen zwischen
+        benachbarten Memory-Knoten.
+
+        Das visualisiert die Netzwerkstruktur,
+        ist aber NICHT Bestandteil der
+        Similarity-Berechnung.
+      */
+
+      if(
+        index > 0
+      ){
+
+        const previous =
+          results[index - 1];
+
+
+        const previousAngle =
+          (
+            (index - 1) /
+            count
+          ) *
+          Math.PI *
+          2;
+
+
+        const previousRadius =
+          10 +
+          ((index - 1) % 3) * 2;
+
+
+        const previousHeight =
+          (
+            (index - 1) % 2 === 0
+            ? 1
+            : -1
+          )
+          *
+          (
+            3 +
+            (index - 1) * 0.7
+          );
+
+
+        const previousPosition =
+          new THREE.Vector3(
+
+            Math.cos(
+              previousAngle
+            ) *
+            previousRadius,
+
+            previousHeight,
+
+            Math.sin(
+              previousAngle
+            ) *
+            previousRadius
+
+          );
+
+
+        createConnection(
+
+          previousPosition,
+
+          position,
+
+          Math.min(
+            strength,
+            Math.max(
+              0,
+              previous.score
+            )
+          ) * 0.25
+
+        );
+
+      }
+
+    }
+  );
+
+
+  /*
+    Query-Zentrum leicht pulsieren lassen.
+  */
+
+  queryNode.userData.isQuery =
+    true;
+
+
+  log(
+    `3D Neural Network: ${results.length} Memory-Knoten`
+  );
+
+}
+
+
+/* =====================================================
+   3D ANIMATION
+===================================================== */
+
+function animateNeural3D(){
+
+  requestAnimationFrame(
+    animateNeural3D
+  );
+
+
+  const time =
+    performance.now();
+
+
+  /*
+    Query-Neuron pulsiert.
+  */
+
+  state.neuralNodes.forEach(
+    node => {
+
+      if(
+        node.userData.isQuery
+      ){
+
+        const pulse =
+          1 +
+          Math.sin(
+            time * 0.004
+          ) *
+          0.15;
+
+
+        node.scale.set(
+          pulse,
+          pulse,
+          pulse
+        );
+
+      }
+
+    }
+  );
+
+
+  /*
+    Signalpulse laufen
+    entlang der echten Kanten.
+  */
+
+  state.neuralPulses.forEach(
+    pulse => {
+
+      const data =
+        pulse.userData;
+
+
+      data.progress +=
+        data.speed;
+
+
+      if(
+        data.progress < 0
+      ){
+
+        pulse.visible =
+          false;
+
+        return;
+
+      }
+
+
+      pulse.visible =
+        true;
+
+
+      if(
+        data.progress > 1
+      ){
+
+        data.progress = 0;
+
+      }
+
+
+      const position =
+        new THREE.Vector3()
+          .lerpVectors(
+
+            data.edge.a,
+
+            data.edge.b,
+
+            data.progress
+
+          );
+
+
+      pulse.position.copy(
+        position
+      );
+
+    }
+  );
+
+
+  state.neuralControls.update();
+
+
+  state.neuralRenderer.render(
+    state.neuralScene,
+    state.neuralCamera
+  );
+
+}
+
+
 /* =====================================================
    RETRIEVAL UI
-====================================================== */
+===================================================== */
+
 async function runRetrieval(){
+
   const question =
     $("query")
       .value
       .trim();
+
+
   if(
     !question
   ){
+
     alert(
       "Bitte eine Anfrage eingeben."
     );
+
     return;
+
   }
+
+
   const topK =
     Number(
       $("topK").value
     );
+
+
   const dataset =
     $("datasetSelect").value;
+
+
   $("results").innerHTML =
-    "<div class='meta'>Embedding der Anfrage wird erzeugt...</div>";
+    "<div class='meta'>Query wird eingebettet und Memory durchsucht...</div>";
+
+
+  $("neuralState")
+    .textContent =
+      "EMBEDDING QUERY";
+
+
+  $("neuralInfo")
+    .textContent =
+      "384D Query-Vektor wird erzeugt";
+
+
   try{
-    const results =
+
+    const retrieval =
       await retrieve(
         question,
         topK,
         dataset
       );
+
+
+    const results =
+      retrieval.results;
+
+
     $("results").innerHTML =
       "";
+
+
     log(
       `Retrieval: "${question}"`
     );
+
+
     log(
       `${results.length} Treffer zurückgegeben.`
     );
+
+
+    /*
+      3D-System mit den echten
+      Retrieval-Ergebnissen aufbauen.
+    */
+
+    buildNeuralNetwork(
+      results,
+      question
+    );
+
+
     results.forEach(
       (item,index)=>{
+
         const record =
           item.record;
+
+
         const wrapper =
           document.createElement(
             "div"
           );
+
+
         wrapper.className =
           "result";
+
+
         const top =
           document.createElement(
             "div"
           );
+
+
         top.className =
           "result-top";
+
+
         top.innerHTML = `
+
           <div>
+
             <div class="rank">
               #${index+1}
             </div>
+
             <div class="meta">
               ${escapeHtml(
                 record.memory_id
               )}
             </div>
+
           </div>
+
           <div class="score">
             similarity =
             ${item.score.toFixed(6)}
           </div>
+
         `;
+
+
         const meta =
           document.createElement(
             "div"
           );
+
+
         meta.className =
           "meta";
+
+
         meta.textContent =
+
           `${record.source.file} · ` +
+
           `${record.source.sheet} · ` +
+
           `Excel-Zeile ${record.source.row}`;
+
+
         /*
-           MEMORY WIRD HIER ERZEUGT.
-           Es kommt nicht aus der DB.
+          MEMORY wird jetzt erst erzeugt.
         */
+
         const memory =
           document.createElement(
             "div"
           );
+
+
         memory.className =
           "memory-view";
+
+
         memory.textContent =
           createMemoryView(
             record
           );
+
+
+        /*
+          RAW DATA
+        */
+
         const raw =
           document.createElement(
             "details"
           );
+
+
         raw.className =
           "raw";
+
+
         const summary =
           document.createElement(
             "summary"
           );
+
+
         summary.textContent =
           "RAW DATA anzeigen";
+
+
         const pre =
           document.createElement(
             "pre"
           );
+
+
         pre.textContent =
           JSON.stringify(
             record.data,
             null,
             2
           );
+
+
         raw.appendChild(
           summary
         );
+
+
         raw.appendChild(
           pre
         );
+
+
         wrapper.appendChild(
           top
         );
+
+
         wrapper.appendChild(
           meta
         );
+
+
         wrapper.appendChild(
           memory
         );
+
+
         wrapper.appendChild(
           raw
         );
+
+
         $("results")
           .appendChild(
             wrapper
           );
+
       }
     );
-  }catch(error){
+
+
+  }
+  catch(error){
+
     console.error(
       error
     );
+
+
     $("results").innerHTML =
       `<div class="meta">
         Retrieval fehlgeschlagen:
@@ -1548,294 +3649,527 @@ async function runRetrieval(){
           error.message
         )}
       </div>`;
+
+
     log(
       "RETRIEVAL ERROR: " +
       error.message
     );
+
+
+    $("neuralState")
+      .textContent =
+        "ERROR";
+
+
+    $("neuralInfo")
+      .textContent =
+        error.message;
+
   }
+
 }
+
+
 /* =====================================================
    DATASET LIST
-====================================================== */
+===================================================== */
+
 async function refreshDatasets(){
+
   const records =
     await getAllRecords();
+
+
   const datasets =
     [
       ...new Set(
+
         records
+
           .map(
             record =>
               record.dataset_id
           )
+
           .filter(Boolean)
+
       )
     ]
     .sort();
+
+
   const select =
     $("datasetSelect");
+
+
   const old =
     select.value;
+
+
   select.innerHTML =
     "";
+
+
   const all =
     document.createElement(
       "option"
     );
+
+
   all.value =
     "";
+
+
   all.textContent =
     "ALLE DATASETS";
+
+
   select.appendChild(
     all
   );
+
+
   datasets.forEach(
     dataset => {
+
       const option =
         document.createElement(
           "option"
         );
+
+
       option.value =
         dataset;
+
+
       option.textContent =
         dataset;
+
+
       select.appendChild(
         option
       );
+
     }
   );
+
+
   if(
     datasets.includes(old)
   ){
+
     select.value =
       old;
+
   }
+
+
   $("datasetCount")
     .textContent =
-    datasets.length;
+      datasets.length;
+
 }
+
+
 /* =====================================================
    STATS
-====================================================== */
+===================================================== */
+
 async function refreshStats(){
+
   const records =
     await getAllRecords();
+
+
   $("recordCount")
     .textContent =
-    records.length;
+      records.length;
+
+
   $("dimension")
     .textContent =
-    CONFIG.DIMENSION;
+      CONFIG.DIMENSION;
+
+
   await refreshDatasets();
+
 }
+
+
 /* =====================================================
-   IMPORT ALL
-====================================================== */
+   IMPORT
+===================================================== */
+
 async function importFiles(){
+
   if(
     state.processing
   ){
+
     return;
+
   }
+
+
   const files =
     $("fileInput").files;
+
+
   if(
     !files.length
   ){
+
     alert(
       "Bitte mindestens eine Datei auswählen."
     );
+
     return;
+
   }
+
+
   state.processing =
     true;
+
+
   $("importButton")
     .disabled =
-    true;
+      true;
+
+
   setStatus(
     "IMPORT",
     "busy"
   );
+
+
   try{
+
     await loadEmbeddingModel();
+
+
     for(
       const file
       of files
     ){
+
       await importFile(
         file
       );
+
     }
+
+
     await refreshStats();
+
+
     setStatus(
       "READY"
     );
+
+
     log(
       "IMPORT ABGESCHLOSSEN."
     );
-  }catch(error){
+
+  }
+  catch(error){
+
     console.error(
       error
     );
+
+
     setStatus(
       "ERROR",
       "error"
     );
+
+
     log(
       "IMPORT ERROR: " +
       error.message
     );
-  }finally{
+
+  }
+  finally{
+
     state.processing =
       false;
+
+
     $("importButton")
       .disabled =
-      false;
+        false;
+
   }
+
 }
+
+
 /* =====================================================
    DATABASE RESET
-====================================================== */
+===================================================== */
+
 async function resetDatabase(){
+
   const answer =
     confirm(
       "Alle gespeicherten Memory Records löschen?"
     );
+
+
   if(
     !answer
   ){
+
     return;
+
   }
+
+
   try{
+
     await clearDB();
+
+
     $("results")
       .innerHTML =
-      "";
+        "";
+
+
+    clearNeural3D();
+
+
+    $("neuralState")
+      .textContent =
+        "WAITING FOR QUERY";
+
+
+    $("neuralInfo")
+      .textContent =
+        "Keine Aktivierung";
+
+
     await refreshStats();
+
+
     log(
       "Datenbank gelöscht."
     );
-  }catch(error){
+
+  }
+  catch(error){
+
     log(
       "DELETE ERROR: " +
       error.message
     );
+
   }
+
 }
+
+
 /* =====================================================
    HTML ESCAPE
-====================================================== */
+===================================================== */
+
 function escapeHtml(value){
+
   return String(
     value ?? ""
   )
+
   .replaceAll(
     "&",
     "&amp;"
   )
+
   .replaceAll(
     "<",
     "&lt;"
   )
+
   .replaceAll(
     ">",
     "&gt;"
   )
+
   .replaceAll(
     '"',
     "&quot;"
   )
+
   .replaceAll(
     "'",
     "&#039;"
   );
+
 }
+
+
 /* =====================================================
    EVENTS
-====================================================== */
+===================================================== */
+
 $("modelButton")
   .addEventListener(
     "click",
     async ()=>{
+
       try{
+
         await loadEmbeddingModel();
-      }catch(error){
-        // bereits geloggt
+
       }
+      catch(error){
+
+        /* bereits geloggt */
+
+      }
+
     }
   );
+
+
 $("importButton")
   .addEventListener(
     "click",
     importFiles
   );
+
+
 $("retrieveButton")
   .addEventListener(
     "click",
     runRetrieval
   );
+
+
 $("clearButton")
   .addEventListener(
     "click",
     resetDatabase
   );
+
+
 $("query")
   .addEventListener(
     "keydown",
     event => {
+
       if(
         event.key ===
         "Enter"
       ){
+
         runRetrieval();
+
       }
+
     }
   );
+
+
 /* =====================================================
    PUBLIC API
-====================================================== */
+===================================================== */
+
 window.NEURAL_MEMORY = {
+
   state,
+
   loadEmbeddingModel,
+
   embedPassage,
+
   embedQuery,
+
   createMemoryText,
+
   createMemoryView,
+
   cosine,
+
   retrieve,
-  getAllRecords
+
+  getAllRecords,
+
+  buildNeuralNetwork
+
 };
+
+
 /* =====================================================
    INIT
-====================================================== */
+===================================================== */
+
 async function init(){
+
   try{
+
     await openDB();
+
+
     await refreshStats();
+
+
+    initNeural3D();
+
+
     log(
-      "NEURAL MEMORY v2.0 bereit."
+      "NEURAL MEMORY v2.1 bereit."
     );
+
+
     log(
-      "Speicher: RAW DATA + EMBEDDING."
+      "Gespeichert: RAW DATA + EMBEDDING."
     );
+
+
     log(
-      "Memory-Darstellung: nur zur Laufzeit."
+      "Nicht gespeichert: MEMORY TEXT."
     );
+
+
+    log(
+      "MEMORY wird bei Anzeige aus RAW DATA erzeugt."
+    );
+
+
+    log(
+      "3D-System wartet auf Retrieval."
+    );
+
+
     log(
       "LLM ist nicht Bestandteil des Runtime-Retrievals."
     );
-  }catch(error){
+
+  }
+  catch(error){
+
     setStatus(
       "ERROR",
       "error"
     );
+
+
     log(
       "INIT ERROR: " +
       error.message
     );
+
   }
+
 }
+
+
 init();
+
 </script>
+
 </body>
 </html>
