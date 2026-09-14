@@ -2,5503 +2,2897 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>LV GmbH — DATENBANK</title>
-<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>NEURAL MEMORY — Embedding RAG Lab</title>
 
 <style>
 :root{
---bg:#05050a;
---panel:#0c0c14;
---panel2:#10101a;
---line:#222233;
---text:#f2f2f7;
---muted:#7a7a90;
---acid:#00e5a0;
---pink:#e20074;
---cyan:#00c8ff;
---red:#ff3b6b;
---orange:#ff9f1c;
+  --bg:#05070a;
+  --panel:#0b1016;
+  --panel2:#0f151c;
+  --line:#1b2935;
+  --text:#d8e4ec;
+  --muted:#667988;
+  --cyan:#00eaff;
+  --pink:#ff2aa8;
+  --green:#4ade80;
+  --yellow:#f5d76e;
+  --red:#ff5577;
 }
 
 *{
-box-sizing:border-box;
-margin:0;
-padding:0
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  min-height:100%;
+  background:
+    radial-gradient(circle at 20% 0%,rgba(0,234,255,.06),transparent 35%),
+    radial-gradient(circle at 90% 20%,rgba(255,42,168,.05),transparent 30%),
+    var(--bg);
+  color:var(--text);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
 
 body{
-background:
-radial-gradient(ellipse at 15% 0%,rgba(226,0,116,.06),transparent 55%),
-radial-gradient(ellipse at 85% 100%,rgba(0,200,255,.05),transparent 50%),
-linear-gradient(rgba(0,200,255,.025) 1px,transparent 1px),
-linear-gradient(90deg,rgba(226,0,116,.02) 1px,transparent 1px),
-var(--bg);
-background-size:100% 100%,100% 100%,42px 42px,42px 42px;
-color:var(--text);
-font-family:"Courier New",monospace;
-min-height:100vh
+  min-height:100vh;
 }
 
-header{
-min-height:82px;
-padding:16px 22px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:16px;
-border-bottom:2px solid var(--pink);
-background:#07070d;
-position:sticky;
-top:0;
-z-index:100;
-box-shadow:0 0 28px rgba(226,0,116,.22)
-}
-
-.brand-main{
-font-weight:900;
-font-size:22px;
-color:#fff
-}
-
-.brand-sub{
-margin-top:5px;
-color:var(--cyan);
-font-size:10px;
-letter-spacing:3px
-}
-
-.brand-divider{
-color:var(--pink)
-}
-
-nav{
-display:flex;
-gap:8px;
-flex-wrap:wrap
+button,
+textarea,
+input{
+  font:inherit;
 }
 
 button{
-cursor:pointer;
-font-family:inherit
+  border:1px solid var(--line);
+  background:#0b1219;
+  color:var(--text);
+  border-radius:9px;
+  padding:10px 13px;
+  cursor:pointer;
+  transition:.15s ease;
 }
 
-.nav,.tab,.examples button{
-padding:11px 14px;
-background:#0a0a12;
-color:#888;
-border:1px solid #2a2a3a;
-font-weight:900;
-font-size:10px;
-letter-spacing:1px
+button:hover:not(:disabled){
+  border-color:#35505f;
+  background:#101b24;
 }
 
-.nav.active,.tab.active{
-background:var(--pink);
-color:#fff;
-border-color:var(--pink)
+button:disabled{
+  opacity:.35;
+  cursor:not-allowed;
 }
 
-.nav:hover,.tab:hover{
-border-color:var(--cyan);
-color:var(--cyan)
+button.primary{
+  border-color:var(--cyan);
+  color:#001317;
+  background:var(--cyan);
+  font-weight:700;
 }
 
-.status-db{
-font-size:9px;
-color:#777;
-white-space:nowrap
+button.pink{
+  border-color:var(--pink);
+  color:#fff;
+  background:rgba(255,42,168,.1);
 }
 
-.status-db span{
-display:inline-block;
-width:8px;
-height:8px;
-border-radius:50%;
-background:var(--acid);
-margin-right:5px
+button.green{
+  border-color:var(--green);
+  color:var(--green);
+  background:rgba(74,222,128,.06);
 }
 
-main{
-max-width:1150px;
-margin:auto;
-padding:26px 16px 90px
+button.full{
+  width:100%;
 }
 
-.view{
-display:none
+.app{
+  width:min(1500px,100%);
+  margin:auto;
+  padding:22px;
 }
 
-.view.active{
-display:block
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:20px;
+  margin-bottom:18px;
 }
 
-.head{
-margin-bottom:24px;
-padding-bottom:18px;
-border-bottom:1px solid #1e1e2e
-}
-
-.kicker{
-color:var(--pink);
-font-weight:900;
-font-size:11px;
-letter-spacing:4px
+.brand{
+  font-size:10px;
+  letter-spacing:.24em;
+  color:var(--cyan);
 }
 
 h1{
-margin-top:10px;
-font-size:clamp(30px,5.8vw,58px);
-line-height:.9;
-letter-spacing:-3px
+  margin:5px 0 0;
+  font-size:25px;
+  font-weight:500;
+  letter-spacing:-.03em;
 }
 
-.card{
-background:var(--panel);
-border:1px solid #222236;
-box-shadow:6px 6px #000;
-margin-bottom:20px
-}
-
-.card-head{
-padding:15px 18px;
-border-bottom:1px solid #1e1e2e;
-display:flex;
-justify-content:space-between;
-gap:12px;
-font-weight:900;
-font-size:11px;
-color:var(--cyan)
-}
-
-.card-body{
-padding:18px
-}
-
-.actions{
-display:flex;
-gap:12px;
-margin-top:16px;
-flex-wrap:wrap
-}
-
-.btn{
-padding:14px 20px;
-background:var(--pink);
-color:#fff;
-border:1px solid var(--pink);
-font-weight:900;
-font-size:11px;
-letter-spacing:1px;
-box-shadow:4px 4px #000;
-min-height:48px
-}
-
-.btn.cyan{
-background:var(--cyan);
-color:#000;
-border-color:var(--cyan)
-}
-
-.btn.secondary{
-background:#0a0a14;
-color:#ccc;
-border-color:#3a3a50
-}
-
-.btn:disabled{
-opacity:.4;
-cursor:not-allowed
+.subtitle{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:11px;
 }
 
 .status{
-margin-top:16px;
-padding:14px;
-border:1px solid #2a2a40;
-min-height:46px;
-background:#08080f;
-font-size:11px;
-line-height:1.5;
-white-space:pre-wrap
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:8px 12px;
+  color:var(--muted);
+  font-size:10px;
+  white-space:nowrap;
 }
 
-.status.ok{
-color:var(--acid);
-border-color:var(--acid)
+.status.ready{
+  color:var(--green);
+  border-color:rgba(74,222,128,.4);
+}
+
+.status.loading{
+  color:var(--yellow);
+  border-color:rgba(245,215,110,.4);
 }
 
 .status.error{
-color:var(--red);
-border-color:var(--red)
+  color:var(--red);
+  border-color:rgba(255,85,119,.4);
 }
 
-.status.warn{
-color:var(--orange);
-border-color:var(--orange)
+.layout{
+  display:grid;
+  grid-template-columns:
+    minmax(300px,1fr)
+    minmax(300px,1fr)
+    minmax(300px,1fr);
+  gap:12px;
 }
 
-.notice{
-padding:14px;
-border-left:3px solid var(--pink);
-background:#0a0a12;
-color:#999;
-font-size:11px;
-line-height:1.55;
-margin-bottom:16px
+.card{
+  background:
+    linear-gradient(145deg,rgba(15,22,29,.97),rgba(8,12,17,.97));
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:15px;
+  min-width:0;
 }
 
-textarea,
-.query-input,
-.search,
-.field input,
-.field select{
-width:100%;
-padding:13px;
-background:#030308;
-color:#fff;
-border:1px solid #2a2a3a;
-outline:none;
-font:11px monospace
+.card + .card{
+  margin-top:12px;
+}
+
+.card-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.card-title b{
+  font-size:10px;
+  letter-spacing:.15em;
+  font-weight:600;
+  color:#9db1bf;
+}
+
+.card-title span{
+  font-size:9px;
+  color:var(--muted);
 }
 
 textarea{
-min-height:280px;
-resize:vertical;
-color:var(--acid)
+  width:100%;
+  min-height:120px;
+  resize:vertical;
+  outline:none;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:#05090d;
+  color:var(--text);
+  padding:11px;
+  font-size:11px;
+  line-height:1.55;
 }
 
-textarea:focus,
-.query-input:focus,
-.search:focus,
-.field input:focus,
-.field select:focus{
-border-color:var(--cyan)
+textarea:focus{
+  border-color:#31515f;
 }
 
-.stats{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:12px;
-margin-bottom:20px
+.vector-input{
+  min-height:190px;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+  font-size:10px;
 }
 
-.stat{
-padding:18px;
-background:#0a0a12;
-border:1px solid #222236
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:9px;
 }
 
-.stat-label{
-color:var(--muted);
-font-size:9px;
-letter-spacing:2px
+.actions button{
+  flex:1;
+  min-width:130px;
 }
 
-.stat-value{
-margin-top:8px;
-font-size:30px;
-font-weight:900
+.hint{
+  margin-top:8px;
+  color:#536775;
+  font-size:9px;
+  line-height:1.5;
 }
 
-.toolbar{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-margin-bottom:14px
+.mode{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  margin-bottom:10px;
 }
 
-.search{
-margin-left:auto;
-min-width:230px
+.mode button{
+  font-size:9px;
+  letter-spacing:.08em;
 }
 
-.table-wrap{
-overflow:auto
+.mode button.active{
+  border-color:var(--cyan);
+  color:var(--cyan);
+  background:rgba(0,234,255,.06);
 }
 
-table{
-width:100%;
-border-collapse:collapse;
-font-size:11px
+.pipeline{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:5px;
+  margin-top:12px;
 }
 
-th{
-padding:11px;
-text-align:left;
-white-space:nowrap;
-color:var(--cyan);
-background:#08080f;
-border-bottom:2px solid var(--cyan);
-font-size:9px
+.pipe{
+  padding:9px 5px;
+  border:1px solid #172630;
+  background:#070b10;
+  text-align:center;
+  font-size:8px;
+  color:#526775;
 }
 
-td{
-padding:10px;
-border-bottom:1px solid #1a1a28;
-vertical-align:top
+.pipe.active{
+  color:var(--cyan);
+  border-color:var(--cyan);
 }
 
-tr:hover{
-background:rgba(226,0,116,.04)
+.pipe.done{
+  color:var(--green);
+  border-color:rgba(74,222,128,.45);
 }
 
-.mono{
-color:var(--cyan)
+.pipe-arrow{
+  display:none;
 }
 
-.good{
-color:var(--acid)
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
 }
 
-.bad{
-color:var(--red)
+.metric{
+  background:#070b10;
+  border:1px solid #182631;
+  border-radius:9px;
+  padding:10px;
 }
 
-.warn{
-color:var(--pink)
+.metric small{
+  display:block;
+  color:#536977;
+  font-size:8px;
+  letter-spacing:.08em;
 }
 
-.ambiguous{
-color:var(--orange)
+.metric strong{
+  display:block;
+  margin-top:4px;
+  font-size:18px;
+  font-weight:500;
 }
 
-.badge{
-display:inline-block;
-padding:4px 7px;
-border:1px solid currentColor;
-font-size:8px;
-font-weight:900
+.metric strong.cyan{
+  color:var(--cyan);
+}
+
+.metric strong.green{
+  color:var(--green);
+}
+
+.metric strong.pink{
+  color:var(--pink);
+}
+
+.vector-preview{
+  background:#05090d;
+  border:1px solid #172631;
+  border-radius:9px;
+  padding:10px;
+  min-height:180px;
+  max-height:330px;
+  overflow:auto;
+  font:
+    9px/1.55
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  color:#8298a6;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+.vector-preview .num{
+  color:var(--cyan);
+}
+
+.norm{
+  display:flex;
+  justify-content:space-between;
+  border-top:1px solid #182631;
+  margin-top:9px;
+  padding-top:8px;
+  font-size:9px;
+  color:var(--muted);
+}
+
+.norm b{
+  color:var(--green);
+}
+
+.space{
+  height:310px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid #172631;
+  border-radius:10px;
+  background:
+    linear-gradient(rgba(0,234,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,234,255,.025) 1px,transparent 1px),
+    #04080c;
+  background-size:25px 25px;
+}
+
+.space canvas{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+.space-label{
+  position:absolute;
+  left:10px;
+  top:9px;
+  font-size:8px;
+  letter-spacing:.12em;
+  color:#506571;
+  pointer-events:none;
+}
+
+.space-note{
+  position:absolute;
+  right:10px;
+  bottom:8px;
+  color:#465c69;
+  font-size:8px;
+  pointer-events:none;
+}
+
+.results{
+  display:grid;
+  gap:7px;
+  max-height:420px;
+  overflow:auto;
+}
+
+.result{
+  border:1px solid #192832;
+  border-radius:9px;
+  padding:10px;
+  background:#070b10;
+  cursor:pointer;
+}
+
+.result:hover{
+  border-color:#304956;
+}
+
+.result.top{
+  border-color:rgba(0,234,255,.5);
+  box-shadow:0 0 18px rgba(0,234,255,.04);
+}
+
+.result-head{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.result-id{
+  color:var(--cyan);
+  font:
+    9px
+    ui-monospace,
+    monospace;
+}
+
+.score{
+  color:var(--green);
+  font:
+    10px
+    ui-monospace,
+    monospace;
+}
+
+.result-text{
+  margin-top:6px;
+  font-size:10px;
+  line-height:1.45;
+  color:#b4c4ce;
+}
+
+.result-meta{
+  display:flex;
+  justify-content:space-between;
+  margin-top:7px;
+  color:#506571;
+  font-size:8px;
+}
+
+.memory-list{
+  display:grid;
+  gap:6px;
+  max-height:330px;
+  overflow:auto;
+}
+
+.memory-item{
+  border:1px solid #182630;
+  border-radius:8px;
+  padding:9px;
+  background:#070b10;
+  cursor:pointer;
+}
+
+.memory-item:hover{
+  border-color:#304956;
+}
+
+.memory-item-head{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.memory-item-id{
+  color:var(--pink);
+  font:
+    8px
+    ui-monospace,
+    monospace;
+}
+
+.memory-item-date{
+  color:#485d69;
+  font-size:8px;
+}
+
+.memory-item-text{
+  margin-top:5px;
+  color:#9badb7;
+  font-size:9px;
+  line-height:1.4;
+}
+
+.log{
+  background:#04070a;
+  border:1px solid #16242d;
+  border-radius:9px;
+  padding:10px;
+  height:180px;
+  overflow:auto;
+  font:
+    9px/1.65
+    ui-monospace,
+    monospace;
+  color:#627985;
+}
+
+.log .ok{
+  color:var(--green);
+}
+
+.log .info{
+  color:var(--cyan);
+}
+
+.log .warn{
+  color:var(--yellow);
+}
+
+.log .err{
+  color:var(--red);
+}
+
+.file{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:70px;
+  border:1px dashed #29404d;
+  border-radius:9px;
+  cursor:pointer;
+  color:#718692;
+  font-size:10px;
+  text-align:center;
+  padding:10px;
+}
+
+.file:hover{
+  border-color:var(--cyan);
+  color:var(--cyan);
+}
+
+.file input{
+  display:none;
+}
+
+.file-name{
+  margin-top:7px;
+  color:var(--green);
+  font-size:9px;
+  word-break:break-all;
 }
 
 .empty{
-padding:32px;
-text-align:center;
-color:var(--muted);
-font-size:11px
+  padding:28px 10px;
+  text-align:center;
+  color:#435661;
+  font-size:10px;
+  border:1px dashed #17262f;
+  border-radius:9px;
+}
+
+.footer{
+  margin-top:14px;
+  text-align:center;
+  color:#3f535e;
+  font-size:8px;
+  letter-spacing:.08em;
 }
 
 .hidden{
-display:none!important
+  display:none!important;
 }
 
-.field-grid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:14px
-}
+@media(max-width:1100px){
+  .layout{
+    grid-template-columns:1fr 1fr;
+  }
 
-.field{
-display:flex;
-flex-direction:column;
-gap:7px
-}
-
-.field label{
-color:var(--muted);
-font-size:9px;
-letter-spacing:2px;
-font-weight:900
-}
-
-.plan{
-margin-top:20px;
-padding:16px;
-background:#020206;
-border:1px solid var(--cyan);
-color:var(--cyan);
-font-size:10px;
-white-space:pre-wrap;
-overflow:auto
-}
-
-.upload-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:18px
-}
-
-.upload-card{
-background:var(--panel2);
-border:1px solid #222236;
-padding:22px;
-min-height:190px
-}
-
-.upload-card h3{
-font-size:17px;
-margin-bottom:5px
-}
-
-.upload-card .sub{
-color:var(--muted);
-font-size:10px;
-margin-bottom:15px
-}
-
-.upload-zone{
-border:2px dashed #33334a;
-padding:30px;
-text-align:center;
-cursor:pointer;
-transition:.15s ease;
-user-select:none
-}
-
-.upload-zone:hover{
-border-color:var(--cyan);
-background:rgba(0,200,255,.025)
-}
-
-.upload-zone input{
-display:none
-}
-
-.json-upload-zone{
-border:2px dashed #33334a;
-padding:55px 25px;
-text-align:center;
-cursor:pointer;
-transition:.15s ease;
-user-select:none
-}
-
-.json-upload-zone:hover{
-border-color:var(--cyan);
-background:rgba(0,200,255,.025)
-}
-
-.json-upload-zone input{
-display:none
-}
-
-.json-upload-title{
-font-size:16px;
-font-weight:900;
-color:#fff
-}
-
-.json-upload-sub{
-margin-top:10px;
-font-size:10px;
-color:var(--muted)
-}
-
-.meta-box{
-margin-top:15px;
-font-size:10px;
-line-height:1.7
-}
-
-.col-tags{
-display:flex;
-gap:6px;
-flex-wrap:wrap;
-margin-top:8px
-}
-
-.col-tag{
-padding:5px 8px;
-border:1px solid #2a2a40;
-color:var(--cyan);
-font-size:9px
-}
-
-.stepper{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-margin:20px 0 28px
-}
-
-.step-item{
-padding:9px 12px;
-border:1px solid #2a2a40;
-color:#555;
-font-size:9px;
-font-weight:900
-}
-
-.step-item.active{
-color:var(--cyan);
-border-color:var(--cyan)
-}
-
-.step-item.done{
-color:var(--pink);
-border-color:var(--pink)
-}
-
-.terminal{
-background:#020206;
-border:1px solid #222240;
-padding:16px;
-color:var(--acid);
-font-size:10px;
-line-height:1.45;
-max-height:500px;
-overflow:auto;
-white-space:pre-wrap;
-word-break:break-word
-}
-
-.policy-card{
-background:#0a0a12;
-border:1px solid #2a2a40;
-padding:16px;
-margin-bottom:12px;
-display:flex;
-justify-content:space-between;
-gap:15px;
-flex-wrap:wrap
-}
-
-.policy-meta{
-font-size:10px;
-line-height:1.6
-}
-
-.auto-badge{
-display:inline-block;
-padding:5px 9px;
-border:1px solid var(--acid);
-color:var(--acid);
-font-size:8px;
-font-weight:900;
-letter-spacing:1px;
-margin-bottom:10px
-}
-
-.flow-box{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:10px;
-margin:18px 0
-}
-
-.flow-item{
-padding:14px;
-background:#08080f;
-border:1px solid #25253a;
-font-size:9px;
-line-height:1.5
-}
-
-.flow-number{
-font-size:18px;
-font-weight:900;
-color:var(--pink);
-margin-bottom:6px
-}
-
-@media(max-width:900px){
-
-.stats{
-grid-template-columns:repeat(2,1fr)
-}
-
-.flow-box{
-grid-template-columns:repeat(2,1fr)
-}
-
+  .layout > :last-child{
+    grid-column:1/-1;
+  }
 }
 
 @media(max-width:720px){
+  .app{
+    padding:12px;
+  }
 
-header{
-flex-direction:column;
-align-items:flex-start
-}
+  header{
+    align-items:flex-start;
+    flex-direction:column;
+  }
 
-.upload-grid,
-.field-grid{
-grid-template-columns:1fr
-}
+  .layout{
+    grid-template-columns:1fr;
+  }
 
-.stats{
-grid-template-columns:1fr 1fr
-}
+  .layout > :last-child{
+    grid-column:auto;
+  }
 
-.search{
-width:100%;
-margin-left:0
-}
+  .pipeline{
+    grid-template-columns:repeat(3,1fr);
+  }
 
-}
-
-@media(max-width:500px){
-
-.stats{
-grid-template-columns:1fr
-}
-
-.flow-box{
-grid-template-columns:1fr
-}
-
+  .metrics{
+    grid-template-columns:1fr 1fr 1fr;
+  }
 }
 </style>
 </head>
 
 <body>
 
+<div class="app">
+
 <header>
+  <div>
+    <div class="brand">NEURAL MEMORY // EMBEDDING LAB</div>
+    <h1>Geometrische Erinnerungssuche</h1>
+    <div class="subtitle">
+      Text → Embedding → Vektorraum → Cosine Search
+      · oder fertigen Vektor direkt als Query verwenden
+    </div>
+  </div>
 
-<div>
-
-<div class="brand-main">
-LV GmbH <span class="brand-divider">|</span> DATENBANK
-</div>
-
-<div class="brand-sub">
-BOOKING RECON // CYBERUNK
-</div>
-
-</div>
-
-<nav>
-
-<button class="nav active" data-view="import">↓</button>
-<button class="nav" data-view="database">▦</button>
-<button class="nav" data-view="query">⚡</button>
-<button class="nav" data-view="policies">▣</button>
-
-</nav>
-
-<div class="status-db">
-<span></span>INDEXEDDB LOCAL
-</div>
-
+  <div id="modelStatus" class="status">
+    MODEL OFFLINE
+  </div>
 </header>
 
 
-<main>
+<div class="layout">
 
+<!-- ========================================================= -->
+<!-- LEFT COLUMN -->
+<!-- ========================================================= -->
 
-<!-- =====================================================
-     IMPORT
-====================================================== -->
+<section>
 
-<section id="view-import" class="view active">
+  <div class="card">
 
-<div class="head">
+    <div class="card-title">
+      <b>01 // TEXT → VECTOR</b>
+      <span>E5 MULTILINGUAL</span>
+    </div>
 
-<div class="kicker">
-LOKALER WORKFLOW
-</div>
+    <textarea
+      id="memoryText"
+      placeholder="Text eingeben, der als Erinnerung gespeichert werden soll..."
+    ></textarea>
 
-<h1>
-TABELLEN<br>
-AUFBEREITEN
-</h1>
+    <div class="actions">
+      <button id="generateEmbedding" class="primary">
+        GENERATE EMBEDDING
+      </button>
 
-</div>
+      <button id="storeVector" class="green" disabled>
+        STORE VECTOR
+      </button>
+    </div>
 
+    <div class="pipeline">
+      <div id="pipeText" class="pipe">TEXT</div>
+      <div id="pipeToken" class="pipe">TOKENIZATION</div>
+      <div id="pipeModel" class="pipe">EMBEDDING MODEL</div>
+      <div id="pipeVector" class="pipe">VECTOR 384D</div>
+      <div id="pipeStore" class="pipe">VECTOR STORE</div>
+      <div id="pipeSearch" class="pipe">COSINE SEARCH</div>
+    </div>
 
-<div class="stepper">
+    <div class="hint">
+      Gespeicherte Texte werden mit
+      <b>passage:</b> vorbereitet und durch
+      multilingual-e5-small in einen 384-dimensionalen Vektor überführt.
+    </div>
 
-<div class="step-item active" data-step="1">
-01 TABELLEN
-</div>
+  </div>
 
-→
 
-<div class="step-item" data-step="2">
-02 LLM-AUFTRAG
-</div>
+  <div class="card">
 
-→
+    <div class="card-title">
+      <b>02 // VECTOR QUERY</b>
+      <span>DIRECT R³⁸⁴ INPUT</span>
+    </div>
 
-<div class="step-item" data-step="3">
-03 JSON
-</div>
+    <div class="mode">
+      <button id="modeManual" class="active">
+        MANUELLER VEKTOR
+      </button>
 
-→
+      <button id="modeFile">
+        VEKTORDATEI
+      </button>
+    </div>
 
-<div class="step-item" data-step="4">
-04 ABGLEICH
-</div>
 
-</div>
+    <div id="manualVectorPanel">
 
+      <textarea
+        id="vectorInput"
+        class="vector-input"
+        placeholder="384 Zahlen einfügen.
 
-<!-- =====================================================
-     STEP 1
-====================================================== -->
+Beispiele:
+[0.0123, -0.0441, 0.0932, ...]
 
-<div id="step1" class="step-panel">
+oder:
+0.0123 -0.0441 0.0932 ...
 
-<div class="notice">
+oder:
+0.0123, -0.0441, 0.0932, ..."
+      ></textarea>
 
-<span class="auto-badge">
-AUTOMATISCHE ANALYSE
-</span>
+      <div class="actions">
 
-<br>
+        <button
+          id="useManualVector"
+          class="pink"
+        >
+          USE VECTOR AS QUERY
+        </button>
 
-Der Kunde muss keine Fachfragen beantworten.
-Einfach die beiden Tabellen hochladen.
-Die Anwendung erkennt automatisch Dateityp, Spalten,
-Zeilen, mögliche Datumsfelder, Auftragsnummern und
-weitere strukturelle Merkmale.
+        <button id="clearVector">
+          CLEAR
+        </button>
 
-</div>
+      </div>
 
+    </div>
 
-<div class="flow-box">
 
-<div class="flow-item">
+    <div id="fileVectorPanel" class="hidden">
 
-<div class="flow-number">
-01
-</div>
+      <label class="file">
 
-Tabelle A hochladen
+        <input
+          type="file"
+          id="vectorFile"
+          accept=".json,.txt,.csv,.vec"
+        >
 
-</div>
+        <span>
+          VECTOR-DATEI AUSWÄHLEN<br>
+          <small>
+            JSON / TXT / CSV / VEC
+          </small>
+        </span>
 
-<div class="flow-item">
+      </label>
 
-<div class="flow-number">
-02
-</div>
+      <div
+        id="fileName"
+        class="file-name hidden"
+      ></div>
 
-Tabelle B hochladen
+      <div class="actions">
 
-</div>
+        <button
+          id="useFileVector"
+          class="pink"
+          disabled
+        >
+          USE FILE VECTOR AS QUERY
+        </button>
 
-<div class="flow-item">
+      </div>
 
-<div class="flow-number">
-03
-</div>
+      <div class="hint">
+        Die Datei wird als bereits vorhandener Embedding-Vektor
+        interpretiert. Es findet <b>keine erneute Embedding-Berechnung</b>
+        statt.
+      </div>
 
-LLM-Auftrag kopieren
+    </div>
 
-</div>
 
-<div class="flow-item">
+    <div class="hint">
+      Erwartet wird exakt
+      <b>384</b> Dimensionen.
+      Keine automatische Kürzung oder Auffüllung.
+    </div>
 
-<div class="flow-number">
-04
-</div>
+  </div>
 
-JSON-Datei erzeugen
 
-</div>
+  <div class="card">
 
-</div>
+    <div class="card-title">
+      <b>03 // QUERY VECTOR</b>
+      <span id="querySource">NO QUERY</span>
+    </div>
 
+    <div id="queryVectorPreview" class="vector-preview">
+      Noch kein Suchvektor vorhanden.
+    </div>
 
-<div class="upload-grid">
+    <div class="norm">
+      <span>L₂ NORM</span>
+      <b id="queryNorm">—</b>
+    </div>
 
+  </div>
 
-<div class="upload-card">
 
-<h3 style="color:var(--pink)">
-TABLE A
-</h3>
+  <div class="card">
 
-<div class="sub">
-z.B. ZDF BAD URACH
-</div>
+    <div class="card-title">
+      <b>04 // VECTOR SPACE</b>
+      <span>R³ VIEW</span>
+    </div>
 
-<div class="upload-zone" id="zoneA">
+    <div class="space">
 
-<strong>
-DATEI AUSWÄHLEN
-</strong>
+      <canvas id="spaceCanvas"></canvas>
 
-<br>
+      <div class="space-label">
+        v₁ / v₂ / v₃
+      </div>
 
-<small>
-CSV · XLSX · XLS · TSV
-</small>
+      <div class="space-note">
+        conceptual projection · NOT PCA
+      </div>
 
-<input
-id="fileA"
-type="file"
-accept=".csv,.xlsx,.xls,.tsv">
+    </div>
 
-</div>
+    <div class="hint">
+      Die Darstellung verwendet ausschließlich
+      <b>v₁, v₂, v₃</b>.
+      Sie ist keine Projektion des vollständigen
+      \(384\)-dimensionalen Raums mittels PCA, t-SNE oder UMAP.
+    </div>
 
-<div id="metaA" class="meta-box hidden">
-</div>
-
-</div>
-
-
-<div class="upload-card">
-
-<h3 style="color:var(--cyan)">
-TABLE B
-</h3>
-
-<div class="sub">
-z.B. SCHALTUNGSLISTE
-</div>
-
-<div class="upload-zone" id="zoneB">
-
-<strong>
-DATEI AUSWÄHLEN
-</strong>
-
-<br>
-
-<small>
-CSV · XLSX · XLS · TSV
-</small>
-
-<input
-id="fileB"
-type="file"
-accept=".csv,.xlsx,.xls,.tsv">
-
-</div>
-
-<div id="metaB" class="meta-box hidden">
-</div>
-
-</div>
-
-</div>
-
-
-<div class="actions">
-
-<button
-class="btn"
-id="btnToPrompt"
-disabled>
-
-LLM-AUFTRAG ERZEUGEN →
-
-</button>
-
-</div>
-
-
-<div id="step1Status" class="status">
-
-Beide Tabellen hochladen.
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-     STEP 2
-====================================================== -->
-
-<div id="step2" class="step-panel hidden">
-
-<div class="card">
-
-<div class="card-head">
-
-<strong>
-LLM-AUFTRAG
-</strong>
-
-<span>
-AUTOMATISCH ERZEUGT
-</span>
-
-</div>
-
-
-<div class="card-body">
-
-<div class="notice">
-
-Du musst hier nichts ausfüllen.
-Die Anwendung hat die Tabellen bereits analysiert
-und erstellt daraus einen vollständigen Auftrag für
-das LLM.
-
-Das LLM strukturiert die Daten.
-Der spätere Abgleich findet ausschließlich
-deterministisch in dieser Anwendung statt.
-
-</div>
-
-
-<div class="terminal" id="promptOutput">
-</div>
-
-
-<div class="actions">
-
-<button
-class="btn"
-id="btnCopyPrompt">
-
-📋 LLM-AUFTRAG KOPIEREN
-
-</button>
-
-
-<button
-class="btn secondary"
-id="btnBackToUpload">
-
-← TABELLEN
-
-</button>
-
-</div>
-
-
-<div id="promptStatus" class="status">
-
-Bereit.
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<div class="card-head">
-
-<strong>
-AUTOMATISCH ERKANNT
-</strong>
-
-<span>
-OHNE BENUTZERFRAGEN
-</span>
-
-</div>
-
-<div class="card-body">
-
-<div
-id="autoAnalysis"
-class="terminal">
-</div>
-
-</div>
-
-</div>
-
-
-<div class="actions">
-
-<button
-class="btn cyan"
-id="btnToJson">
-
-WEITER ZU JSON →
-
-</button>
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-     STEP 3
-====================================================== -->
-
-<div id="step3" class="step-panel hidden">
-
-<div class="card">
-
-<div class="card-head">
-
-<strong>
-LLM-JSON
-</strong>
-
-<span>
-DATEI-IMPORT / VALIDIERUNG
-</span>
-
-</div>
-
-
-<div class="card-body">
-
-
-<div class="notice">
-
-Das LLM hat das JSON erzeugt.
-
-Speichere die LLM-Ausgabe als
-<strong>.json</strong>-Datei
-und lade diese Datei hier hoch.
-
-<br><br>
-
-Die Anwendung liest die Datei lokal ein und prüft
-automatisch das definierte
-<strong>BOOKING_RECON</strong>-Format.
-
-<br><br>
-
-Originalwerte bleiben erhalten.
-
-</div>
-
-
-<div
-id="jsonUploadZone"
-class="json-upload-zone">
-
-<div class="json-upload-title">
-
-↓ JSON-DATEI AUSWÄHLEN
-
-</div>
-
-<div class="json-upload-sub">
-
-BOOKING_RECON JSON
-
-<br>
-
-ODER DATEI HIERHER ZIEHEN
-
-</div>
-
-<input
-id="jsonFile"
-type="file"
-accept=".json,application/json">
-
-</div>
-
-
-<div
-id="jsonFileMeta"
-class="meta-box hidden">
-</div>
-
-
-<div class="actions">
-
-
-<button
-class="btn"
-id="btnValidateJson"
-disabled>
-
-JSON VALIDIEREN
-
-</button>
-
-
-<button
-class="btn cyan hidden"
-id="btnImportJson">
-
-IN DATENBANK IMPORTIEREN
-
-</button>
-
-
-<button
-class="btn secondary"
-id="btnClearJson">
-
-DATEI ENTFERNEN
-
-</button>
-
-
-</div>
-
-
-<div
-id="jsonStatus"
-class="status">
-
-JSON-Datei auswählen.
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="actions">
-
-<button
-class="btn secondary"
-id="btnBackToPrompt">
-
-← LLM-AUFTRAG
-
-</button>
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-     STEP 4
-====================================================== -->
-
-<div id="step4" class="step-panel hidden">
-
-<div class="card">
-
-<div class="card-head">
-
-<strong>
-DATENBANK BEREIT
-</strong>
-
-<span>
-DETERMINISTISCH
-</span>
-
-</div>
-
-
-<div class="card-body">
-
-<div class="notice">
-
-Die Daten sind importiert.
-
-Der Kunde muss keine weitere Struktur oder
-Abgleichsregel festlegen.
-
-Die Anwendung verwendet die definierte
-BOOKING_RECON-Logik.
-
-KASSENABSCHLUSS wird automatisch aus dem normalen
-Buchungsvergleich ausgeschlossen.
-
-</div>
-
-
-<div class="stats">
-
-
-<div class="stat">
-
-<div class="stat-label">
-TABLE A
-</div>
-
-<div
-id="workflowCountA"
-class="stat-value">
-0
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-label">
-TABLE B
-</div>
-
-<div
-id="workflowCountB"
-class="stat-value">
-0
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-label">
-AUSGESCHLOSSEN
-</div>
-
-<div
-id="workflowExcluded"
-class="stat-value">
-0
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-label">
-STATUS
-</div>
-
-<div class="stat-value">
-READY
-</div>
-
-</div>
-
-</div>
-
-
-<div class="actions">
-
-<button
-class="btn"
-id="btnRunWorkflow">
-
-ABGLEICH STARTEN →
-
-</button>
-
-
-<button
-class="btn secondary"
-id="btnOpenDatabase">
-
-DATENBANK ÖFFNEN
-
-</button>
-
-</div>
-
-
-<div
-id="workflowStatus"
-class="status">
-
-Bereit für den Abgleich.
-
-</div>
-
-</div>
-
-</div>
-
-</div>
+  </div>
 
 </section>
 
 
-<!-- =====================================================
-     DATABASE
-====================================================== -->
+<!-- ========================================================= -->
+<!-- MIDDLE COLUMN -->
+<!-- ========================================================= -->
 
-<section id="view-database" class="view">
+<section>
 
-<div class="head">
+  <div class="card">
 
-<div class="kicker">
-GESPEICHERTE DATEN
-</div>
+    <div class="card-title">
+      <b>05 // SEMANTIC QUERY</b>
+      <span>TEXT → QUERY VECTOR</span>
+    </div>
 
-<h1>
-DATENBANK
-</h1>
+    <textarea
+      id="searchText"
+      placeholder="Wonach soll geometrisch gesucht werden?"
+    ></textarea>
 
-</div>
+    <div class="actions">
 
+      <button
+        id="semanticSearch"
+        class="primary"
+        disabled
+      >
+        SEARCH BY TEXT
+      </button>
 
-<div class="stats">
+    </div>
 
+    <div class="hint">
+      Der Suchtext wird mit
+      <b>query:</b> vorbereitet.
+      Danach erfolgt ausschließlich deterministische
+      Cosine-Suche gegen die gespeicherten Vektoren.
+    </div>
 
-<div class="stat">
-
-<div class="stat-label">
-TABLE A
-</div>
-
-<div
-id="tableACount"
-class="stat-value">
-0
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-label">
-TABLE B
-</div>
-
-<div
-id="tableBCount"
-class="stat-value">
-0
-</div>
-
-</div>
+  </div>
 
 
-<div class="stat">
+  <div class="card">
 
-<div class="stat-label">
-AKTIV
-</div>
+    <div class="card-title">
+      <b>06 // SEARCH ENGINE</b>
+      <span id="searchMode">IDLE</span>
+    </div>
 
-<div
-id="activeCount"
-class="stat-value">
-0
-</div>
+    <div class="metrics">
 
-</div>
+      <div class="metric">
+        <small>MEMORIES</small>
+        <strong
+          id="memoryCount"
+          class="pink"
+        >0</strong>
+      </div>
 
+      <div class="metric">
+        <small>DIMENSION</small>
+        <strong
+          id="dimension"
+          class="cyan"
+        >384</strong>
+      </div>
 
-<div class="stat">
+      <div class="metric">
+        <small>TOP SCORE</small>
+        <strong
+          id="topScore"
+          class="green"
+        >—</strong>
+      </div>
 
-<div class="stat-label">
-AUSSORTIERT
-</div>
+    </div>
 
-<div
-id="excludedCount"
-class="stat-value">
-0
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-label">
-ERGEBNISSE
-</div>
-
-<div
-id="differenceCount"
-class="stat-value">
-0
-</div>
-
-</div>
-
-</div>
+  </div>
 
 
-<div class="toolbar">
+  <div class="card">
 
-<button
-class="tab active"
-data-tab="tableA">
-TABLE A
-</button>
+    <div class="card-title">
+      <b>07 // COSINE RESULTS</b>
+      <span id="resultCount">0 RESULTS</span>
+    </div>
 
-<button
-class="tab"
-data-tab="tableB">
-TABLE B
-</button>
+    <div id="results" class="results">
 
-<button
-class="tab"
-data-tab="differences">
-ERGEBNISSE
-</button>
+      <div class="empty">
+        Noch keine Suche ausgeführt.
+      </div>
 
-<input
-id="dbSearch"
-class="search"
-placeholder="Datenbank durchsuchen...">
+    </div>
 
-</div>
+  </div>
 
 
-<div class="card">
+  <div class="card">
 
-<div class="table-wrap">
+    <div class="card-title">
+      <b>08 // MEMORY BANK</b>
+      <span>IN-MEMORY</span>
+    </div>
 
-<div id="databaseTable">
-</div>
+    <div
+      id="memoryList"
+      class="memory-list"
+    >
 
-</div>
+      <div class="empty">
+        Noch keine Erinnerungen gespeichert.
+      </div>
 
-</div>
+    </div>
+
+  </div>
 
 </section>
 
 
-<!-- =====================================================
-     QUERY
-====================================================== -->
+<!-- ========================================================= -->
+<!-- RIGHT COLUMN -->
+<!-- ========================================================= -->
 
-<section id="view-query" class="view">
+<section>
 
-<div class="head">
+  <div class="card">
 
-<div class="kicker">
-DETERMINISTISCHER ABGLEICH
-</div>
+    <div class="card-title">
+      <b>09 // CURRENT VECTOR</b>
+      <span>384D</span>
+    </div>
 
-<h1>
-VALIDIERUNG
-</h1>
+    <div id="vectorPreview" class="vector-preview">
+      Noch kein Embedding erzeugt.
+    </div>
 
-</div>
+    <div class="norm">
+      <span>L₂ NORM</span>
+      <b id="vectorNorm">—</b>
+    </div>
 
-
-<div class="card">
-
-<div class="card-head">
-
-<strong>
-ABGLEICH
-</strong>
-
-<span>
-KEIN LLM ZUR LAUFZEIT
-</span>
-
-</div>
+  </div>
 
 
-<div class="card-body">
+  <div class="card">
 
-<div class="notice">
+    <div class="card-title">
+      <b>10 // GEOMETRIC RETRIEVAL</b>
+      <span>DETERMINISTIC</span>
+    </div>
 
-Das LLM strukturiert die Daten.
-Der Abgleich selbst erfolgt ausschließlich
-durch fest definierte Regeln.
+    <div class="hint" style="margin-top:0">
 
-KASSENABSCHLUSS wird nicht als normale Buchung
-verglichen.
+      Jede gespeicherte Erinnerung besitzt einen Vektor
 
-Mehrfach vorhandene Auftragsnummern werden nicht
-automatisch als Fehler behandelt.
+      <br><br>
 
-</div>
+      \(v_j \in \mathbb{R}^{384}\)
 
+      <br><br>
 
-<div class="field-grid">
+      Der Query-Vektor ist
 
+      <br>
 
-<div class="field">
+      \(q \in \mathbb{R}^{384}\)
 
-<label>
-VON
-</label>
+      <br><br>
 
-<input
-id="dateFrom"
-type="date">
+      Für jede Erinnerung wird berechnet:
 
-</div>
+      <br><br>
 
+      <code>
+      cos(q,v) = (q·v)/(||q||₂ ||v||₂)
+      </code>
 
-<div class="field">
+      <br><br>
 
-<label>
-BIS
-</label>
+      Höherer Wert =
+      geometrisch näher am Query-Vektor.
 
-<input
-id="dateTo"
-type="date">
+    </div>
 
-</div>
+  </div>
 
 
-<div class="field">
+  <div class="card">
 
-<label>
-ABGLEICH-FELDER
-</label>
+    <div class="card-title">
+      <b>11 // SYSTEM LOG</b>
+      <span>TRACE</span>
+    </div>
 
-<input
-id="matchKeys"
-value="auftragsnummer">
+    <div id="log" class="log"></div>
 
-</div>
-
-
-<div class="field">
-
-<label>
-VERGLEICHSFELDER
-</label>
-
-<input
-id="numericFields"
-value="gesamt,gewinn,hw_bonus">
-
-</div>
-
-</div>
+  </div>
 
 
-<div class="actions">
+  <div class="card">
 
-<button
-id="runQuery"
-class="btn">
+    <div class="card-title">
+      <b>12 // ARCHITECTURE</b>
+      <span>NO LLM AT RUNTIME</span>
+    </div>
 
-ABGLEICH AUSFÜHREN
+    <div class="hint" style="margin-top:0">
 
-</button>
+      <b>TEXT QUERY</b>
+      <br>
+      Text → E5 → q
 
+      <br><br>
 
-<button
-id="resetConfig"
-class="btn secondary">
+      <b>VECTOR QUERY</b>
+      <br>
+      Vector → validation → q
 
-ZURÜCKSETZEN
+      <br><br>
 
-</button>
+      <b>RETRIEVAL</b>
+      <br>
+      q → cosine similarity → ranking
 
-</div>
+      <br><br>
 
-</div>
+      Der Retrieval-Schritt selbst benötigt
+      kein LLM.
 
-</div>
+    </div>
 
-
-<div
-id="queryPlan"
-class="plan hidden">
-</div>
-
-
-<div
-id="queryResults"
-class="card hidden">
-</div>
+  </div>
 
 </section>
 
-
-<!-- =====================================================
-     POLICIES
-====================================================== -->
-
-<section id="view-policies" class="view">
-
-<div class="head">
-
-<div class="kicker">
-ABGLEICH-PROFILE
-</div>
-
-<h1>
-POLICIES
-</h1>
-
 </div>
 
 
-<div class="card">
-
-<div class="card-head">
-
-<strong>
-GESPEICHERTE POLICIES
-</strong>
-
-</div>
-
-
-<div class="card-body">
-
-<div class="notice">
-
-Eine Policy beschreibt einen festgelegten Ablauf.
-Der Executor führt diesen Ablauf deterministisch aus.
-
-</div>
-
-
-<div id="policyList">
-</div>
-
-
-<button
-class="btn secondary"
-id="btnRefreshPolicies">
-
-AKTUALISIEREN
-
-</button>
-
-
-<div
-id="policyStatus"
-class="status">
-
-Bereit.
-
+<div class="footer">
+  NEURAL MEMORY · MULTILINGUAL-E5-SMALL · 384 DIMENSIONS · COSINE GEOMETRY
 </div>
 
 </div>
 
-</div>
 
-</section>
+<script type="module">
 
-</main>
+import { pipeline } from
+"https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
 
 
-<script>
+/* ============================================================
+   CONFIG
+============================================================ */
 
-/* =========================================================
-   DATENBANK
-========================================================= */
+const MODEL =
+  "Xenova/multilingual-e5-small";
 
-const DB_NAME="BOOKING_RECON_DB";
+const DIMENSION = 384;
 
-const DB_VERSION=4;
 
-const STORE_RECORDS="records";
+/* ============================================================
+   STATE
+============================================================ */
 
-const STORE_DIFFERENCES="differences";
+let extractor = null;
+let modelLoading = false;
+let modelReady = false;
 
-const STORE_POLICIES="policies";
+let currentVector = null;
+let queryVector = null;
 
-let database=null;
+let memory = [];
+let memoryCounter = 0;
 
-let state={
-records:[],
-differences:[],
-policies:[]
-};
+let lastResults = [];
 
-let currentTab="tableA";
+let loadedFileVector = null;
 
-const workflow={
-step:1,
-tableA:null,
-tableB:null,
-validatedPayload:null,
-lastImportResult:null
-};
 
+/* ============================================================
+   DOM
+============================================================ */
 
-/* =========================================================
-   INDEXEDDB
-========================================================= */
+const $ = id =>
+  document.getElementById(id);
 
-function openDatabase(){
+const modelStatus =
+  $("modelStatus");
 
-if(database)
-return Promise.resolve(database);
+const memoryText =
+  $("memoryText");
 
-return new Promise((resolve,reject)=>{
+const searchText =
+  $("searchText");
 
-const req=indexedDB.open(
-DB_NAME,
-DB_VERSION
-);
+const vectorInput =
+  $("vectorInput");
 
-req.onupgradeneeded=e=>{
+const vectorFile =
+  $("vectorFile");
 
-const db=e.target.result;
+const fileName =
+  $("fileName");
 
-if(!db.objectStoreNames.contains(STORE_RECORDS)){
+const generateEmbedding =
+  $("generateEmbedding");
 
-const s=db.createObjectStore(
-STORE_RECORDS,
-{
-keyPath:"id",
-autoIncrement:true
-}
-);
+const storeVector =
+  $("storeVector");
 
-s.createIndex(
-"source_table",
-"source_table",
-{unique:false}
-);
+const semanticSearch =
+  $("semanticSearch");
 
-s.createIndex(
-"record_id",
-"record_id",
-{unique:false}
-);
+const useManualVector =
+  $("useManualVector");
 
-s.createIndex(
-"date",
-"date",
-{unique:false}
-);
+const useFileVector =
+  $("useFileVector");
 
-}
+const clearVector =
+  $("clearVector");
 
-if(!db.objectStoreNames.contains(STORE_DIFFERENCES)){
+const manualVectorPanel =
+  $("manualVectorPanel");
 
-db.createObjectStore(
-STORE_DIFFERENCES,
-{
-keyPath:"difference_id"
-}
-);
+const fileVectorPanel =
+  $("fileVectorPanel");
 
-}
+const vectorPreview =
+  $("vectorPreview");
 
-if(!db.objectStoreNames.contains(STORE_POLICIES)){
+const queryVectorPreview =
+  $("queryVectorPreview");
 
-const s=db.createObjectStore(
-STORE_POLICIES,
-{
-keyPath:"id",
-autoIncrement:true
-}
-);
+const vectorNorm =
+  $("vectorNorm");
 
-s.createIndex(
-"policy_id",
-"policy_id",
-{unique:false}
-);
+const queryNorm =
+  $("queryNorm");
 
-}
+const memoryList =
+  $("memoryList");
 
-};
+const results =
+  $("results");
 
-req.onsuccess=()=>{
+const logEl =
+  $("log");
 
-database=req.result;
+const spaceCanvas =
+  $("spaceCanvas");
 
-database.onversionchange=()=>{
 
-database.close();
+/* ============================================================
+   LOGGING
+============================================================ */
 
-database=null;
+function log(message,type="info"){
 
-};
+  const row =
+    document.createElement("div");
 
-resolve(database);
+  row.className = type;
 
-};
-
-req.onerror=()=>reject(req.error);
-
-});
-
-}
-
-
-function getAll(storeName){
-
-return new Promise((resolve,reject)=>{
-
-const tx=database.transaction(
-storeName,
-"readonly"
-);
-
-const req=
-tx.objectStore(storeName).getAll();
-
-req.onsuccess=()=>{
-resolve(req.result||[]);
-};
-
-req.onerror=()=>{
-reject(req.error);
-};
-
-});
-
-}
-
-
-function clearStore(name){
-
-return new Promise((resolve,reject)=>{
-
-const tx=
-database.transaction(
-name,
-"readwrite"
-);
-
-tx.objectStore(name).clear();
-
-tx.oncomplete=resolve;
-
-tx.onerror=()=>{
-reject(tx.error);
-};
-
-});
-
-}
-
-
-async function refresh(){
-
-await openDatabase();
-
-state.records=
-await getAll(STORE_RECORDS);
-
-state.differences=
-await getAll(STORE_DIFFERENCES);
-
-state.policies=
-await getAll(STORE_POLICIES);
-
-const a=
-state.records.filter(
-x=>x.source_table==="TABLE_A"
-);
-
-const b=
-state.records.filter(
-x=>x.source_table==="TABLE_B"
-);
-
-document.getElementById(
-"tableACount"
-).textContent=a.length;
-
-document.getElementById(
-"tableBCount"
-).textContent=b.length;
-
-const excluded=
-state.records.filter(
-x=>x.record_type==="KASSENABSCHLUSS"
-);
-
-document.getElementById(
-"excludedCount"
-).textContent=
-excluded.length;
-
-document.getElementById(
-"activeCount"
-).textContent=
-state.records.filter(
-x=>x.status==="AKTIV"
-).length;
-
-document.getElementById(
-"differenceCount"
-).textContent=
-state.differences.length;
-
-renderDatabase();
-
-renderPolicies();
-
-}
-
-
-/* =========================================================
-   DATEIEN
-========================================================= */
-
-function parseFile(file){
-
-return new Promise((resolve,reject)=>{
-
-const reader=new FileReader();
-
-const name=
-file.name.toLowerCase();
-
-reader.onload=e=>{
-
-try{
-
-let wb;
-
-if(
-name.endsWith(".csv")||
-name.endsWith(".tsv")
-){
-
-const text=e.target.result;
-
-const delim=
-name.endsWith(".tsv")
-?"\t"
-:",";
-
-wb=XLSX.read(
-text,
-{
-type:"string",
-FS:delim,
-raw:false
-}
-);
-
-}else{
-
-wb=XLSX.read(
-e.target.result,
-{
-type:"array",
-cellDates:true
-}
-);
-
-}
-
-const sheet=
-wb.Sheets[
-wb.SheetNames[0]
-];
-
-const raw=
-XLSX.utils.sheet_to_json(
-sheet,
-{
-header:1,
-defval:"",
-raw:false
-}
-);
-
-if(!raw.length)
-throw new Error(
-"Leere Tabelle."
-);
-
-const headers=
-raw[0].map(
-(x,i)=>
-String(x||"").trim()||
-"SPALTE_"+(i+1)
-);
-
-const rows=
-raw
-.slice(1)
-.filter(
-r=>
-r.some(
-x=>
-String(x??"").trim()!==""
-)
-)
-.map(r=>{
-
-const obj={};
-
-headers.forEach(
-(h,i)=>{
-
-obj[h]=
-r[i]===undefined||
-r[i]===null
-?""
-:String(r[i]).trim();
-
-});
-
-return obj;
-
-});
-
-resolve({
-
-fileName:file.name,
-
-fileType:
-file.name
-.split(".")
-.pop()
-.toUpperCase(),
-
-headers,
-
-rows,
-
-rowCount:rows.length,
-
-colCount:headers.length
-
-});
-
-}catch(err){
-
-reject(err);
-
-}
-
-};
-
-reader.onerror=()=>{
-
-reject(
-new Error(
-"Datei konnte nicht gelesen werden."
-)
-);
-
-};
-
-if(
-name.endsWith(".csv")||
-name.endsWith(".tsv")
-)
-reader.readAsText(file);
-else
-reader.readAsArrayBuffer(file);
-
-});
-
-}
-
-
-/* =========================================================
-   AUTOMATISCHE TABELLENANALYSE
-========================================================= */
-
-function analyzeTable(tbl){
-
-const possibleDate=[];
-const possibleNum=[];
-const possibleId=[];
-const emptyCols=[];
-
-tbl.headers.forEach(h=>{
-
-const values=
-tbl.rows
-.map(r=>r[h])
-.filter(Boolean);
-
-if(!values.length)
-emptyCols.push(h);
-
-let dates=0;
-let nums=0;
-
-values
-.slice(0,100)
-.forEach(v=>{
-
-const s=String(v).trim();
-
-if(
-/^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$/.test(s)||
-/^\d{4}-\d{2}-\d{2}/.test(s)||
-/^\d{1,2}\/\d{1,2}\/\d{2,4}$/.test(s)
-)
-dates++;
-
-if(
-/^-?[\d.,]+$/.test(
-s.replace(/\s/g,"")
-)
-)
-nums++;
-
-});
-
-if(
-values.length &&
-dates>values.length*.3
-)
-possibleDate.push(h);
-
-if(
-values.length &&
-nums>values.length*.5
-)
-possibleNum.push(h);
-
-if(
-/id|nr|nummer|auftrag|auftrags|vertrag|code|ref/i.test(h)
-)
-possibleId.push(h);
-
-});
-
-return{
-possibleDate,
-possibleNum,
-possibleId,
-emptyCols
-};
-
-}
-
-
-/* =========================================================
-   AUTOMATISCHE ROLLEN-ERKENNUNG
-========================================================= */
-
-function inferSourceType(tbl,which){
-
-const file=
-tbl.fileName.toLowerCase();
-
-const headers=
-tbl.headers.join(" ").toLowerCase();
-
-if(
-which==="A" &&
-(
-/zdf/.test(file)||
-/bad.?urach/.test(file)||
-/kassen/.test(headers)||
-/schalttermin/.test(headers)||
-/verkäufer/.test(headers)
-)
-){
-
-return "ZDF";
-
-}
-
-if(
-/schaltung/.test(file)||
-/schaltungsliste/.test(file)||
-/telekom/.test(file)
-){
-
-return "TELEKOM_SYSTEMEXPORT";
-
-}
-
-if(
-/export/.test(file)
-){
-
-return "SYSTEMEXPORT";
-
-}
-
-return which==="A"
-?"ARBEITSTABELLE"
-:"SYSTEMEXPORT";
-
-}
-
-
-function inferDescription(tbl,which){
-
-const source=
-inferSourceType(tbl,which);
-
-if(source==="ZDF"){
-
-return "Manuell geführte Shop-Arbeitstabelle mit Vorgängen, Kassenabschlüssen und wirtschaftlichen Arbeitsinformationen.";
-
-}
-
-if(source==="TELEKOM_SYSTEMEXPORT"){
-
-return "Systemexport mit technischen beziehungsweise vertragsbezogenen Schaltungsinformationen.";
-
-}
-
-if(source==="SYSTEMEXPORT"){
-
-return "Exportierte Systemtabelle zur externen Kontrolle.";
-
-}
-
-return which==="A"
-?"Arbeits- beziehungsweise Ursprungstabelle."
-:"Externe Kontrolltabelle.";
-
-}
-
-
-/* =========================================================
-   META
-========================================================= */
-
-function renderMeta(which,tbl){
-
-tbl.analysis=
-analyzeTable(tbl);
-
-tbl.sourceType=
-inferSourceType(
-tbl,
-which
-);
-
-tbl.description=
-inferDescription(
-tbl,
-which
-);
-
-const a=tbl.analysis;
-
-const el=
-document.getElementById(
-"meta"+which
-);
-
-el.innerHTML=`
-
-<div>
-DATEI:
-${esc(tbl.fileName)}
-</div>
-
-<div>
-QUELLE:
-<span class="mono">
-${esc(tbl.sourceType)}
-</span>
-</div>
-
-<div>
-ZEILEN:
-${tbl.rowCount}
-</div>
-
-<div>
-SPALTEN:
-${tbl.colCount}
-</div>
-
-<div>
-MÖGLICHE DATUMSFELDER:
-${a.possibleDate.length
-?a.possibleDate.map(esc).join(", ")
-:"keine eindeutige Erkennung"}
-</div>
-
-<div>
-MÖGLICHE IDENTIFIKATOREN:
-${a.possibleId.length
-?a.possibleId.map(esc).join(", ")
-:"keine eindeutige Erkennung"}
-</div>
-
-<div class="col-tags">
-
-${tbl.headers
-.map(h=>
-`<span class="col-tag">${esc(h)}</span>`
-)
-.join("")}
-
-</div>
-
-`;
-
-el.classList.remove("hidden");
-
-}
-
-
-/* =========================================================
-   DATEI HANDLING
-========================================================= */
-
-async function handleFile(which,file){
-
-try{
-
-const tbl=
-await parseFile(file);
-
-if(which==="A")
-workflow.tableA=tbl;
-else
-workflow.tableB=tbl;
-
-renderMeta(
-which,
-tbl
-);
-
-document.getElementById(
-"step1Status"
-).className="status ok";
-
-document.getElementById(
-"step1Status"
-).textContent=
-"TABLE "+which+
-" geladen: "+
-tbl.rowCount+
-" Zeilen. Automatische Analyse abgeschlossen.";
-
-document.getElementById(
-"btnToPrompt"
-).disabled=
-!(
-workflow.tableA &&
-workflow.tableB
-);
-
-}catch(e){
-
-document.getElementById(
-"step1Status"
-).className=
-"status error";
-
-document.getElementById(
-"step1Status"
-).textContent=
-"✕ "+e.message;
-
-}
-
-}
-
-
-["A","B"].forEach(w=>{
-
-const input=
-document.getElementById(
-"file"+w
-);
-
-const zone=
-document.getElementById(
-"zone"+w
-);
-
-zone.onclick=()=>{
-
-input.click();
-
-};
-
-input.onchange=e=>{
-
-if(e.target.files[0])
-handleFile(
-w,
-e.target.files[0]
-);
-
-};
-
-zone.ondragover=e=>{
-
-e.preventDefault();
-
-zone.style.borderColor=
-"var(--cyan)";
-
-};
-
-zone.ondragleave=()=>{
-
-zone.style.borderColor="";
-
-};
-
-zone.ondrop=e=>{
-
-e.preventDefault();
-
-zone.style.borderColor="";
-
-if(e.dataTransfer.files[0])
-handleFile(
-w,
-e.dataTransfer.files[0]
-);
-
-};
-
-});
-
-
-/* =========================================================
-   WORKFLOW
-========================================================= */
-
-function setStep(n){
-
-workflow.step=n;
-
-document.querySelectorAll(
-".step-item"
-).forEach(x=>{
-
-const s=
-Number(x.dataset.step);
-
-x.classList.remove(
-"active",
-"done"
-);
-
-if(s===n)
-x.classList.add("active");
-
-else if(s<n)
-x.classList.add("done");
-
-});
-
-document.querySelectorAll(
-".step-panel"
-).forEach(
-x=>x.classList.add("hidden")
-);
-
-document.getElementById(
-"step"+n
-)?.classList.remove(
-"hidden"
-);
-
-}
-
-
-/* =========================================================
-   AUTOMATISCHE ANALYSE ANZEIGEN
-========================================================= */
-
-function renderAutoAnalysis(){
-
-const A=workflow.tableA;
-const B=workflow.tableB;
-
-function block(name,tbl){
-
-const a=tbl.analysis;
-
-return `
-==============================
-${name}
-==============================
-
-DATEI
-${tbl.fileName}
-
-AUTOMATISCH ERKANNTE QUELLE
-${tbl.sourceType}
-
-BESCHREIBUNG
-${tbl.description}
-
-ZEILEN
-${tbl.rowCount}
-
-SPALTEN
-${tbl.colCount}
-
-MÖGLICHE DATUMSFELDER
-${a.possibleDate.join(", ")||"keine eindeutige Erkennung"}
-
-MÖGLICHE IDENTIFIKATOREN
-${a.possibleId.join(", ")||"keine eindeutige Erkennung"}
-
-MÖGLICHE NUMERISCHE FELDER
-${a.possibleNum.join(", ")||"keine eindeutige Erkennung"}
-
-SPALTEN
-${tbl.headers.join(", ")}
-`;
-
-}
-
-document.getElementById(
-"autoAnalysis"
-).textContent=
-block("TABLE A",A)+
-block("TABLE B",B);
-
-}
-
-
-/* =========================================================
-   LLM-AUFTRAG
-========================================================= */
-
-function generatePrompt(){
-
-const A=workflow.tableA;
-const B=workflow.tableB;
-
-function block(name,tbl){
-
-return `
-==============================
-${name}
-==============================
-
-DATEI:
-${tbl.fileName}
-
-AUTOMATISCH ERKANNTE QUELLE:
-${tbl.sourceType}
-
-BESCHREIBUNG:
-${tbl.description}
-
-ZEILEN:
-${tbl.rowCount}
-
-SPALTEN:
-${tbl.colCount}
-
-SPALTEN:
-${tbl.headers.join(", ")}
-
-AUTOMATISCH ERKANNTE DATUMSFELDER:
-${tbl.analysis.possibleDate.join(", ")||"keine eindeutige Erkennung"}
-
-AUTOMATISCH ERKANNTE IDENTIFIKATOREN:
-${tbl.analysis.possibleId.join(", ")||"keine eindeutige Erkennung"}
-
-AUTOMATISCH ERKANNTE NUMERISCHE FELDER:
-${tbl.analysis.possibleNum.join(", ")||"keine eindeutige Erkennung"}
-
-ORIGINALDATEN:
-${JSON.stringify(tbl.rows,null,2)}
-`;
-
-}
-
-
-const prompt=`
-
-DU BIST EIN DATENSTRUKTURIERUNGSSYSTEM.
-
-DIE ANWENDUNG HAT DEN BENUTZER NICHT NACH
-FACHLICHEN TABELLENFRAGEN GEFRAGT.
-
-DU MUSST DIE STRUKTUR AUSSCHLIESSLICH AUS
-DEN VORLIEGENDEN TABELLEN ERKENNEN.
-
-DEINE AUFGABE IST AUSSCHLIESSLICH:
-
-Die beiden Tabellen analysieren und in das
-BOOKING_RECON-JSON überführen.
-
-==================================================
-ABSOLUTE REGELN
-==================================================
-
-1. KEINE ZEILE AUSLASSEN.
-2. KEINEN ORIGINALWERT KORRIGIEREN.
-3. KEINEN ORIGINALWERT ERFINDEN.
-4. KEINE ZEILE LÖSCHEN.
-5. KEINE ZEILE MIT EINER ANDEREN ZEILE VERSCHMELZEN.
-6. TABLE_A und TABLE_B strikt getrennt halten.
-7. Die Reihenfolge der Originaldaten nicht als
-   fachliche Bedeutung interpretieren.
-8. Mehrfach vorhandene Auftragsnummern sind NICHT
-   automatisch Fehler.
-9. Eine Auftragsnummer darf in mehreren Datensätzen
-   vorkommen.
-10. Verwandte oder zusätzliche Buchungen dürfen
-    nicht zusammengeführt werden.
-11. Keine Abweichungen berechnen.
-12. Keine Buchungsfehler beurteilen.
-13. Keine Provisionen oder Gewinne neu berechnen.
-14. Originalwerte müssen vollständig unter
-    "data" erhalten bleiben.
-15. Wenn eine semantische Klassifizierung nicht
-    zuverlässig möglich ist:
-    "UNBEKANNT" verwenden.
-16. Fehlende Informationen nicht erfinden.
-17. Keine Markdown-Codeblöcke ausgeben.
-18. Ausschließlich gültiges JSON ausgeben.
-
-==================================================
-RECORD-TYP
-==================================================
-
-Normale geschäftliche Zeile:
-"record_type": "VORGANG"
-
-Eindeutig erkennbare Kassenabschlusszeile:
-"record_type": "KASSENABSCHLUSS"
-
-Wenn nicht zuverlässig bestimmbar:
-"record_type": "UNBEKANNT"
-
-KASSENABSCHLUSS IST KEIN NORMALER BUCHUNGSVORGANG.
-
-Kassenabschlusszeilen dürfen deshalb später vom
-deterministischen Abgleich ausgeschlossen werden.
-
-==================================================
-STATUS
-==================================================
-
-Erlaubte Werte:
-
-AKTIV
-ZUKUNFT
-ERINNERUNG
-UNBEKANNT
-
-Wenn der Status nicht sicher aus den Daten
-abgeleitet werden kann:
-
-"UNBEKANNT"
-
-NIEMALS raten.
-
-==================================================
-ZDF-SEMANTIK FÜR TABLE_A
-==================================================
-
-Wenn TABLE_A eine ZDF-Arbeitstabelle ist,
-gelten zusätzlich folgende Regeln:
-
-ART FN:
-grundsätzlich AKTIV, sofern kein expliziter
-anderer Status vorhanden ist.
-
-ART FTTH:
-grundsätzlich AKTIV, sofern kein expliziter
-anderer Status vorhanden ist.
-
-ART MF oder CON:
-
-BLAUER MARKER:
-ERINNERUNG
-
-GELBER MARKER:
-ZUKUNFT
-
-ORANGER MARKER:
-ZUKUNFT
-
-WICHTIG:
-
-GELB UND ORANGE SIND SEMANTISCH DIESELBE
-KATEGORIE.
-
-Es darf keine getrennte Kategorie für Gelb
-und Orange erzeugt werden.
-
-Fehlt die Farbinformation oder ist sie nicht
-eindeutig erkennbar, darf sie nicht erfunden werden.
-
-Dann:
-
-"status": "UNBEKANNT"
-
-Wenn ein expliziter Status oder Hinweis in der
-Originalzeile vorhanden ist, darf dieser
-berücksichtigt werden.
-
-==================================================
-DATUM
-==================================================
-
-Originaldatum bleibt unverändert unter "data".
-
-Wenn ein Datum eindeutig erkannt werden kann,
-darf zusätzlich ein abgeleitetes Feld
-
-"normalized": {
-  "date": "YYYY-MM-DD"
-}
-
-erzeugt werden.
-
-WICHTIG:
-
-"data" = ORIGINALDATEN
-
-"normalized" = ABGELEITETE DATEN
-
-Originalwerte niemals durch normalisierte Werte
-ersetzen.
-
-Wenn das Datum nicht eindeutig ist:
-
-"normalized": {
-  "date": null
-}
-
-==================================================
-IDENTIFIKATION
-==================================================
-
-Erkenne mögliche Auftragsnummern, Vertragsnummern,
-Referenzen und andere Kennzeichen.
-
-ABER:
-
-Eine erkannte Auftragsnummer ist nicht automatisch
-ein eindeutiger Datensatzschlüssel.
-
-Keine Datensätze aufgrund einer gleichen Nummer
-zusammenführen.
-
-==================================================
-TABLE A
-==================================================
-
-Jeder Datensatz erhält:
-
-A-000001
-A-000002
-A-000003
-...
-
-==================================================
-TABLE B
-==================================================
-
-Jeder Datensatz erhält:
-
-B-000001
-B-000002
-B-000003
-...
-
-==================================================
-AUSGABEFORMAT
-==================================================
-
-{
-  "version": "1.0",
-  "dataset": "BOOKING_RECON",
-  "tables": {
-    "TABLE_A": {
-      "source_type": "...",
-      "description": "...",
-      "records": [
+  const time =
+    new Date()
+      .toLocaleTimeString(
+        "de-DE",
         {
-          "record_id": "A-000001",
-          "source_table": "TABLE_A",
-          "record_type": "VORGANG",
-          "status": "AKTIV",
-          "data": {
-            "Originalspalte": "Originalwert"
-          },
-          "normalized": {
-            "date": null
-          }
+          hour:"2-digit",
+          minute:"2-digit",
+          second:"2-digit"
         }
-      ]
-    },
-    "TABLE_B": {
-      "source_type": "...",
-      "description": "...",
-      "records": [
+      );
+
+  row.textContent =
+    `[${time}] ${message}`;
+
+  logEl.appendChild(row);
+
+  logEl.scrollTop =
+    logEl.scrollHeight;
+}
+
+
+/* ============================================================
+   MODEL
+============================================================ */
+
+async function loadModel(){
+
+  if(modelReady || modelLoading)
+    return;
+
+  modelLoading = true;
+
+  modelStatus.className =
+    "status loading";
+
+  modelStatus.textContent =
+    "MODEL LOADING…";
+
+  log(
+    `loading ${MODEL}`,
+    "info"
+  );
+
+  try{
+
+    extractor =
+      await pipeline(
+        "feature-extraction",
+        MODEL,
         {
-          "record_id": "B-000001",
-          "source_table": "TABLE_B",
-          "record_type": "VORGANG",
-          "status": "AKTIV",
-          "data": {
-            "Originalspalte": "Originalwert"
-          },
-          "normalized": {
-            "date": null
-          }
+          progress_callback:
+            data => {
+
+              if(
+                data &&
+                typeof data.progress === "number"
+              ){
+
+                const p =
+                  Math.round(data.progress);
+
+                modelStatus.textContent =
+                  `MODEL ${p}%`;
+              }
+
+            }
         }
-      ]
-    }
+      );
+
+    modelReady = true;
+    modelLoading = false;
+
+    modelStatus.className =
+      "status ready";
+
+    modelStatus.textContent =
+      "MODEL READY";
+
+    log(
+      `model ready · dimension ${DIMENSION}`,
+      "ok"
+    );
+
+  }catch(error){
+
+    modelLoading = false;
+
+    modelStatus.className =
+      "status error";
+
+    modelStatus.textContent =
+      "MODEL ERROR";
+
+    log(
+      `model error: ${error.message}`,
+      "err"
+    );
+
+    console.error(error);
   }
 }
 
-==================================================
-WICHTIG
-==================================================
 
-"data" MUSS die Originaldaten vollständig erhalten.
+/* ============================================================
+   EMBEDDING
+============================================================ */
 
-Keine Umbenennung der Originalspalten innerhalb
-von "data".
-
-Keine Korrektur von Tippfehlern.
-
-Keine Korrektur von Datumswerten.
-
-Keine Korrektur von Beträgen.
-
-Keine Korrektur von Auftragsnummern.
-
-Keine Interpretation als Fehler.
-
-Keine Zusammenfassung.
-
-Keine Auslassung.
-
-${block("TABLE A",A)}
-
-${block("TABLE B",B)}
-
-AUSSCHLIESSLICH JSON.
-
-KEINE ERKLÄRUNG.
-
-KEINE MARKDOWN-CODEBLÖCKE.
-
-`;
-
-document.getElementById(
-"promptOutput"
-).textContent=prompt;
-
-renderAutoAnalysis();
-
-}
-
-
-/* =========================================================
-   BUTTON: LLM-AUFTRAG
-========================================================= */
-
-document.getElementById(
-"btnToPrompt"
-).onclick=()=>{
-
-if(
-!workflow.tableA||
-!workflow.tableB
+async function createEmbedding(
+  text,
+  mode="query"
 ){
 
-document.getElementById(
-"step1Status"
-).className="status error";
+  if(!text || !text.trim())
+    throw new Error(
+      "Kein Text vorhanden."
+    );
 
-document.getElementById(
-"step1Status"
-).textContent=
-"Bitte beide Tabellen hochladen.";
+  await loadModel();
 
-return;
+  if(!extractor)
+    throw new Error(
+      "Embedding-Modell nicht verfügbar."
+    );
 
+  const prepared =
+    `${mode}: ${text.trim()}`;
+
+  setPipeline("pipeText");
+
+  await sleep(80);
+
+  setPipeline("pipeToken");
+
+  await sleep(80);
+
+  setPipeline("pipeModel");
+
+  const output =
+    await extractor(
+      prepared,
+      {
+        pooling:"mean",
+        normalize:true
+      }
+    );
+
+  const vector =
+    Array.from(output.data);
+
+  setPipeline("pipeVector");
+
+  if(vector.length !== DIMENSION){
+
+    throw new Error(
+      `Falsche Dimension: ${vector.length}. Erwartet: ${DIMENSION}.`
+    );
+  }
+
+  return vector;
 }
 
-generatePrompt();
 
-setStep(2);
+/* ============================================================
+   PIPELINE UI
+============================================================ */
 
-};
+function resetPipeline(){
 
+  [
+    "pipeText",
+    "pipeToken",
+    "pipeModel",
+    "pipeVector",
+    "pipeStore",
+    "pipeSearch"
+  ].forEach(id => {
 
-/* =========================================================
-   PROMPT KOPIEREN
-========================================================= */
+    $(id).classList.remove(
+      "active",
+      "done"
+    );
 
-document.getElementById(
-"btnCopyPrompt"
-).onclick=async()=>{
-
-try{
-
-await navigator.clipboard.writeText(
-document.getElementById(
-"promptOutput"
-).textContent
-);
-
-document.getElementById(
-"promptStatus"
-).className="status ok";
-
-document.getElementById(
-"promptStatus"
-).textContent=
-"✓ LLM-AUFTRAG KOPIERT — JETZT IN DAS LLM EINFÜGEN";
-
-}catch{
-
-document.getElementById(
-"promptStatus"
-).className="status error";
-
-document.getElementById(
-"promptStatus"
-).textContent=
-"Kopieren nicht möglich.";
-
+  });
 }
 
-};
+
+function setPipeline(activeId){
+
+  const ids = [
+    "pipeText",
+    "pipeToken",
+    "pipeModel",
+    "pipeVector",
+    "pipeStore",
+    "pipeSearch"
+  ];
+
+  const index =
+    ids.indexOf(activeId);
+
+  ids.forEach((id,i)=>{
+
+    const el = $(id);
+
+    el.classList.remove(
+      "active",
+      "done"
+    );
+
+    if(i < index)
+      el.classList.add("done");
+
+    if(i === index)
+      el.classList.add("active");
+
+  });
+}
 
 
-/* =========================================================
-   NAVIGATION WORKFLOW
-========================================================= */
+/* ============================================================
+   VECTOR VALIDATION
+============================================================ */
 
-document.getElementById(
-"btnBackToUpload"
-).onclick=()=>setStep(1);
-
-document.getElementById(
-"btnToJson"
-).onclick=()=>setStep(3);
-
-document.getElementById(
-"btnBackToPrompt"
-).onclick=()=>{
-
-generatePrompt();
-
-setStep(2);
-
-};
-
-
-/* =========================================================
-   JSON VALIDATOR
-========================================================= */
-
-function validateImportPayload(payload){
-
-if(
-!payload||
-typeof payload!=="object"
-)
-throw new Error(
-"JSON ist kein Objekt."
-);
-
-if(
-payload.version===undefined
-)
-throw new Error(
-"version fehlt."
-);
-
-if(
-payload.dataset!=="BOOKING_RECON"
-)
-throw new Error(
-"dataset muss BOOKING_RECON sein."
-);
-
-if(
-!payload.tables||
-typeof payload.tables!=="object"||
-Array.isArray(payload.tables)
-)
-throw new Error(
-"tables muss ein Objekt mit TABLE_A und TABLE_B sein."
-);
-
-if(
-!payload.tables.TABLE_A
-)
-throw new Error(
-"tables.TABLE_A fehlt."
-);
-
-if(
-!payload.tables.TABLE_B
-)
-throw new Error(
-"tables.TABLE_B fehlt."
-);
-
-const ids=new Set();
-
-for(
-const id of ["TABLE_A","TABLE_B"]
+function validateVector(
+  vector,
+  source="vector"
 ){
 
-const table=
-payload.tables[id];
+  if(!Array.isArray(vector)){
 
-if(
-!Array.isArray(table.records)
-)
-throw new Error(
-id+".records fehlt oder ist kein Array."
-);
+    throw new Error(
+      `${source}: kein Array.`
+    );
+  }
 
-table.records.forEach(
-(r,i)=>{
+  if(vector.length !== DIMENSION){
 
-if(
-!r||
-typeof r!=="object"
-)
-throw new Error(
-`${id}.records[${i}] ist ungültig.`
-);
+    throw new Error(
+      `${source}: ${vector.length} Dimensionen gefunden. ` +
+      `Exakt ${DIMENSION} erforderlich.`
+    );
+  }
 
-if(
-!r.record_id
-)
-throw new Error(
-`${id}.records[${i}].record_id fehlt.`
-);
+  for(let i=0;i<vector.length;i++){
 
-if(
-ids.has(
-String(r.record_id)
-)
-)
-throw new Error(
-"Doppelte record_id: "+
-r.record_id
-);
+    if(
+      typeof vector[i] !== "number" ||
+      !Number.isFinite(vector[i])
+    ){
 
-ids.add(
-String(r.record_id)
-);
+      throw new Error(
+        `${source}: Dimension ${i+1} ist keine endliche Zahl.`
+      );
+    }
+  }
 
-if(
-r.source_table &&
-r.source_table!==id
-)
-throw new Error(
-`${r.record_id}: source_table stimmt nicht mit ${id} überein.`
-);
+  const norm =
+    l2Norm(vector);
 
-if(
-!r.data||
-typeof r.data!=="object"||
-Array.isArray(r.data)
-)
-throw new Error(
-`${r.record_id}: data muss ein Objekt sein.`
-);
+  if(norm === 0){
 
-if(
-r.record_type!==undefined&&
-![
-"VORGANG",
-"KASSENABSCHLUSS",
-"UNBEKANNT"
-].includes(
-r.record_type
-)
-)
-throw new Error(
-`${r.record_id}: unbekannter record_type.`
-);
+    throw new Error(
+      `${source}: Nullvektor. Cosine Similarity ist undefiniert.`
+    );
+  }
 
-if(
-r.status!==undefined&&
-![
-"AKTIV",
-"ZUKUNFT",
-"ERINNERUNG",
-"UNBEKANNT"
-].includes(
-r.status
-)
-)
-throw new Error(
-`${r.record_id}: unbekannter status.`
-);
-
-if(
-r.normalized!==undefined &&
-(
-typeof r.normalized!=="object"||
-Array.isArray(r.normalized)
-)
-)
-throw new Error(
-`${r.record_id}: normalized muss ein Objekt sein.`
-);
-
-});
-
-}
-
-return true;
-
+  return true;
 }
 
 
-/* =========================================================
-   DATUM
-========================================================= */
+/* ============================================================
+   VECTOR PARSER
+============================================================ */
 
-function normalizeDate(value){
+function parseVectorText(text){
 
-if(!value)
-return null;
+  let clean =
+    text.trim();
 
-const s=
-String(value)
-.trim();
+  if(!clean)
+    throw new Error(
+      "Kein Vektor vorhanden."
+    );
 
-if(
-/^\d{4}-\d{2}-\d{2}$/.test(s)
-)
-return s;
 
-let m=
-s.match(
-/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/
-);
+  /*
+     Unterstützt:
 
-if(m){
+     [1,2,3]
 
-return `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
+     {
+       "vector":[1,2,3]
+     }
+
+     1,2,3
+
+     1 2 3
+
+     Zeilen mit Zahlen
+  */
+
+  try{
+
+    const parsed =
+      JSON.parse(clean);
+
+    if(Array.isArray(parsed))
+      return parsed.map(Number);
+
+    if(
+      parsed &&
+      Array.isArray(parsed.vector)
+    )
+      return parsed.vector.map(Number);
+
+    if(
+      parsed &&
+      Array.isArray(parsed.embedding)
+    )
+      return parsed.embedding.map(Number);
+
+  }catch(_){
+    /* kein gültiges JSON → Rohparser */
+  }
+
+
+  clean =
+    clean
+      .replace(/[\[\]\(\)\{\}]/g," ")
+      .replace(/;/g,",")
+      .replace(/\n/g," ")
+      .replace(/\t/g," ");
+
+
+  const tokens =
+    clean
+      .split(/[\s,]+/)
+      .filter(Boolean);
+
+
+  if(!tokens.length)
+    throw new Error(
+      "Keine Zahlen im Vektor gefunden."
+    );
+
+
+  const vector =
+    tokens.map(token => {
+
+      const n =
+        Number(token);
+
+      if(!Number.isFinite(n)){
+
+        throw new Error(
+          `Ungültige Zahl: "${token}"`
+        );
+      }
+
+      return n;
+    });
+
+
+  return vector;
+}
+
+
+/* ============================================================
+   VECTOR MATH
+============================================================ */
+
+function dot(a,b){
+
+  let sum = 0;
+
+  for(let i=0;i<a.length;i++)
+    sum += a[i] * b[i];
+
+  return sum;
+}
+
+
+function l2Norm(v){
+
+  let sum = 0;
+
+  for(const x of v)
+    sum += x*x;
+
+  return Math.sqrt(sum);
+}
+
+
+function cosineSimilarity(a,b){
+
+  validateVector(a,"query");
+  validateVector(b,"memory");
+
+  const na =
+    l2Norm(a);
+
+  const nb =
+    l2Norm(b);
+
+  return dot(a,b) / (na * nb);
+}
+
+
+/* ============================================================
+   OPTIONAL NORMALIZATION
+============================================================ */
+
+function normalizeVector(v){
+
+  const norm =
+    l2Norm(v);
+
+  if(norm === 0)
+    throw new Error(
+      "Nullvektor kann nicht normalisiert werden."
+    );
+
+  return v.map(x => x / norm);
+}
+
+
+/* ============================================================
+   VECTOR PREVIEW
+============================================================ */
+
+function formatVector(vector){
+
+  if(!vector)
+    return "Noch kein Vektor vorhanden.";
+
+  const lines = [];
+
+  const max =
+    Math.min(
+      vector.length,
+      60
+    );
+
+  for(let i=0;i<max;i++){
+
+    lines.push(
+      `${String(i+1).padStart(3," ")}  ` +
+      `${vector[i].toFixed(7)}`
+    );
+
+  }
+
+  if(vector.length > max){
+
+    lines.push("");
+    lines.push(
+      `… ${vector.length-max} weitere Dimensionen`
+    );
+
+  }
+
+  return lines.join("\n");
+}
+
+
+function renderVector(vector){
+
+  vectorPreview.textContent =
+    formatVector(vector);
+
+  if(vector){
+
+    vectorNorm.textContent =
+      l2Norm(vector).toFixed(8);
+
+  }else{
+
+    vectorNorm.textContent =
+      "—";
+  }
 
 }
 
-return null;
+
+function renderQueryVector(vector){
+
+  queryVectorPreview.textContent =
+    formatVector(vector);
+
+  if(vector){
+
+    queryNorm.textContent =
+      l2Norm(vector).toFixed(8);
+
+  }else{
+
+    queryNorm.textContent =
+      "—";
+  }
 
 }
 
 
-function extractDate(record){
+/* ============================================================
+   TEXT EMBEDDING
+============================================================ */
 
-if(
-record.normalized &&
-record.normalized.date
-)
-return normalizeDate(
-record.normalized.date
-);
+generateEmbedding.onclick =
+  async () => {
 
-const d=
-record.data||{};
+    const text =
+      memoryText.value.trim();
 
-const candidates=[
-"datum",
-"date",
-"buchungsdatum",
-"auftragsdatum",
-"schalttermin",
-"tagdatum"
-];
+    if(!text){
 
-for(
-const key of candidates
+      alert(
+        "Bitte zuerst einen Text eingeben."
+      );
+
+      return;
+    }
+
+    generateEmbedding.disabled =
+      true;
+
+    try{
+
+      resetPipeline();
+
+      log(
+        "creating passage embedding…",
+        "info"
+      );
+
+      const vector =
+        await createEmbedding(
+          text,
+          "passage"
+        );
+
+      currentVector =
+        vector;
+
+      renderVector(
+        currentVector
+      );
+
+      storeVector.disabled =
+        false;
+
+      log(
+        `embedding generated · ${vector.length}D`,
+        "ok"
+      );
+
+    }catch(error){
+
+      log(
+        error.message,
+        "err"
+      );
+
+      alert(
+        error.message
+      );
+
+    }finally{
+
+      generateEmbedding.disabled =
+        false;
+
+    }
+
+  };
+
+
+/* ============================================================
+   STORE VECTOR
+============================================================ */
+
+storeVector.onclick =
+  () => {
+
+    if(!currentVector){
+
+      alert(
+        "Zuerst ein Embedding erzeugen."
+      );
+
+      return;
+    }
+
+    const text =
+      memoryText.value.trim();
+
+    if(!text){
+
+      alert(
+        "Der Erinnerungstext fehlt."
+      );
+
+      return;
+    }
+
+    try{
+
+      validateVector(
+        currentVector,
+        "currentVector"
+      );
+
+      memoryCounter++;
+
+      const record = {
+
+        id:
+          `MEM-${String(memoryCounter)
+            .padStart(4,"0")}`,
+
+        text,
+
+        vector:
+          [...currentVector],
+
+        created:
+          new Date().toISOString()
+
+      };
+
+      memory.push(record);
+
+      renderMemory();
+
+      updateMetrics();
+
+      setPipeline(
+        "pipeStore"
+      );
+
+      log(
+        `stored ${record.id} · memory count ${memory.length}`,
+        "ok"
+      );
+
+      storeVector.disabled =
+        true;
+
+    }catch(error){
+
+      log(
+        error.message,
+        "err"
+      );
+
+      alert(
+        error.message
+      );
+    }
+
+  };
+
+
+/* ============================================================
+   TEXT QUERY
+============================================================ */
+
+semanticSearch.onclick =
+  async () => {
+
+    const text =
+      searchText.value.trim();
+
+    if(!text){
+
+      alert(
+        "Bitte zuerst einen Suchtext eingeben."
+      );
+
+      return;
+    }
+
+    if(!memory.length){
+
+      alert(
+        "Noch keine Erinnerungen gespeichert."
+      );
+
+      return;
+    }
+
+    semanticSearch.disabled =
+      true;
+
+    try{
+
+      log(
+        `text query → embedding`,
+        "info"
+      );
+
+      const vector =
+        await createEmbedding(
+          text,
+          "query"
+        );
+
+      queryVector =
+        vector;
+
+      renderQueryVector(
+        queryVector
+      );
+
+      $("querySource").textContent =
+        "TEXT QUERY";
+
+      $("searchMode").textContent =
+        "TEXT → VECTOR → COSINE";
+
+      executeSearch(
+        queryVector,
+        "TEXT QUERY"
+      );
+
+    }catch(error){
+
+      log(
+        error.message,
+        "err"
+      );
+
+      alert(
+        error.message
+      );
+
+    }finally{
+
+      semanticSearch.disabled =
+        false;
+
+    }
+
+  };
+
+
+/* ============================================================
+   MANUAL VECTOR QUERY
+============================================================ */
+
+useManualVector.onclick =
+  () => {
+
+    try{
+
+      const vector =
+        parseVectorText(
+          vectorInput.value
+        );
+
+      validateVector(
+        vector,
+        "manual vector"
+      );
+
+      /*
+        Wir normalisieren nicht stillschweigend.
+
+        Der gespeicherte Vektor und Query-Vektor
+        werden im Cosine-Kern über ihre Normen
+        korrekt behandelt.
+      */
+
+      queryVector =
+        vector;
+
+      renderQueryVector(
+        queryVector
+      );
+
+      $("querySource").textContent =
+        "MANUAL VECTOR";
+
+      $("searchMode").textContent =
+        "VECTOR → COSINE";
+
+      log(
+        `manual vector accepted · ${vector.length}D`,
+        "ok"
+      );
+
+      if(memory.length){
+
+        executeSearch(
+          queryVector,
+          "MANUAL VECTOR"
+        );
+
+      }else{
+
+        log(
+          "vector valid · waiting for memories",
+          "warn"
+        );
+
+      }
+
+    }catch(error){
+
+      log(
+        `manual vector rejected · ${error.message}`,
+        "err"
+      );
+
+      alert(
+        error.message
+      );
+
+    }
+
+  };
+
+
+/* ============================================================
+   VECTOR FILE
+============================================================ */
+
+vectorFile.onchange =
+  async event => {
+
+    const file =
+      event.target.files[0];
+
+    if(!file)
+      return;
+
+    fileName.classList.remove(
+      "hidden"
+    );
+
+    fileName.textContent =
+      `FILE: ${file.name}`;
+
+    try{
+
+      const text =
+        await file.text();
+
+      const vector =
+        parseVectorText(text);
+
+      validateVector(
+        vector,
+        "vector file"
+      );
+
+      loadedFileVector =
+        vector;
+
+      useFileVector.disabled =
+        false;
+
+      log(
+        `vector file loaded · ${file.name} · ${vector.length}D`,
+        "ok"
+      );
+
+    }catch(error){
+
+      loadedFileVector =
+        null;
+
+      useFileVector.disabled =
+        true;
+
+      log(
+        `vector file rejected · ${error.message}`,
+        "err"
+      );
+
+      alert(
+        error.message
+      );
+
+    }
+
+  };
+
+
+/* ============================================================
+   FILE VECTOR QUERY
+============================================================ */
+
+useFileVector.onclick =
+  () => {
+
+    if(!loadedFileVector){
+
+      alert(
+        "Keine gültige Vektordatei geladen."
+      );
+
+      return;
+    }
+
+    try{
+
+      validateVector(
+        loadedFileVector,
+        "loaded file vector"
+      );
+
+      queryVector =
+        [...loadedFileVector];
+
+      renderQueryVector(
+        queryVector
+      );
+
+      $("querySource").textContent =
+        "VECTOR FILE";
+
+      $("searchMode").textContent =
+        "FILE → COSINE";
+
+      log(
+        `file vector activated · ${queryVector.length}D`,
+        "ok"
+      );
+
+      if(memory.length){
+
+        executeSearch(
+          queryVector,
+          "VECTOR FILE"
+        );
+
+      }else{
+
+        log(
+          "vector valid · waiting for memories",
+          "warn"
+        );
+
+      }
+
+    }catch(error){
+
+      log(
+        error.message,
+        "err"
+      );
+
+      alert(
+        error.message
+      );
+
+    }
+
+  };
+
+
+/* ============================================================
+   SEARCH ENGINE
+============================================================ */
+
+function executeSearch(
+  q,
+  source
 ){
 
-if(
-d[key]!==undefined &&
-d[key]!==null &&
-String(d[key]).trim()!==""
+  if(!memory.length){
+
+    results.innerHTML =
+      `<div class="empty">
+        Keine Erinnerungen gespeichert.
+       </div>`;
+
+    return;
+  }
+
+  validateVector(
+    q,
+    "query"
+  );
+
+  setPipeline(
+    "pipeSearch"
+  );
+
+  const ranked =
+    memory
+      .map(record => ({
+
+        ...record,
+
+        score:
+          cosineSimilarity(
+            q,
+            record.vector
+          )
+
+      }))
+      .sort(
+        (a,b) =>
+          b.score - a.score
+      );
+
+
+  lastResults =
+    ranked;
+
+  renderResults(
+    ranked
+  );
+
+  updateMetrics();
+
+  $("searchMode").textContent =
+    source;
+
+  $("resultCount").textContent =
+    `${ranked.length} RESULTS`;
+
+  if(ranked.length){
+
+    $("topScore").textContent =
+      ranked[0].score.toFixed(5);
+
+  }
+
+  log(
+    `${source} → ${ranked.length} memories ranked by cosine`,
+    "ok"
+  );
+
+  drawSpace();
+
+}
+
+
+/* ============================================================
+   RESULTS
+============================================================ */
+
+function renderResults(
+  ranked
 ){
 
-const normalized=
-normalizeDate(
-d[key]
-);
+  if(!ranked.length){
 
-if(normalized)
-return normalized;
+    results.innerHTML =
+      `<div class="empty">
+        Keine Ergebnisse.
+       </div>`;
+
+    return;
+  }
+
+  results.innerHTML =
+    ranked
+      .map((item,index)=>{
+
+        const similarity =
+          item.score;
+
+        const percent =
+          ((similarity + 1) / 2) * 100;
+
+        return `
+          <div
+            class="result ${index===0 ? "top":""}"
+            data-id="${escapeHtml(item.id)}"
+          >
+
+            <div class="result-head">
+
+              <div class="result-id">
+                #${index+1}
+                ·
+                ${escapeHtml(item.id)}
+              </div>
+
+              <div class="score">
+                cos =
+                ${similarity.toFixed(6)}
+              </div>
+
+            </div>
+
+            <div class="result-text">
+              ${escapeHtml(item.text)}
+            </div>
+
+            <div class="result-meta">
+
+              <span>
+                geometric proximity
+              </span>
+
+              <span>
+                ${percent.toFixed(2)}%
+              </span>
+
+            </div>
+
+          </div>
+        `;
+
+      })
+      .join("");
+
+
+  results
+    .querySelectorAll(".result")
+    .forEach(el => {
+
+      el.addEventListener(
+        "click",
+        () => {
+
+          const record =
+            memory.find(
+              x =>
+                x.id ===
+                el.dataset.id
+            );
+
+          if(record)
+            showMemoryVector(
+              record
+            );
+
+        }
+      );
+
+    });
 
 }
 
+
+/* ============================================================
+   MEMORY LIST
+============================================================ */
+
+function renderMemory(){
+
+  if(!memory.length){
+
+    memoryList.innerHTML =
+      `<div class="empty">
+        Noch keine Erinnerungen gespeichert.
+       </div>`;
+
+    return;
+  }
+
+
+  memoryList.innerHTML =
+    memory
+      .map(record => {
+
+        const date =
+          new Date(
+            record.created
+          ).toLocaleString(
+            "de-DE"
+          );
+
+        return `
+          <div
+            class="memory-item"
+            data-id="${escapeHtml(record.id)}"
+          >
+
+            <div class="memory-item-head">
+
+              <span class="memory-item-id">
+                ${escapeHtml(record.id)}
+              </span>
+
+              <span class="memory-item-date">
+                ${escapeHtml(date)}
+              </span>
+
+            </div>
+
+            <div class="memory-item-text">
+              ${escapeHtml(record.text)}
+            </div>
+
+          </div>
+        `;
+
+      })
+      .join("");
+
+
+  memoryList
+    .querySelectorAll(".memory-item")
+    .forEach(el => {
+
+      el.onclick =
+        () => {
+
+          const record =
+            memory.find(
+              x =>
+                x.id ===
+                el.dataset.id
+            );
+
+          if(record)
+            showMemoryVector(
+              record
+            );
+
+        };
+
+    });
+
 }
 
-for(
-const key of Object.keys(d)
+
+/* ============================================================
+   MEMORY SELECT
+============================================================ */
+
+function showMemoryVector(
+  record
 ){
 
-if(
-/datum|date/i.test(key)
+  currentVector =
+    [...record.vector];
+
+  renderVector(
+    currentVector
+  );
+
+  memoryText.value =
+    record.text;
+
+  storeVector.disabled =
+    true;
+
+  log(
+    `${record.id} loaded into vector viewer`,
+    "info"
+  );
+
+  drawSpace();
+}
+
+
+/* ============================================================
+   METRICS
+============================================================ */
+
+function updateMetrics(){
+
+  $("memoryCount").textContent =
+    memory.length;
+
+  $("dimension").textContent =
+    DIMENSION;
+
+}
+
+
+/* ============================================================
+   MODE SWITCH
+============================================================ */
+
+$("modeManual").onclick =
+  () => {
+
+    $("modeManual")
+      .classList.add("active");
+
+    $("modeFile")
+      .classList.remove("active");
+
+    manualVectorPanel
+      .classList.remove("hidden");
+
+    fileVectorPanel
+      .classList.add("hidden");
+
+  };
+
+
+$("modeFile").onclick =
+  () => {
+
+    $("modeFile")
+      .classList.add("active");
+
+    $("modeManual")
+      .classList.remove("active");
+
+    fileVectorPanel
+      .classList.remove("hidden");
+
+    manualVectorPanel
+      .classList.add("hidden");
+
+  };
+
+
+/* ============================================================
+   CLEAR
+============================================================ */
+
+clearVector.onclick =
+  () => {
+
+    vectorInput.value = "";
+
+    loadedFileVector =
+      null;
+
+    vectorFile.value = "";
+
+    fileName.textContent = "";
+
+    fileName.classList.add(
+      "hidden"
+    );
+
+    useFileVector.disabled =
+      true;
+
+    log(
+      "vector query input cleared",
+      "info"
+    );
+
+  };
+
+
+/* ============================================================
+   3D / R³ CONCEPTUAL VIEW
+============================================================ */
+
+const ctx =
+  spaceCanvas.getContext(
+    "2d"
+  );
+
+
+function resizeCanvas(){
+
+  const rect =
+    spaceCanvas.getBoundingClientRect();
+
+  const dpr =
+    window.devicePixelRatio || 1;
+
+  spaceCanvas.width =
+    rect.width * dpr;
+
+  spaceCanvas.height =
+    rect.height * dpr;
+
+  ctx.setTransform(
+    dpr,
+    0,
+    0,
+    dpr,
+    0,
+    0
+  );
+
+  drawSpace();
+
+}
+
+
+function projectVector(
+  vector,
+  width,
+  height
 ){
 
-const normalized=
-normalizeDate(
-d[key]
-);
+  if(!vector)
+    return null;
 
-if(normalized)
-return normalized;
+  /*
+    Deliberately only:
 
-}
+      x = v1
+      y = v2
+      z = v3
 
-}
+    This is NOT a dimensionality reduction.
+  */
 
-return null;
+  const x =
+    vector[0] || 0;
 
-}
+  const y =
+    vector[1] || 0;
 
+  const z =
+    vector[2] || 0;
 
-/* =========================================================
-   JSON IMPORT
-========================================================= */
+  const scale =
+    Math.min(
+      width,
+      height
+    ) * 3.0;
 
-async function importJSON(payload){
+  return {
 
-validateImportPayload(payload);
+    x:
+      width/2 +
+      x * scale,
 
-await openDatabase();
+    y:
+      height/2 -
+      y * scale -
 
-await clearStore(
-STORE_RECORDS
-);
+      z * scale * .25
 
-const tx=
-database.transaction(
-STORE_RECORDS,
-"readwrite"
-);
-
-const store=
-tx.objectStore(
-STORE_RECORDS
-);
-
-let count=0;
-
-for(
-const tableId of [
-"TABLE_A",
-"TABLE_B"
-]
-){
-
-const table=
-payload.tables[tableId];
-
-for(
-const record of table.records
-){
-
-store.put({
-
-record_id:
-String(record.record_id),
-
-source_table:
-tableId,
-
-source_type:
-String(
-table.source_type||
-"UNBEKANNT"
-),
-
-source_description:
-String(
-table.description||
-""
-),
-
-record_type:
-String(
-record.record_type||
-"UNBEKANNT"
-),
-
-status:
-String(
-record.status||
-"UNBEKANNT"
-),
-
-date:
-extractDate(record),
-
-data:
-JSON.parse(
-JSON.stringify(
-record.data
-)
-),
-
-normalized:
-record.normalized
-?
-JSON.parse(
-JSON.stringify(
-record.normalized
-)
-)
-:null,
-
-imported_at:
-new Date().toISOString(),
-
-dataset_version:
-String(
-payload.version
-)
-
-});
-
-count++;
-
-}
-
-}
-
-return new Promise(
-(resolve,reject)=>{
-
-tx.oncomplete=()=>resolve({
-
-records:count,
-tables:2
-
-});
-
-tx.onerror=()=>{
-reject(tx.error);
-};
-
-});
+  };
 
 }
 
 
-/* =========================================================
-   JSON DATEI-IMPORT UI
-========================================================= */
+function drawSpace(){
 
-let selectedJsonFile=null;
+  const rect =
+    spaceCanvas.getBoundingClientRect();
 
-let selectedJsonText="";
+  const width =
+    rect.width;
 
+  const height =
+    rect.height;
 
-const jsonFileInput=
-document.getElementById(
-"jsonFile"
-);
-
-const jsonUploadZone=
-document.getElementById(
-"jsonUploadZone"
-);
-
-const jsonFileMeta=
-document.getElementById(
-"jsonFileMeta"
-);
-
-const jsonValidateBtn=
-document.getElementById(
-"btnValidateJson"
-);
-
-const jsonImportBtn=
-document.getElementById(
-"btnImportJson"
-);
-
-const jsonStatus=
-document.getElementById(
-"jsonStatus"
-);
+  ctx.clearRect(
+    0,
+    0,
+    width,
+    height
+  );
 
 
-/* =========================================================
-   JSON DATEI LESEN
-========================================================= */
+  /*
+    coordinate axes
+  */
 
-async function readJsonFile(file){
+  ctx.save();
 
-if(!file){
+  ctx.translate(
+    width/2,
+    height/2
+  );
 
-throw new Error(
-"Keine JSON-Datei ausgewählt."
-);
+  ctx.strokeStyle =
+    "rgba(0,234,255,.13)";
 
-}
+  ctx.lineWidth = 1;
 
-const name=
-file.name.toLowerCase();
+  ctx.beginPath();
+  ctx.moveTo(-width/2,0);
+  ctx.lineTo(width/2,0);
+  ctx.moveTo(0,-height/2);
+  ctx.lineTo(0,height/2);
+  ctx.stroke();
 
-if(!name.endsWith(".json")){
-
-throw new Error(
-"Bitte eine JSON-Datei (.json) auswählen."
-);
-
-}
-
-const text=
-await file.text();
-
-if(!text.trim()){
-
-throw new Error(
-"Die JSON-Datei ist leer."
-);
-
-}
-
-return text;
-
-}
+  ctx.restore();
 
 
-/* =========================================================
-   JSON DATEI ANZEIGEN
-========================================================= */
+  /*
+    memories
+  */
 
-async function selectJsonFile(file){
+  memory.forEach(
+    record => {
 
-if(!file)
-return;
+      const p =
+        projectVector(
+          record.vector,
+          width,
+          height
+        );
 
-try{
+      if(!p)
+        return;
 
-selectedJsonFile=file;
+      const isTop =
+        lastResults.length &&
+        lastResults[0].id ===
+        record.id;
 
-selectedJsonText=
-await readJsonFile(file);
+      ctx.beginPath();
 
-jsonFileMeta.innerHTML=`
+      ctx.arc(
+        p.x,
+        p.y,
+        isTop ? 6 : 4,
+        0,
+        Math.PI*2
+      );
 
-<div>
-DATEI:
-<span class="mono">
-${esc(file.name)}
-</span>
-</div>
+      ctx.fillStyle =
+        isTop
+          ? "#00eaff"
+          : "#ff2aa8";
 
-<div>
-GRÖSSE:
-${file.size.toLocaleString("de-DE")} BYTE
-</div>
+      ctx.fill();
 
-<div>
-TYP:
-<span class="mono">
-${esc(file.type||"application/json")}
-</span>
-</div>
+    }
+  );
 
-<div>
-STATUS:
-<span class="good">
-DATEI GELADEN
-</span>
-</div>
 
-`;
+  /*
+    query vector
+  */
 
-jsonFileMeta.classList.remove(
-"hidden"
-);
+  if(queryVector){
 
-jsonValidateBtn.disabled=false;
+    const p =
+      projectVector(
+        queryVector,
+        width,
+        height
+      );
 
-jsonImportBtn.classList.add(
-"hidden"
-);
+    if(p){
 
-workflow.validatedPayload=null;
+      ctx.beginPath();
 
-jsonStatus.className=
-"status ok";
+      ctx.arc(
+        p.x,
+        p.y,
+        8,
+        0,
+        Math.PI*2
+      );
 
-jsonStatus.textContent=
-"✓ JSON-Datei lokal geladen. Bereit zur Validierung.";
+      ctx.strokeStyle =
+        "#4ade80";
 
-}catch(e){
+      ctx.lineWidth = 2;
 
-selectedJsonFile=null;
+      ctx.stroke();
 
-selectedJsonText="";
+      ctx.beginPath();
 
-jsonValidateBtn.disabled=true;
+      ctx.moveTo(
+        p.x-12,
+        p.y
+      );
 
-jsonImportBtn.classList.add(
-"hidden"
-);
+      ctx.lineTo(
+        p.x+12,
+        p.y
+      );
 
-jsonStatus.className=
-"status error";
+      ctx.moveTo(
+        p.x,
+        p.y-12
+      );
 
-jsonStatus.textContent=
-"✕ "+e.message;
+      ctx.lineTo(
+        p.x,
+        p.y+12
+      );
 
-}
+      ctx.stroke();
+
+    }
+
+  }
 
 }
 
 
-/* =========================================================
-   JSON DATEI AUSWÄHLEN
-========================================================= */
-
-jsonFileInput.onchange=
-async e=>{
-
-const file=
-e.target.files?.[0];
-
-if(file)
-await selectJsonFile(file);
-
-};
-
-
-/* =========================================================
-   JSON UPLOAD ZONE
-========================================================= */
-
-jsonUploadZone.onclick=
-e=>{
-
-if(e.target===jsonFileInput)
-return;
-
-jsonFileInput.click();
-
-};
-
-
-jsonUploadZone.ondragover=
-e=>{
-
-e.preventDefault();
-
-jsonUploadZone.style.borderColor=
-"var(--cyan)";
-
-};
-
-
-jsonUploadZone.ondragleave=
-()=>{
-
-jsonUploadZone.style.borderColor="";
-
-};
-
-
-jsonUploadZone.ondrop=
-async e=>{
-
-e.preventDefault();
-
-jsonUploadZone.style.borderColor="";
-
-const file=
-e.dataTransfer.files?.[0];
-
-if(file)
-await selectJsonFile(file);
-
-};
-
-
-/* =========================================================
-   JSON VALIDIEREN
-========================================================= */
-
-jsonValidateBtn.onclick=
-()=>{
-
-jsonImportBtn.classList.add(
-"hidden"
+window.addEventListener(
+  "resize",
+  resizeCanvas
 );
 
-workflow.validatedPayload=null;
 
-try{
+/* ============================================================
+   UTILITIES
+============================================================ */
 
-if(!selectedJsonText){
+function sleep(ms){
 
-throw new Error(
-"Keine JSON-Datei geladen."
-);
+  return new Promise(
+    resolve =>
+      setTimeout(
+        resolve,
+        ms
+      )
+  );
 
 }
 
-const json=
-JSON.parse(
-selectedJsonText
-);
 
-validateImportPayload(
-json
-);
+function escapeHtml(value){
 
-const a=
-json.tables.TABLE_A.records.length;
-
-const b=
-json.tables.TABLE_B.records.length;
-
-const aCash=
-json.tables.TABLE_A.records.filter(
-r=>r.record_type==="KASSENABSCHLUSS"
-).length;
-
-const bCash=
-json.tables.TABLE_B.records.filter(
-r=>r.record_type==="KASSENABSCHLUSS"
-).length;
-
-workflow.validatedPayload=json;
-
-jsonStatus.className=
-"status ok";
-
-jsonStatus.innerHTML=`
-
-✓ JSON GÜLTIG
-<br>
-✓ BOOKING_RECON
-<br>
-✓ VERSION: ${esc(json.version)}
-<br>
-✓ TABLE_A: ${a} RECORDS
-<br>
-✓ TABLE_B: ${b} RECORDS
-<br>
-✓ GESAMT: ${a+b} RECORDS
-<br>
-✓ KASSENABSCHLUSS: ${aCash+bCash}
-
-`;
-
-jsonImportBtn.classList.remove(
-"hidden"
-);
-
-};
-
-
-/* =========================================================
-   JSON IMPORTIEREN
-========================================================= */
-
-jsonImportBtn.onclick=
-async()=>{
-
-try{
-
-if(!workflow.validatedPayload){
-
-throw new Error(
-"Es wurde noch kein gültiges JSON validiert."
-);
-
-}
-
-const result=
-await importJSON(
-workflow.validatedPayload
-);
-
-await refresh();
-
-jsonStatus.className=
-"status ok";
-
-jsonStatus.textContent=
-`✓ ${result.records} RECORDS IMPORTIERT`;
-
-
-document.querySelectorAll(
-".nav"
-).forEach(
-x=>x.classList.remove("active")
-);
-
-document.querySelector(
-'[data-view="import"]'
-).classList.add("active");
-
-document.querySelectorAll(
-".view"
-).forEach(
-x=>x.classList.remove("active")
-);
-
-document.getElementById(
-"view-import"
-).classList.add("active");
-
-setStep(4);
-
-updateWorkflowReady();
-
-}catch(e){
-
-jsonStatus.className=
-"status error";
-
-jsonStatus.textContent=
-"✕ "+e.message;
-
-}
-
-};
-
-
-/* =========================================================
-   JSON DATEI ENTFERNEN
-========================================================= */
-
-document.getElementById(
-"btnClearJson"
-).onclick=
-()=>{
-
-selectedJsonFile=null;
-
-selectedJsonText="";
-
-workflow.validatedPayload=null;
-
-jsonFileInput.value="";
-
-jsonFileMeta.innerHTML="";
-
-jsonFileMeta.classList.add(
-"hidden"
-);
-
-jsonValidateBtn.disabled=true;
-
-jsonImportBtn.classList.add(
-"hidden"
-);
-
-jsonStatus.className=
-"status";
-
-jsonStatus.textContent=
-"JSON-Datei auswählen.";
-
-};
-
-
-/* =========================================================
-   WORKFLOW READY
-========================================================= */
-
-async function updateWorkflowReady(){
-
-await refresh();
-
-const a=
-state.records.filter(
-r=>r.source_table==="TABLE_A"
-).length;
-
-const b=
-state.records.filter(
-r=>r.source_table==="TABLE_B"
-).length;
-
-const excluded=
-state.records.filter(
-r=>r.record_type==="KASSENABSCHLUSS"
-).length;
-
-document.getElementById(
-"workflowCountA"
-).textContent=a;
-
-document.getElementById(
-"workflowCountB"
-).textContent=b;
-
-document.getElementById(
-"workflowExcluded"
-).textContent=excluded;
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
 
 
-/* =========================================================
-   ESCAPE
-========================================================= */
+/* ============================================================
+   BOOT
+============================================================ */
 
-function esc(v){
+function boot(){
 
-return String(
-v??""
-).replace(
-/[&<>"']/g,
-c=>({
+  updateMetrics();
 
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#039;"
+  renderMemory();
 
-}[c])
-);
+  renderVector(null);
 
-}
+  renderQueryVector(null);
 
+  resizeCanvas();
 
-/* =========================================================
-   DATENBANK-ANSICHT
-========================================================= */
+  log(
+    "NEURAL MEMORY interface started",
+    "ok"
+  );
 
-function renderDatabase(){
+  log(
+    `model target: ${MODEL}`,
+    "info"
+  );
 
-const container=
-document.getElementById(
-"databaseTable"
-);
+  log(
+    `vector dimension: ${DIMENSION}`,
+    "info"
+  );
 
-const search=
-document.getElementById(
-"dbSearch"
-).value.toLowerCase();
+  log(
+    "vector store: in-memory",
+    "info"
+  );
 
-if(
-currentTab==="differences"
-){
+  log(
+    "retrieval: cosine similarity",
+    "info"
+  );
 
-renderDifferences(
-container,
-search
-);
+  log(
+    "text query + direct vector query available",
+    "ok"
+  );
 
-return;
-
-}
-
-const source=
-currentTab==="tableA"
-?"TABLE_A"
-:"TABLE_B";
-
-let rows=
-state.records.filter(
-x=>x.source_table===source
-);
-
-if(search){
-
-rows=
-rows.filter(
-x=>
-JSON.stringify(x)
-.toLowerCase()
-.includes(search)
-);
-
-}
-
-if(!rows.length){
-
-container.innerHTML=
-`<div class="empty">
-KEINE DATENSÄTZE
-</div>`;
-
-return;
-
-}
-
-const keys=
-new Set();
-
-rows.forEach(
-r=>{
-
-Object.keys(
-r.data||{}
-).forEach(
-k=>keys.add(k)
-);
-
-});
-
-const columns=
-[...keys];
-
-let html=`
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>ID</th>
-<th>TYP</th>
-<th>STATUS</th>
-<th>DATUM</th>
-
-${columns
-.map(
-k=>
-`<th>${esc(k)}</th>`
-)
-.join("")}
-
-</tr>
-
-</thead>
-
-<tbody>
-
-`;
-
-rows.forEach(r=>{
-
-const statusClass=
-r.status==="AKTIV"
-?"good":
-r.status==="ZUKUNFT"
-?"warn":
-r.status==="ERINNERUNG"
-?"ambiguous"
-:"";
-
-const typeClass=
-r.record_type==="KASSENABSCHLUSS"
-?"ambiguous"
-:"";
-
-html+=`
-
-<tr>
-
-<td class="mono">
-${esc(r.record_id)}
-</td>
-
-<td class="${typeClass}">
-${esc(r.record_type)}
-</td>
-
-<td class="${statusClass}">
-${esc(r.status)}
-</td>
-
-<td>
-${esc(r.date||"—")}
-</td>
-
-${columns
-.map(
-k=>
-`<td>${esc(
-r.data?.[k]??""
-)}</td>`
-)
-.join("")}
-
-</tr>
-
-`;
-
-});
-
-html+=`
-
-</tbody>
-
-</table>
-
-`;
-
-container.innerHTML=
-html;
+  /*
+    Modell erst laden, wenn der Benutzer
+    tatsächlich Text verarbeitet.
+  */
 
 }
 
 
-/* =========================================================
-   ERGEBNISSE
-========================================================= */
-
-function renderDifferences(
-container,
-search
-){
-
-let rows=
-[...state.differences];
-
-if(search){
-
-rows=
-rows.filter(
-x=>
-JSON.stringify(x)
-.toLowerCase()
-.includes(search)
-);
-
-}
-
-if(!rows.length){
-
-container.innerHTML=
-`<div class="empty">
-KEINE ERGEBNISSE
-</div>`;
-
-return;
-
-}
-
-container.innerHTML=`
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>STATUS</th>
-<th>MATCH</th>
-<th>FELD</th>
-<th>A</th>
-<th>B</th>
-<th>DIFFERENZ</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-${rows.map(
-r=>`
-
-<tr>
-
-<td>
-
-<span class="badge">
-${esc(r.status)}
-</span>
-
-</td>
-
-<td class="mono">
-${esc(r.match_key)}
-</td>
-
-<td>
-${esc(r.field)}
-</td>
-
-<td>
-${esc(r.value_a)}
-</td>
-
-<td>
-${esc(r.value_b)}
-</td>
-
-<td>
-${esc(r.difference)}
-</td>
-
-</tr>
-
-`
-).join("")}
-
-</tbody>
-
-</table>
-
-`;
-
-}
-
-
-/* =========================================================
-   ABGLEICH
-========================================================= */
-
-function getField(
-record,
-field
-){
-
-if(
-record.data &&
-Object.prototype.hasOwnProperty.call(
-record.data,
-field
-)
-)
-return record.data[field];
-
-return undefined;
-
-}
-
-
-function normalizeKey(v){
-
-if(
-v===null||
-v===undefined
-)
-return null;
-
-const s=
-String(v)
-.trim()
-.toLowerCase();
-
-return s?s:null;
-
-}
-
-
-function makeKey(
-record,
-fields
-){
-
-return fields
-.map(
-f=>
-normalizeKey(
-getField(record,f)
-)
-)
-.join("||");
-
-}
-
-
-function completeKey(
-record,
-fields
-){
-
-return fields.every(
-f=>
-normalizeKey(
-getField(record,f)
-)!==null
-);
-
-}
-
-
-function dateAllowed(
-record,
-from,
-to
-){
-
-if(!record.date)
-return true;
-
-if(
-from &&
-record.date<from
-)
-return false;
-
-if(
-to &&
-record.date>to
-)
-return false;
-
-return true;
-
-}
-
-
-function numeric(value){
-
-if(
-value===null||
-value===undefined||
-String(value).trim()===""
-)
-return{
-state:"MISSING",
-value:null
-};
-
-if(
-typeof value==="number"
-)
-return Number.isFinite(value)
-?{
-state:"PRESENT",
-value
-}
-:{
-state:"INVALID",
-value:null
-};
-
-let s=
-String(value)
-.trim()
-.replace(
-/[€$£]/g,
-""
-)
-.replace(
-/\s/g,
-""
-);
-
-if(
-s.includes(",")&&
-s.includes(".")
-){
-
-if(
-s.lastIndexOf(",")>
-s.lastIndexOf(".")
-){
-
-s=
-s.replace(/\./g,"")
-.replace(",","."
-);
-
-}else{
-
-s=
-s.replace(/,/g,"");
-
-}
-
-}else if(
-s.includes(",")
-){
-
-s=
-s.replace(",","."
-);
-
-}
-
-s=
-s.replace(
-/[^\d.-]/g,
-""
-);
-
-const n=
-Number(s);
-
-return Number.isFinite(n)
-?{
-state:"PRESENT",
-value:n
-}
-:{
-state:"INVALID",
-value:null
-};
-
-}
-
-
-function createRunId(){
-
-return "RUN-"+
-Date.now()+
-"-"+
-Math.random()
-.toString(36)
-.slice(2,8)
-.toUpperCase();
-
-}
-
-
-/* =========================================================
-   DETERMINISTISCHER VERGLEICH
-========================================================= */
-
-async function compareTables(){
-
-await openDatabase();
-
-const from=
-document.getElementById(
-"dateFrom"
-).value;
-
-const to=
-document.getElementById(
-"dateTo"
-).value;
-
-if(
-from&&
-to&&
-from>to
-)
-throw new Error(
-"VON liegt nach BIS."
-);
-
-const matchFields=
-document.getElementById(
-"matchKeys"
-).value
-.split(",")
-.map(
-x=>x.trim()
-)
-.filter(Boolean);
-
-const numericFields=
-document.getElementById(
-"numericFields"
-).value
-.split(",")
-.map(
-x=>x.trim()
-)
-.filter(Boolean);
-
-if(!matchFields.length)
-throw new Error(
-"Kein Abgleich-Feld."
-);
-
-const runId=
-createRunId();
-
-const excludedIds=
-new Set(
-state.records
-.filter(
-r=>
-r.record_type===
-"KASSENABSCHLUSS"
-)
-.map(
-r=>r.record_id
-)
-);
-
-const A=
-state.records.filter(
-r=>
-r.source_table==="TABLE_A" &&
-!excludedIds.has(
-r.record_id
-) &&
-dateAllowed(
-r,
-from,
-to
-)
-);
-
-const B=
-state.records.filter(
-r=>
-r.source_table==="TABLE_B" &&
-!excludedIds.has(
-r.record_id
-) &&
-dateAllowed(
-r,
-from,
-to
-)
-);
-
-const mapB=
-new Map();
-
-B.forEach(r=>{
-
-if(
-!completeKey(
-r,
-matchFields
-)
-)
-return;
-
-const k=
-makeKey(
-r,
-matchFields
-);
-
-if(!mapB.has(k))
-mapB.set(k,[]);
-
-mapB.get(k).push(r);
-
-});
-
-
-const mapA=
-new Map();
-
-A.forEach(r=>{
-
-if(
-!completeKey(
-r,
-matchFields
-)
-)
-return;
-
-const k=
-makeKey(
-r,
-matchFields
-);
-
-if(!mapA.has(k))
-mapA.set(k,[]);
-
-mapA.get(k).push(r);
-
-});
-
-
-const differences=[];
-
-let comparisons=0;
-let ambiguous=0;
-let missingA=0;
-let missingB=0;
-let invalidKeys=0;
-
-
-function add(
-status,
-data={}
-){
-
-differences.push({
-
-difference_id:
-"DIFF-"+
-String(
-differences.length+1
-).padStart(
-6,
-"0"
-),
-
-run_id:runId,
-
-status,
-
-...data
-
-});
-
-}
-
-
-/* ---------------------------------------------------------
-   A -> B
---------------------------------------------------------- */
-
-for(
-const a of A
-){
-
-if(
-!completeKey(
-a,
-matchFields
-)
-){
-
-invalidKeys++;
-
-add(
-"INVALID_MATCH_KEY",
-{
-
-match_key:
-makeKey(
-a,
-matchFields
-),
-
-field:
-"__match_key__",
-
-value_a:
-a.record_id,
-
-record_a:
-a.record_id
-
-}
-);
-
-continue;
-
-}
-
-const key=
-makeKey(
-a,
-matchFields
-);
-
-const candidates=
-mapB.get(key)||[];
-
-if(!candidates.length){
-
-missingB++;
-
-add(
-"MISSING_IN_B",
-{
-
-match_key:key,
-
-field:
-"__record__",
-
-value_a:
-a.record_id,
-
-record_a:
-a.record_id
-
-}
-);
-
-continue;
-
-}
-
-
-/*
-  Mehrere Treffer sind keine automatische Differenz.
-*/
-
-if(
-candidates.length>1
-){
-
-ambiguous++;
-
-add(
-"AMBIGUOUS_MATCH",
-{
-
-match_key:key,
-
-field:
-"__record__",
-
-value_a:
-a.record_id,
-
-value_b:
-candidates
-.map(x=>x.record_id)
-.join(", "),
-
-record_a:
-a.record_id,
-
-record_b:
-candidates
-.map(x=>x.record_id)
-
-}
-);
-
-continue;
-
-}
-
-
-const b=
-candidates[0];
-
-comparisons++;
-
-numericFields.forEach(
-field=>{
-
-const va=
-numeric(
-getField(
-a,
-field
-)
-);
-
-const vb=
-numeric(
-getField(
-b,
-field
-)
-);
-
-if(
-va.state==="MISSING"&&
-vb.state==="MISSING"
-)
-return;
-
-if(
-va.state==="MISSING"||
-vb.state==="MISSING"
-){
-
-add(
-"VALUE_MISSING",
-{
-
-match_key:key,
-
-field,
-
-value_a:
-va.value,
-
-value_b:
-vb.value,
-
-record_a:
-a.record_id,
-
-record_b:
-b.record_id
-
-}
-);
-
-return;
-
-}
-
-if(
-va.state==="INVALID"||
-vb.state==="INVALID"
-){
-
-add(
-"VALUE_INVALID",
-{
-
-match_key:key,
-
-field,
-
-value_a:
-getField(
-a,
-field
-),
-
-value_b:
-getField(
-b,
-field
-),
-
-record_a:
-a.record_id,
-
-record_b:
-b.record_id
-
-}
-);
-
-return;
-
-}
-
-const diff=
-va.value-vb.value;
-
-if(diff!==0){
-
-add(
-"DIFFERENCE",
-{
-
-match_key:key,
-
-field,
-
-value_a:
-va.value,
-
-value_b:
-vb.value,
-
-difference:diff,
-
-record_a:
-a.record_id,
-
-record_b:
-b.record_id
-
-}
-);
-
-}
-
-}
-);
-
-}
-
-
-/* ---------------------------------------------------------
-   B -> A
---------------------------------------------------------- */
-
-for(
-const b of B
-){
-
-if(
-!completeKey(
-b,
-matchFields
-)
-)
-continue;
-
-const key=
-makeKey(
-b,
-matchFields
-);
-
-const candidates=
-mapA.get(key)||[];
-
-if(
-!candidates.length
-){
-
-missingA++;
-
-add(
-"MISSING_IN_A",
-{
-
-match_key:key,
-
-field:
-"__record__",
-
-value_b:
-b.record_id,
-
-record_b:
-b.record_id
-
-}
-);
-
-}
-
-}
-
-
-/* ---------------------------------------------------------
-   SPEICHERN
---------------------------------------------------------- */
-
-await clearStore(
-STORE_DIFFERENCES
-);
-
-const tx=
-database.transaction(
-STORE_DIFFERENCES,
-"readwrite"
-);
-
-const store=
-tx.objectStore(
-STORE_DIFFERENCES
-);
-
-differences.forEach(
-x=>store.put(x)
-);
-
-
-const result={
-
-runId,
-
-tableA:A.length,
-
-tableB:B.length,
-
-excluded:
-excludedIds.size,
-
-comparisons,
-
-differences:
-differences.length,
-
-ambiguous,
-
-missingA,
-
-missingB,
-
-invalidKeys,
-
-plan:{
-
-execution:
-"DETERMINISTIC",
-
-matching:{
-
-strategy:
-"EXACT",
-
-fields:
-matchFields,
-
-duplicate_policy:
-"AMBIGUOUS_MATCH"
-
-},
-
-excluded:{
-
-record_type:
-"KASSENABSCHLUSS",
-
-reason:
-"KEIN_NORMALER_BUCHUNGSVORGANG"
-
-},
-
-comparisonFields:
-numericFields,
-
-period:{
-
-from:
-from||null,
-
-to:
-to||null
-
-},
-
-statistics:{
-
-difference:
-differences.filter(
-x=>x.status==="DIFFERENCE"
-).length,
-
-missing:
-differences.filter(
-x=>x.status==="VALUE_MISSING"
-).length,
-
-invalid:
-differences.filter(
-x=>x.status==="VALUE_INVALID"
-).length,
-
-missingA,
-missingB,
-ambiguous,
-invalidKeys
-
-}
-
-}
-
-};
-
-
-return new Promise(
-(resolve,reject)=>{
-
-tx.oncomplete=()=>{
-resolve(result);
-};
-
-tx.onerror=()=>{
-reject(tx.error);
-};
-
-});
-
-}
-
-
-/* =========================================================
-   WORKFLOW ABGLEICH STARTEN
-========================================================= */
-
-document.getElementById(
-"btnRunWorkflow"
-).onclick=async()=>{
-
-try{
-
-const result=
-await compareTables();
-
-await refresh();
-
-const status=
-document.getElementById(
-"workflowStatus"
-);
-
-status.className=
-result.differences
-?"status warn"
-:"status ok";
-
-status.innerHTML=
-result.differences
-?`
-
-⚠ ABGLEICH ABGESCHLOSSEN
-
-<br><br>
-
-${result.differences}
-ERGEBNISSE GEFUNDEN
-
-<br><br>
-
-Fehlt in A:
-${result.missingA}
-
-<br>
-
-Fehlt in B:
-${result.missingB}
-
-<br>
-
-Mehrdeutig:
-${result.ambiguous}
-
-<br>
-
-Ungültige Schlüssel:
-${result.invalidKeys}
-
-<br>
-
-Kassenabschlüsse ausgeschlossen:
-${result.excluded}
-
-`
-
-:`
-
-✓ ABGLEICH ABGESCHLOSSEN
-
-<br><br>
-
-Keine Abweichungen gefunden.
-
-<br><br>
-
-Kassenabschlüsse ausgeschlossen:
-${result.excluded}
-
-`;
-
-
-document.querySelectorAll(
-".nav"
-).forEach(
-x=>x.classList.remove("active")
-);
-
-document.querySelector(
-'[data-view="query"]'
-).classList.add("active");
-
-document.querySelectorAll(
-".view"
-).forEach(
-x=>x.classList.remove("active")
-);
-
-document.getElementById(
-"view-query"
-).classList.add("active");
-
-await showQueryResult(
-result
-);
-
-}catch(e){
-
-document.getElementById(
-"workflowStatus"
-).className=
-"status error";
-
-document.getElementById(
-"workflowStatus"
-).textContent=
-"✕ "+e.message;
-
-}
-
-};
-
-
-/* =========================================================
-   QUERY ERGEBNIS ANZEIGEN
-========================================================= */
-
-async function showQueryResult(r){
-
-const plan=
-document.getElementById(
-"queryPlan"
-);
-
-const results=
-document.getElementById(
-"queryResults"
-);
-
-plan.textContent=
-JSON.stringify(
-r.plan,
-null,
-2
-);
-
-plan.classList.remove(
-"hidden"
-);
-
-results.innerHTML=`
-
-<div class="card-head">
-
-<strong>
-ABGLEICH ERGEBNIS
-</strong>
-
-<span>
-DETERMINISTISCH
-</span>
-
-</div>
-
-
-<div class="card-body">
-
-
-<div class="stats">
-
-
-<div class="stat">
-
-<div class="stat-label">
-TABLE A
-</div>
-
-<div class="stat-value">
-${r.tableA}
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-label">
-TABLE B
-</div>
-
-<div class="stat-value">
-${r.tableB}
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-label">
-VERGLEICHE
-</div>
-
-<div class="stat-value">
-${r.comparisons}
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-label">
-ERGEBNISSE
-</div>
-
-<div class="stat-value">
-${r.differences}
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-label">
-AUSGESCHLOSSEN
-</div>
-
-<div class="stat-value">
-${r.excluded}
-</div>
-
-</div>
-
-
-</div>
-
-
-<div class="status ${
-r.differences
-?"warn"
-:"ok"
-}">
-
-${
-r.differences
-?`⚠ ${r.differences} ERGEBNISSE`
-:`✓ KEINE ABWEICHUNGEN`
-}
-
-<br><br>
-
-RUN-ID:
-${esc(r.runId)}
-
-<br>
-
-Fehlt in A:
-${r.missingA}
-
-<br>
-
-Fehlt in B:
-${r.missingB}
-
-<br>
-
-Mehrdeutig:
-${r.ambiguous}
-
-<br>
-
-Ungültige Schlüssel:
-${r.invalidKeys}
-
-<br>
-
-KASSENABSCHLÜSSE ausgeschlossen:
-${r.excluded}
-
-</div>
-
-</div>
-
-`;
-
-results.classList.remove(
-"hidden"
-);
-
-}
-
-
-/* =========================================================
-   POLICIES
-========================================================= */
-
-function renderPolicies(){
-
-const el=
-document.getElementById(
-"policyList"
-);
-
-if(
-!state.policies.length
-){
-
-el.innerHTML=
-`<div class="empty">
-NOCH KEINE POLICIES
-</div>`;
-
-return;
-
-}
-
-el.innerHTML=
-state.policies
-.map(
-p=>`
-
-<div class="policy-card">
-
-<div class="policy-meta">
-
-<strong>
-${esc(
-p.name||
-p.policy_id
-)}
-</strong>
-
-<br>
-
-${esc(p.policy_id)}
-·
-v${esc(p.version)}
-
-<br>
-
-MATCH:
-${esc(
-(p.match?.keys||[])
-.join(", ")
-)}
-
-<br>
-
-FELDER:
-${esc(
-(p.match?.numeric_fields||[])
-.join(", ")
-)}
-
-</div>
-
-</div>
-
-`
-)
-.join("");
-
-}
-
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-document.querySelectorAll(
-".nav"
-).forEach(
-btn=>{
-
-btn.onclick=()=>{
-
-document.querySelectorAll(
-".nav"
-).forEach(
-x=>x.classList.remove("active")
-);
-
-btn.classList.add("active");
-
-document.querySelectorAll(
-".view"
-).forEach(
-x=>x.classList.remove("active")
-);
-
-document.getElementById(
-"view-"+btn.dataset.view
-).classList.add("active");
-
-if(
-btn.dataset.view==="database"
-)
-refresh();
-
-if(
-btn.dataset.view==="policies"
-)
-refresh();
-
-};
-
-});
-
-
-document.querySelectorAll(
-".tab"
-).forEach(
-btn=>{
-
-btn.onclick=()=>{
-
-document.querySelectorAll(
-".tab"
-).forEach(
-x=>x.classList.remove("active")
-);
-
-btn.classList.add("active");
-
-currentTab=
-btn.dataset.tab;
-
-renderDatabase();
-
-};
-
-});
-
-
-document.getElementById(
-"dbSearch"
-).oninput=
-renderDatabase;
-
-
-/* =========================================================
-   QUERY MANUELL
-========================================================= */
-
-document.getElementById(
-"resetConfig"
-).onclick=()=>{
-
-document.getElementById(
-"dateFrom"
-).value="";
-
-document.getElementById(
-"dateTo"
-).value="";
-
-document.getElementById(
-"matchKeys"
-).value=
-"auftragsnummer";
-
-document.getElementById(
-"numericFields"
-).value=
-"gesamt,gewinn,hw_bonus";
-
-};
-
-
-document.getElementById(
-"runQuery"
-).onclick=async()=>{
-
-const plan=
-document.getElementById(
-"queryPlan"
-);
-
-const results=
-document.getElementById(
-"queryResults"
-);
-
-try{
-
-await refresh();
-
-const r=
-await compareTables();
-
-await showQueryResult(
-r
-);
-
-}catch(e){
-
-plan.textContent=
-"FEHLER:\n\n"+
-e.message;
-
-plan.classList.remove(
-"hidden"
-);
-
-results.classList.add(
-"hidden"
-);
-
-}
-
-};
-
-
-document.getElementById(
-"btnRefreshPolicies"
-).onclick=
-refresh;
-
-
-/* =========================================================
-   DATENBANK ÖFFNEN
-========================================================= */
-
-document.getElementById(
-"btnOpenDatabase"
-).onclick=()=>{
-
-document.querySelectorAll(
-".nav"
-).forEach(
-x=>x.classList.remove("active")
-);
-
-document.querySelector(
-'[data-view="database"]'
-).classList.add("active");
-
-document.querySelectorAll(
-".view"
-).forEach(
-x=>x.classList.remove("active")
-);
-
-document.getElementById(
-"view-database"
-).classList.add("active");
-
-refresh();
-
-};
-
-
-/* =========================================================
-   START
-========================================================= */
-
-openDatabase()
-.then(
-refresh
-)
-.catch(e=>{
-
-console.error(e);
-
-document.getElementById(
-"step1Status"
-).className="status error";
-
-document.getElementById(
-"step1Status"
-).textContent=
-"DATENBANK FEHLER: "+
-e.message;
-
-});
+boot();
 
 </script>
 
