@@ -1,505 +1,550 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#020308">
-
-<title>NEURAL MEMORY — Semantic Retrieval Lab</title>
-
-<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-
-<style>
-:root{
-  --bg:#020308;
-  --panel:#060914;
-  --panel2:#09101d;
-
-  --cyan:#00f5ff;
-  --cyan2:#00aaff;
-  --pink:#ff00aa;
-  --green:#4aff88;
-  --yellow:#ffe600;
-  --red:#ff3355;
-
-  --text:#d9faff;
-  --muted:#62818c;
-
-  --line:rgba(0,245,255,.22);
-
-  --glow:
-    0 0 12px rgba(0,245,255,.55),
-    0 0 35px rgba(0,245,255,.18);
-}
-
-*{
-  box-sizing:border-box;
-}
-
-html,
-body{
-  margin:0;
-  padding:0;
-  width:100%;
-  min-height:100%;
-  background:var(--bg);
-  color:var(--text);
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    "Liberation Mono",
-    monospace;
-}
-
-body{
-  overflow-x:hidden;
-}
-
-button,
-input{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-.app{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-}
+<script type="module">
 
 /* =========================================================
-   HEADER
-========================================================= */
+   NEURAL MEMORY
+   REAL EMBEDDING CORE
+   Xenova/multilingual-e5-small
+   ========================================================= */
 
-.header{
-  position:sticky;
-  top:0;
-  z-index:50;
+const MODEL = "Xenova/multilingual-e5-small";
+const EMBEDDING_DIM = 384;
 
-  height:72px;
+let extractor = null;
 
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
 
-  padding:0 22px;
+/* =========================================================
+   1. EMBEDDING-MODELL LADEN
+   ========================================================= */
 
-  background:
-    linear-gradient(
-      180deg,
-      rgba(2,3,8,.98),
-      rgba(2,3,8,.92)
+async function loadEmbeddingModel() {
+
+  if (extractor) {
+    return extractor;
+  }
+
+  console.log("Embedding-Modell wird geladen:", MODEL);
+
+  const transformers = await import(
+    "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1"
+  );
+
+  extractor = await transformers.pipeline(
+    "feature-extraction",
+    MODEL
+  );
+
+  console.log("Embedding-Modell bereit.");
+
+  return extractor;
+}
+
+
+/* =========================================================
+   2. TEXT → EMBEDDING
+   ========================================================= */
+
+async function createEmbedding(text) {
+
+  const model = await loadEmbeddingModel();
+
+  /*
+   * E5 erwartet für gespeicherte Dokumente:
+   *
+   * passage: <text>
+   */
+
+  const prepared = `passage: ${String(text).trim()}`;
+
+  const output = await model(prepared, {
+    pooling: "mean",
+    normalize: true
+  });
+
+  const vector = Array.from(output.data);
+
+  if (vector.length !== EMBEDDING_DIM) {
+    throw new Error(
+      `Falsche Embedding-Dimension: ${vector.length}. ` +
+      `Erwartet: ${EMBEDDING_DIM}`
+    );
+  }
+
+  return vector;
+}
+
+
+/* =========================================================
+   3. EXCEL-RECORD → DETERMINISTISCHER TEXT
+   ========================================================= */
+
+function createEmbeddingText(record) {
+
+  const lines = [];
+
+  lines.push(
+    `SOURCE FILE: ${record.source.file}`
+  );
+
+  lines.push(
+    `SHEET: ${record.source.sheet}`
+  );
+
+  lines.push(
+    `ROW: ${record.source.row}`
+  );
+
+  for (const [field, value] of Object.entries(record.data)) {
+
+    let normalizedValue;
+
+    if (value === null || value === undefined) {
+      normalizedValue = "null";
+    }
+
+    else if (typeof value === "object") {
+      normalizedValue = JSON.stringify(value);
+    }
+
+    else {
+      normalizedValue = String(value);
+    }
+
+    lines.push(
+      `FIELD "${field}": ${normalizedValue}`
+    );
+  }
+
+  return lines.join("\n");
+}
+
+
+/* =========================================================
+   4. RECORD → MEMORY RECORD
+   ========================================================= */
+
+async function buildMemoryRecord(record) {
+
+  /*
+   * Originaldaten bleiben unverändert.
+   */
+
+  const embeddingText =
+    createEmbeddingText(record);
+
+  /*
+   * Jetzt passiert der eigentliche
+   * semantische Vektor-Schritt.
+   */
+
+  const embedding =
+    await createEmbedding(embeddingText);
+
+  return {
+
+    id: record.memory_id,
+
+    memory_id: record.memory_id,
+
+    source: {
+      file: record.source.file,
+      sheet: record.source.sheet,
+      row: record.source.row
+    },
+
+    /*
+     * RAW DATA
+     *
+     * unverändert
+     */
+
+    data: record.data,
+
+    /*
+     * DETERMINISTIC TEXT
+     *
+     * reproduzierbare Eingabe
+     * für das Embedding-Modell
+     */
+
+    embedding_text: embeddingText,
+
+    /*
+     * REAL 384D VECTOR
+     */
+
+    embedding: embedding,
+
+    dimension: embedding.length,
+
+    model: MODEL,
+
+    created: new Date().toISOString()
+  };
+}
+
+
+/* =========================================================
+   5. TEST MIT EINER EINZELNEN ZEILE
+   ========================================================= */
+
+async function testEmbedding() {
+
+  const record = {
+
+    memory_id: "TEST-000001",
+
+    source: {
+      file: "Export_Schaltungsliste-4.xlsx",
+      sheet: "Worksheet",
+      row: 5
+    },
+
+    data: {
+
+      ID: 27016,
+
+      VO: "UJ792MF",
+
+      Netzbetreiber: "T-Mobile",
+
+      "Datum Eingabe":
+        "2026-09-10 16:26:22",
+
+      "Datum Aktivierung":
+        "2026-09-10",
+
+      Shop:
+        "(2) LV Shop Bad Urach",
+
+      Mitarbeiter:
+        "Langefeld, Andreas",
+
+      Vorgang:
+        "Prepaid",
+
+      "aktueller Tarif":
+        "MagentaMobil Prepaid M",
+
+      Hardware:
+        "Telekom MagentaMobil Prepaid M: 89490240001966587094",
+
+      "Hardware-IMEI":
+        "89490240001966587094",
+
+      "Shop Provision":
+        10,
+
+      "Hardware-EK":
+        5.95,
+
+      "Schaltungsmarge":
+        12.41
+
+    }
+  };
+
+
+  console.log(
+    "===================================="
+  );
+
+  console.log(
+    "NEURAL MEMORY — EMBEDDING TEST"
+  );
+
+  console.log(
+    "===================================="
+  );
+
+
+  console.log(
+    "1. RAW RECORD"
+  );
+
+  console.log(record);
+
+
+  const embeddingText =
+    createEmbeddingText(record);
+
+
+  console.log(
+    "2. EMBEDDING TEXT"
+  );
+
+  console.log(embeddingText);
+
+
+  const memoryRecord =
+    await buildMemoryRecord(record);
+
+
+  console.log(
+    "3. EMBEDDING"
+  );
+
+  console.log(
+    memoryRecord.embedding
+  );
+
+
+  console.log(
+    "4. DIMENSION"
+  );
+
+  console.log(
+    memoryRecord.dimension
+  );
+
+
+  console.log(
+    "5. COMPLETE MEMORY RECORD"
+  );
+
+  console.log(
+    memoryRecord
+  );
+
+
+  return memoryRecord;
+}
+
+
+/* =========================================================
+   6. COSINE SIMILARITY
+   ========================================================= */
+
+function cosineSimilarity(a, b) {
+
+  if (a.length !== b.length) {
+    throw new Error(
+      "Vektoren haben unterschiedliche Dimensionen."
+    );
+  }
+
+  let dot = 0;
+
+  let normA = 0;
+
+  let normB = 0;
+
+
+  for (let i = 0; i < a.length; i++) {
+
+    dot += a[i] * b[i];
+
+    normA += a[i] * a[i];
+
+    normB += b[i] * b[i];
+
+  }
+
+
+  if (normA === 0 || normB === 0) {
+    return 0;
+  }
+
+
+  return (
+    dot /
+    (
+      Math.sqrt(normA) *
+      Math.sqrt(normB)
+    )
+  );
+}
+
+
+/* =========================================================
+   7. QUERY-EMBEDDING
+   ========================================================= */
+
+async function createQueryEmbedding(question) {
+
+  const model = await loadEmbeddingModel();
+
+  /*
+   * E5:
+   *
+   * query: <suchanfrage>
+   */
+
+  const prepared =
+    `query: ${String(question).trim()}`;
+
+
+  const output =
+    await model(prepared, {
+      pooling: "mean",
+      normalize: true
+    });
+
+
+  const vector =
+    Array.from(output.data);
+
+
+  if (vector.length !== EMBEDDING_DIM) {
+
+    throw new Error(
+      `Falsche Query-Dimension: ${vector.length}`
     );
 
-  border-bottom:1px solid var(--line);
+  }
 
-  box-shadow:
-    0 4px 30px rgba(0,0,0,.45);
+
+  return vector;
 }
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-
-.logo{
-  width:42px;
-  height:42px;
-
-  display:grid;
-  place-items:center;
-
-  border:1px solid var(--cyan);
-  color:var(--cyan);
-
-  box-shadow:var(--glow);
-
-  font-size:23px;
-  font-weight:900;
-}
-
-.title{
-  font-size:20px;
-  font-weight:900;
-  letter-spacing:.16em;
-}
-
-.subtitle{
-  margin-top:3px;
-  color:var(--muted);
-  font-size:10px;
-  letter-spacing:.18em;
-}
-
-.system-status{
-  display:flex;
-  align-items:center;
-  gap:9px;
-
-  color:var(--green);
-
-  font-size:10px;
-  letter-spacing:.15em;
-}
-
-.status-dot{
-  width:8px;
-  height:8px;
-
-  border-radius:50%;
-
-  background:var(--green);
-
-  box-shadow:
-    0 0 7px var(--green),
-    0 0 18px rgba(74,255,136,.5);
-}
 
 /* =========================================================
-   MAIN
-========================================================= */
+   8. MEMORY RETRIEVAL
+   ========================================================= */
 
-.main{
-  flex:1;
+async function searchMemory(
+  question,
+  memoryRecords,
+  topK = 5
+) {
 
-  display:grid;
+  /*
+   * Benutzerfrage
+   * ↓
+   * 384D Query-Vektor
+   */
 
-  grid-template-columns:
-    minmax(240px, .8fr)
-    minmax(420px, 1.5fr)
-    minmax(280px, .9fr);
+  const queryVector =
+    await createQueryEmbedding(question);
 
-  gap:12px;
 
-  padding:12px;
+  /*
+   * Jeden gespeicherten
+   * 384D Vektor vergleichen.
+   */
+
+  const scored =
+    memoryRecords.map(record => {
+
+      const similarity =
+        cosineSimilarity(
+          queryVector,
+          record.embedding
+        );
+
+
+      return {
+
+        record,
+
+        similarity
+
+      };
+
+    });
+
+
+  /*
+   * Höchste Ähnlichkeit zuerst.
+   */
+
+  scored.sort(
+    (a, b) =>
+      b.similarity - a.similarity
+  );
+
+
+  return scored.slice(
+    0,
+    topK
+  );
 }
 
-.column{
-  min-width:0;
-
-  display:flex;
-  flex-direction:column;
-
-  gap:12px;
-}
 
 /* =========================================================
-   PANEL
-========================================================= */
+   9. DEMO
+   ========================================================= */
 
-.panel{
-  background:
-    linear-gradient(
-      145deg,
-      rgba(6,9,20,.98),
-      rgba(4,7,15,.98)
+async function runDemo() {
+
+  const memoryRecord =
+    await testEmbedding();
+
+
+  const memory = [
+    memoryRecord
+  ];
+
+
+  const results =
+    await searchMemory(
+      "Prepaid Vorgang im Shop Bad Urach",
+      memory,
+      5
     );
 
-  border:1px solid var(--line);
 
-  box-shadow:
-    inset 0 0 30px rgba(0,245,255,.018),
-    0 8px 30px rgba(0,0,0,.28);
+  console.log(
+    "===================================="
+  );
+
+  console.log(
+    "RETRIEVAL"
+  );
+
+  console.log(
+    "===================================="
+  );
+
+
+  for (const result of results) {
+
+    console.log({
+
+      memory_id:
+        result.record.memory_id,
+
+      similarity:
+        result.similarity,
+
+      data:
+        result.record.data
+
+    });
+
+  }
+
 }
 
-.panel-head{
-  min-height:42px;
 
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+/*
+ * NICHT automatisch beim Seitenstart ausführen.
+ *
+ * Erst explizit:
+ *
+ * runDemo();
+ *
+ */
 
-  padding:9px 12px;
+window.NEURAL_MEMORY = {
 
-  border-bottom:1px solid rgba(0,245,255,.14);
+  loadEmbeddingModel,
 
-  background:rgba(0,245,255,.025);
-}
+  createEmbedding,
 
-.panel-title{
-  color:var(--cyan);
+  createEmbeddingText,
 
-  font-size:11px;
-  font-weight:900;
+  buildMemoryRecord,
 
-  letter-spacing:.14em;
-}
+  createQueryEmbedding,
 
-.panel-subtitle{
-  color:var(--muted);
-  font-size:9px;
-}
+  cosineSimilarity,
 
-.panel-body{
-  padding:12px;
-}
+  searchMemory,
 
-/* =========================================================
-   BUTTONS
-========================================================= */
+  testEmbedding,
 
-.btn{
-  min-height:38px;
+  runDemo
 
-  padding:8px 12px;
+};
 
-  border:1px solid rgba(0,245,255,.35);
-
-  background:#07101a;
-
-  color:var(--cyan);
-
-  transition:
-    background .15s,
-    border-color .15s,
-    transform .1s,
-    box-shadow .15s;
-}
-
-.btn:hover{
-  background:#0b1925;
-
-  border-color:var(--cyan);
-
-  box-shadow:var(--glow);
-}
-
-.btn:active{
-  transform:translateY(1px);
-}
-
-.btn.primary{
-  border-color:var(--cyan);
-  background:rgba(0,245,255,.08);
-}
-
-.btn.green{
-  color:var(--green);
-  border-color:rgba(74,255,136,.4);
-}
-
-.btn.green:hover{
-  border-color:var(--green);
-}
-
-.btn.pink{
-  color:var(--pink);
-  border-color:rgba(255,0,170,.4);
-}
-
-.btn.danger{
-  color:var(--red);
-  border-color:rgba(255,51,85,.4);
-}
-
-.btn.full{
-  width:100%;
-}
-
-/* =========================================================
-   DROPZONE
-========================================================= */
-
-.dropzone{
-  min-height:160px;
-
-  display:flex;
-  flex-direction:column;
-
-  align-items:center;
-  justify-content:center;
-
-  text-align:center;
-
-  padding:20px;
-
-  border:1px dashed rgba(0,245,255,.45);
-
-  background:
-    radial-gradient(
-      circle at center,
-      rgba(0,245,255,.055),
-      transparent 65%
-    );
-
-  transition:.15s;
-}
-
-.dropzone.dragover{
-  border-color:var(--green);
-
-  background:
-    radial-gradient(
-      circle at center,
-      rgba(74,255,136,.10),
-      transparent 65%
-    );
-
-  box-shadow:
-    0 0 25px rgba(74,255,136,.15);
-}
-
-.drop-icon{
-  font-size:34px;
-  color:var(--cyan);
-  margin-bottom:10px;
-}
-
-.drop-title{
-  color:var(--text);
-  font-size:13px;
-  font-weight:900;
-}
-
-.drop-text{
-  margin-top:7px;
-  color:var(--muted);
-  font-size:9px;
-  line-height:1.5;
-}
-
-.file-input{
-  display:none;
-}
-
-/* =========================================================
-   FILE INFO
-========================================================= */
-
-.file-info{
-  margin-top:10px;
-
-  display:grid;
-
-  grid-template-columns:1fr 1fr;
-
-  gap:6px;
-}
-
-.info-box{
-  padding:8px;
-
-  border:1px solid rgba(0,245,255,.12);
-
-  background:#040812;
-}
-
-.info-label{
-  color:var(--muted);
-  font-size:8px;
-  letter-spacing:.12em;
-}
-
-.info-value{
-  margin-top:4px;
-
-  color:var(--text);
-
-  font-size:10px;
-
-  word-break:break-word;
-}
-
-/* =========================================================
-   SHEETS
-========================================================= */
-
-.sheet-list{
-  display:flex;
-  flex-direction:column;
-
-  gap:5px;
-
-  max-height:260px;
-
-  overflow:auto;
-}
-
-.sheet{
-  width:100%;
-
-  padding:9px 10px;
-
-  display:flex;
-  justify-content:space-between;
-
-  border:1px solid rgba(0,245,255,.12);
-
-  background:#040812;
-
-  color:var(--text);
-
-  text-align:left;
-
-  font-size:10px;
-}
-
-.sheet:hover{
-  border-color:rgba(0,245,255,.4);
-}
-
-.sheet.active{
-  border-color:var(--cyan);
-
-  color:var(--cyan);
-
-  background:rgba(0,245,255,.055);
-
-  box-shadow:
-    inset 3px 0 0 var(--cyan);
-}
-
-.sheet-count{
-  color:var(--muted);
-}
-
-/* =========================================================
-   TABLE
-========================================================= */
-
-.table-wrap{
-  width:100%;
-
-  overflow:auto;
-
-  max-height:460px;
-
-  border:1px solid rgba(0,245,255,.12);
-}
-
-table{
-  width:100%;
-
-  border-collapse:collapse;
-
-  font-size:9px;
-
-  white-space:nowrap;
-}
-
-th,
-td{
-  padding:7px 8px;
-
-  border-right:1px solid rgba(0,245,255,.07);
-  border-bottom:1px solid rgba(0,245,255,.07);
-
-  text-align:left;
-
-  max-width:260px;
-
-  overflow:hidden;
-
-  text-overflow:ellipsis;
-}
+</script>
