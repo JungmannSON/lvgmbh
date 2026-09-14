@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
-      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 
 <title>NEURAL MEMORY — Data Ingestion</title>
 
@@ -49,6 +49,13 @@ body{
   font-family:"Courier New",monospace;
 
   overflow-x:hidden;
+
+  /*
+   * Verhindert, dass Browser beim
+   * DOM-Update unnötig versuchen,
+   * den Fokus sichtbar zu machen.
+   */
+  scroll-behavior:auto;
 }
 
 body{
@@ -78,6 +85,11 @@ body{
     auto,
     40px 40px,
     40px 40px;
+
+  /*
+   * Wichtig für iOS Safari.
+   */
+  overscroll-behavior-x:none;
 }
 
 body::before{
@@ -346,6 +358,18 @@ main{
   cursor:pointer;
 
   transition:.2s;
+
+  /*
+   * Wichtig:
+   * Der Label-Bereich darf selbst
+   * keinen Textauswahl-/Scroll-Effekt
+   * erzeugen.
+   */
+  -webkit-tap-highlight-color:transparent;
+
+  user-select:none;
+
+  touch-action:manipulation;
 }
 
 .dropZone:hover{
@@ -395,7 +419,19 @@ main{
 
 .fileInput{
 
-  display:none;
+  /*
+   * Nicht mit visibility:hidden verstecken.
+   * iOS kann damit beim Datei-Picker
+   * teilweise seltsame Fokus-/Viewport-Effekte erzeugen.
+   */
+  position:absolute;
+
+  width:1px;
+  height:1px;
+
+  opacity:0;
+
+  pointer-events:none;
 }
 
 
@@ -433,6 +469,10 @@ button{
   cursor:pointer;
 
   transition:.2s;
+
+  -webkit-tap-highlight-color:transparent;
+
+  touch-action:manipulation;
 }
 
 button:hover{
@@ -1349,9 +1389,7 @@ footer{
     <div class="panelBody">
 
       <div class="recordMeta">
-
         CURRENT STAGE
-
       </div>
 
       <div
@@ -1432,9 +1470,131 @@ const state = {
 
   schema:[],
 
-  selectedRecord:null
+  selectedRecord:null,
+
+  /*
+   * Verhindert parallele Imports.
+   */
+  importing:false
 
 };
+
+
+/* =====================================================
+   VIEWPORT PROTECTION
+===================================================== */
+
+/*
+ * iOS Safari kann beim Datei-Upload und
+ * beim anschließenden DOM-Rendering den
+ * visuellen Viewport verschieben.
+ *
+ * Wir speichern deshalb den Zustand vor
+ * dem Import und stellen ihn danach wieder her.
+ */
+
+let savedViewport = null;
+
+
+function captureViewport(){
+
+  savedViewport = {
+
+    scrollX:
+      window.scrollX || 0,
+
+    scrollY:
+      window.scrollY || 0,
+
+    visualTop:
+      window.visualViewport
+        ? window.visualViewport.pageTop
+        : null
+
+  };
+
+}
+
+
+function restoreViewport(){
+
+  if(!savedViewport){
+
+    return;
+
+  }
+
+
+  const x =
+    savedViewport.scrollX || 0;
+
+  const y =
+    savedViewport.scrollY || 0;
+
+
+  /*
+   * Mehrfach wiederherstellen:
+   *
+   * 1. direkt
+   * 2. nach einem Paint
+   * 3. nach dem nächsten Frame
+   *
+   * Das ist absichtlich robust gegen
+   * Safari's asynchrones Layoutverhalten.
+   */
+
+  window.scrollTo(
+    x,
+    y
+  );
+
+
+  requestAnimationFrame(
+    () => {
+
+      window.scrollTo(
+        x,
+        y
+      );
+
+
+      requestAnimationFrame(
+        () => {
+
+          window.scrollTo(
+            x,
+            y
+          );
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+function runWithoutViewportJump(
+  callback
+){
+
+  captureViewport();
+
+  return Promise
+    .resolve()
+    .then(
+      callback
+    )
+    .finally(
+      () => {
+
+        restoreViewport();
+
+      }
+    );
+
+}
 
 
 /* =====================================================
@@ -1577,6 +1737,7 @@ function clearError(){
 
   errorBox.innerHTML =
     "";
+
 }
 
 
@@ -1680,18 +1841,61 @@ function formatFileSize(
 
 fileInput.addEventListener(
   "change",
-  event => {
+  async event => {
+
+    /*
+     * Safari kann beim Zurückkehren
+     * vom Datei-Picker den Viewport
+     * verändern.
+     *
+     * Deshalb sofort sichern.
+     */
+    captureViewport();
+
 
     const file =
       event.target.files[0];
 
+
     if(!file){
+
+      restoreViewport();
 
       return;
 
     }
 
-    importFile(file);
+
+    /*
+     * Sofort sperren, damit kein zweiter
+     * Import parallel läuft.
+     */
+    if(state.importing){
+
+      addLog(
+        "Import bereits aktiv — weiterer Import wird ignoriert.",
+        "warn"
+      );
+
+      restoreViewport();
+
+      return;
+
+    }
+
+
+    /*
+     * Input nach dem Lesen zurücksetzen.
+     *
+     * Dadurch kann dieselbe Datei später
+     * erneut ausgewählt werden.
+     */
+    fileInput.value = "";
+
+
+    await importFile(
+      file
+    );
 
   }
 );
@@ -1739,7 +1943,9 @@ dropZone.addEventListener(
 
     if(file){
 
-      importFile(file);
+      importFile(
+        file
+      );
 
     }
 
@@ -1755,7 +1961,37 @@ async function importFile(
   file
 ){
 
+  /*
+   * Zweite Sicherung gegen
+   * parallele Imports.
+   */
+  if(state.importing){
+
+    addLog(
+      "Import bereits aktiv.",
+      "warn"
+    );
+
+    restoreViewport();
+
+    return;
+
+  }
+
+
+  state.importing =
+    true;
+
+
+  /*
+   * Viewport unmittelbar vor der
+   * eigentlichen Verarbeitung sichern.
+   */
+  captureViewport();
+
+
   clearError();
+
 
   try{
 
@@ -1800,6 +2036,7 @@ async function importFile(
       formatFileSize(
         file.size
       );
+
 
     fileInfo.classList.add(
       "show"
@@ -1886,11 +2123,16 @@ async function importFile(
       state.sheets.length > 0
     ){
 
+      /*
+       * Sheet-Verarbeitung gehört
+       * weiterhin zum selben Import.
+       */
       selectSheet(
         state.sheets[0].name
       );
 
     }
+
 
   }
 
@@ -1901,6 +2143,22 @@ async function importFile(
     setOffline();
 
     showError(error);
+
+  }
+
+  finally{
+
+    state.importing =
+      false;
+
+
+    /*
+     * Ganz wichtig:
+     * Erst nachdem der gesamte DOM-Aufbau
+     * abgeschlossen ist, den ursprünglichen
+     * Viewport wiederherstellen.
+     */
+    restoreViewport();
 
   }
 
@@ -1961,9 +2219,19 @@ function renderSheetList(){
       button.onclick =
         () => {
 
+          /*
+           * Sheetwechsel soll ebenfalls
+           * keinen Seiten-Sprung verursachen.
+           */
+          captureViewport();
+
+
           selectSheet(
             sheet.name
           );
+
+
+          restoreViewport();
 
         };
 
@@ -2432,13 +2700,6 @@ function detectType(
     typeof value === "string"
   ){
 
-    /*
-     * Wir erkennen hier nur
-     * technische String-Muster.
-     *
-     * Keine fachliche Bedeutung.
-     */
-
     if(
       /^\d{4}-\d{2}-\d{2}/
         .test(value)
@@ -2820,9 +3081,13 @@ function renderRecords(){
         item.onclick =
           () => {
 
+            captureViewport();
+
             selectRecord(
               record
             );
+
+            restoreViewport();
 
           };
 
@@ -2897,7 +3162,11 @@ clearDataBtn.addEventListener(
   "click",
   () => {
 
+    captureViewport();
+
     clearImportedData();
+
+    restoreViewport();
 
   }
 );
