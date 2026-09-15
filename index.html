@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
 
 <meta charset="UTF-8">
@@ -12,635 +13,12 @@
              user-scalable=no"
 >
 
-<title>NEURAL MEMORY — Real RAG Memory</title>
+<title>NEURAL MEMORY — RAG Memory Inspector</title>
 
-<style>
 
-:root{
-    --bg:#020308;
-    --panel:#070b11;
-    --panel2:#0a1018;
-    --line:#17232d;
-
-    --cyan:#00f5ff;
-    --green:#4ade80;
-    --pink:#ff2bd6;
-    --orange:#ffb347;
-
-    --text:#d7e1e6;
-    --muted:#71808b;
-    --danger:#ff5f6d;
-}
-
-*{
-    box-sizing:border-box;
-}
-
-html,
-body{
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:var(--bg);
-    color:var(--text);
-    font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-}
-
-button,
-input,
-textarea{
-    font:inherit;
-}
-
-button{
-    cursor:pointer;
-}
-
-.app{
-    display:grid;
-    grid-template-columns:330px 1fr 360px;
-    width:100%;
-    height:100%;
-}
-
-/* ============================================================
-   LEFT PANEL
-============================================================ */
-
-.sidebar{
-    height:100%;
-    overflow:auto;
-    border-right:1px solid var(--line);
-    background:var(--panel);
-    padding:14px;
-}
-
-.logo{
-    color:var(--cyan);
-    font-family:monospace;
-    font-size:15px;
-    font-weight:bold;
-    letter-spacing:2px;
-    margin-bottom:3px;
-}
-
-.subtitle{
-    color:var(--muted);
-    font-family:monospace;
-    font-size:9px;
-    margin-bottom:18px;
-}
-
-.section{
-    border:1px solid var(--line);
-    background:var(--panel2);
-    padding:11px;
-    margin-bottom:10px;
-    border-radius:5px;
-}
-
-.section h2{
-    margin:0 0 10px 0;
-    color:#b9c8cf;
-    font-family:monospace;
-    font-size:10px;
-    letter-spacing:1px;
-}
-
-label{
-    display:block;
-    color:var(--muted);
-    font-family:monospace;
-    font-size:9px;
-    margin-bottom:8px;
-}
-
-input,
-textarea{
-    width:100%;
-    border:1px solid var(--line);
-    background:#04070b;
-    color:var(--text);
-    outline:none;
-    border-radius:4px;
-}
-
-input{
-    padding:8px 9px;
-    margin-top:5px;
-}
-
-textarea{
-    padding:9px;
-    resize:vertical;
-}
-
-input:focus,
-textarea:focus{
-    border-color:var(--cyan);
-}
-
-button{
-    border:1px solid var(--cyan);
-    background:#071018;
-    color:var(--cyan);
-    padding:8px 11px;
-    border-radius:4px;
-    font-family:monospace;
-    font-size:10px;
-    letter-spacing:.5px;
-}
-
-button:hover{
-    background:#0a1a22;
-}
-
-button.green{
-    border-color:var(--green);
-    color:var(--green);
-}
-
-button.pink{
-    border-color:var(--pink);
-    color:var(--pink);
-}
-
-button.danger{
-    border-color:var(--danger);
-    color:var(--danger);
-}
-
-button.full{
-    width:100%;
-}
-
-button:disabled{
-    opacity:.35;
-    cursor:not-allowed;
-}
-
-.row{
-    display:flex;
-    gap:7px;
-}
-
-.row > *{
-    flex:1;
-}
-
-.status-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:5px;
-}
-
-.stat{
-    padding:8px;
-    background:#05090e;
-    border:1px solid var(--line);
-}
-
-.stat-label{
-    color:var(--muted);
-    font-family:monospace;
-    font-size:8px;
-}
-
-.stat-value{
-    margin-top:3px;
-    color:var(--cyan);
-    font-family:monospace;
-    font-size:13px;
-}
-
-.memory-actions{
-    display:flex;
-    gap:7px;
-    flex-wrap:wrap;
-}
-
-.file-button{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    padding:8px 11px;
-    border:1px solid var(--cyan);
-    color:var(--cyan);
-    background:#071018;
-    cursor:pointer;
-    border-radius:4px;
-    font-family:monospace;
-    font-size:10px;
-}
-
-.file-button:hover{
-    background:#0a1a22;
-}
-
-.import-status{
-    margin-top:8px;
-    padding:8px;
-    background:#05090e;
-    border:1px solid var(--line);
-    color:var(--muted);
-    font-family:monospace;
-    font-size:9px;
-    white-space:pre-wrap;
-}
-
-/* ============================================================
-   CENTER
-============================================================ */
-
-.viewport{
-    position:relative;
-    min-width:0;
-    min-height:0;
-    background:
-        radial-gradient(
-            circle at 50% 50%,
-            #071018 0%,
-            #020308 55%
-        );
-}
-
-#scene{
-    width:100%;
-    height:100%;
-}
-
-.viewport-hud{
-    position:absolute;
-    top:12px;
-    left:12px;
-    right:12px;
-    display:flex;
-    justify-content:space-between;
-    pointer-events:none;
-    font-family:monospace;
-    font-size:9px;
-}
-
-.hud-left,
-.hud-right{
-    padding:7px 9px;
-    background:rgba(3,7,11,.8);
-    border:1px solid var(--line);
-}
-
-.hud-left{
-    color:var(--cyan);
-}
-
-.hud-right{
-    color:var(--muted);
-}
-
-.legend{
-    position:absolute;
-    bottom:12px;
-    left:12px;
-    display:flex;
-    gap:10px;
-    padding:7px 9px;
-    background:rgba(3,7,11,.85);
-    border:1px solid var(--line);
-    font-family:monospace;
-    font-size:8px;
-    pointer-events:none;
-}
-
-.legend-item{
-    display:flex;
-    align-items:center;
-    gap:5px;
-}
-
-.dot{
-    width:7px;
-    height:7px;
-    border-radius:50%;
-}
-
-.dot.memory{
-    background:var(--pink);
-}
-
-.dot.top{
-    background:var(--green);
-}
-
-.dot.query{
-    background:var(--cyan);
-}
-
-/* ============================================================
-   RIGHT PANEL
-============================================================ */
-
-.inspector-panel{
-    height:100%;
-    overflow:auto;
-    border-left:1px solid var(--line);
-    background:var(--panel);
-    padding:14px;
-}
-
-.inspector-title{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:8px;
-}
-
-#inspectorStatus{
-    color:var(--cyan);
-    font-family:monospace;
-    font-size:8px;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.inspector-empty{
-    padding:18px;
-    text-align:center;
-    color:#64727d;
-    font-family:monospace;
-    font-size:10px;
-}
-
-.inspector-grid{
-    display:grid;
-    grid-template-columns:85px 1fr;
-    gap:1px;
-    background:var(--line);
-    border:1px solid var(--line);
-    margin-bottom:10px;
-}
-
-.inspector-label{
-    padding:7px 8px;
-    background:#080d14;
-    color:#667580;
-    font-family:monospace;
-    font-size:8px;
-}
-
-.inspector-value{
-    padding:7px 8px;
-    background:#0b1119;
-    color:#d8e2e7;
-    font-family:monospace;
-    font-size:9px;
-    word-break:break-word;
-}
-
-.inspector-panel h3{
-    color:#71808b;
-    font-family:monospace;
-    font-size:8px;
-    letter-spacing:1px;
-    margin:10px 0 6px;
-}
-
-.inspector-content{
-    border:1px solid var(--line);
-    background:#080d14;
-    padding:10px;
-    margin-bottom:10px;
-    white-space:pre-wrap;
-    line-height:1.5;
-    font-size:11px;
-}
-
-.embedding-box{
-    max-height:180px;
-    overflow:auto;
-    border:1px solid var(--line);
-    background:#05080c;
-    padding:8px;
-    font-family:monospace;
-    font-size:8px;
-    line-height:1.5;
-    color:#8fa1ab;
-}
-
-.embedding-value{
-    display:inline-block;
-    margin-right:8px;
-}
-
-.inspector-json{
-    width:100%;
-    min-height:180px;
-    resize:vertical;
-    background:#05080c;
-    color:#9fb0ba;
-    border:1px solid var(--line);
-    padding:9px;
-    font-family:monospace;
-    font-size:8px;
-}
-
-/* ============================================================
-   RETRIEVAL
-============================================================ */
-
-.retrieval-list{
-    max-height:260px;
-    overflow:auto;
-}
-
-.retrieval-item{
-    border:1px solid var(--line);
-    background:#080d14;
-    margin-bottom:6px;
-    padding:8px;
-    cursor:pointer;
-}
-
-.retrieval-item:hover{
-    border-color:var(--cyan);
-}
-
-.retrieval-top{
-    display:flex;
-    justify-content:space-between;
-    gap:8px;
-    font-family:monospace;
-    font-size:9px;
-}
-
-.retrieval-rank{
-    color:var(--cyan);
-}
-
-.retrieval-score{
-    color:var(--green);
-}
-
-.retrieval-id{
-    margin-top:5px;
-    color:#b7c5cb;
-    font-family:monospace;
-    font-size:8px;
-}
-
-.retrieval-preview{
-    margin-top:5px;
-    color:#74838c;
-    font-size:10px;
-    line-height:1.35;
-}
-
-/* ============================================================
-   RAG CONTEXT
-============================================================ */
-
-.context-meta{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    margin-bottom:8px;
-    padding:7px 8px;
-    background:#070b11;
-    border:1px solid var(--line);
-    border-radius:4px;
-    color:var(--muted);
-    font-size:8px;
-    font-family:monospace;
-}
-
-.context-meta strong{
-    color:var(--cyan);
-}
-
-.rag-context{
-    max-height:300px;
-    overflow:auto;
-}
-
-.context-item{
-    border:1px solid var(--line);
-    background:#080d14;
-    border-radius:4px;
-    margin-bottom:7px;
-    overflow:hidden;
-}
-
-.context-header{
-    display:flex;
-    justify-content:space-between;
-    gap:8px;
-    padding:7px 8px;
-    background:#0c141d;
-    font-family:monospace;
-    font-size:8px;
-}
-
-.context-rank{
-    color:var(--cyan);
-}
-
-.context-score{
-    color:var(--green);
-}
-
-.context-body{
-    padding:9px;
-    font-size:10px;
-    line-height:1.45;
-    white-space:pre-wrap;
-    color:#d5e0e5;
-}
-
-.context-source{
-    padding:6px 8px;
-    border-top:1px solid var(--line);
-    color:var(--muted);
-    font-size:8px;
-}
-
-/* ============================================================
-   PROMPT
-============================================================ */
-
-.prompt-preview{
-    min-height:180px;
-    max-height:350px;
-    overflow:auto;
-    border:1px solid var(--line);
-    background:#05080c;
-    color:#9fb0ba;
-    padding:9px;
-    font-family:monospace;
-    font-size:8px;
-    line-height:1.45;
-    white-space:pre-wrap;
-}
-
-/* ============================================================
-   ANSWER
-============================================================ */
-
-.answer{
-    white-space:pre-wrap;
-    line-height:1.55;
-    font-size:11px;
-    color:#d7e1e6;
-    min-height:30px;
-}
-
-.error{
-    color:var(--danger);
-}
-
-/* ============================================================
-   RESPONSIVE
-============================================================ */
-
-@media(max-width:1100px){
-
-    .app{
-        grid-template-columns:280px 1fr;
-    }
-
-    .inspector-panel{
-        display:none;
-    }
-
-}
-
-@media(max-width:760px){
-
-    .app{
-        display:block;
-        overflow:auto;
-    }
-
-    .sidebar,
-    .inspector-panel{
-        height:auto;
-        overflow:visible;
-        border:0;
-    }
-
-    .viewport{
-        height:55vh;
-        min-height:380px;
-    }
-
-}
-
-</style>
-
+<!-- =========================================================
+     THREE.JS
+========================================================= -->
 
 <script type="importmap">
 {
@@ -654,207 +32,1370 @@ button:disabled{
 }
 </script>
 
+
+<style>
+
+:root{
+
+    --bg:#020308;
+    --panel:#070b11;
+    --panel2:#0b1119;
+
+    --line:#17232d;
+
+    --cyan:#00f5ff;
+    --green:#4ade80;
+    --pink:#ff2bd6;
+    --yellow:#facc15;
+    --red:#ff4d6d;
+
+    --text:#d7e3e8;
+    --muted:#71808b;
+
+}
+
+
+*{
+    box-sizing:border-box;
+}
+
+
+html,
+body{
+
+    margin:0;
+    padding:0;
+
+    width:100%;
+    height:100%;
+
+    overflow:hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            #08121d 0%,
+            #020308 48%,
+            #010205 100%
+        );
+
+    color:var(--text);
+
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+}
+
+
+button,
+input,
+textarea,
+select{
+
+    font:inherit;
+
+}
+
+
+button{
+
+    cursor:pointer;
+
+}
+
+
+/* =========================================================
+   APP
+========================================================= */
+
+#app{
+
+    display:grid;
+
+    grid-template-columns:
+        330px
+        minmax(0,1fr)
+        350px;
+
+    width:100%;
+    height:100%;
+
+}
+
+
+/* =========================================================
+   SIDEBARS
+========================================================= */
+
+.sidebar{
+
+    min-width:0;
+
+    overflow:auto;
+
+    background:
+        linear-gradient(
+            180deg,
+            #05080d,
+            #020308
+        );
+
+    border-right:1px solid var(--line);
+
+    padding:14px;
+
+}
+
+
+.sidebar.right{
+
+    border-right:0;
+    border-left:1px solid var(--line);
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.brand{
+
+    margin-bottom:14px;
+
+    padding-bottom:12px;
+
+    border-bottom:1px solid var(--line);
+
+}
+
+
+.brand-title{
+
+    color:var(--cyan);
+
+    font-family:monospace;
+
+    font-size:18px;
+
+    letter-spacing:2px;
+
+}
+
+
+.brand-sub{
+
+    margin-top:4px;
+
+    color:var(--muted);
+
+    font-family:monospace;
+
+    font-size:9px;
+
+    letter-spacing:1px;
+
+}
+
+
+.status{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    margin-top:10px;
+
+    color:var(--muted);
+
+    font-family:monospace;
+
+    font-size:10px;
+
+}
+
+
+.status-dot{
+
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:#38444c;
+
+}
+
+
+.status-dot.ok{
+
+    background:var(--green);
+
+    box-shadow:
+        0 0 8px
+        rgba(74,222,128,.8);
+
+}
+
+
+.status-dot.error{
+
+    background:var(--red);
+
+    box-shadow:
+        0 0 8px
+        rgba(255,77,109,.8);
+
+}
+
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+.section{
+
+    margin-bottom:12px;
+
+    padding:12px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(10,16,24,.96),
+            rgba(5,8,13,.96)
+        );
+
+    border:1px solid var(--line);
+
+    border-radius:7px;
+
+}
+
+
+.section h2{
+
+    margin:0 0 10px 0;
+
+    color:#a9bac3;
+
+    font-family:monospace;
+
+    font-size:10px;
+
+    letter-spacing:1.5px;
+
+}
+
+
+label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    color:var(--muted);
+
+    font-family:monospace;
+
+    font-size:9px;
+
+}
+
+
+input,
+textarea,
+select{
+
+    width:100%;
+
+    margin-top:5px;
+
+    padding:8px 9px;
+
+    color:var(--text);
+
+    background:#03060a;
+
+    border:1px solid #1b2a34;
+
+    border-radius:5px;
+
+    outline:none;
+
+}
+
+
+input:focus,
+textarea:focus,
+select:focus{
+
+    border-color:
+        rgba(0,245,255,.65);
+
+    box-shadow:
+        0 0 0 1px
+        rgba(0,245,255,.1);
+
+}
+
+
+textarea{
+
+    min-height:90px;
+
+    resize:vertical;
+
+}
+
+
+button{
+
+    width:100%;
+
+    margin-top:6px;
+
+    padding:9px 10px;
+
+    color:#dffcff;
+
+    background:#071118;
+
+    border:1px solid #1d3c46;
+
+    border-radius:5px;
+
+    font-family:monospace;
+
+    font-size:10px;
+
+    letter-spacing:.5px;
+
+}
+
+
+button:hover{
+
+    border-color:var(--cyan);
+
+    background:#091821;
+
+}
+
+
+button.primary{
+
+    color:#001014;
+
+    background:var(--cyan);
+
+    border-color:var(--cyan);
+
+}
+
+
+button.primary:hover{
+
+    background:#68f9ff;
+
+}
+
+
+button.green{
+
+    color:#001008;
+
+    background:var(--green);
+
+    border-color:var(--green);
+
+}
+
+
+button.danger{
+
+    color:#ffd9df;
+
+    border-color:#5d1d2a;
+
+    background:#18070c;
+
+}
+
+
+button.full{
+
+    margin-top:8px;
+
+}
+
+
+.row{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr
+        1fr;
+
+    gap:7px;
+
+}
+
+
+.row3{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr
+        1fr
+        1fr;
+
+    gap:6px;
+
+}
+
+
+/* =========================================================
+   METRICS
+========================================================= */
+
+.metrics{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr
+        1fr;
+
+    gap:6px;
+
+}
+
+
+.metric{
+
+    padding:8px;
+
+    background:#03060a;
+
+    border:1px solid var(--line);
+
+    border-radius:5px;
+
+}
+
+
+.metric-label{
+
+    color:var(--muted);
+
+    font-family:monospace;
+
+    font-size:8px;
+
+}
+
+
+.metric-value{
+
+    margin-top:3px;
+
+    color:var(--cyan);
+
+    font-family:monospace;
+
+    font-size:15px;
+
+}
+
+
+/* =========================================================
+   MAIN 3D
+========================================================= */
+
+#viewport{
+
+    position:relative;
+
+    min-width:0;
+    min-height:0;
+
+    overflow:hidden;
+
+}
+
+
+#scene{
+
+    position:absolute;
+
+    inset:0;
+
+}
+
+
+#scene canvas{
+
+    display:block;
+
+    width:100%;
+    height:100%;
+
+}
+
+
+/* =========================================================
+   HUD
+========================================================= */
+
+.hud{
+
+    position:absolute;
+
+    pointer-events:none;
+
+    z-index:5;
+
+}
+
+
+.hud.top{
+
+    top:14px;
+    left:16px;
+
+}
+
+
+.hud.bottom{
+
+    bottom:14px;
+    left:16px;
+
+}
+
+
+.hud-title{
+
+    color:var(--cyan);
+
+    font-family:monospace;
+
+    font-size:10px;
+
+    letter-spacing:1px;
+
+}
+
+
+.hud-text{
+
+    margin-top:4px;
+
+    color:#71808b;
+
+    font-family:monospace;
+
+    font-size:9px;
+
+}
+
+
+.legend{
+
+    display:flex;
+
+    gap:12px;
+
+    margin-top:7px;
+
+}
+
+
+.legend-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:5px;
+
+    color:var(--muted);
+
+    font-family:monospace;
+
+    font-size:8px;
+
+}
+
+
+.legend-dot{
+
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+}
+
+
+.legend-dot.query{
+
+    background:var(--cyan);
+
+}
+
+
+.legend-dot.top{
+
+    background:var(--green);
+
+}
+
+
+.legend-dot.memory{
+
+    background:var(--pink);
+
+}
+
+
+.legend-dot.edge{
+
+    background:#1b6670;
+
+}
+
+
+/* =========================================================
+   LOG
+========================================================= */
+
+#log{
+
+    max-height:150px;
+
+    overflow:auto;
+
+    padding:8px;
+
+    background:#020407;
+
+    border:1px solid var(--line);
+
+    border-radius:5px;
+
+    color:#81919a;
+
+    font-family:monospace;
+
+    font-size:9px;
+
+    line-height:1.5;
+
+}
+
+
+.log-line{
+
+    margin-bottom:2px;
+
+}
+
+
+.log-ok{
+
+    color:var(--green);
+
+}
+
+
+.log-error{
+
+    color:var(--red);
+
+}
+
+
+/* =========================================================
+   RESULTS
+========================================================= */
+
+.results{
+
+    max-height:280px;
+
+    overflow:auto;
+
+}
+
+
+.result-item{
+
+    margin-bottom:7px;
+
+    padding:8px;
+
+    background:#05090e;
+
+    border:1px solid var(--line);
+
+    border-radius:5px;
+
+    cursor:pointer;
+
+}
+
+
+.result-item:hover{
+
+    border-color:#31505c;
+
+}
+
+
+.result-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:8px;
+
+    margin-bottom:5px;
+
+    font-family:monospace;
+
+    font-size:9px;
+
+}
+
+
+.rank{
+
+    color:var(--cyan);
+
+}
+
+
+.score{
+
+    color:var(--green);
+
+}
+
+
+.result-content{
+
+    color:#aab9c0;
+
+    font-size:11px;
+
+    line-height:1.4;
+
+    white-space:pre-wrap;
+
+}
+
+
+.result-source{
+
+    margin-top:5px;
+
+    color:var(--muted);
+
+    font-family:monospace;
+
+    font-size:8px;
+
+}
+
+
+/* =========================================================
+   RAG CONTEXT
+========================================================= */
+
+.context-meta{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin-bottom:8px;
+
+    padding:7px 8px;
+
+    background:#03060a;
+
+    border:1px solid var(--line);
+
+    border-radius:5px;
+
+    color:var(--muted);
+
+    font-family:monospace;
+
+    font-size:8px;
+
+}
+
+
+.context-meta strong{
+
+    color:var(--cyan);
+
+}
+
+
+.rag-context{
+
+    max-height:340px;
+
+    overflow:auto;
+
+}
+
+
+.context-item{
+
+    margin-bottom:7px;
+
+    overflow:hidden;
+
+    background:#05090e;
+
+    border:1px solid var(--line);
+
+    border-radius:5px;
+
+}
+
+
+.context-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:8px;
+
+    padding:7px 8px;
+
+    background:#09121a;
+
+    font-family:monospace;
+
+    font-size:8px;
+
+}
+
+
+.context-rank{
+
+    color:var(--cyan);
+
+}
+
+
+.context-score{
+
+    color:var(--green);
+
+}
+
+
+.context-body{
+
+    padding:8px;
+
+    color:#cbd7dc;
+
+    font-size:10px;
+
+    line-height:1.45;
+
+    white-space:pre-wrap;
+
+}
+
+
+.context-source{
+
+    padding:5px 8px;
+
+    border-top:1px solid var(--line);
+
+    color:var(--muted);
+
+    font-family:monospace;
+
+    font-size:8px;
+
+}
+
+
+/* =========================================================
+   PROMPT PREVIEW
+========================================================= */
+
+.prompt-preview{
+
+    max-height:300px;
+
+    overflow:auto;
+
+    padding:9px;
+
+    background:#020407;
+
+    border:1px solid var(--line);
+
+    border-radius:5px;
+
+    color:#9fb1ba;
+
+    font-family:monospace;
+
+    font-size:8px;
+
+    line-height:1.45;
+
+    white-space:pre-wrap;
+
+}
+
+
+/* =========================================================
+   ANSWER
+========================================================= */
+
+#answer{
+
+    max-height:320px;
+
+    overflow:auto;
+
+    padding:9px;
+
+    background:#03060a;
+
+    border:1px solid var(--line);
+
+    border-radius:5px;
+
+    color:#d8e5e9;
+
+    font-size:12px;
+
+    line-height:1.55;
+
+    white-space:pre-wrap;
+
+}
+
+
+.answer-placeholder{
+
+    color:var(--muted);
+
+}
+
+
+/* =========================================================
+   MEMORY INSPECTOR
+========================================================= */
+
+.inspector{
+
+    position:absolute;
+
+    z-index:20;
+
+    right:14px;
+
+    bottom:14px;
+
+    width:min(370px,calc(100% - 28px));
+
+    max-height:70%;
+
+    overflow:auto;
+
+    display:none;
+
+    background:
+        rgba(3,7,11,.97);
+
+    border:1px solid #21404b;
+
+    border-radius:7px;
+
+    box-shadow:
+        0 15px 50px
+        rgba(0,0,0,.65);
+
+}
+
+
+.inspector.visible{
+
+    display:block;
+
+}
+
+
+.inspector-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:9px 10px;
+
+    background:#071119;
+
+    border-bottom:1px solid var(--line);
+
+}
+
+
+.inspector-title{
+
+    color:var(--cyan);
+
+    font-family:monospace;
+
+    font-size:9px;
+
+}
+
+
+.close{
+
+    width:auto;
+
+    margin:0;
+
+    padding:2px 7px;
+
+    color:var(--muted);
+
+    border:0;
+
+    background:transparent;
+
+}
+
+
+.inspector-body{
+
+    padding:10px;
+
+}
+
+
+.inspector-id{
+
+    color:var(--green);
+
+    font-family:monospace;
+
+    font-size:9px;
+
+    word-break:break-all;
+
+}
+
+
+.inspector-score{
+
+    margin-top:5px;
+
+    color:var(--cyan);
+
+    font-family:monospace;
+
+    font-size:10px;
+
+}
+
+
+.inspector-content{
+
+    margin-top:10px;
+
+    padding:9px;
+
+    color:#cbd7dc;
+
+    background:#020407;
+
+    border:1px solid var(--line);
+
+    border-radius:5px;
+
+    font-size:11px;
+
+    line-height:1.5;
+
+    white-space:pre-wrap;
+
+}
+
+
+.inspector-meta{
+
+    margin-top:8px;
+
+    color:var(--muted);
+
+    font-family:monospace;
+
+    font-size:8px;
+
+    line-height:1.6;
+
+}
+
+
+/* =========================================================
+   FILE
+========================================================= */
+
+input[type="file"]{
+
+    padding:7px;
+
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar{
+
+    width:5px;
+    height:5px;
+
+}
+
+
+::-webkit-scrollbar-track{
+
+    background:#020407;
+
+}
+
+
+::-webkit-scrollbar-thumb{
+
+    background:#1a2b35;
+
+    border-radius:5px;
+
+}
+
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#294652;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px){
+
+    #app{
+
+        grid-template-columns:
+            280px
+            minmax(0,1fr)
+            300px;
+
+    }
+
+}
+
+
+@media(max-width:800px){
+
+    body{
+
+        overflow:auto;
+
+    }
+
+
+    #app{
+
+        display:flex;
+
+        flex-direction:column;
+
+        height:auto;
+
+        min-height:100%;
+
+    }
+
+
+    .sidebar,
+    .sidebar.right{
+
+        width:100%;
+
+        border:0;
+
+        border-bottom:1px solid var(--line);
+
+    }
+
+
+    #viewport{
+
+        height:55vh;
+
+        min-height:420px;
+
+        order:-1;
+
+    }
+
+}
+
+</style>
+
 </head>
 
 
 <body>
 
-<div class="app">
 
-<!-- ========================================================
+<div id="app">
+
+
+<!-- =======================================================
      LEFT
-========================================================= -->
+======================================================= -->
 
 <aside class="sidebar">
 
-    <div class="logo">
-        NEURAL MEMORY
+    <div class="brand">
+
+        <div class="brand-title">
+            NEURAL MEMORY
+        </div>
+
+        <div class="brand-sub">
+            REAL RAG / PCA MEMORY INSPECTOR
+        </div>
+
+        <div class="status">
+
+            <span
+                id="statusDot"
+                class="status-dot"
+            ></span>
+
+            <span id="statusText">
+                INITIALIZING
+            </span>
+
+        </div>
+
     </div>
 
-    <div class="subtitle">
-        REAL RAG / VECTOR MEMORY / OLLAMA
-    </div>
 
+    <!-- ===================================================
+         OLLAMA
+    =================================================== -->
 
-    <!-- OLLAMA -->
-
-    <section class="section">
+    <div class="section">
 
         <h2>OLLAMA</h2>
 
         <label>
-            Endpoint
+
+            Base URL
 
             <input
-                id="ollamaEndpoint"
+                id="ollamaUrl"
                 value="http://localhost:11434"
             >
+
         </label>
 
+
         <label>
+
             Embedding Model
 
             <input
                 id="embeddingModel"
                 value="nomic-embed-text"
             >
+
         </label>
 
+
         <label>
+
             Chat Model
 
             <input
                 id="chatModel"
                 value="llama3.1:latest"
             >
+
         </label>
 
-    </section>
+
+        <button
+            onclick="testOllama()"
+        >
+            TEST OLLAMA
+        </button>
+
+    </div>
 
 
-    <!-- MEMORY -->
+    <!-- ===================================================
+         MEMORY
+    =================================================== -->
 
-    <section class="section">
+    <div class="section">
 
         <h2>MEMORY</h2>
 
-        <label>
-            Memory Text
+        <div class="metrics">
 
-            <textarea
-                id="memoryInput"
-                rows="5"
-                placeholder="Neues Memory eingeben ..."
-            ></textarea>
-        </label>
+            <div class="metric">
 
-        <label>
-            Source
-
-            <input
-                id="memorySource"
-                placeholder="optional"
-            >
-        </label>
-
-        <button
-            class="full green"
-            onclick="addMemory()"
-        >
-            CREATE MEMORY
-        </button>
-
-    </section>
-
-
-    <!-- IMPORT EXPORT -->
-
-    <section class="section">
-
-        <h2>MEMORY DATA</h2>
-
-        <div class="memory-actions">
-
-            <button onclick="exportMemory()">
-                EXPORT JSON
-            </button>
-
-            <label
-                class="file-button"
-            >
-                IMPORT JSON
-
-                <input
-                    id="memoryImportFile"
-                    type="file"
-                    accept=".json,application/json"
-                    onchange="importMemoryFile(event)"
-                    hidden
-                >
-            </label>
-
-        </div>
-
-        <div
-            id="importExportStatus"
-            class="import-status"
-        >
-            Keine Aktion.
-        </div>
-
-    </section>
-
-
-    <!-- QUERY -->
-
-    <section class="section">
-
-        <h2>RETRIEVAL</h2>
-
-        <label>
-            Query
-
-            <textarea
-                id="query"
-                rows="4"
-                placeholder="Was möchtest du aus dem Memory wissen?"
-            ></textarea>
-        </label>
-
-        <label>
-            Top-K
-
-            <input
-                id="topK"
-                type="number"
-                min="1"
-                value="5"
-            >
-        </label>
-
-        <button
-            class="full"
-            onclick="runRetrieval()"
-        >
-            RUN RETRIEVAL
-        </button>
-
-    </section>
-
-
-    <!-- RAG -->
-
-    <section class="section">
-
-        <h2>LLM</h2>
-
-        <button
-            class="full pink"
-            onclick="runRAG()"
-        >
-            RUN RAG
-        </button>
-
-    </section>
-
-
-    <!-- STATS -->
-
-    <section class="section">
-
-        <h2>STORE</h2>
-
-        <div class="status-grid">
-
-            <div class="stat">
-
-                <div class="stat-label">
-                    MEMORIES
+                <div class="metric-label">
+                    OBJECTS
                 </div>
 
                 <div
-                    class="stat-value"
                     id="memoryCount"
+                    class="metric-value"
                 >
                     0
                 </div>
@@ -862,15 +1403,15 @@ button:disabled{
             </div>
 
 
-            <div class="stat">
+            <div class="metric">
 
-                <div class="stat-label">
+                <div class="metric-label">
                     DIMENSION
                 </div>
 
                 <div
-                    class="stat-value"
                     id="memoryDimension"
+                    class="metric-value"
                 >
                     —
                 </div>
@@ -879,39 +1420,324 @@ button:disabled{
 
         </div>
 
-        <br>
+
+        <label style="margin-top:10px;">
+
+            Source
+
+            <input
+                id="memorySource"
+                placeholder="z.B. Projekt / Datei / Kunde"
+            >
+
+        </label>
+
+
+        <label>
+
+            Memory Text
+
+            <textarea
+                id="memoryText"
+                placeholder="Text für den Memory-Eintrag ..."
+            ></textarea>
+
+        </label>
+
 
         <button
-            class="full danger"
-            onclick="clearAllMemory()"
+            class="primary"
+            onclick="addMemory()"
         >
-            CLEAR MEMORY
+            EMBED + SAVE MEMORY
         </button>
 
-    </section>
+    </div>
 
 
-    <!-- RETRIEVAL RESULTS -->
+    <!-- ===================================================
+         IMPORT / EXPORT
+    =================================================== -->
 
-    <section class="section">
+    <div class="section">
 
-        <h2>TOP-K RESULTS</h2>
+        <h2>IMPORT / EXPORT</h2>
 
-        <div
-            id="retrievalList"
-            class="retrieval-list"
-        >
-            Keine Retrieval-Ergebnisse.
+        <label>
+
+            JSON Memory Import
+
+            <input
+                id="importFile"
+                type="file"
+                accept=".json,application/json"
+                onchange="importMemoryFile(event)"
+            >
+
+        </label>
+
+
+        <div class="row">
+
+            <button
+                onclick="exportMemory()"
+            >
+                EXPORT JSON
+            </button>
+
+            <button
+                class="danger"
+                onclick="clearAllMemory()"
+            >
+                CLEAR MEMORY
+            </button>
+
         </div>
 
-    </section>
+    </div>
 
 
-    <!-- RAG CONTEXT -->
+    <!-- ===================================================
+         QUERY
+    =================================================== -->
 
-    <section class="section">
+    <div class="section">
+
+        <h2>QUERY / RETRIEVAL</h2>
+
+        <label>
+
+            Query
+
+            <textarea
+                id="query"
+                placeholder="Was soll aus dem Memory gefunden werden?"
+            ></textarea>
+
+        </label>
+
+
+        <div class="row">
+
+            <label>
+
+                TOP-K
+
+                <input
+                    id="topK"
+                    type="number"
+                    min="1"
+                    max="100"
+                    value="5"
+                >
+
+            </label>
+
+
+            <label>
+
+                GRAPH K
+
+                <input
+                    id="graphK"
+                    type="number"
+                    min="1"
+                    max="20"
+                    value="3"
+                >
+
+            </label>
+
+        </div>
+
+
+        <label>
+
+            Graph Similarity Threshold
+
+            <input
+                id="graphThreshold"
+                type="number"
+                min="-1"
+                max="1"
+                step="0.01"
+                value="0.45"
+            >
+
+        </label>
+
+
+        <button
+            class="primary"
+            onclick="runRAG()"
+        >
+            RUN RAG
+        </button>
+
+    </div>
+
+
+    <!-- ===================================================
+         LOG
+    =================================================== -->
+
+    <div class="section">
+
+        <h2>SYSTEM LOG</h2>
+
+        <div id="log"></div>
+
+    </div>
+
+</aside>
+
+
+
+<!-- =======================================================
+     CENTER / 3D
+======================================================= -->
+
+<main id="viewport">
+
+    <div id="scene"></div>
+
+
+    <div class="hud top">
+
+        <div class="hud-title">
+            PCA MEMORY SPACE
+        </div>
+
+        <div class="hud-text">
+            Embeddings → PCA → 3D
+        </div>
+
+        <div class="legend">
+
+            <div class="legend-item">
+
+                <span class="legend-dot query"></span>
+
+                QUERY
+
+            </div>
+
+
+            <div class="legend-item">
+
+                <span class="legend-dot top"></span>
+
+                TOP-K
+
+            </div>
+
+
+            <div class="legend-item">
+
+                <span class="legend-dot memory"></span>
+
+                MEMORY
+
+            </div>
+
+
+            <div class="legend-item">
+
+                <span class="legend-dot edge"></span>
+
+                SIMILARITY
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="hud bottom">
+
+        <div class="hud-text">
+
+            DRAG = ROTATE · WHEEL = ZOOM · TAP = INSPECT
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         INSPECTOR
+    =================================================== -->
+
+    <div
+        id="inspector"
+        class="inspector"
+    >
+
+        <div class="inspector-header">
+
+            <div class="inspector-title">
+                MEMORY INSPECTOR
+            </div>
+
+            <button
+                class="close"
+                onclick="closeInspector()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            id="inspectorBody"
+            class="inspector-body"
+        ></div>
+
+    </div>
+
+</main>
+
+
+
+<!-- =======================================================
+     RIGHT
+======================================================= -->
+
+<aside class="sidebar right">
+
+
+    <!-- ===================================================
+         RETRIEVAL
+    =================================================== -->
+
+    <div class="section">
+
+        <h2>TOP-K RETRIEVAL</h2>
+
+        <div
+            id="results"
+            class="results"
+        >
+
+            <div class="answer-placeholder">
+                Noch kein Retrieval.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         RAG CONTEXT
+    =================================================== -->
+
+    <div class="section">
 
         <h2>RAG CONTEXT</h2>
+
 
         <div class="context-meta">
 
@@ -922,6 +1748,7 @@ button:disabled{
                 </strong>
             </span>
 
+
             <span>
                 TOKENS:
                 <strong id="contextTokens">
@@ -931,19 +1758,26 @@ button:disabled{
 
         </div>
 
+
         <div
             id="ragContext"
             class="rag-context"
         >
-            Noch kein RAG-Context erzeugt.
+
+            <div class="answer-placeholder">
+                Noch kein RAG-Context erzeugt.
+            </div>
+
         </div>
 
-    </section>
+    </div>
 
 
-    <!-- PROMPT PREVIEW -->
+    <!-- ===================================================
+         PROMPT PREVIEW
+    =================================================== -->
 
-    <section class="section">
+    <div class="section">
 
         <h2>PROMPT PREVIEW</h2>
 
@@ -954,145 +1788,50 @@ button:disabled{
             Noch kein Prompt erzeugt.
         </div>
 
-    </section>
-
-
-    <!-- ANSWER -->
-
-    <section class="section">
-
-        <h2>ANSWER</h2>
-
-        <div
-            id="answer"
-            class="answer"
-        >
-            Noch keine Antwort.
-        </div>
-
-    </section>
-
-
-    <!-- LOG -->
-
-    <section class="section">
-
-        <h2>SYSTEM LOG</h2>
-
-        <div
-            id="systemLog"
-            class="prompt-preview"
-            style="min-height:100px"
-        ></div>
-
-    </section>
-
-</aside>
-
-
-<!-- ========================================================
-     CENTER
-========================================================= -->
-
-<main class="viewport">
-
-    <div
-        id="scene"
-    ></div>
-
-
-    <div class="viewport-hud">
-
-        <div class="hud-left">
-            EMBEDDING SPACE / FULL VECTOR PROJECTION
-        </div>
-
-        <div
-            class="hud-right"
-            id="spaceStatus"
-        >
-            0 MEMORIES
-        </div>
-
     </div>
 
 
-    <div class="legend">
+    <!-- ===================================================
+         ANSWER
+    =================================================== -->
 
-        <div class="legend-item">
-            <span class="dot memory"></span>
-            MEMORY
-        </div>
+    <div class="section">
 
-        <div class="legend-item">
-            <span class="dot top"></span>
-            TOP-K
-        </div>
+        <h2>OLLAMA ANSWER</h2>
 
-        <div class="legend-item">
-            <span class="dot query"></span>
-            QUERY
-        </div>
+        <div id="answer">
 
-    </div>
-
-</main>
-
-
-<!-- ========================================================
-     RIGHT
-========================================================= -->
-
-<aside class="inspector-panel">
-
-    <section class="section">
-
-        <div class="inspector-title">
-
-            <h2>
-                MEMORY INSPECTOR
-            </h2>
-
-            <span
-                id="inspectorStatus"
-            >
-                NO SELECTION
+            <span class="answer-placeholder">
+                Noch keine Antwort.
             </span>
 
         </div>
 
-
-        <div id="memoryInspector">
-
-            <div class="inspector-empty">
-                Memory auswählen.
-            </div>
-
-        </div>
-
-    </section>
+    </div>
 
 </aside>
+
 
 </div>
 
 
 <script type="module">
 
-import * as THREE from "three";
+import * as THREE
+    from "three";
 
 import {
     OrbitControls
-}
-from "three/addons/controls/OrbitControls.js";
+} from "three/addons/controls/OrbitControls.js";
 
 
-/* ============================================================
-   CONFIG
-============================================================ */
+
+/* =========================================================
+   GLOBAL STATE
+========================================================= */
 
 const DB_NAME =
-    "NEURAL_MEMORY_RAG_V2";
+    "NEURAL_MEMORY_RAG_V3";
 
 const DB_VERSION =
     1;
@@ -1101,36 +1840,41 @@ const STORE_NAME =
     "memories";
 
 
-/* ============================================================
-   GLOBAL STATE
-============================================================ */
-
 const state = {
 
-    queryVector:
-        null,
+    memories: [],
 
-    retrieval:
-        [],
+    queryVector: null,
 
-    memories:
-        []
+    retrieval: [],
+
+    selectedMemory: null
 
 };
 
 
 let db = null;
 
-let projectionBasis = null;
-
 let projectedPoints = [];
 
-let currentRAGContext = [];
+let pcaState = {
+
+    mean:null,
+
+    axes:null,
+
+    eigenvalues:null,
+
+    dimension:0,
+
+    count:0
+
+};
 
 
-/* ============================================================
-   THREE
-============================================================ */
+/* =========================================================
+   THREE STATE
+========================================================= */
 
 let scene;
 
@@ -1140,243 +1884,155 @@ let renderer;
 
 let controls;
 
-let memoryGroup;
-
-let queryGroup;
-
-let connectionGroup;
-
 let raycaster;
 
 let pointer;
 
+let memoryGroup;
 
-function initThree(){
+let queryGroup;
 
-    scene =
-        new THREE.Scene();
+let graphGroup;
+
+let axisGroup;
 
 
-    camera =
-        new THREE.PerspectiveCamera(
-            55,
-            1,
-            0.1,
-            1000
+/* =========================================================
+   DOM
+========================================================= */
+
+const $ =
+    id =>
+        document.getElementById(id);
+
+
+
+/* =========================================================
+   LOG
+========================================================= */
+
+function log(
+    message,
+    type=""
+){
+
+    const container =
+        $("log");
+
+
+    const line =
+        document.createElement(
+            "div"
         );
 
 
-    camera.position.set(
-        0,
-        0,
-        7
-    );
-
-
-    renderer =
-        new THREE.WebGLRenderer({
-            antialias:true,
-            alpha:true
-        });
-
-
-    renderer.setPixelRatio(
-        Math.min(
-            window.devicePixelRatio,
-            2
-        )
-    );
-
-
-    document
-        .getElementById("scene")
-        .appendChild(
-            renderer.domElement
+    line.className =
+        "log-line " +
+        (
+            type === "error"
+                ? "log-error"
+                : type === "ok"
+                    ? "log-ok"
+                    : ""
         );
 
 
-    controls =
-        new OrbitControls(
-            camera,
-            renderer.domElement
-        );
+    const time =
+        new Date()
+            .toLocaleTimeString();
 
 
-    controls.enableDamping =
-        true;
+    line.textContent =
+        `[${time}] ${message}`;
 
 
-    controls.dampingFactor =
-        0.08;
-
-
-    memoryGroup =
-        new THREE.Group();
-
-
-    queryGroup =
-        new THREE.Group();
-
-
-    connectionGroup =
-        new THREE.Group();
-
-
-    scene.add(
-        memoryGroup,
-        queryGroup,
-        connectionGroup
+    container.appendChild(
+        line
     );
 
 
-    /*
-     * Grid
-     */
-
-    const grid =
-        new THREE.GridHelper(
-            8,
-            16,
-            0x16303a,
-            0x09141b
-        );
-
-
-    grid.rotation.x =
-        Math.PI / 2;
-
-
-    scene.add(
-        grid
-    );
-
-
-    /*
-     * Axes
-     */
-
-    const axes =
-        new THREE.AxesHelper(
-            2.5
-        );
-
-
-    scene.add(
-        axes
-    );
-
-
-    raycaster =
-        new THREE.Raycaster();
-
-
-    pointer =
-        new THREE.Vector2();
-
-
-    renderer
-        .domElement
-        .addEventListener(
-            "pointerdown",
-            onScenePointerDown
-        );
-
-
-    window.addEventListener(
-        "resize",
-        resizeThree
-    );
-
-
-    resizeThree();
-
-    animate();
+    container.scrollTop =
+        container.scrollHeight;
 
 }
 
 
-/* ============================================================
-   THREE RESIZE
-============================================================ */
+/* =========================================================
+   STATUS
+========================================================= */
 
-function resizeThree(){
+function setStatus(
+    text,
+    type=""
+){
 
-    const container =
-        document.getElementById(
-            "scene"
+    $("statusText")
+        .textContent =
+            text;
+
+    const dot =
+        $("statusDot");
+
+
+    dot.className =
+        "status-dot";
+
+
+    if(type){
+
+        dot.classList.add(
+            type
         );
-
-
-    const width =
-        container.clientWidth;
-
-
-    const height =
-        container.clientHeight;
-
-
-    if(
-        width <= 0 ||
-        height <= 0
-    ){
-
-        return;
 
     }
 
-
-    camera.aspect =
-        width / height;
+}
 
 
-    camera.updateProjectionMatrix();
+/* =========================================================
+   ESCAPE
+========================================================= */
 
+function escapeHTML(
+    value
+){
 
-    renderer.setSize(
-        width,
-        height,
-        false
-    );
+    return String(value ?? "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
 
-/* ============================================================
-   ANIMATION
-============================================================ */
-
-function animate(){
-
-    requestAnimationFrame(
-        animate
-    );
-
-
-    controls.update();
-
-
-    renderer.render(
-        scene,
-        camera
-    );
-
-}
-
-
-/* ============================================================
-   OLLAMA
-============================================================ */
+/* =========================================================
+   OLLAMA CONFIG
+========================================================= */
 
 function ollamaUrl(){
 
-    return document
-        .getElementById(
-            "ollamaEndpoint"
-        )
+    return $("ollamaUrl")
         .value
         .trim()
         .replace(
-            /\/$/,
+            /\/+$/,
             ""
         );
 
@@ -1385,87 +2041,25 @@ function ollamaUrl(){
 
 function embeddingModel(){
 
-    return document
-        .getElementById(
-            "embeddingModel"
-        )
+    return $("embeddingModel")
         .value
         .trim();
 
 }
 
 
-async function embed(
-    text
-){
+function chatModel(){
 
-    const response =
-        await fetch(
-            ollamaUrl()
-            +
-            "/api/embeddings",
-            {
-                method:"POST",
-
-                headers:{
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body:
-                    JSON.stringify({
-
-                        model:
-                            embeddingModel(),
-
-                        prompt:
-                            text
-
-                    })
-            }
-        );
-
-
-    if(!response.ok){
-
-        const body =
-            await response.text();
-
-
-        throw new Error(
-            `Ollama Embedding HTTP ${response.status}: ${body}`
-        );
-
-    }
-
-
-    const data =
-        await response.json();
-
-
-    if(
-        !Array.isArray(
-            data.embedding
-        )
-    ){
-
-        throw new Error(
-            "Ollama hat kein gültiges Embedding geliefert."
-        );
-
-    }
-
-
-    return data.embedding.map(
-        Number
-    );
+    return $("chatModel")
+        .value
+        .trim();
 
 }
 
 
-/* ============================================================
+/* =========================================================
    INDEXED DB
-============================================================ */
+========================================================= */
 
 function openMemoryDB(){
 
@@ -1479,6 +2073,12 @@ function openMemoryDB(){
                 indexedDB.open(
                     DB_NAME,
                     DB_VERSION
+                );
+
+
+            request.onerror = () =>
+                reject(
+                    request.error
                 );
 
 
@@ -1528,25 +2128,12 @@ function openMemoryDB(){
 
 
             request.onsuccess =
-                event => {
-
-                    db =
-                        event.target.result;
-
-
-                    resolve(
-                        db
-                    );
-
-                };
-
-
-            request.onerror =
                 () => {
 
-                    reject(
-                        request.error
-                    );
+                    db =
+                        request.result;
+
+                    resolve(db);
 
                 };
 
@@ -1566,35 +2153,68 @@ function saveMemory(
             reject
         ) => {
 
-            const transaction =
+            const tx =
                 db.transaction(
                     STORE_NAME,
                     "readwrite"
                 );
 
 
-            const store =
-                transaction.objectStore(
-                    STORE_NAME
+            tx.objectStore(
+                STORE_NAME
+            ).put(
+                memory
+            );
+
+
+            tx.oncomplete =
+                () => resolve();
+
+
+            tx.onerror =
+                () => reject(
+                    tx.error
+                );
+
+        }
+    );
+
+}
+
+
+function getAllMemories(){
+
+    return new Promise(
+        (
+            resolve,
+            reject
+        ) => {
+
+            const tx =
+                db.transaction(
+                    STORE_NAME,
+                    "readonly"
                 );
 
 
             const request =
-                store.put(
-                    memory
-                );
+                tx.objectStore(
+                    STORE_NAME
+                ).getAll();
 
 
             request.onsuccess =
-                () => resolve(
-                    memory
-                );
+                () =>
+                    resolve(
+                        request.result || []
+                    );
 
 
             request.onerror =
-                () => reject(
-                    request.error
-                );
+                () =>
+                    reject(
+                        request.error
+                    );
 
         }
     );
@@ -1612,7 +2232,7 @@ function getMemory(
             reject
         ) => {
 
-            const transaction =
+            const tx =
                 db.transaction(
                     STORE_NAME,
                     "readonly"
@@ -1620,65 +2240,23 @@ function getMemory(
 
 
             const request =
-                transaction
-                    .objectStore(
-                        STORE_NAME
-                    )
-                    .get(
-                        id
+                tx.objectStore(
+                    STORE_NAME
+                ).get(id);
+
+
+            request.onsuccess =
+                () =>
+                    resolve(
+                        request.result
                     );
 
 
-            request.onsuccess =
-                () => resolve(
-                    request.result
-                );
-
-
             request.onerror =
-                () => reject(
-                    request.error
-                );
-
-        }
-    );
-
-}
-
-
-function getAllMemories(){
-
-    return new Promise(
-        (
-            resolve,
-            reject
-        ) => {
-
-            const transaction =
-                db.transaction(
-                    STORE_NAME,
-                    "readonly"
-                );
-
-
-            const request =
-                transaction
-                    .objectStore(
-                        STORE_NAME
-                    )
-                    .getAll();
-
-
-            request.onsuccess =
-                () => resolve(
-                    request.result || []
-                );
-
-
-            request.onerror =
-                () => reject(
-                    request.error
-                );
+                () =>
+                    reject(
+                        request.error
+                    );
 
         }
     );
@@ -1696,31 +2274,27 @@ function deleteMemory(
             reject
         ) => {
 
-            const transaction =
+            const tx =
                 db.transaction(
                     STORE_NAME,
                     "readwrite"
                 );
 
 
-            const request =
-                transaction
-                    .objectStore(
-                        STORE_NAME
-                    )
-                    .delete(
-                        id
-                    );
+            tx.objectStore(
+                STORE_NAME
+            ).delete(id);
 
 
-            request.onsuccess =
+            tx.oncomplete =
                 () => resolve();
 
 
-            request.onerror =
-                () => reject(
-                    request.error
-                );
+            tx.onerror =
+                () =>
+                    reject(
+                        tx.error
+                    );
 
         }
     );
@@ -1728,7 +2302,7 @@ function deleteMemory(
 }
 
 
-function clearMemory(){
+function clearMemoryDB(){
 
     return new Promise(
         (
@@ -1736,29 +2310,27 @@ function clearMemory(){
             reject
         ) => {
 
-            const transaction =
+            const tx =
                 db.transaction(
                     STORE_NAME,
                     "readwrite"
                 );
 
 
-            const request =
-                transaction
-                    .objectStore(
-                        STORE_NAME
-                    )
-                    .clear();
+            tx.objectStore(
+                STORE_NAME
+            ).clear();
 
 
-            request.onsuccess =
+            tx.oncomplete =
                 () => resolve();
 
 
-            request.onerror =
-                () => reject(
-                    request.error
-                );
+            tx.onerror =
+                () =>
+                    reject(
+                        tx.error
+                    );
 
         }
     );
@@ -1766,218 +2338,83 @@ function clearMemory(){
 }
 
 
-/* ============================================================
-   MEMORY INITIALIZATION
-============================================================ */
+/* =========================================================
+   EMBEDDING
+========================================================= */
 
-async function initializeMemory(){
+async function embed(
+    text
+){
 
-    state.memories =
-        await getAllMemories();
+    const response =
+        await fetch(
+            ollamaUrl() +
+            "/api/embeddings",
+            {
 
+                method:"POST",
 
-    let dimension =
-        null;
+                headers:{
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:JSON.stringify({
+
+                    model:
+                        embeddingModel(),
+
+                    prompt:
+                        text
+
+                })
+
+            }
+        );
 
 
     if(
-        state.memories.length > 0
+        !response.ok
     ){
 
-        dimension =
-            state.memories[0]
-                .embedding.length;
+        const body =
+            await response.text();
 
 
-        for(
-            const memory
-            of state.memories
-        ){
-
-            if(
-                !Array.isArray(
-                    memory.embedding
-                )
-            ){
-
-                throw new Error(
-                    `Ungültiges Embedding: ${memory.id}`
-                );
-
-            }
-
-
-            if(
-                memory.embedding.length !==
-                dimension
-            ){
-
-                throw new Error(
-                    "Embedding-Dimensionen im Store sind inkonsistent."
-                );
-
-            }
-
-        }
+        throw new Error(
+            `Ollama Embedding HTTP ${response.status}: ${body}`
+        );
 
     }
 
 
-    document
-        .getElementById(
-            "memoryCount"
+    const data =
+        await response.json();
+
+
+    if(
+        !Array.isArray(
+            data.embedding
         )
-        .textContent =
-            state.memories.length;
+    ){
+
+        throw new Error(
+            "Ollama hat keinen gültigen Embedding-Vektor geliefert."
+        );
+
+    }
 
 
-    document
-        .getElementById(
-            "memoryDimension"
-        )
-        .textContent =
-            dimension ?? "—";
-
-
-    document
-        .getElementById(
-            "spaceStatus"
-        )
-        .textContent =
-            `${state.memories.length} MEMORIES`;
-
-
-    renderEmbeddingSpace();
+    return data.embedding.map(
+        Number
+    );
 
 }
 
 
-/* ============================================================
-   CREATE MEMORY
-============================================================ */
-
-async function addMemory(){
-
-    const input =
-        document.getElementById(
-            "memoryInput"
-        );
-
-
-    const source =
-        document.getElementById(
-            "memorySource"
-        );
-
-
-    const content =
-        input.value.trim();
-
-
-    if(!content){
-
-        alert(
-            "Bitte Memory-Text eingeben."
-        );
-
-        return;
-
-    }
-
-
-    try{
-
-        log(
-            "Embedding wird erzeugt ..."
-        );
-
-
-        const vector =
-            await embed(
-                content
-            );
-
-
-        const memory = {
-
-            id:
-                crypto.randomUUID(),
-
-            content:
-                content,
-
-            embedding:
-                vector.map(Number),
-
-            metadata:{
-
-                source:
-                    source.value.trim()
-                    ||
-                    null,
-
-                type:
-                    "text",
-
-                tags:
-                    []
-
-            },
-
-            created_at:
-                new Date()
-                    .toISOString()
-
-        };
-
-
-        await saveMemory(
-            memory
-        );
-
-
-        input.value =
-            "";
-
-
-        source.value =
-            "";
-
-
-        log(
-            `Memory gespeichert: ${memory.id}`
-        );
-
-
-        await initializeMemory();
-
-
-    }
-    catch(error){
-
-        console.error(
-            error
-        );
-
-
-        log(
-            "MEMORY ERROR: "
-            +
-            error.message
-        );
-
-    }
-
-}
-
-
-window.addMemory =
-    addMemory;
-
-
-/* ============================================================
+/* =========================================================
    VECTOR MATH
-============================================================ */
+========================================================= */
 
 function vectorDot(
     a,
@@ -1985,19 +2422,17 @@ function vectorDot(
 ){
 
     if(
-        a.length !==
-        b.length
+        a.length !== b.length
     ){
 
         throw new Error(
-            "Vektordimensionen stimmen nicht überein."
+            `Vektor-Dimensionen stimmen nicht überein: ${a.length} ≠ ${b.length}`
         );
 
     }
 
 
-    let sum =
-        0;
+    let sum = 0;
 
 
     for(
@@ -2022,8 +2457,7 @@ function vectorNorm(
     vector
 ){
 
-    let sum =
-        0;
+    let sum = 0;
 
 
     for(
@@ -2052,12 +2486,11 @@ function cosineSimilarity(
 ){
 
     if(
-        a.length !==
-        b.length
+        a.length !== b.length
     ){
 
         throw new Error(
-            "Cosine: Dimensionen stimmen nicht überein."
+            "Cosine: Vektor-Dimensionen stimmen nicht überein."
         );
 
     }
@@ -2082,8 +2515,7 @@ function cosineSimilarity(
 
 
     return (
-        vectorDot(a,b)
-        /
+        vectorDot(a,b) /
         (
             normA *
             normB
@@ -2093,9 +2525,247 @@ function cosineSimilarity(
 }
 
 
-/* ============================================================
-   RETRIEVAL
-============================================================ */
+/* =========================================================
+   MEMORY OBJECT
+========================================================= */
+
+function createMemoryObject(
+    text,
+    embedding,
+    source
+){
+
+    return {
+
+        id:
+            crypto.randomUUID(),
+
+        content:
+            text,
+
+        embedding:
+            embedding.map(Number),
+
+        metadata:{
+
+            source:
+                source ||
+                null,
+
+            type:
+                "text",
+
+            tags:[]
+
+        },
+
+        created_at:
+            new Date()
+                .toISOString()
+
+    };
+
+}
+
+
+/* =========================================================
+   ADD MEMORY
+========================================================= */
+
+async function addMemory(){
+
+    const text =
+        $("memoryText")
+            .value
+            .trim();
+
+
+    const source =
+        $("memorySource")
+            .value
+            .trim();
+
+
+    if(!text){
+
+        alert(
+            "Bitte Memory-Text eingeben."
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        setStatus(
+            "EMBEDDING",
+            ""
+        );
+
+
+        log(
+            "Memory embedding ..."
+        );
+
+
+        const embedding =
+            await embed(
+                text
+            );
+
+
+        const existing =
+            state.memories;
+
+
+        if(
+            existing.length > 0 &&
+            embedding.length !==
+            existing[0]
+                .embedding
+                .length
+        ){
+
+            throw new Error(
+                "Embedding-Dimension passt nicht zum vorhandenen Memory."
+            );
+
+        }
+
+
+        const memory =
+            createMemoryObject(
+                text,
+                embedding,
+                source
+            );
+
+
+        await saveMemory(
+            memory
+        );
+
+
+        $("memoryText")
+            .value = "";
+
+
+        log(
+            `Memory gespeichert: ${memory.id}`,
+            "ok"
+        );
+
+
+        await refreshMemory();
+
+
+        setStatus(
+            "READY",
+            "ok"
+        );
+
+
+    }catch(error){
+
+        console.error(error);
+
+        log(
+            error.message,
+            "error"
+        );
+
+
+        setStatus(
+            "ERROR",
+            "error"
+        );
+
+        alert(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   REFRESH MEMORY
+========================================================= */
+
+async function refreshMemory(){
+
+    state.memories =
+        await getAllMemories();
+
+
+    state.memories.sort(
+        (
+            a,
+            b
+        ) =>
+            String(a.created_at)
+                .localeCompare(
+                    String(b.created_at)
+                )
+    );
+
+
+    const dimensions =
+        state.memories.length
+            ? state.memories[0]
+                .embedding
+                .length
+            : 0;
+
+
+    $("memoryCount")
+        .textContent =
+            state.memories.length;
+
+
+    $("memoryDimension")
+        .textContent =
+            dimensions ||
+            "—";
+
+
+    /*
+     * Sicherheitsprüfung:
+     * Alle gespeicherten Embeddings
+     * müssen dieselbe Dimension haben.
+     */
+    for(
+        const memory
+        of state.memories
+    ){
+
+        if(
+            memory.embedding.length !==
+            dimensions
+        ){
+
+            throw new Error(
+                `Memory ${memory.id} besitzt eine andere Embedding-Dimension.`
+            );
+
+        }
+
+    }
+
+
+    renderEmbeddingSpace();
+
+    renderResults();
+
+}
+
+
+/* =========================================================
+   COSINE SEARCH
+========================================================= */
 
 async function cosineSearch(
     queryVector,
@@ -2106,8 +2776,7 @@ async function cosineSearch(
         await getAllMemories();
 
 
-    const results =
-        [];
+    const results = [];
 
 
     for(
@@ -2136,11 +2805,9 @@ async function cosineSearch(
 
         results.push({
 
-            memory:
-                memory,
+            memory,
 
-            score:
-                score
+            score
 
         });
 
@@ -2165,265 +2832,508 @@ async function cosineSearch(
 }
 
 
-async function runRetrieval(){
+/* =========================================================
+   PCA
+========================================================= */
 
-    const query =
-        document
-            .getElementById(
-                "query"
-            )
-            .value
-            .trim();
-
-
-    if(!query){
-
-        alert(
-            "Bitte Query eingeben."
-        );
-
-        return;
-
-    }
-
-
-    const memories =
-        await getAllMemories();
-
+function calculateMean(
+    memories
+){
 
     if(
         memories.length === 0
     ){
 
-        alert(
-            "Das Memory ist leer."
-        );
-
-        return;
+        return null;
 
     }
 
 
-    try{
+    const dimension =
+        memories[0]
+            .embedding
+            .length;
 
-        log(
-            "QUERY EMBEDDING ..."
+
+    const mean =
+        new Float64Array(
+            dimension
         );
 
 
-        const queryVector =
-            await embed(
-                query
-            );
+    for(
+        const memory
+        of memories
+    ){
+
+        const vector =
+            memory.embedding;
 
 
-        state.queryVector =
-            queryVector;
+        for(
+            let j=0;
+            j<dimension;
+            j++
+        ){
 
+            mean[j] +=
+                vector[j];
 
-        const requestedK =
-            Math.max(
-                1,
-                Number(
-                    document
-                        .getElementById(
-                            "topK"
-                        )
-                        .value
-                )
-                || 5
-            );
-
-
-        log(
-            "COSINE SEARCH ..."
-        );
-
-
-        const results =
-            await cosineSearch(
-                queryVector,
-                requestedK
-            );
-
-
-        state.retrieval =
-            results;
-
-
-        currentRAGContext =
-            buildRAGContext(
-                results
-            );
-
-
-        renderResults();
-
-        renderRAGContext();
-
-        renderPromptPreview();
-
-        renderEmbeddingSpace();
-
-        renderQueryVector();
-
-        updateRetrievalVisualization();
-
-        renderTopHitRing();
-
-        renderQueryConnections();
-
-
-        log(
-            `RETRIEVAL COMPLETE · ${results.length} Treffer`
-        );
-
+        }
 
     }
-    catch(error){
-
-        console.error(
-            error
-        );
 
 
-        log(
-            "RETRIEVAL ERROR: "
-            +
-            error.message
-        );
+    for(
+        let j=0;
+        j<dimension;
+        j++
+    ){
+
+        mean[j] /=
+            memories.length;
 
     }
+
+
+    return mean;
 
 }
 
 
-window.runRetrieval =
-    runRetrieval;
-
-
-/* ============================================================
-   3D PROJECTION
-============================================================ */
-
-function seededRandom(
-    seed
+function calculateCovariance(
+    memories,
+    mean
 ){
 
-    let x =
-        seed | 0;
+    const m =
+        memories.length;
 
 
-    return function(){
-
-        x =
-            Math.imul(
-                1664525,
-                x
-            )
-            +
-            1013904223;
+    const n =
+        mean.length;
 
 
-        x |= 0;
-
-
-        return (
-            (x >>> 0)
-            /
-            4294967296
+    const covariance =
+        Array.from(
+            {
+                length:n
+            },
+            () =>
+                new Float64Array(n)
         );
+
+
+    for(
+        const memory
+        of memories
+    ){
+
+        const vector =
+            memory.embedding;
+
+
+        for(
+            let i=0;
+            i<n;
+            i++
+        ){
+
+            const xi =
+                vector[i] -
+                mean[i];
+
+
+            for(
+                let j=i;
+                j<n;
+                j++
+            ){
+
+                const xj =
+                    vector[j] -
+                    mean[j];
+
+
+                covariance[i][j] +=
+                    xi * xj;
+
+            }
+
+        }
+
+    }
+
+
+    const divisor =
+        Math.max(
+            1,
+            m - 1
+        );
+
+
+    for(
+        let i=0;
+        i<n;
+        i++
+    ){
+
+        for(
+            let j=i;
+            j<n;
+            j++
+        ){
+
+            covariance[i][j] /=
+                divisor;
+
+
+            covariance[j][i] =
+                covariance[i][j];
+
+        }
+
+    }
+
+
+    return covariance;
+
+}
+
+
+function matrixVectorMultiply(
+    matrix,
+    vector
+){
+
+    const result =
+        new Float64Array(
+            vector.length
+        );
+
+
+    for(
+        let i=0;
+        i<matrix.length;
+        i++
+    ){
+
+        let sum = 0;
+
+
+        for(
+            let j=0;
+            j<vector.length;
+            j++
+        ){
+
+            sum +=
+                matrix[i][j] *
+                vector[j];
+
+        }
+
+
+        result[i] =
+            sum;
+
+    }
+
+
+    return result;
+
+}
+
+
+function calculatePrincipalAxes(
+    covariance,
+    numberOfAxes=3
+){
+
+    const n =
+        covariance.length;
+
+
+    const working =
+        covariance.map(
+            row =>
+                Float64Array.from(row)
+        );
+
+
+    const axes = [];
+
+    const eigenvalues = [];
+
+
+    for(
+        let axisIndex=0;
+        axisIndex<
+            Math.min(
+                numberOfAxes,
+                n
+            );
+        axisIndex++
+    ){
+
+        let vector =
+            new Float64Array(n);
+
+
+        /*
+         * Deterministischer Start.
+         */
+        for(
+            let i=0;
+            i<n;
+            i++
+        ){
+
+            vector[i] =
+                1 /
+                Math.sqrt(n);
+
+        }
+
+
+        for(
+            let iteration=0;
+            iteration<150;
+            iteration++
+        ){
+
+            const next =
+                matrixVectorMultiply(
+                    working,
+                    vector
+                );
+
+
+            const norm =
+                vectorNorm(
+                    next
+                );
+
+
+            if(
+                norm === 0
+            ){
+
+                break;
+
+            }
+
+
+            for(
+                let i=0;
+                i<n;
+                i++
+            ){
+
+                next[i] /=
+                    norm;
+
+            }
+
+
+            let difference = 0;
+
+
+            for(
+                let i=0;
+                i<n;
+                i++
+            ){
+
+                const d =
+                    next[i] -
+                    vector[i];
+
+
+                difference +=
+                    d*d;
+
+            }
+
+
+            vector =
+                next;
+
+
+            if(
+                Math.sqrt(
+                    difference
+                ) < 1e-10
+            ){
+
+                break;
+
+            }
+
+        }
+
+
+        const Cv =
+            matrixVectorMultiply(
+                covariance,
+                vector
+            );
+
+
+        const eigenvalue =
+            vectorDot(
+                vector,
+                Cv
+            );
+
+
+        axes.push(
+            vector
+        );
+
+
+        eigenvalues.push(
+            eigenvalue
+        );
+
+
+        /*
+         * Deflation:
+         *
+         * C' = C - λ vvᵀ
+         */
+        for(
+            let i=0;
+            i<n;
+            i++
+        ){
+
+            for(
+                let j=0;
+                j<n;
+                j++
+            ){
+
+                working[i][j] -=
+                    eigenvalue *
+                    vector[i] *
+                    vector[j];
+
+            }
+
+        }
+
+    }
+
+
+    return {
+
+        axes,
+
+        eigenvalues
 
     };
 
 }
 
 
-function createProjectionBasis(
-    dimension
+function buildPCA(
+    memories
 ){
 
-    const basis =
-        [];
-
-
-    for(
-        let axis=0;
-        axis<3;
-        axis++
+    if(
+        memories.length === 0
     ){
 
-        const random =
-            seededRandom(
-                0x9e3779b9
-                +
-                axis * 7919
-                +
-                dimension * 104729
-            );
+        pcaState = {
 
+            mean:null,
 
-        const vector =
-            new Float64Array(
-                dimension
-            );
+            axes:null,
 
+            eigenvalues:null,
 
-        for(
-            let i=0;
-            i<dimension;
-            i++
-        ){
+            dimension:0,
 
-            vector[i] =
-                random() * 2 - 1;
+            count:0
 
-        }
+        };
 
-
-        let norm =
-            0;
-
-
-        for(
-            let i=0;
-            i<dimension;
-            i++
-        ){
-
-            norm +=
-                vector[i] *
-                vector[i];
-
-        }
-
-
-        norm =
-            Math.sqrt(
-                norm
-            );
-
-
-        for(
-            let i=0;
-            i<dimension;
-            i++
-        ){
-
-            vector[i] /=
-                norm;
-
-        }
-
-
-        basis.push(
-            vector
-        );
+        return;
 
     }
 
 
-    return basis;
+    const dimension =
+        memories[0]
+            .embedding
+            .length;
+
+
+    if(
+        memories.length < 2
+    ){
+
+        pcaState = {
+
+            mean:
+                Float64Array.from(
+                    memories[0]
+                        .embedding
+                ),
+
+            axes:null,
+
+            eigenvalues:null,
+
+            dimension,
+
+            count:
+                memories.length
+
+        };
+
+        return;
+
+    }
+
+
+    const mean =
+        calculateMean(
+            memories
+        );
+
+
+    const covariance =
+        calculateCovariance(
+            memories,
+            mean
+        );
+
+
+    const principal =
+        calculatePrincipalAxes(
+            covariance,
+            3
+        );
+
+
+    pcaState = {
+
+        mean,
+
+        axes:
+            principal.axes,
+
+        eigenvalues:
+            principal.eigenvalues,
+
+        dimension,
+
+        count:
+            memories.length
+
+    };
 
 }
 
@@ -2433,44 +3343,437 @@ function projectEmbedding(
 ){
 
     if(
-        !projectionBasis ||
-        projectionBasis[0].length !==
-        embedding.length
+        !pcaState.axes ||
+        pcaState.axes.length === 0
     ){
 
-        projectionBasis =
-            createProjectionBasis(
-                embedding.length
+        return new THREE.Vector3(
+            0,
+            0,
+            0
+        );
+
+    }
+
+
+    const centered =
+        new Float64Array(
+            embedding.length
+        );
+
+
+    for(
+        let i=0;
+        i<embedding.length;
+        i++
+    ){
+
+        centered[i] =
+            embedding[i] -
+            pcaState.mean[i];
+
+    }
+
+
+    const coordinates =
+        [0,0,0];
+
+
+    for(
+        let axis=0;
+        axis<
+            Math.min(
+                3,
+                pcaState.axes.length
+            );
+        axis++
+    ){
+
+        coordinates[axis] =
+            vectorDot(
+                centered,
+                pcaState.axes[axis]
             );
 
     }
 
 
     return new THREE.Vector3(
-
-        vectorDot(
-            embedding,
-            projectionBasis[0]
-        ),
-
-        vectorDot(
-            embedding,
-            projectionBasis[1]
-        ),
-
-        vectorDot(
-            embedding,
-            projectionBasis[2]
-        )
-
+        coordinates[0],
+        coordinates[1],
+        coordinates[2]
     );
 
 }
 
 
-/* ============================================================
-   3D RENDERING
-============================================================ */
+/* =========================================================
+   PCA DISPLAY POINTS
+========================================================= */
+
+function calculateDisplayPoints(){
+
+    const memories =
+        state.memories;
+
+
+    if(
+        memories.length === 0
+    ){
+
+        return [];
+
+    }
+
+
+    buildPCA(
+        memories
+    );
+
+
+    const raw =
+        memories.map(
+            memory => ({
+
+                memory,
+
+                position:
+                    projectEmbedding(
+                        memory.embedding
+                    )
+
+            })
+        );
+
+
+    let maxDistance = 0;
+
+
+    for(
+        const item
+        of raw
+    ){
+
+        maxDistance =
+            Math.max(
+                maxDistance,
+                item.position.length()
+            );
+
+    }
+
+
+    if(
+        maxDistance === 0
+    ){
+
+        maxDistance = 1;
+
+    }
+
+
+    const scale =
+        2.4 /
+        maxDistance;
+
+
+    return raw.map(
+        item => ({
+
+            memory:
+                item.memory,
+
+            position:
+                item.position
+                    .clone()
+                    .multiplyScalar(
+                        scale
+                    )
+
+        })
+    );
+
+}
+
+
+function getPCARenderScale(){
+
+    let max = 0;
+
+
+    for(
+        const item
+        of projectedPoints
+    ){
+
+        max =
+            Math.max(
+                max,
+                item.position.length()
+            );
+
+    }
+
+
+    if(
+        max === 0
+    ){
+
+        return 1;
+
+    }
+
+
+    return 2.4 / max;
+
+}
+
+
+/* =========================================================
+   THREE INITIALIZATION
+========================================================= */
+
+function initThree(){
+
+    scene =
+        new THREE.Scene();
+
+
+    scene.background =
+        new THREE.Color(
+            0x020308
+        );
+
+
+    camera =
+        new THREE.PerspectiveCamera(
+            55,
+            1,
+            .01,
+            1000
+        );
+
+
+    camera.position.set(
+        0,
+        0,
+        6
+    );
+
+
+    renderer =
+        new THREE.WebGLRenderer({
+
+            antialias:true,
+
+            alpha:false
+
+        });
+
+
+    renderer.setPixelRatio(
+        Math.min(
+            window.devicePixelRatio,
+            2
+        )
+    );
+
+
+    $("scene")
+        .appendChild(
+            renderer.domElement
+        );
+
+
+    controls =
+        new OrbitControls(
+            camera,
+            renderer.domElement
+        );
+
+
+    controls.enableDamping =
+        true;
+
+
+    controls.dampingFactor =
+        .08;
+
+
+    controls.minDistance =
+        2;
+
+
+    controls.maxDistance =
+        30;
+
+
+    raycaster =
+        new THREE.Raycaster();
+
+
+    pointer =
+        new THREE.Vector2();
+
+
+    memoryGroup =
+        new THREE.Group();
+
+
+    queryGroup =
+        new THREE.Group();
+
+
+    graphGroup =
+        new THREE.Group();
+
+
+    axisGroup =
+        new THREE.Group();
+
+
+    scene.add(
+        graphGroup
+    );
+
+
+    scene.add(
+        memoryGroup
+    );
+
+
+    scene.add(
+        queryGroup
+    );
+
+
+    scene.add(
+        axisGroup
+    );
+
+
+    createEnvironment();
+
+
+    renderer.domElement.addEventListener(
+        "pointerdown",
+        onScenePointerDown
+    );
+
+
+    window.addEventListener(
+        "resize",
+        resizeThree
+    );
+
+
+    resizeThree();
+
+
+    animate();
+
+}
+
+
+/* =========================================================
+   ENVIRONMENT
+========================================================= */
+
+function createEnvironment(){
+
+    const grid =
+        new THREE.GridHelper(
+            8,
+            16,
+            0x15303a,
+            0x0a161c
+        );
+
+
+    grid.rotation.x =
+        0;
+
+
+    grid.position.y =
+        -2.5;
+
+
+    grid.material.transparent =
+        true;
+
+
+    grid.material.opacity =
+        .45;
+
+
+    axisGroup.add(
+        grid
+    );
+
+
+    const axes =
+        new THREE.AxesHelper(
+            2
+        );
+
+
+    axes.position.set(
+        0,
+        -2.45,
+        0
+    );
+
+
+    axes.material.transparent =
+        true;
+
+
+    axes.material.opacity =
+        .35;
+
+
+    axisGroup.add(
+        axes
+    );
+
+
+    const ambient =
+        new THREE.AmbientLight(
+            0xffffff,
+            .65
+        );
+
+
+    scene.add(
+        ambient
+    );
+
+
+    const light =
+        new THREE.PointLight(
+            0x00f5ff,
+            2,
+            15
+        );
+
+
+    light.position.set(
+        0,
+        3,
+        3
+    );
+
+
+    scene.add(
+        light
+    );
+
+}
+
+
+/* =========================================================
+   CLEAR GROUP
+========================================================= */
 
 function clearGroup(
     group
@@ -2508,8 +3811,7 @@ function clearGroup(
                         material.dispose()
                 );
 
-            }
-            else{
+            }else{
 
                 object.material.dispose();
 
@@ -2522,251 +3824,35 @@ function clearGroup(
 }
 
 
-function calculateDisplayPoints(){
-
-    const memories =
-        state.memories;
-
-
-    if(
-        memories.length === 0
-    ){
-
-        return [];
-
-    }
-
-
-    const raw =
-        memories.map(
-            memory => ({
-                memory,
-                position:
-                    projectEmbedding(
-                        memory.embedding
-                    )
-            })
-        );
-
-
-    let maxDistance =
-        0;
-
-
-    for(
-        const item
-        of raw
-    ){
-
-        maxDistance =
-            Math.max(
-                maxDistance,
-                item.position.length()
-            );
-
-    }
-
-
-    if(
-        maxDistance === 0
-    ){
-
-        maxDistance =
-            1;
-
-    }
-
-
-    const scale =
-        2.4 /
-        maxDistance;
-
-
-    return raw.map(
-        item => ({
-
-            memory:
-                item.memory,
-
-            position:
-                item.position.clone()
-                    .multiplyScalar(
-                        scale
-                    )
-
-        })
-    );
-
-}
-
-
-function renderEmbeddingSpace(){
-
-    clearGroup(
-        memoryGroup
-    );
-
-
-    projectedPoints =
-        calculateDisplayPoints();
-
-
-    for(
-        const item
-        of projectedPoints
-    ){
-
-        const geometry =
-            new THREE.SphereGeometry(
-                0.055,
-                12,
-                12
-            );
-
-
-        const material =
-            new THREE.MeshBasicMaterial({
-                color:0xff2bd6,
-                transparent:false
-            });
-
-
-        const mesh =
-            new THREE.Mesh(
-                geometry,
-                material
-            );
-
-
-        mesh.position.copy(
-            item.position
-        );
-
-
-        mesh.userData = {
-
-            type:
-                "memory",
-
-            memoryId:
-                item.memory.id
-
-        };
-
-
-        memoryGroup.add(
-            mesh
-        );
-
-
-        item.mesh =
-            mesh;
-
-    }
-
-
-    if(
-        state.retrieval.length > 0
-    ){
-
-        updateRetrievalVisualization();
-
-    }
-
-}
-
-
-/* ============================================================
-   QUERY VECTOR
-============================================================ */
-
-function renderQueryVector(){
-
-    clearGroup(
-        queryGroup
-    );
-
-
-    if(
-        !state.queryVector
-    ){
-
-        return;
-
-    }
-
-
-    const memoryPositions =
-        projectedPoints.map(
-            item =>
-                item.position
-        );
-
-
-    const queryPosition =
-        projectEmbedding(
-            state.queryVector
-        );
-
-
-    const all =
-        [
-            ...memoryPositions,
-            queryPosition
-        ];
-
-
-    let max =
-        0;
-
-
-    for(
-        const position
-        of all
-    ){
-
-        max =
-            Math.max(
-                max,
-                position.length()
-            );
-
-    }
-
-
-    if(
-        max === 0
-    ){
-
-        max = 1;
-
-    }
-
-
-    const scale =
-        2.4 /
-        max;
-
-
-    const position =
-        queryPosition
-            .clone()
-            .multiplyScalar(
-                scale
-            );
-
+/* =========================================================
+   MEMORY POINT
+========================================================= */
+
+function createMemoryMesh(
+    memory,
+    position
+){
 
     const geometry =
         new THREE.SphereGeometry(
-            0.11,
-            18,
-            18
+            .065,
+            12,
+            12
         );
 
 
     const material =
         new THREE.MeshBasicMaterial({
-            color:0x00f5ff
+
+            color:
+                0xff2bd6,
+
+            transparent:
+                true,
+
+            opacity:
+                .95
+
         });
 
 
@@ -2782,99 +3868,83 @@ function renderQueryVector(){
     );
 
 
-    mesh.userData.type =
-        "query";
+    mesh.userData = {
+
+        type:
+            "memory",
+
+        memoryId:
+            memory.id
+
+    };
 
 
-    queryGroup.add(
-        mesh
-    );
-
-
-    /*
-     * Ring
-     */
-
-    const ringGeometry =
-        new THREE.RingGeometry(
-            0.15,
-            0.18,
-            32
-        );
-
-
-    const ringMaterial =
-        new THREE.MeshBasicMaterial({
-            color:0x00f5ff,
-            transparent:true,
-            opacity:.75,
-            side:THREE.DoubleSide
-        });
-
-
-    const ring =
-        new THREE.Mesh(
-            ringGeometry,
-            ringMaterial
-        );
-
-
-    ring.position.copy(
-        position
-    );
-
-
-    ring.lookAt(
-        camera.position
-    );
-
-
-    queryGroup.add(
-        ring
-    );
-
-
-    /*
-     * Origin line
-     */
-
-    const lineGeometry =
-        new THREE.BufferGeometry()
-            .setFromPoints([
-                new THREE.Vector3(
-                    0,
-                    0,
-                    0
-                ),
-                position
-            ]);
-
-
-    const lineMaterial =
-        new THREE.LineBasicMaterial({
-            color:0x00f5ff,
-            transparent:true,
-            opacity:.35
-        });
-
-
-    const line =
-        new THREE.Line(
-            lineGeometry,
-            lineMaterial
-        );
-
-
-    queryGroup.add(
-        line
-    );
+    return mesh;
 
 }
 
 
-/* ============================================================
+/* =========================================================
+   MEMORY RENDER
+========================================================= */
+
+function renderEmbeddingSpace(){
+
+    clearGroup(
+        memoryGroup
+    );
+
+
+    clearGroup(
+        graphGroup
+    );
+
+
+    projectedPoints =
+        calculateDisplayPoints();
+
+
+    for(
+        const item
+        of projectedPoints
+    ){
+
+        const mesh =
+            createMemoryMesh(
+                item.memory,
+                item.position
+            );
+
+
+        memoryGroup.add(
+            mesh
+        );
+
+    }
+
+
+    buildSimilarityGraph(
+        Number(
+            $("graphK").value
+        ) || 3,
+
+        Number(
+            $("graphThreshold").value
+        ) || .45
+    );
+
+
+    updateRetrievalVisualization();
+
+
+    renderQueryVector();
+
+}
+
+
+/* =========================================================
    RETRIEVAL VISUALIZATION
-============================================================ */
+========================================================= */
 
 function resetMemoryPoint(
     mesh
@@ -2893,11 +3963,7 @@ function resetMemoryPoint(
 
 
     mesh.material.opacity =
-        1;
-
-
-    mesh.material.transparent =
-        false;
+        .95;
 
 
     delete mesh.userData.retrieval;
@@ -2925,11 +3991,8 @@ function setNonRelevantPoint(
         .30;
 
 
-    mesh.material.transparent =
-        true;
-
-
-    delete mesh.userData.retrieval;
+    mesh.userData.retrieval =
+        null;
 
 }
 
@@ -2953,7 +4016,8 @@ function setTopKPoint(
         Math.max(
             0,
             score
-        ) * .8;
+        ) *
+        .8;
 
 
     const scale =
@@ -2976,8 +4040,7 @@ function setTopKPoint(
             0x00f5ff
         );
 
-    }
-    else{
+    }else{
 
         mesh.material.color.set(
             0x4ade80
@@ -2990,17 +4053,11 @@ function setTopKPoint(
         1;
 
 
-    mesh.material.transparent =
-        false;
-
-
     mesh.userData.retrieval = {
 
-        rank:
-            rank,
+        rank,
 
-        score:
-            score
+        score
 
     };
 
@@ -3009,50 +4066,32 @@ function setTopKPoint(
 
 function updateRetrievalVisualization(){
 
-    if(
-        !state.retrieval ||
-        state.retrieval.length === 0
-    ){
-
-        for(
-            const item
-            of projectedPoints
-        ){
-
-            resetMemoryPoint(
-                item.mesh
-            );
-
-        }
-
-        return;
-
-    }
-
-
     const ranking =
         new Map();
 
 
-    state.retrieval.forEach(
-        (
-            result,
-            index
-        ) => {
+    state.retrieval
+        .forEach(
+            (
+                result,
+                index
+            ) => {
 
-            ranking.set(
-                result.memory.id,
-                {
-                    rank:
-                        index + 1,
+                ranking.set(
+                    result.memory.id,
+                    {
 
-                    score:
-                        result.score
-                }
-            );
+                        rank:
+                            index + 1,
 
-        }
-    );
+                        score:
+                            result.score
+
+                    }
+                );
+
+            }
+        );
 
 
     for(
@@ -3068,12 +4107,23 @@ function updateRetrievalVisualization(){
 
         if(!result){
 
-            setNonRelevantPoint(
-                item.mesh
-            );
+            if(
+                state.retrieval.length
+            ){
 
-        }
-        else{
+                setNonRelevantPoint(
+                    item.mesh
+                );
+
+            }else{
+
+                resetMemoryPoint(
+                    item.mesh
+                );
+
+            }
+
+        }else{
 
             setTopKPoint(
                 item.mesh,
@@ -3088,34 +4138,412 @@ function updateRetrievalVisualization(){
 }
 
 
-/* ============================================================
-   TOP HIT RING
-============================================================ */
+/* =========================================================
+   QUERY VECTOR
+========================================================= */
 
-function renderTopHitRing(){
+function renderQueryVector(){
 
-    const old =
-        scene.getObjectByName(
-            "top-hit-ring"
-        );
-
-
-    if(old){
-
-        scene.remove(
-            old
-        );
+    clearGroup(
+        queryGroup
+    );
 
 
-        old.geometry.dispose();
+    if(
+        !state.queryVector
+    ){
 
-        old.material.dispose();
+        return;
 
     }
 
 
     if(
-        !state.retrieval.length
+        state.memories.length < 2
+    ){
+
+        return;
+
+    }
+
+
+    const raw =
+        projectEmbedding(
+            state.queryVector
+        );
+
+
+    const scale =
+        getPCARenderScale();
+
+
+    const position =
+        raw.clone()
+            .multiplyScalar(
+                scale
+            );
+
+
+    const geometry =
+        new THREE.SphereGeometry(
+            .13,
+            20,
+            20
+        );
+
+
+    const material =
+        new THREE.MeshBasicMaterial({
+
+            color:
+                0x00f5ff
+
+        });
+
+
+    const queryMesh =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+
+    queryMesh.position.copy(
+        position
+    );
+
+
+    queryMesh.userData = {
+
+        type:
+            "query"
+
+    };
+
+
+    queryGroup.add(
+        queryMesh
+    );
+
+
+    const ringGeometry =
+        new THREE.RingGeometry(
+            .18,
+            .22,
+            40
+        );
+
+
+    const ringMaterial =
+        new THREE.MeshBasicMaterial({
+
+            color:
+                0x00f5ff,
+
+            transparent:
+                true,
+
+            opacity:
+                .75,
+
+            side:
+                THREE.DoubleSide
+
+        });
+
+
+    const ring =
+        new THREE.Mesh(
+            ringGeometry,
+            ringMaterial
+        );
+
+
+    ring.position.copy(
+        position
+    );
+
+
+    ring.lookAt(
+        camera.position
+    );
+
+
+    queryGroup.add(
+        ring
+    );
+
+
+    /*
+     * Linie vom Ursprung zum Query.
+     */
+    const lineGeometry =
+        new THREE.BufferGeometry()
+            .setFromPoints([
+
+                new THREE.Vector3(
+                    0,
+                    0,
+                    0
+                ),
+
+                position
+
+            ]);
+
+
+    const lineMaterial =
+        new THREE.LineBasicMaterial({
+
+            color:
+                0x00f5ff,
+
+            transparent:
+                true,
+
+            opacity:
+                .35
+
+        });
+
+
+    const line =
+        new THREE.Line(
+            lineGeometry,
+            lineMaterial
+        );
+
+
+    queryGroup.add(
+        line
+    );
+
+
+    renderQueryConnections();
+
+}
+
+
+/* =========================================================
+   QUERY → TOP K
+========================================================= */
+
+function renderQueryConnections(){
+
+    /*
+     * Query-Kanten liegen in queryGroup.
+     * Zuerst nur alte connection-Lines entfernen.
+     */
+    for(
+        let i=queryGroup.children.length-1;
+        i>=0;
+        i--
+    ){
+
+        const child =
+            queryGroup.children[i];
+
+
+        if(
+            child.userData &&
+            child.userData.type ===
+                "query-connection"
+        ){
+
+            if(
+                child.geometry
+            ){
+
+                child.geometry.dispose();
+
+            }
+
+
+            if(
+                child.material
+            ){
+
+                child.material.dispose();
+
+            }
+
+
+            queryGroup.remove(
+                child
+            );
+
+        }
+
+    }
+
+
+    if(
+        !state.queryVector ||
+        state.retrieval.length === 0
+    ){
+
+        return;
+
+    }
+
+
+    const queryPositionRaw =
+        projectEmbedding(
+            state.queryVector
+        );
+
+
+    const scale =
+        getPCARenderScale();
+
+
+    const queryPosition =
+        queryPositionRaw
+            .clone()
+            .multiplyScalar(
+                scale
+            );
+
+
+    const pointMap =
+        new Map();
+
+
+    for(
+        const item
+        of projectedPoints
+    ){
+
+        pointMap.set(
+            item.memory.id,
+            item.position
+        );
+
+    }
+
+
+    for(
+        const result
+        of state.retrieval
+    ){
+
+        const target =
+            pointMap.get(
+                result.memory.id
+            );
+
+
+        if(!target){
+
+            continue;
+
+        }
+
+
+        const geometry =
+            new THREE.BufferGeometry()
+                .setFromPoints([
+
+                    queryPosition,
+
+                    target
+
+                ]);
+
+
+        const material =
+            new THREE.LineBasicMaterial({
+
+                color:
+                    0x00f5ff,
+
+                transparent:
+                    true,
+
+                opacity:
+                    Math.max(
+                        .12,
+                        Math.min(
+                            .75,
+                            result.score
+                        )
+                    )
+
+            });
+
+
+        const line =
+            new THREE.Line(
+                geometry,
+                material
+            );
+
+
+        line.userData = {
+
+            type:
+                "query-connection",
+
+            memoryId:
+                result.memory.id,
+
+            score:
+                result.score
+
+        };
+
+
+        queryGroup.add(
+            line
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   TOP HIT RING
+========================================================= */
+
+function renderTopHitRing(){
+
+    /*
+     * Alte Top-Hit-Ringe entfernen.
+     */
+    for(
+        let i=memoryGroup.children.length-1;
+        i>=0;
+        i--
+    ){
+
+        const child =
+            memoryGroup.children[i];
+
+
+        if(
+            child.userData &&
+            child.userData.type ===
+                "top-hit"
+        ){
+
+            if(child.geometry)
+                child.geometry.dispose();
+
+            if(child.material)
+                child.material.dispose();
+
+            memoryGroup.remove(
+                child
+            );
+
+        }
+
+    }
+
+
+    if(
+        state.retrieval.length === 0
     ){
 
         return;
@@ -3144,18 +4572,27 @@ function renderTopHitRing(){
 
     const geometry =
         new THREE.RingGeometry(
-            .14,
-            .19,
-            32
+            .16,
+            .20,
+            40
         );
 
 
     const material =
         new THREE.MeshBasicMaterial({
-            color:0x00f5ff,
-            transparent:true,
-            opacity:.9,
-            side:THREE.DoubleSide
+
+            color:
+                0x00f5ff,
+
+            transparent:
+                true,
+
+            opacity:
+                .8,
+
+            side:
+                THREE.DoubleSide
+
         });
 
 
@@ -3166,41 +4603,42 @@ function renderTopHitRing(){
         );
 
 
-    ring.name =
-        "top-hit-ring";
-
-
     ring.position.copy(
         point.position
     );
 
 
-    ring.lookAt(
-        camera.position
-    );
+    ring.userData = {
+
+        type:
+            "top-hit"
+
+    };
 
 
-    scene.add(
+    memoryGroup.add(
         ring
     );
 
 }
 
 
-/* ============================================================
-   QUERY CONNECTIONS
-============================================================ */
+/* =========================================================
+   SIMILARITY GRAPH
+========================================================= */
 
-function renderQueryConnections(){
+function buildSimilarityGraph(
+    k=3,
+    threshold=.45
+){
 
     clearGroup(
-        connectionGroup
+        graphGroup
     );
 
 
     if(
-        !state.queryVector ||
-        !state.retrieval.length
+        state.memories.length < 2
     ){
 
         return;
@@ -3208,109 +4646,201 @@ function renderQueryConnections(){
     }
 
 
-    const queryPosition =
-        projectEmbedding(
-            state.queryVector
+    const edges = [];
+
+
+    for(
+        let i=0;
+        i<state.memories.length;
+        i++
+    ){
+
+        const source =
+            state.memories[i];
+
+
+        const neighbours = [];
+
+
+        for(
+            let j=0;
+            j<state.memories.length;
+            j++
+        ){
+
+            if(
+                i === j
+            ){
+
+                continue;
+
+            }
+
+
+            const target =
+                state.memories[j];
+
+
+            const similarity =
+                cosineSimilarity(
+                    source.embedding,
+                    target.embedding
+                );
+
+
+            if(
+                similarity >=
+                threshold
+            ){
+
+                neighbours.push({
+
+                    memory:
+                        target,
+
+                    score:
+                        similarity
+
+                });
+
+            }
+
+        }
+
+
+        neighbours.sort(
+            (
+                a,
+                b
+            ) =>
+                b.score -
+                a.score
         );
 
 
-    const memoryPositions =
-        projectedPoints;
+        for(
+            const neighbour
+            of neighbours.slice(
+                0,
+                k
+            )
+        ){
+
+            const a =
+                source.id;
 
 
-    let max =
-        queryPosition.length();
+            const b =
+                neighbour.memory.id;
 
 
-    for(
-        const item
-        of memoryPositions
-    ){
+            const exists =
+                edges.some(
+                    edge =>
+                        (
+                            edge.a === a &&
+                            edge.b === b
+                        )
+                        ||
+                        (
+                            edge.a === b &&
+                            edge.b === a
+                        )
+                );
 
-        max =
-            Math.max(
-                max,
-                item.position.length()
-            );
+
+            if(!exists){
+
+                edges.push({
+
+                    a,
+
+                    b,
+
+                    score:
+                        neighbour.score
+
+                });
+
+            }
+
+        }
 
     }
 
 
-    if(
-        max === 0
+    const pointMap =
+        new Map();
+
+
+    for(
+        const point
+        of projectedPoints
     ){
 
-        max = 1;
+        pointMap.set(
+            point.memory.id,
+            point.position
+        );
 
     }
 
 
-    const scale =
-        2.4 /
-        max;
-
-
-    const q =
-        queryPosition
-            .clone()
-            .multiplyScalar(
-                scale
-            );
-
-
     for(
-        const result
-        of state.retrieval
+        const edge
+        of edges
     ){
 
-        const item =
-            memoryPositions.find(
-                point =>
-                    point.memory.id ===
-                    result.memory.id
+        const a =
+            pointMap.get(
+                edge.a
             );
 
 
-        if(!item){
+        const b =
+            pointMap.get(
+                edge.b
+            );
+
+
+        if(
+            !a ||
+            !b
+        ){
 
             continue;
 
         }
 
 
-        const target =
-            item.position
-                .clone()
-                .multiplyScalar(
-                    scale
-                );
-
-
         const geometry =
             new THREE.BufferGeometry()
                 .setFromPoints([
-                    q,
-                    target
+                    a,
+                    b
                 ]);
 
 
         const material =
             new THREE.LineBasicMaterial({
-                color:
-                    result.score > .8
-                    ? 0x4ade80
-                    : 0x00f5ff,
 
-                transparent:true,
+                color:
+                    edge.score >= .8
+                        ? 0x4ade80
+                        : 0x1b6670,
+
+                transparent:
+                    true,
 
                 opacity:
-                    Math.max(
-                        .15,
-                        Math.min(
-                            1,
-                            result.score
+                    Math.min(
+                        .8,
+                        Math.max(
+                            .08,
+                            edge.score
                         )
                     )
+
             });
 
 
@@ -3324,18 +4854,21 @@ function renderQueryConnections(){
         line.userData = {
 
             type:
-                "query-connection",
-
-            memoryId:
-                result.memory.id,
+                "similarity-edge",
 
             score:
-                result.score
+                edge.score,
+
+            sourceId:
+                edge.a,
+
+            targetId:
+                edge.b
 
         };
 
 
-        connectionGroup.add(
+        graphGroup.add(
             line
         );
 
@@ -3344,16 +4877,14 @@ function renderQueryConnections(){
 }
 
 
-/* ============================================================
-   RETRIEVAL UI
-============================================================ */
+/* =========================================================
+   RESULTS
+========================================================= */
 
 function renderResults(){
 
     const container =
-        document.getElementById(
-            "retrievalList"
-        );
+        $("results");
 
 
     if(
@@ -3361,7 +4892,9 @@ function renderResults(){
     ){
 
         container.innerHTML =
-            "Keine Retrieval-Ergebnisse.";
+            `<div class="answer-placeholder">
+                Noch kein Retrieval.
+            </div>`;
 
         return;
 
@@ -3374,50 +4907,65 @@ function renderResults(){
                 (
                     result,
                     index
-                ) => `
+                ) => {
 
-                    <div
-                        class="retrieval-item"
-                        onclick="inspectMemory('${escapeAttribute(result.memory.id)}')"
-                    >
+                    const memory =
+                        result.memory;
 
-                        <div class="retrieval-top">
 
-                            <span class="retrieval-rank">
-                                #${index + 1}
-                            </span>
+                    return `
 
-                            <span class="retrieval-score">
-                                ${result.score.toFixed(8)}
-                            </span>
+                        <div
+                            class="result-item"
+                            onclick="inspectMemory('${escapeHTML(memory.id)}')"
+                        >
+
+                            <div class="result-header">
+
+                                <span class="rank">
+                                    #${index+1}
+                                </span>
+
+                                <span class="score">
+                                    ${result.score.toFixed(6)}
+                                </span>
+
+                            </div>
+
+                            <div class="result-content">
+                                ${escapeHTML(memory.content)}
+                            </div>
+
+                            ${
+                                memory.metadata?.source
+                                    ? `
+                                        <div class="result-source">
+                                            SOURCE:
+                                            ${escapeHTML(
+                                                memory.metadata.source
+                                            )}
+                                        </div>
+                                    `
+                                    : ""
+                            }
 
                         </div>
 
-                        <div class="retrieval-id">
-                            ${escapeHTML(result.memory.id)}
-                        </div>
+                    `;
 
-                        <div class="retrieval-preview">
-                            ${escapeHTML(
-                                truncate(
-                                    result.memory.content,
-                                    180
-                                )
-                            )}
-                        </div>
-
-                    </div>
-
-                `
+                }
             )
             .join("");
 
 }
 
 
-/* ============================================================
+/* =========================================================
    RAG CONTEXT
-============================================================ */
+========================================================= */
+
+let currentRAGContext = [];
+
 
 function buildRAGContext(
     retrievalResults
@@ -3448,8 +4996,7 @@ function buildRAGContext(
                     memory.content,
 
                 source:
-                    memory.metadata?.source
-                    ??
+                    memory.metadata?.source ??
                     null
 
             };
@@ -3463,36 +5010,34 @@ function buildRAGContext(
 function renderRAGContext(){
 
     const container =
-        document.getElementById(
-            "ragContext"
-        );
+        $("ragContext");
 
 
     const count =
-        document.getElementById(
-            "contextCount"
-        );
+        $("contextCount");
 
 
     const tokens =
-        document.getElementById(
-            "contextTokens"
-        );
+        $("contextTokens");
 
 
     if(
-        !currentRAGContext ||
-        currentRAGContext.length === 0
+        !currentRAGContext.length
     ){
 
         container.innerHTML =
-            "Kein Context ausgewählt.";
+            `<div class="answer-placeholder">
+                Kein Context ausgewählt.
+            </div>`;
+
 
         count.textContent =
             "0";
 
+
         tokens.textContent =
             "—";
+
 
         return;
 
@@ -3515,6 +5060,10 @@ function renderRAGContext(){
         );
 
 
+    /*
+     * Nur Schätzung.
+     * Kein echter Modell-Tokenizer.
+     */
     const estimatedTokens =
         Math.ceil(
             characterCount / 4
@@ -3535,33 +5084,45 @@ function renderRAGContext(){
                         <div class="context-header">
 
                             <span class="context-rank">
+
                                 #${item.rank}
                                 ·
                                 ${escapeHTML(item.id)}
+
                             </span>
 
                             <span class="context-score">
+
                                 cosine
                                 ${item.score.toFixed(6)}
+
                             </span>
 
                         </div>
 
+
                         <div class="context-body">
-                            ${escapeHTML(item.content)}
+
+                            ${escapeHTML(
+                                item.content
+                            )}
+
                         </div>
+
 
                         ${
                             item.source
-                            ?
-                            `
-                            <div class="context-source">
-                                SOURCE:
-                                ${escapeHTML(item.source)}
-                            </div>
-                            `
-                            :
-                            ""
+                                ? `
+                                    <div class="context-source">
+
+                                        SOURCE:
+                                        ${escapeHTML(
+                                            item.source
+                                        )}
+
+                                    </div>
+                                `
+                                : ""
                         }
 
                     </div>
@@ -3573,13 +5134,11 @@ function renderRAGContext(){
 }
 
 
-/* ============================================================
-   PROMPT
-============================================================ */
+/* =========================================================
+   LLM PROMPT
+========================================================= */
 
-function buildSystemPrompt(){
-
-    return `
+const SYSTEM_PROMPT = `
 Du bist die Antwortkomponente eines
 deterministischen RAG-Systems.
 
@@ -3600,10 +5159,8 @@ Regeln:
    des CONTEXT.
 `.trim();
 
-}
 
-
-function buildUserPrompt(
+function buildLLMPrompt(
     query,
     context
 ){
@@ -3629,7 +5186,8 @@ ${item.content}
         );
 
 
-    return `
+    const userPrompt = `
+
 QUERY:
 
 ${query}
@@ -3637,100 +5195,67 @@ ${query}
 CONTEXT:
 
 ${contextText}
-`.trim();
+`;
+
+
+    return {
+
+        system:
+            SYSTEM_PROMPT,
+
+        user:
+            userPrompt.trim()
+
+    };
 
 }
 
 
-function renderPromptPreview(){
+function renderPromptPreview(
+    query,
+    context
+){
 
-    const container =
-        document.getElementById(
-            "promptPreview"
-        );
-
-
-    const query =
-        document
-            .getElementById(
-                "query"
-            )
-            .value
-            .trim();
-
-
-    if(
-        !query ||
-        !currentRAGContext.length
-    ){
-
-        container.textContent =
-            "Noch kein Prompt erzeugt.";
-
-        return;
-
-    }
-
-
-    const system =
-        buildSystemPrompt();
-
-
-    const user =
-        buildUserPrompt(
+    const prompt =
+        buildLLMPrompt(
             query,
-            currentRAGContext
+            context
         );
 
 
-    container.textContent =
-        `SYSTEM\n\n${system}\n\n====================\n\nUSER\n\n${user}`;
+    $("promptPreview")
+        .textContent =
+            `SYSTEM\n\n${prompt.system}\n\n` +
+            `================ USER ================\n\n` +
+            prompt.user;
 
 }
 
 
-/* ============================================================
-   OLLAMA CHAT
-============================================================ */
+/* =========================================================
+   REAL OLLAMA CHAT
+========================================================= */
 
 async function callOllamaLLM({
-
     query,
-
     context
-
 }){
 
-    const url =
-        ollamaUrl()
-        +
-        "/api/chat";
-
-
     const model =
-        document
-            .getElementById(
-                "chatModel"
-            )
-            .value
-            .trim();
+        chatModel();
 
 
     if(!model){
 
         throw new Error(
-            "Kein Chat-Modell angegeben."
+            "Kein Chat Model angegeben."
         );
 
     }
 
 
-    const systemPrompt =
-        buildSystemPrompt();
-
-
-    const userPrompt =
-        buildUserPrompt(
+    const prompt =
+        buildLLMPrompt(
             query,
             context
         );
@@ -3738,54 +5263,52 @@ async function callOllamaLLM({
 
     const response =
         await fetch(
-            url,
+            ollamaUrl() +
+            "/api/chat",
             {
 
-                method:
-                    "POST",
+                method:"POST",
 
                 headers:{
                     "Content-Type":
                         "application/json"
                 },
 
-                body:
-                    JSON.stringify({
+                body:JSON.stringify({
 
-                        model:
+                    model,
 
-                            model,
+                    stream:false,
 
-                        stream:
-                            false,
+                    messages:[
 
-                        messages:[
+                        {
+                            role:
+                                "system",
 
-                            {
-                                role:
-                                    "system",
+                            content:
+                                prompt.system
+                        },
 
-                                content:
-                                    systemPrompt
-                            },
+                        {
+                            role:
+                                "user",
 
-                            {
-                                role:
-                                    "user",
+                            content:
+                                prompt.user
+                        }
 
-                                content:
-                                    userPrompt
-                            }
+                    ]
 
-                        ]
-
-                    })
+                })
 
             }
         );
 
 
-    if(!response.ok){
+    if(
+        !response.ok
+    ){
 
         const body =
             await response.text();
@@ -3806,12 +5329,11 @@ async function callOllamaLLM({
         !data.message ||
         typeof
             data.message.content
-            !==
-            "string"
+            !== "string"
     ){
 
         throw new Error(
-            "Ollama hat keine gültige Antwort geliefert."
+            "Ollama hat keine gültige Chat-Antwort geliefert."
         );
 
     }
@@ -3833,17 +5355,14 @@ async function callOllamaLLM({
 }
 
 
-/* ============================================================
-   RUN RAG
-============================================================ */
+/* =========================================================
+   COMPLETE RAG
+========================================================= */
 
 async function runRAG(){
 
     const query =
-        document
-            .getElementById(
-                "query"
-            )
+        $("query")
             .value
             .trim();
 
@@ -3859,12 +5378,8 @@ async function runRAG(){
     }
 
 
-    const memories =
-        await getAllMemories();
-
-
     if(
-        memories.length === 0
+        state.memories.length === 0
     ){
 
         alert(
@@ -3877,19 +5392,22 @@ async function runRAG(){
 
 
     const answer =
-        document.getElementById(
-            "answer"
-        );
+        $("answer");
+
+
+    answer.textContent =
+        "Embedding → Retrieval → Context → LLM ...";
 
 
     try{
 
-        answer.textContent =
-            "Embedding → Retrieval → LLM ...";
+        setStatus(
+            "RAG / EMBEDDING"
+        );
 
 
         log(
-            "RAG 1/3 · Query embedding ..."
+            "RAG 1/4 · Query embedding ..."
         );
 
 
@@ -3904,7 +5422,8 @@ async function runRAG(){
 
 
         log(
-            "RAG 2/3 · Cosine retrieval ..."
+            `Query embedding: ${queryVector.length}D`,
+            "ok"
         );
 
 
@@ -3912,14 +5431,19 @@ async function runRAG(){
             Math.max(
                 1,
                 Number(
-                    document
-                        .getElementById(
-                            "topK"
-                        )
-                        .value
-                )
-                || 5
+                    $("topK").value
+                ) || 5
             );
+
+
+        setStatus(
+            "RAG / RETRIEVAL"
+        );
+
+
+        log(
+            "RAG 2/4 · Cosine retrieval ..."
+        );
 
 
         const results =
@@ -3933,6 +5457,12 @@ async function runRAG(){
             results;
 
 
+        log(
+            `${results.length} Top-K Memories`,
+            "ok"
+        );
+
+
         currentRAGContext =
             buildRAGContext(
                 results
@@ -3943,7 +5473,11 @@ async function runRAG(){
 
         renderRAGContext();
 
-        renderPromptPreview();
+        renderPromptPreview(
+            query,
+            currentRAGContext
+        );
+
 
         renderEmbeddingSpace();
 
@@ -3956,20 +5490,27 @@ async function runRAG(){
         renderQueryConnections();
 
 
+        setStatus(
+            "RAG / LLM"
+        );
+
+
         log(
-            "RAG 3/3 · Ollama LLM ..."
+            "RAG 3/4 · Prompt aufgebaut ..."
+        );
+
+
+        log(
+            "RAG 4/4 · Ollama Chat ..."
         );
 
 
         const llmResult =
             await callOllamaLLM({
 
-                query:
-
-                    query,
+                query,
 
                 context:
-
                     currentRAGContext
 
             });
@@ -3980,12 +5521,18 @@ async function runRAG(){
 
 
         log(
-            `RAG COMPLETE · ${llmResult.model}`
+            `LLM complete · ${llmResult.model}`,
+            "ok"
         );
 
 
-    }
-    catch(error){
+        setStatus(
+            "READY",
+            "ok"
+        );
+
+
+    }catch(error){
 
         console.error(
             error
@@ -3993,12 +5540,87 @@ async function runRAG(){
 
 
         answer.innerHTML =
-            `<span class="error">${escapeHTML(error.message)}</span>`;
+            `<span style="color:var(--red)">
+                ${escapeHTML(
+                    error.message
+                )}
+            </span>`;
 
 
         log(
-            "RAG ERROR: "
-            +
+            "RAG ERROR: " +
+            error.message,
+            "error"
+        );
+
+
+        setStatus(
+            "ERROR",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   OLLAMA TEST
+========================================================= */
+
+async function testOllama(){
+
+    try{
+
+        setStatus(
+            "TESTING"
+        );
+
+
+        log(
+            "Ollama embedding test ..."
+        );
+
+
+        const vector =
+            await embed(
+                "connection test"
+            );
+
+
+        log(
+            `Ollama OK · ${vector.length}D embedding`,
+            "ok"
+        );
+
+
+        setStatus(
+            "OLLAMA OK",
+            "ok"
+        );
+
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+
+        log(
+            "Ollama ERROR: " +
+            error.message,
+            "error"
+        );
+
+
+        setStatus(
+            "OLLAMA ERROR",
+            "error"
+        );
+
+
+        alert(
             error.message
         );
 
@@ -4007,313 +5629,578 @@ async function runRAG(){
 }
 
 
-window.runRAG =
-    runRAG;
+/* =========================================================
+   EXPORT
+========================================================= */
+
+async function exportMemory(){
+
+    try{
+
+        const memories =
+            await getAllMemories();
 
 
-/* ============================================================
-   MEMORY INSPECTOR
-============================================================ */
+        const payload = {
 
-const inspectorState = {
+            format:
+                "NEURAL_MEMORY_RAG",
 
-    memory:
-        null,
+            version:
+                "3.0",
 
-    result:
-        null,
+            exported_at:
+                new Date()
+                    .toISOString(),
 
-    projected:
-        null
+            embedding_model:
+                embeddingModel(),
 
-};
+            memories
+
+        };
 
 
-async function inspectMemory(
-    memoryId
-){
+        const blob =
+            new Blob(
+                [
+                    JSON.stringify(
+                        payload,
+                        null,
+                        2
+                    )
+                ],
+                {
+                    type:
+                        "application/json"
+                }
+            );
 
-    const memory =
-        await getMemory(
-            memoryId
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        const anchor =
+            document.createElement(
+                "a"
+            );
+
+
+        anchor.href =
+            url;
+
+
+        anchor.download =
+            `neural-memory-${new Date()
+                .toISOString()
+                .replace(
+                    /[:.]/g,
+                    "-"
+                )}.json`;
+
+
+        anchor.click();
+
+
+        URL.revokeObjectURL(
+            url
         );
 
 
-    if(!memory){
-
-        console.warn(
-            "Memory not found:",
-            memoryId
+        log(
+            `${memories.length} Memories exportiert.`,
+            "ok"
         );
 
-        return;
+
+    }catch(error){
+
+        log(
+            error.message,
+            "error"
+        );
 
     }
-
-
-    inspectorState.memory =
-        memory;
-
-
-    inspectorState.result =
-        (
-            state.retrieval || []
-        )
-        .find(
-            result =>
-                result.memory.id ===
-                memory.id
-        )
-        ||
-        null;
-
-
-    const projected =
-        projectedPoints.find(
-            item =>
-                item.memory.id ===
-                memory.id
-        );
-
-
-    inspectorState.projected =
-        projected
-        ?
-            projected.position
-        :
-            null;
-
-
-    renderMemoryInspector();
 
 }
 
 
-window.inspectMemory =
-    inspectMemory;
+/* =========================================================
+   IMPORT
+========================================================= */
+
+async function importMemoryFile(
+    event
+){
+
+    const file =
+        event.target.files[0];
 
 
-function renderMemoryInspector(){
-
-    const container =
-        document.getElementById(
-            "memoryInspector"
-        );
-
-
-    const status =
-        document.getElementById(
-            "inspectorStatus"
-        );
-
-
-    const memory =
-        inspectorState.memory;
-
-
-    if(!memory){
-
-        status.textContent =
-            "NO SELECTION";
-
-
-        container.innerHTML =
-            `
-            <div class="inspector-empty">
-                Memory auswählen.
-            </div>
-            `;
+    if(!file){
 
         return;
 
     }
 
 
-    status.textContent =
-        memory.id;
+    try{
+
+        const text =
+            await file.text();
+
+
+        const parsed =
+            JSON.parse(
+                text
+            );
+
+
+        const imported =
+            Array.isArray(
+                parsed
+            )
+                ? parsed
+                : parsed.memories;
+
+
+        if(
+            !Array.isArray(
+                imported
+            )
+        ){
+
+            throw new Error(
+                "Die JSON-Datei enthält kein gültiges memories-Array."
+            );
+
+        }
+
+
+        if(
+            imported.length === 0
+        ){
+
+            throw new Error(
+                "Die Importdatei enthält keine Memories."
+            );
+
+        }
+
+
+        let dimension =
+            null;
+
+
+        for(
+            const memory
+            of imported
+        ){
+
+            if(
+                !memory.id ||
+                typeof memory.content !== "string" ||
+                !Array.isArray(memory.embedding)
+            ){
+
+                throw new Error(
+                    "Ungültiges Memory-Objekt."
+                );
+
+            }
+
+
+            const embedding =
+                memory.embedding.map(
+                    Number
+                );
+
+
+            if(
+                embedding.some(
+                    value =>
+                        !Number.isFinite(
+                            value
+                        )
+                )
+            ){
+
+                throw new Error(
+                    `Ungültige Embedding-Werte in ${memory.id}.`
+                );
+
+            }
+
+
+            if(
+                dimension === null
+            ){
+
+                dimension =
+                    embedding.length;
+
+            }
+
+
+            if(
+                embedding.length !==
+                dimension
+            ){
+
+                throw new Error(
+                    "Die Importdatei enthält unterschiedliche Embedding-Dimensionen."
+                );
+
+            }
+
+
+            const normalized = {
+
+                id:
+                    String(
+                        memory.id
+                    ),
+
+                content:
+                    memory.content,
+
+                embedding,
+
+                metadata:
+                    memory.metadata || {
+
+                        source:null,
+
+                        type:"text",
+
+                        tags:[]
+
+                    },
+
+                created_at:
+                    memory.created_at ||
+                    new Date()
+                        .toISOString()
+
+            };
+
+
+            await saveMemory(
+                normalized
+            );
+
+        }
+
+
+        await refreshMemory();
+
+
+        log(
+            `${imported.length} Memories importiert.`,
+            "ok"
+        );
+
+
+        setStatus(
+            "READY",
+            "ok"
+        );
+
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+
+        log(
+            "Import ERROR: " +
+            error.message,
+            "error"
+        );
+
+
+        alert(
+            error.message
+        );
+
+    }
+
+
+    event.target.value = "";
+
+}
+
+
+/* =========================================================
+   CLEAR
+========================================================= */
+
+async function clearAllMemory(){
+
+    const confirmed =
+        confirm(
+            "Wirklich das gesamte Memory löschen?"
+        );
+
+
+    if(!confirmed){
+
+        return;
+
+    }
+
+
+    try{
+
+        await clearMemoryDB();
+
+
+        state.memories = [];
+
+        state.retrieval = [];
+
+        state.queryVector = null;
+
+        currentRAGContext = [];
+
+
+        $("answer").innerHTML =
+            `<span class="answer-placeholder">
+                Noch keine Antwort.
+            </span>`;
+
+
+        $("ragContext").innerHTML =
+            `<div class="answer-placeholder">
+                Noch kein RAG-Context erzeugt.
+            </div>`;
+
+
+        $("promptPreview")
+            .textContent =
+                "Noch kein Prompt erzeugt.";
+
+
+        await refreshMemory();
+
+
+        log(
+            "Memory vollständig gelöscht.",
+            "ok"
+        );
+
+
+    }catch(error){
+
+        log(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MEMORY INSPECTOR
+========================================================= */
+
+async function inspectMemory(
+    id
+){
+
+    const memory =
+        await getMemory(
+            id
+        );
+
+
+    if(!memory){
+
+        return;
+
+    }
+
+
+    state.selectedMemory =
+        memory;
+
+
+    let scoreHTML = "";
 
 
     const result =
-        inspectorState.result;
+        state.retrieval.find(
+            item =>
+                item.memory.id === id
+        );
 
 
-    const projected =
-        inspectorState.projected;
+    if(result){
+
+        scoreHTML =
+            `
+                <div class="inspector-score">
+
+                    COSINE:
+                    ${result.score.toFixed(8)}
+
+                    · RANK:
+                    ${
+                        state.retrieval.indexOf(
+                            result
+                        ) + 1
+                    }
+
+                </div>
+            `;
+
+    }
 
 
-    const vector =
-        memory.embedding;
+    $("inspectorBody")
+        .innerHTML = `
 
+            <div class="inspector-id">
 
-    container.innerHTML = `
+                ${escapeHTML(
+                    memory.id
+                )}
 
-        <div class="inspector-grid">
-
-            <div class="inspector-label">
-                ID
             </div>
 
-            <div class="inspector-value">
-                ${escapeHTML(memory.id)}
+            ${scoreHTML}
+
+            <div class="inspector-content">
+
+                ${escapeHTML(
+                    memory.content
+                )}
+
             </div>
 
+            <div class="inspector-meta">
 
-            <div class="inspector-label">
-                SOURCE
-            </div>
-
-            <div class="inspector-value">
+                SOURCE:
                 ${
                     escapeHTML(
-                        memory.metadata?.source
-                        ??
+                        memory.metadata?.source ??
                         "—"
                     )
                 }
-            </div>
 
+                <br>
 
-            <div class="inspector-label">
-                TYPE
-            </div>
-
-            <div class="inspector-value">
+                TYPE:
                 ${
                     escapeHTML(
-                        memory.metadata?.type
-                        ??
+                        memory.metadata?.type ??
                         "—"
                     )
                 }
-            </div>
 
+                <br>
 
-            <div class="inspector-label">
-                CREATED
-            </div>
+                DIMENSION:
+                ${
+                    memory.embedding.length
+                }
 
-            <div class="inspector-value">
+                <br>
+
+                CREATED:
                 ${
                     escapeHTML(
                         memory.created_at
                     )
                 }
+
             </div>
 
+            <button
+                onclick="deleteInspectedMemory()"
+                class="danger"
+            >
+                DELETE MEMORY
+            </button>
 
-            <div class="inspector-label">
-                DIMENSION
-            </div>
-
-            <div class="inspector-value">
-                ${vector.length}
-            </div>
-
-
-            <div class="inspector-label">
-                RETRIEVAL
-            </div>
-
-            <div class="inspector-value">
-                ${
-                    result
-                    ?
-                    `TOP-${result.rank}`
-                    :
-                    "NOT IN TOP-K"
-                }
-            </div>
+        `;
 
 
-            <div class="inspector-label">
-                COSINE
-            </div>
-
-            <div class="inspector-value">
-                ${
-                    result
-                    ?
-                    result.score.toFixed(8)
-                    :
-                    "—"
-                }
-            </div>
-
-
-            <div class="inspector-label">
-                3D POSITION
-            </div>
-
-            <div class="inspector-value">
-                ${
-                    projected
-                    ?
-                    `${projected.x.toFixed(5)},
-                     ${projected.y.toFixed(5)},
-                     ${projected.z.toFixed(5)}`
-                    :
-                    "—"
-                }
-            </div>
-
-        </div>
-
-
-        <h3>CONTENT</h3>
-
-        <div class="inspector-content">
-            ${escapeHTML(memory.content)}
-        </div>
-
-
-        <h3>EMBEDDING</h3>
-
-        <div class="embedding-box">
-
-            ${
-                vector
-                    .map(
-                        (
-                            value,
-                            index
-                        ) =>
-                            `
-                            <span
-                                class="embedding-value"
-                            >
-                                ${index}:
-                                ${Number(value)
-                                    .toFixed(8)}
-                            </span>
-                            `
-                    )
-                    .join("")
-            }
-
-        </div>
-
-
-        <h3>RAW MEMORY OBJECT</h3>
-
-        <textarea
-            class="inspector-json"
-            readonly
-        >${escapeHTML(
-            JSON.stringify(
-                memory,
-                null,
-                2
-            )
-        )}</textarea>
-
-    `;
+    $("inspector")
+        .classList.add(
+            "visible"
+        );
 
 }
 
 
-/* ============================================================
+function closeInspector(){
+
+    $("inspector")
+        .classList.remove(
+            "visible"
+        );
+
+}
+
+
+async function deleteInspectedMemory(){
+
+    if(
+        !state.selectedMemory
+    ){
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "Dieses Memory löschen?"
+        );
+
+
+    if(!confirmed){
+
+        return;
+
+    }
+
+
+    await deleteMemory(
+        state.selectedMemory.id
+    );
+
+
+    log(
+        `Memory gelöscht: ${state.selectedMemory.id}`,
+        "ok"
+    );
+
+
+    state.selectedMemory =
+        null;
+
+
+    closeInspector();
+
+
+    await refreshMemory();
+
+}
+
+
+/* =========================================================
    3D CLICK
-============================================================ */
+========================================================= */
 
 function onScenePointerDown(
     event
@@ -4333,10 +6220,8 @@ function onScenePointerDown(
             )
             /
             rect.width
-        )
-        *
-        2
-        -
+        ) *
+        2 -
         1;
 
 
@@ -4348,10 +6233,8 @@ function onScenePointerDown(
             )
             /
             rect.height
-        )
-        *
-        2
-        +
+        ) *
+        2 +
         1;
 
 
@@ -4362,10 +6245,13 @@ function onScenePointerDown(
 
 
     const objects =
-        projectedPoints.map(
-            item =>
-                item.mesh
-        );
+        memoryGroup.children
+            .filter(
+                object =>
+                    object.userData &&
+                    object.userData.type ===
+                        "memory"
+            );
 
 
     const hits =
@@ -4391,835 +6277,203 @@ function onScenePointerDown(
             .memoryId;
 
 
-    if(memoryId){
-
-        inspectMemory(
-            memoryId
-        );
-
-    }
+    inspectMemory(
+        memoryId
+    );
 
 }
 
 
-/* ============================================================
-   EXPORT
-============================================================ */
+/* =========================================================
+   RESIZE
+========================================================= */
 
-async function exportMemory(){
+function resizeThree(){
 
-    try{
+    if(
+        !renderer ||
+        !camera
+    ){
 
-        const memories =
-            await getAllMemories();
+        return;
 
+    }
+
+
+    const width =
+        $("scene")
+            .clientWidth;
+
+
+    const height =
+        $("scene")
+            .clientHeight;
+
+
+    if(
+        width === 0 ||
+        height === 0
+    ){
+
+        return;
+
+    }
+
+
+    camera.aspect =
+        width /
+        height;
+
+
+    camera.updateProjectionMatrix();
+
+
+    renderer.setSize(
+        width,
+        height,
+        false
+    );
+
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+
+    controls.update();
+
+
+    /*
+     * Query-Ring zur Kamera ausrichten.
+     */
+    for(
+        const child
+        of queryGroup.children
+    ){
 
         if(
-            memories.length === 0
+            child.geometry &&
+            child.geometry.type ===
+                "RingGeometry"
         ){
 
-            setImportStatus(
-                "EXPORT ABGEBROCHEN: Memory ist leer."
+            child.lookAt(
+                camera.position
             );
-
-            return;
 
         }
 
-
-        const dimension =
-            memories[0]
-                .embedding
-                .length;
-
-
-        for(
-            const memory
-            of memories
-        ){
-
-            if(
-                !Array.isArray(
-                    memory.embedding
-                )
-            ){
-
-                throw new Error(
-                    `Memory ${memory.id} besitzt kein gültiges Embedding.`
-                );
-
-            }
-
-
-            if(
-                memory.embedding.length !==
-                dimension
-            ){
-
-                throw new Error(
-                    `Embedding-Dimension stimmt bei ${memory.id} nicht überein.`
-                );
-
-            }
-
-        }
-
-
-        const payload = {
-
-            format:
-                "NEURAL_MEMORY",
-
-            version:
-                "1.0",
-
-            exported_at:
-                new Date()
-                    .toISOString(),
-
-            embedding:{
-
-                model:
-                    embeddingModel(),
-
-                dimension:
-                    dimension
-
-            },
-
-            memories:
-                memories
-
-        };
-
-
-        const json =
-            JSON.stringify(
-                payload,
-                null,
-                2
-            );
-
-
-        const blob =
-            new Blob(
-                [json],
-                {
-                    type:
-                        "application/json"
-                }
-            );
-
-
-        const url =
-            URL.createObjectURL(
-                blob
-            );
-
-
-        const link =
-            document.createElement(
-                "a"
-            );
-
-
-        const timestamp =
-            new Date()
-                .toISOString()
-                .replace(
-                    /[:.]/g,
-                    "-"
-                );
-
-
-        link.href =
-            url;
-
-
-        link.download =
-            `neural-memory-${timestamp}.json`;
-
-
-        document.body.appendChild(
-            link
-        );
-
-
-        link.click();
-
-
-        link.remove();
-
-
-        URL.revokeObjectURL(
-            url
-        );
-
-
-        setImportStatus(
-            `EXPORT OK
-
-Memories: ${memories.length}
-Dimension: ${dimension}
-Embedding: ${embeddingModel()}`
-        );
-
-
-        log(
-            "Memory exportiert."
-        );
-
     }
-    catch(error){
-
-        setImportStatus(
-            "EXPORT FEHLER\n\n"
-            +
-            error.message
-        );
-
-    }
-
-}
-
-
-window.exportMemory =
-    exportMemory;
-
-
-/* ============================================================
-   IMPORT VALIDATION
-============================================================ */
-
-function validateMemoryExport(
-    payload
-){
-
-    if(
-        !payload ||
-        typeof payload !==
-        "object"
-    ){
-
-        throw new Error(
-            "Ungültige JSON-Datei."
-        );
-
-    }
-
-
-    if(
-        payload.format !==
-        "NEURAL_MEMORY"
-    ){
-
-        throw new Error(
-            "Unbekanntes Memory-Format."
-        );
-
-    }
-
-
-    if(
-        payload.version !==
-        "1.0"
-    ){
-
-        throw new Error(
-            `Nicht unterstützte Formatversion: ${payload.version}`
-        );
-
-    }
-
-
-    if(
-        !payload.embedding ||
-        !Number.isInteger(
-            payload.embedding.dimension
-        )
-    ){
-
-        throw new Error(
-            "Embedding-Metadaten fehlen."
-        );
-
-    }
-
-
-    if(
-        !Array.isArray(
-            payload.memories
-        )
-    ){
-
-        throw new Error(
-            "memories muss ein Array sein."
-        );
-
-    }
-
-
-    const dimension =
-        payload.embedding.dimension;
 
 
     for(
-        const memory
-        of payload.memories
+        const child
+        of memoryGroup.children
     ){
 
         if(
-            typeof memory.id !==
-            "string"
+            child.userData &&
+            child.userData.type ===
+                "top-hit"
         ){
 
-            throw new Error(
-                "Memory besitzt keine gültige ID."
+            child.lookAt(
+                camera.position
             );
 
         }
 
-
-        if(
-            typeof memory.content !==
-            "string"
-        ){
-
-            throw new Error(
-                `Memory ${memory.id}: content fehlt.`
-            );
-
-        }
-
-
-        if(
-            !Array.isArray(
-                memory.embedding
-            )
-        ){
-
-            throw new Error(
-                `Memory ${memory.id}: embedding fehlt.`
-            );
-
-        }
-
-
-        if(
-            memory.embedding.length !==
-            dimension
-        ){
-
-            throw new Error(
-                `Memory ${memory.id}: falsche Embedding-Dimension.`
-            );
-
-        }
-
-
-        for(
-            const value
-            of memory.embedding
-        ){
-
-            if(
-                !Number.isFinite(
-                    Number(value)
-                )
-            ){
-
-                throw new Error(
-                    `Memory ${memory.id}: ungültiger Vektorwert.`
-                );
-
-            }
-
-        }
-
     }
 
 
-    return true;
-
-}
-
-
-/* ============================================================
-   IMPORT
-============================================================ */
-
-async function importMemoryFile(
-    event
-){
-
-    const file =
-        event.target.files?.[0];
-
-
-    if(!file){
-
-        return;
-
-    }
-
-
-    try{
-
-        setImportStatus(
-            "IMPORT: Datei wird gelesen ..."
-        );
-
-
-        const text =
-            await file.text();
-
-
-        const payload =
-            JSON.parse(
-                text
-            );
-
-
-        validateMemoryExport(
-            payload
-        );
-
-
-        const imported =
-            payload.memories;
-
-
-        const existing =
-            await getAllMemories();
-
-
-        if(
-            existing.length > 0
-        ){
-
-            const currentDimension =
-                existing[0]
-                    .embedding
-                    .length;
-
-
-            if(
-                currentDimension !==
-                payload.embedding.dimension
-            ){
-
-                throw new Error(
-                    `Dimension-Konflikt:
-aktueller Store = ${currentDimension}
-Import = ${payload.embedding.dimension}`
-                );
-
-            }
-
-        }
-
-
-        let written =
-            0;
-
-
-        for(
-            const memory
-            of imported
-        ){
-
-            const normalized = {
-
-                id:
-                    memory.id,
-
-                content:
-                    memory.content,
-
-                embedding:
-                    memory.embedding
-                        .map(Number),
-
-                metadata:
-                    memory.metadata
-                    ||
-                    {},
-
-                created_at:
-                    memory.created_at
-                    ||
-                    new Date()
-                        .toISOString()
-
-            };
-
-
-            await saveMemory(
-                normalized
-            );
-
-
-            written++;
-
-        }
-
-
-        await initializeMemory();
-
-
-        renderEmbeddingSpace();
-
-
-        if(
-            state.queryVector
-        ){
-
-            renderQueryVector();
-
-            updateRetrievalVisualization();
-
-            renderTopHitRing();
-
-            renderQueryConnections();
-
-        }
-
-
-        renderRAGContext();
-
-
-        setImportStatus(
-            `IMPORT OK
-
-Datei:
-${file.name}
-
-Geschrieben:
-${written}
-
-Embedding:
-${payload.embedding.model}
-
-Dimension:
-${payload.embedding.dimension}`
-        );
-
-
-        log(
-            `Import abgeschlossen · ${written} Memories`
-        );
-
-    }
-    catch(error){
-
-        console.error(
-            error
-        );
-
-
-        setImportStatus(
-            `IMPORT FEHLER
-
-${error.message}`
-        );
-
-
-        log(
-            "IMPORT ERROR: "
-            +
-            error.message
-        );
-
-    }
-    finally{
-
-        event.target.value =
-            "";
-
-    }
-
-}
-
-
-window.importMemoryFile =
-    importMemoryFile;
-
-
-/* ============================================================
-   CLEAR
-============================================================ */
-
-async function clearAllMemory(){
-
-    const confirmed =
-        confirm(
-            "Wirklich ALLE Memories löschen?"
-        );
-
-
-    if(!confirmed){
-
-        return;
-
-    }
-
-
-    await clearMemory();
-
-
-    state.memories =
-        [];
-
-    state.retrieval =
-        [];
-
-    state.queryVector =
-        null;
-
-
-    currentRAGContext =
-        [];
-
-
-    inspectorState.memory =
-        null;
-
-    inspectorState.result =
-        null;
-
-    inspectorState.projected =
-        null;
-
-
-    document
-        .getElementById(
-            "answer"
-        )
-        .textContent =
-            "Noch keine Antwort.";
-
-
-    renderResults();
-
-    renderRAGContext();
-
-    renderPromptPreview();
-
-    renderMemoryInspector();
-
-    renderEmbeddingSpace();
-
-    clearGroup(
-        queryGroup
-    );
-
-    clearGroup(
-        connectionGroup
-    );
-
-
-    const ring =
-        scene.getObjectByName(
-            "top-hit-ring"
-        );
-
-
-    if(ring){
-
-        scene.remove(
-            ring
-        );
-
-    }
-
-
-    await initializeMemory();
-
-
-    log(
-        "Memory vollständig gelöscht."
+    renderer.render(
+        scene,
+        camera
     );
 
 }
 
 
-window.clearAllMemory =
-    clearAllMemory;
-
-
-/* ============================================================
-   UTILITIES
-============================================================ */
-
-function truncate(
-    text,
-    length
-){
-
-    if(
-        text.length <= length
-    ){
-
-        return text;
-
-    }
-
-
-    return (
-        text.slice(
-            0,
-            length
-        )
-        +
-        "…"
-    );
-
-}
-
-
-function escapeHTML(
-    value
-){
-
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    )
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-    .replace(
-        /'/g,
-        "&#039;"
-    );
-
-}
-
-
-function escapeAttribute(
-    value
-){
-
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /\\/g,
-        "\\\\"
-    )
-    .replace(
-        /'/g,
-        "\\'"
-    );
-
-}
-
-
-function log(
-	message
-){
-
-    const element =
-        document.getElementById(
-            "systemLog"
-        );
-
-
-    const timestamp =
-        new Date()
-            .toLocaleTimeString();
-
-
-    element.textContent +=
-        `[${timestamp}] ${message}\n`;
-
-
-    element.scrollTop =
-        element.scrollHeight;
-
-}
-
-
-function setImportStatus(
-    message
-){
-
-    const element =
-        document.getElementById(
-            "importExportStatus"
-        );
-
-
-    if(element){
-
-        element.textContent =
-            message;
-
-    }
-
-}
-
-
-/* ============================================================
+/* =========================================================
    INITIALIZATION
-============================================================ */
+========================================================= */
 
-async function boot(){
+async function initialize(){
 
     try{
 
-        log(
-            "Opening IndexedDB ..."
+        setStatus(
+            "OPENING MEMORY"
         );
-
-
-        await openMemoryDB();
-
-
-        log(
-            "IndexedDB ready."
-        );
-
-
-        await initializeMemory();
 
 
         initThree();
 
 
-        log(
-            "3D engine ready."
+        await openMemoryDB();
+
+
+        await refreshMemory();
+
+
+        setStatus(
+            "READY",
+            "ok"
         );
 
 
         log(
-            "NEURAL MEMORY READY."
+            "NEURAL MEMORY bereit.",
+            "ok"
         );
 
-    }
-    catch(error){
+
+        log(
+            "IndexedDB geöffnet."
+        );
+
+
+        if(
+            state.memories.length
+        ){
+
+            log(
+                `${state.memories.length} Memories geladen.`
+            );
+
+        }else{
+
+            log(
+                "Memory ist leer."
+            );
+
+        }
+
+
+    }catch(error){
 
         console.error(
             error
         );
 
 
+        setStatus(
+            "INITIALIZATION ERROR",
+            "error"
+        );
+
+
         log(
-            "BOOT ERROR: "
-            +
-            error.message
+            error.message,
+            "error"
         );
 
     }
@@ -5227,9 +6481,46 @@ async function boot(){
 }
 
 
-boot();
+/* =========================================================
+   GLOBAL API
+========================================================= */
+
+window.addMemory =
+    addMemory;
+
+window.runRAG =
+    runRAG;
+
+window.testOllama =
+    testOllama;
+
+window.exportMemory =
+    exportMemory;
+
+window.importMemoryFile =
+    importMemoryFile;
+
+window.clearAllMemory =
+    clearAllMemory;
+
+window.inspectMemory =
+    inspectMemory;
+
+window.closeInspector =
+    closeInspector;
+
+window.deleteInspectedMemory =
+    deleteInspectedMemory;
+
+
+/* =========================================================
+   START
+========================================================= */
+
+initialize();
 
 </script>
 
 </body>
+
 </html>
