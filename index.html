@@ -2,63 +2,45 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1,
+               maximum-scale=1,
+               user-scalable=no">
 
-<meta
-  name="viewport"
-  content="width=device-width,
-           initial-scale=1,
-           maximum-scale=1,
-           user-scalable=no,
-           viewport-fit=cover"
->
-
-<meta name="theme-color" content="#020308">
-
-<title>NEURAL MEMORY — Semantic Memory Space</title>
+<title>NEURAL MEMORY — V1</title>
 
 <style>
-
 :root{
-  --bg:#020308;
-  --panel:#060914;
-  --panel2:#09101d;
-  --panel3:#0d1625;
-
+  --bg:#030507;
+  --panel:#080d12;
+  --panel2:#0c131b;
+  --line:#182631;
   --cyan:#00f5ff;
-  --cyan2:#00c8ff;
   --green:#4ade80;
-  --pink:#ff2b91;
-  --yellow:#ffe600;
-  --red:#ff3864;
-
-  --text:#e9faff;
-  --muted:#718294;
-  --border:rgba(0,245,255,.18);
-
-  --shadow:
-    0 0 30px rgba(0,245,255,.05),
-    inset 0 0 30px rgba(0,0,0,.25);
+  --pink:#ff2d8d;
+  --amber:#ffc857;
+  --red:#ff5b72;
+  --text:#e8f5f7;
+  --muted:#70838e;
 }
 
 *{
   box-sizing:border-box;
 }
 
-html,
-body{
+html,body{
   margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
+  padding:0;
+  min-height:100%;
   background:var(--bg);
   color:var(--text);
   font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    monospace;
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
 
 button,
@@ -72,905 +54,735 @@ button{
   cursor:pointer;
 }
 
-#app{
-  width:100%;
-  height:100%;
-  display:grid;
-
-  grid-template:
-    "header header header"
-    "left   space right"
-    "footer footer footer"
-    / 310px 1fr 330px;
+.app{
+  max-width:1500px;
+  margin:auto;
+  padding:14px;
 }
 
 /* =========================================================
    HEADER
 ========================================================= */
 
-header{
-  grid-area:header;
-
-  height:68px;
-
+.header{
   display:flex;
   align-items:center;
   justify-content:space-between;
+  gap:15px;
 
-  padding:0 20px;
+  padding:14px 16px;
 
-  border-bottom:1px solid var(--border);
-
+  border:1px solid var(--line);
   background:
     linear-gradient(
-      90deg,
-      rgba(0,245,255,.035),
-      transparent 50%,
-      rgba(255,43,145,.035)
+      180deg,
+      #0a1118,
+      #060a0f
     );
 
   box-shadow:
-    0 1px 20px rgba(0,0,0,.5);
+    0 0 35px #00f5ff08;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
 }
 
 .logo{
-  display:flex;
-  align-items:center;
-  gap:13px;
-}
-
-.logoMark{
-  width:36px;
-  height:36px;
-
-  border:1px solid var(--cyan);
+  width:38px;
+  height:38px;
 
   display:grid;
   place-items:center;
 
+  border:1px solid var(--cyan);
+
   color:var(--cyan);
 
+  font-size:12px;
+  font-weight:900;
+
   box-shadow:
-    0 0 15px rgba(0,245,255,.25),
-    inset 0 0 12px rgba(0,245,255,.08);
+    0 0 20px #00f5ff22;
 }
 
-.logoMark::before{
-  content:"◈";
-  font-size:18px;
-}
-
-.logoText{
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-}
-
-.logoTitle{
+.title{
   font-size:15px;
-  letter-spacing:4px;
-  font-weight:800;
+  font-weight:900;
+  letter-spacing:.18em;
 }
 
-.logoSub{
+.subtitle{
+  margin-top:3px;
+
   color:var(--muted);
+
   font-size:9px;
-  letter-spacing:2px;
+  letter-spacing:.13em;
 }
 
-.engineStatus{
-  display:flex;
-  align-items:center;
-  gap:9px;
+.kernel-status{
+  color:var(--green);
 
-  color:var(--muted);
-  font-size:10px;
-  letter-spacing:1.5px;
-}
+  border:1px solid #4ade8040;
 
-.statusDot{
-  width:8px;
-  height:8px;
+  padding:7px 9px;
 
-  border-radius:50%;
-
-  background:var(--green);
-
-  box-shadow:
-    0 0 10px rgba(74,222,128,.7);
-}
-
-.statusDot.loading{
-  background:var(--yellow);
-  box-shadow:0 0 10px rgba(255,230,0,.7);
-}
-
-.statusDot.error{
-  background:var(--red);
-  box-shadow:0 0 10px rgba(255,56,100,.7);
+  font-size:9px;
+  letter-spacing:.12em;
 }
 
 /* =========================================================
-   PANELS
+   LAYOUT
 ========================================================= */
 
-.panel{
-  min-width:0;
-  min-height:0;
+.layout{
+  display:grid;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255,255,255,.012),
-      transparent 50%
-    ),
-    var(--panel);
+  grid-template-columns:
+    210px
+    minmax(400px,1fr)
+    330px;
 
-  box-shadow:var(--shadow);
+  gap:12px;
+
+  margin-top:12px;
 }
 
-.panelHeader{
-  height:48px;
+.bottom{
+  display:grid;
 
+  grid-template-columns:
+    1fr
+    1fr
+    1fr;
+
+  gap:12px;
+
+  margin-top:12px;
+}
+
+.card{
+  border:1px solid var(--line);
+  background:var(--panel);
+
+  box-shadow:
+    0 0 25px #0008;
+}
+
+.card-header{
   display:flex;
   align-items:center;
   justify-content:space-between;
 
-  padding:0 15px;
+  padding:11px 13px;
 
-  border-bottom:1px solid var(--border);
-
-  font-size:10px;
-  letter-spacing:2px;
-  color:var(--cyan);
+  border-bottom:1px solid var(--line);
 }
 
-.panelBody{
-  padding:15px;
+.kicker{
+  color:var(--muted);
+
+  font-size:8px;
+  letter-spacing:.16em;
+}
+
+.card-title{
+  margin-top:3px;
+
+  font-size:13px;
+  font-weight:800;
 }
 
 /* =========================================================
-   LEFT
+   WATCHLIST
 ========================================================= */
 
-#leftPanel{
-  grid-area:left;
-
-  border-right:1px solid var(--border);
-
-  overflow:auto;
+.watchlist{
+  min-height:460px;
 }
 
-.section{
-  margin-bottom:20px;
+.watch-items{
+  padding:8px;
 }
 
-.sectionTitle{
-  color:var(--muted);
-  font-size:9px;
-  letter-spacing:2px;
-
-  margin-bottom:9px;
-}
-
-label{
-  display:block;
-
-  margin:0 0 6px;
-
-  color:#91a5b5;
-
-  font-size:9px;
-  letter-spacing:1px;
-}
-
-input,
-textarea,
-select{
+.watch{
   width:100%;
+
+  margin-bottom:5px;
+  padding:11px;
+
+  text-align:left;
+
+  border:1px solid transparent;
+
+  background:#070b10;
 
   color:var(--text);
-  background:#03060d;
-
-  border:1px solid rgba(0,245,255,.16);
-
-  outline:none;
-
-  border-radius:3px;
-
-  padding:10px;
-
-  transition:.15s;
 }
 
-input:focus,
-textarea:focus,
-select:focus{
+.watch:hover{
+  border-color:#27404c;
+}
+
+.watch.active{
   border-color:var(--cyan);
-
-  box-shadow:
-    0 0 0 1px rgba(0,245,255,.1),
-    0 0 15px rgba(0,245,255,.08);
-}
-
-textarea{
-  min-height:115px;
-  resize:vertical;
-}
-
-select{
-  appearance:auto;
-}
-
-.field{
-  margin-bottom:12px;
-}
-
-.typeGrid{
-  display:grid;
-
-  grid-template-columns:1fr 1fr;
-
-  gap:5px;
-}
-
-.typeButton{
-  padding:8px 5px;
-
-  background:#050912;
-
-  border:1px solid rgba(0,245,255,.12);
-
-  color:#718294;
-
-  font-size:8px;
-
-  letter-spacing:1px;
-
-  text-transform:uppercase;
-}
-
-.typeButton.active{
-  border-color:var(--cyan);
-
-  color:var(--cyan);
 
   background:
-    rgba(0,245,255,.06);
-
-  box-shadow:
-    inset 0 0 12px rgba(0,245,255,.04);
+    linear-gradient(
+      90deg,
+      #00f5ff0c,
+      transparent
+    );
 }
 
-.primaryButton{
-  width:100%;
-
-  padding:12px;
-
-  border:1px solid var(--cyan);
-
-  color:#001014;
-
-  background:var(--cyan);
-
+.watch-symbol{
+  font-size:13px;
   font-weight:900;
-
-  font-size:10px;
-
-  letter-spacing:1.5px;
-
-  text-transform:uppercase;
-
-  box-shadow:
-    0 0 18px rgba(0,245,255,.12);
-
-  transition:.15s;
 }
 
-.primaryButton:hover{
-  box-shadow:
-    0 0 25px rgba(0,245,255,.28);
+.watch-name{
+  margin-top:3px;
+
+  color:var(--muted);
+
+  font-size:8px;
 }
 
-.primaryButton:disabled{
-  opacity:.35;
-  cursor:not-allowed;
-}
+.watch-move{
+  float:right;
 
-.secondaryButton{
-  width:100%;
-
-  padding:9px;
-
-  margin-top:7px;
-
-  background:#060b14;
-
-  color:var(--cyan);
-
-  border:1px solid rgba(0,245,255,.2);
-
-  font-size:9px;
-  letter-spacing:1px;
-}
-
-.dangerButton{
   color:var(--red);
 
-  border-color:rgba(255,56,100,.25);
-}
-
-.stats{
-  display:grid;
-
-  grid-template-columns:1fr 1fr;
-
-  gap:5px;
-}
-
-.stat{
-  padding:10px;
-
-  background:#040810;
-
-  border:1px solid rgba(0,245,255,.1);
-}
-
-.statLabel{
-  color:var(--muted);
-  font-size:8px;
-  letter-spacing:1px;
-}
-
-.statValue{
-  margin-top:5px;
-
-  color:var(--cyan);
-
-  font-size:17px;
-  font-weight:700;
+  font-size:10px;
 }
 
 /* =========================================================
-   SPACE
+   CHART
 ========================================================= */
 
-#spacePanel{
-  grid-area:space;
+.chart-card{
+  min-width:0;
+}
 
+.chart-area{
   position:relative;
 
-  min-width:0;
-  min-height:0;
+  height:430px;
 
   overflow:hidden;
 
   background:
     radial-gradient(
-      circle at center,
-      rgba(0,245,255,.035),
-      transparent 48%
+      circle at 50% 40%,
+      #00f5ff07,
+      transparent 55%
     ),
-    #010207;
+    linear-gradient(
+      #ffffff04 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      #ffffff04 1px,
+      transparent 1px
+    );
+
+  background-size:
+    auto,
+    48px 48px,
+    48px 48px;
 }
 
-#scene{
-  position:absolute;
-
-  inset:0;
-}
-
-.spaceOverlay{
-  position:absolute;
-
-  inset:0;
-
-  pointer-events:none;
-}
-
-.spaceTitle{
-  position:absolute;
-
-  top:16px;
-  left:18px;
-
-  color:var(--cyan);
-
-  font-size:11px;
-
-  letter-spacing:3px;
-}
-
-.spaceSubtitle{
-  position:absolute;
-
-  top:35px;
-  left:18px;
-
-  color:var(--muted);
-
-  font-size:8px;
-
-  letter-spacing:1px;
-}
-
-.spaceStats{
-  position:absolute;
-
-  top:16px;
-  right:18px;
-
-  text-align:right;
-
-  color:var(--muted);
-
-  font-size:8px;
-
-  line-height:1.8;
-}
-
-.spaceStats strong{
-  color:var(--cyan);
-}
-
-.controlsHint{
-  position:absolute;
-
-  bottom:14px;
-  left:18px;
-
-  color:#536474;
-
-  font-size:8px;
-
-  line-height:1.8;
-}
-
-.axis{
-  position:absolute;
-
-  left:50%;
-  top:50%;
-
-  width:220px;
-  height:220px;
-
-  margin:-110px;
-
-  border:1px solid rgba(0,245,255,.06);
-
-  border-radius:50%;
-
-  pointer-events:none;
-}
-
-.axis::before,
-.axis::after{
-  content:"";
-
-  position:absolute;
-
-  background:rgba(0,245,255,.06);
-}
-
-.axis::before{
-  left:50%;
-  top:0;
-
-  width:1px;
-  height:100%;
-}
-
-.axis::after{
-  top:50%;
-  left:0;
-
+canvas{
   width:100%;
-  height:1px;
+  height:100%;
+
+  display:block;
+
+  touch-action:none;
+}
+
+.chart-info{
+  position:absolute;
+
+  top:12px;
+  left:14px;
+
+  pointer-events:none;
+}
+
+.chart-symbol{
+  color:var(--cyan);
+
+  font-size:18px;
+  font-weight:900;
+}
+
+.chart-price{
+  margin-top:2px;
+
+  font-size:10px;
+  color:var(--muted);
+}
+
+.chart-hint{
+  position:absolute;
+
+  right:13px;
+  bottom:10px;
+
+  color:#6d818b;
+
+  font-size:8px;
+  letter-spacing:.08em;
+
+  pointer-events:none;
+}
+
+.selection{
+  position:absolute;
+
+  top:0;
+  bottom:0;
+
+  display:none;
+
+  background:#00f5ff0c;
+
+  border-left:1px solid var(--cyan);
+  border-right:1px solid var(--cyan);
+
+  pointer-events:none;
+}
+
+.selection-label{
+  position:absolute;
+
+  top:9px;
+  left:8px;
+
+  color:var(--cyan);
+
+  font-size:8px;
+  white-space:nowrap;
+}
+
+.chart-footer{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+
+  padding:10px;
+}
+
+.btn{
+  padding:8px 10px;
+
+  border:1px solid var(--line);
+
+  background:#091018;
+
+  color:var(--text);
+
+  font-size:9px;
+  letter-spacing:.06em;
+}
+
+.btn:hover{
+  border-color:#46606e;
+}
+
+.btn.cyan{
+  color:var(--cyan);
+  border-color:#00f5ff55;
+}
+
+.btn.green{
+  color:var(--green);
+  border-color:#4ade8055;
+}
+
+.btn.pink{
+  color:#ff72b1;
+  border-color:#ff2d8d55;
+}
+
+.btn.amber{
+  color:var(--amber);
+  border-color:#ffc85755;
 }
 
 /* =========================================================
-   RIGHT
+   INVESTIGATION
 ========================================================= */
 
-#rightPanel{
-  grid-area:right;
+.observation{
+  margin:12px;
 
-  border-left:1px solid var(--border);
+  padding:13px;
 
-  display:flex;
-  flex-direction:column;
+  border-left:2px solid var(--cyan);
 
-  min-height:0;
+  background:#071117;
 }
 
-.explorer{
-  height:48%;
-
-  min-height:180px;
-
-  border-bottom:1px solid var(--border);
-
-  display:flex;
-  flex-direction:column;
+.observation-value{
+  font-size:25px;
+  font-weight:900;
 }
 
-.inspector{
-  flex:1;
-
-  min-height:0;
-
-  overflow:auto;
-}
-
-.searchBox{
-  padding:10px;
-
-  border-bottom:1px solid rgba(0,245,255,.1);
-}
-
-.searchInput{
-  position:relative;
-}
-
-.searchInput input{
-  padding-left:30px;
-}
-
-.searchIcon{
-  position:absolute;
-
-  left:10px;
-  top:50%;
-
-  transform:translateY(-50%);
+.observation-meta{
+  margin-top:5px;
 
   color:var(--muted);
 
-  pointer-events:none;
-}
-
-.filters{
-  display:flex;
-
-  gap:5px;
-
-  padding:7px 10px;
-
-  overflow:auto;
-}
-
-.filter{
-  white-space:nowrap;
-
-  padding:5px 8px;
-
-  border:1px solid rgba(0,245,255,.12);
-
-  background:#040810;
-
-  color:#687b8c;
-
-  font-size:8px;
-
-  letter-spacing:.8px;
-}
-
-.filter.active{
-  color:var(--cyan);
-  border-color:rgba(0,245,255,.5);
-}
-
-.objectList{
-  flex:1;
-
-  overflow:auto;
-
-  padding:5px;
-}
-
-.objectItem{
-  display:flex;
-
-  align-items:center;
-
-  gap:9px;
-
-  padding:9px;
-
-  margin-bottom:3px;
-
-  border:1px solid transparent;
-
-  cursor:pointer;
-}
-
-.objectItem:hover{
-  background:rgba(0,245,255,.025);
-
-  border-color:rgba(0,245,255,.08);
-}
-
-.objectItem.selected{
-  background:rgba(0,245,255,.055);
-
-  border-color:rgba(0,245,255,.28);
-}
-
-.objectDot{
-  width:7px;
-  height:7px;
-
-  flex:0 0 auto;
-
-  border-radius:50%;
-
-  background:var(--cyan);
-
-  box-shadow:0 0 8px currentColor;
-}
-
-.objectInfo{
-  min-width:0;
-}
-
-.objectName{
-  overflow:hidden;
-
-  white-space:nowrap;
-  text-overflow:ellipsis;
-
-  font-size:10px;
-
-  color:#dcecf1;
-}
-
-.objectMeta{
-  margin-top:3px;
-
-  color:var(--muted);
-
-  font-size:7px;
-
-  letter-spacing:.7px;
-}
-
-.empty{
-  padding:25px 15px;
-
-  text-align:center;
-
-  color:#526373;
-
   font-size:9px;
-
-  line-height:1.8;
 }
 
-.inspectorBody{
-  padding:14px;
-}
-
-.inspectorEmpty{
-  color:#536474;
-
-  text-align:center;
-
-  padding:25px 10px;
-
-  font-size:9px;
-
-  line-height:1.8;
-}
-
-.inspectorId{
-  color:var(--cyan);
-
-  font-size:9px;
-
-  letter-spacing:1px;
-
-  margin-bottom:10px;
-}
-
-.inspectorName{
-  font-size:18px;
-
-  font-weight:700;
-
-  margin-bottom:4px;
-}
-
-.badge{
-  display:inline-block;
-
-  padding:4px 6px;
-
-  border:1px solid rgba(0,245,255,.2);
-
-  color:var(--cyan);
-
-  font-size:8px;
-
-  letter-spacing:1px;
-
-  margin-bottom:13px;
-}
-
-.inspectorDescription{
-  color:#9aaebb;
-
-  font-size:10px;
-
-  line-height:1.7;
-
-  margin-bottom:15px;
-}
-
-.infoBlock{
-  margin-bottom:15px;
-}
-
-.infoTitle{
-  color:var(--muted);
-
-  font-size:8px;
-
-  letter-spacing:1.5px;
-
-  margin-bottom:6px;
+.tags{
+  margin-top:9px;
 }
 
 .tag{
   display:inline-block;
 
+  margin:2px 3px 2px 0;
   padding:4px 6px;
 
-  margin:0 4px 4px 0;
+  border:1px solid var(--line);
 
-  background:#050a12;
-
-  border:1px solid rgba(0,245,255,.12);
-
-  color:#8296a6;
-
-  font-size:8px;
-}
-
-.relation{
-  padding:7px;
-
-  margin-bottom:4px;
-
-  background:#040810;
-
-  border-left:2px solid var(--pink);
-
-  font-size:8px;
-
-  color:#92a6b5;
-}
-
-.relation strong{
-  color:#dcecf1;
-}
-
-.vectorPreview{
-  max-height:90px;
-
-  overflow:hidden;
-
-  padding:8px;
-
-  background:#03060b;
-
-  border:1px solid rgba(0,245,255,.08);
-
-  color:#506373;
+  color:var(--muted);
 
   font-size:7px;
-
-  line-height:1.5;
-
-  word-break:break-all;
+  letter-spacing:.08em;
 }
 
-/* =========================================================
-   FOOTER
-========================================================= */
+.side-actions{
+  padding:10px;
 
-footer{
-  grid-area:footer;
+  display:grid;
 
-  height:34px;
+  grid-template-columns:1fr 1fr;
 
-  display:flex;
-
-  align-items:center;
-
-  justify-content:space-between;
-
-  padding:0 13px;
-
-  border-top:1px solid var(--border);
-
-  background:#03050a;
-
-  color:#536474;
-
-  font-size:8px;
-
-  letter-spacing:1px;
+  gap:7px;
 }
 
-.footerLeft{
-  display:flex;
-  gap:15px;
+.action{
+  min-height:72px;
+
+  padding:10px;
+
+  text-align:left;
+
+  border:1px solid var(--line);
+
+  background:#080f16;
+
+  color:var(--text);
 }
 
-.footerItem span{
-  color:var(--cyan);
+.action:hover{
+  border-color:var(--cyan);
 }
 
-#logText{
-  overflow:hidden;
-
-  text-overflow:ellipsis;
-
-  white-space:nowrap;
-
-  max-width:50vw;
-}
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-#toast{
-  position:fixed;
-
-  left:50%;
-  bottom:48px;
-
-  transform:
-    translate(-50%,20px);
-
-  opacity:0;
-
-  pointer-events:none;
-
-  z-index:100;
-
-  max-width:90vw;
-
-  padding:10px 15px;
-
-  background:#050b13;
-
-  border:1px solid var(--cyan);
+.action strong{
+  display:block;
 
   color:var(--cyan);
 
   font-size:9px;
-
-  letter-spacing:.7px;
-
-  transition:.2s;
-
-  box-shadow:
-    0 0 20px rgba(0,245,255,.12);
+  letter-spacing:.08em;
 }
 
-#toast.show{
-  opacity:1;
+.action span{
+  display:block;
 
-  transform:
-    translate(-50%,0);
+  margin-top:7px;
+
+  color:var(--muted);
+
+  font-size:8px;
+  line-height:1.4;
 }
 
-#toast.error{
-  border-color:var(--red);
-  color:var(--red);
+.hypothesis{
+  margin:12px;
+
+  padding:12px;
+
+  border:1px solid var(--line);
+
+  background:#070c12;
+}
+
+.hypothesis-id{
+  color:var(--pink);
+
+  font-size:8px;
+  letter-spacing:.1em;
+}
+
+.hypothesis-text{
+  margin-top:7px;
+
+  font-size:11px;
+  line-height:1.45;
+}
+
+.hypothesis-status{
+  margin-top:9px;
+
+  color:var(--amber);
+
+  font-size:8px;
+}
+
+/* =========================================================
+   EVIDENCE
+========================================================= */
+
+.list{
+  padding:10px 13px;
+}
+
+.item{
+  padding:11px 0;
+
+  border-bottom:1px solid #14202a;
+}
+
+.item:last-child{
+  border-bottom:0;
+}
+
+.item-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.source{
+  color:var(--cyan);
+
+  font-size:8px;
+  font-weight:800;
+
+  letter-spacing:.08em;
+}
+
+.time{
+  color:var(--muted);
+
+  font-size:8px;
+}
+
+.item-title{
+  margin-top:5px;
+
+  font-size:10px;
+  font-weight:750;
+}
+
+.item-text{
+  margin-top:4px;
+
+  color:#8fa3ad;
+
+  font-size:8px;
+  line-height:1.5;
+}
+
+.item-actions{
+  display:flex;
+  gap:6px;
+
+  margin-top:8px;
+}
+
+.mini{
+  padding:5px 7px;
+
+  border:1px solid var(--line);
+
+  background:#080e14;
+
+  color:var(--muted);
+
+  font-size:7px;
+}
+
+.mini.add{
+  color:var(--green);
+
+  border-color:#4ade8050;
+}
+
+/* =========================================================
+   GRAPH
+========================================================= */
+
+.graph{
+  position:relative;
+
+  min-height:300px;
+
+  margin:10px;
+
+  overflow:hidden;
+
+  border:1px solid #15232e;
+
+  background:
+    radial-gradient(
+      circle at center,
+      #00f5ff06,
+      transparent 60%
+    );
+}
+
+.node{
+  position:absolute;
+
+  min-width:80px;
+
+  padding:9px;
+
+  text-align:center;
+
+  border:1px solid var(--line);
+
+  background:#091018;
+
+  box-shadow:0 0 18px #0009;
+}
+
+.node.ev{
+  border-color:#00f5ff55;
+}
+
+.node.hyp{
+  border-color:#ff2d8d66;
+}
+
+.node-id{
+  color:var(--muted);
+
+  font-size:7px;
+}
+
+.node-label{
+  margin-top:3px;
+
+  font-size:9px;
+  font-weight:800;
+}
+
+.relation{
+  position:absolute;
+
+  left:50%;
+  top:50%;
+
+  width:145px;
+
+  height:1px;
+
+  background:#35515e;
+
+  transform-origin:left center;
+}
+
+.relation span{
+  position:absolute;
+
+  left:50%;
+  top:-13px;
+
+  transform:translateX(-50%);
+
+  color:var(--muted);
+
+  background:#080d12;
+
+  padding:2px 4px;
+
+  font-size:6px;
+  letter-spacing:.08em;
+}
+
+/* =========================================================
+   TRACE
+========================================================= */
+
+.trace{
+  padding:12px 14px;
+}
+
+.trace-list{
+  position:relative;
+
+  padding-left:17px;
+}
+
+.trace-list:before{
+  content:"";
+
+  position:absolute;
+
+  left:3px;
+  top:3px;
+  bottom:3px;
+
+  width:1px;
+
+  background:#20323e;
+}
+
+.event{
+  position:relative;
+
+  margin-bottom:17px;
+}
+
+.event-dot{
+  position:absolute;
+
+  left:-18px;
+  top:2px;
+
+  width:9px;
+  height:9px;
+
+  border:1px solid var(--cyan);
+
+  background:var(--bg);
+
+  box-shadow:0 0 9px #00f5ff44;
+}
+
+.event-time{
+  color:var(--cyan);
+
+  font-size:7px;
+  letter-spacing:.08em;
+}
+
+.event-type{
+  margin-top:3px;
+
+  font-size:9px;
+  font-weight:800;
+}
+
+.event-desc{
+  margin-top:2px;
+
+  color:var(--muted);
+
+  font-size:8px;
 }
 
 /* =========================================================
@@ -982,604 +794,490 @@ footer{
 
   inset:0;
 
-  z-index:200;
-
   display:none;
 
   align-items:center;
   justify-content:center;
 
-  background:rgba(0,0,0,.75);
+  padding:16px;
 
-  backdrop-filter:blur(5px);
+  background:#000c;
+
+  z-index:100;
 }
 
-.modal.show{
+.modal.open{
   display:flex;
 }
 
-.modalBox{
-  width:min(600px,92vw);
-  max-height:85vh;
+.modal-box{
+  width:min(700px,100%);
+
+  max-height:90vh;
 
   overflow:auto;
 
-  background:#050913;
-
   border:1px solid var(--cyan);
 
+  background:#080e14;
+
   box-shadow:
-    0 0 50px rgba(0,245,255,.15);
+    0 0 60px #00f5ff15;
 }
 
-.modalHeader{
+.modal-head{
   display:flex;
 
   justify-content:space-between;
 
-  padding:13px;
+  padding:12px 14px;
 
-  border-bottom:1px solid var(--border);
+  border-bottom:1px solid var(--line);
+}
 
-  color:var(--cyan);
+.modal-body{
+  padding:14px;
+}
+
+.modal-input,
+.modal-textarea{
+  width:100%;
+
+  padding:10px;
+
+  border:1px solid var(--line);
+
+  outline:none;
+
+  background:#050a0f;
+
+  color:var(--text);
 
   font-size:10px;
-
-  letter-spacing:2px;
 }
 
-.modalClose{
-  background:none;
-  border:0;
-  color:var(--muted);
+.modal-textarea{
+  min-height:100px;
+
+  resize:vertical;
 }
 
-.modalBody{
-  padding:15px;
+.modal-input:focus,
+.modal-textarea:focus{
+  border-color:var(--cyan);
 }
 
-.modalBody textarea{
-  min-height:300px;
+.modal-actions{
+  display:flex;
+  gap:7px;
+
+  margin-top:10px;
+}
+
+pre{
+  overflow:auto;
+
+  margin:0;
+
+  padding:12px;
+
+  border:1px solid var(--line);
+
+  background:#04080c;
+
+  color:#9fb2bc;
 
   font-size:8px;
 
   line-height:1.5;
 }
 
-.modalActions{
-  display:flex;
-
-  gap:7px;
-
-  margin-top:10px;
-}
-
-.modalActions button{
-  flex:1;
-}
-
 /* =========================================================
    MOBILE
 ========================================================= */
 
-@media(max-width:1000px){
+@media(max-width:1100px){
 
-  #app{
-    grid-template:
-      "header"
-      "space"
-      "left"
-      "right"
-      "footer"
-      / 1fr;
-
-    grid-template-rows:
-      58px
-      minmax(300px,42vh)
-      auto
-      minmax(400px,50vh)
-      34px;
-
-    overflow:auto;
+  .layout{
+    grid-template-columns:
+      170px
+      minmax(300px,1fr);
   }
 
-  body{
-    overflow:auto;
+  .layout > .side{
+    grid-column:1 / -1;
+
+    display:grid;
+
+    grid-template-columns:
+      1fr 1fr;
   }
 
-  header{
-    position:sticky;
-    top:0;
-    z-index:50;
+  .bottom{
+    grid-template-columns:1fr 1fr;
   }
-
-  #leftPanel,
-  #rightPanel{
-    border:0;
-
-    border-top:1px solid var(--border);
-  }
-
-  #leftPanel{
-    overflow:visible;
-  }
-
-  .explorer{
-    height:320px;
-  }
-
-  .inspector{
-    min-height:300px;
-  }
-
-  footer{
-    position:sticky;
-    bottom:0;
-    z-index:50;
-  }
-
 }
 
+@media(max-width:700px){
+
+  .app{
+    padding:8px;
+  }
+
+  .header{
+    position:relative;
+  }
+
+  .kernel-status{
+    display:none;
+  }
+
+  .layout{
+    display:flex;
+    flex-direction:column;
+  }
+
+  .watchlist{
+    min-height:auto;
+  }
+
+  .watch-items{
+    display:flex;
+    gap:6px;
+    overflow-x:auto;
+  }
+
+  .watch{
+    min-width:105px;
+  }
+
+  .side{
+    display:flex !important;
+    flex-direction:column;
+  }
+
+  .bottom{
+    display:flex;
+    flex-direction:column;
+  }
+
+  .chart-area{
+    height:330px;
+  }
+
+  .side-actions{
+    grid-template-columns:1fr 1fr;
+  }
+}
 </style>
 </head>
 
-
 <body>
 
-<div id="app">
+<div class="app">
 
-<!-- =======================================================
-     HEADER
-======================================================= -->
+<header class="header">
 
-<header>
+  <div class="brand">
 
-  <div class="logo">
+    <div class="logo">
+      NM
+    </div>
 
-    <div class="logoMark"></div>
+    <div>
 
-    <div class="logoText">
-      <div class="logoTitle">
+      <div class="title">
         NEURAL MEMORY
       </div>
 
-      <div class="logoSub">
-        SEMANTIC MEMORY SPACE
+      <div class="subtitle">
+        INVESTIGATION & EVIDENCE KERNEL / V1
       </div>
+
     </div>
 
   </div>
 
-
-  <div class="engineStatus">
-
-    <div
-      id="statusDot"
-      class="statusDot"
-    ></div>
-
-    <span id="engineStatusText">
-      INITIALIZING
-    </span>
-
+  <div class="kernel-status">
+    ● DETERMINISTIC KERNEL
   </div>
 
 </header>
 
 
-<!-- =======================================================
-     LEFT — MEMORY INPUT
-======================================================= -->
+<!-- ======================================================
+     MAIN
+====================================================== -->
 
-<section
-  id="leftPanel"
-  class="panel"
->
+<div class="layout">
 
-  <div class="panelHeader">
-    <span>MEMORY INPUT</span>
-    <span id="inputStatus">READY</span>
+
+<!-- WATCHLIST -->
+
+<section class="card watchlist">
+
+  <div class="card-header">
+
+    <div>
+      <div class="kicker">
+        SUBJECTS
+      </div>
+
+      <div class="card-title">
+        Watchlist
+      </div>
+    </div>
+
+    <div class="kicker">
+      03
+    </div>
+
   </div>
 
-  <div class="panelBody">
 
-    <div class="section">
+  <div class="watch-items">
 
-      <div class="sectionTitle">
-        CREATE MEMORY OBJECT
+    <button
+      class="watch active"
+      data-symbol="AAPL">
+
+      <span class="watch-move">
+        −8.7%
+      </span>
+
+      <div class="watch-symbol">
+        AAPL
       </div>
 
-
-      <div class="field">
-
-        <label for="name">
-          NAME
-        </label>
-
-        <input
-          id="name"
-          type="text"
-          autocomplete="off"
-          placeholder="z.B. AETHER"
-        >
-
+      <div class="watch-name">
+        Apple Inc.
       </div>
 
+    </button>
 
-      <div class="field">
 
-        <label>
-          TYP
-        </label>
+    <button
+      class="watch"
+      data-symbol="NVDA">
 
-        <div class="typeGrid">
+      <span class="watch-move">
+        −5.2%
+      </span>
 
-          <button
-            class="typeButton active"
-            data-type="concept"
-          >
-            CONCEPT
-          </button>
-
-          <button
-            class="typeButton"
-            data-type="system"
-          >
-            SYSTEM
-          </button>
-
-          <button
-            class="typeButton"
-            data-type="person"
-          >
-            PERSON
-          </button>
-
-          <button
-            class="typeButton"
-            data-type="project"
-          >
-            PROJECT
-          </button>
-
-          <button
-            class="typeButton"
-            data-type="technology"
-          >
-            TECHNOLOGY
-          </button>
-
-          <button
-            class="typeButton"
-            data-type="other"
-          >
-            OTHER
-          </button>
-
-        </div>
-
-        <input
-          id="type"
-          type="hidden"
-          value="concept"
-        >
-
+      <div class="watch-symbol">
+        NVDA
       </div>
 
-
-      <div class="field">
-
-        <label for="description">
-          BESCHREIBUNG
-        </label>
-
-        <textarea
-          id="description"
-          placeholder="Was soll das Memory Object bedeuten?"
-        ></textarea>
-
+      <div class="watch-name">
+        NVIDIA
       </div>
 
+    </button>
 
-      <div class="field">
 
-        <label for="tags">
-          TAGS
-        </label>
+    <button
+      class="watch"
+      data-symbol="TSLA">
 
-        <input
-          id="tags"
-          type="text"
-          autocomplete="off"
-          placeholder="z.B. LLM, Architektur, UI"
-        >
+      <span class="watch-move">
+        −6.1%
+      </span>
 
+      <div class="watch-symbol">
+        TSLA
       </div>
 
-
-      <button
-        id="createBtn"
-        class="primaryButton"
-      >
-        + MEMORY OBJECT ERZEUGEN
-      </button>
-
-      <button
-        id="demoBtn"
-        class="secondaryButton"
-      >
-        DEMO MEMORY LADEN
-      </button>
-
-      <button
-        id="clearBtn"
-        class="secondaryButton dangerButton"
-      >
-        LOKALE MEMORY LÖSCHEN
-      </button>
-
-    </div>
-
-
-    <div class="section">
-
-      <div class="sectionTitle">
-        MEMORY STATUS
+      <div class="watch-name">
+        Tesla
       </div>
 
-      <div class="stats">
-
-        <div class="stat">
-
-          <div class="statLabel">
-            OBJECTS
-          </div>
-
-          <div
-            id="statObjects"
-            class="statValue"
-          >
-            0
-          </div>
-
-        </div>
-
-
-        <div class="stat">
-
-          <div class="statLabel">
-            RELATIONS
-          </div>
-
-          <div
-            id="statRelations"
-            class="statValue"
-          >
-            0
-          </div>
-
-        </div>
-
-
-        <div class="stat">
-
-          <div class="statLabel">
-            DIMENSIONS
-          </div>
-
-          <div class="statValue">
-            384D
-          </div>
-
-        </div>
-
-
-        <div class="stat">
-
-          <div class="statLabel">
-            VIEW
-          </div>
-
-          <div class="statValue">
-            3D
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="section">
-
-      <div class="sectionTitle">
-        DATABASE
-      </div>
-
-      <button
-        id="exportBtn"
-        class="secondaryButton"
-      >
-        EXPORT MEMORY JSON
-      </button>
-
-      <button
-        id="importBtn"
-        class="secondaryButton"
-      >
-        IMPORT MEMORY JSON
-      </button>
-
-      <input
-        id="importFile"
-        type="file"
-        accept=".json,application/json"
-        hidden
-      >
-
-    </div>
+    </button>
 
   </div>
 
 </section>
 
 
-<!-- =======================================================
-     CENTER — 3D SPACE
-======================================================= -->
+<!-- CHART -->
 
-<section
-  id="spacePanel"
->
+<section class="card chart-card">
 
-  <div id="scene"></div>
+  <div class="card-header">
 
-  <div class="axis"></div>
+    <div>
 
-  <div class="spaceOverlay">
+      <div class="kicker">
+        OBSERVATION SOURCE
+      </div>
 
-    <div class="spaceTitle">
-      SEMANTIC SPACE
-    </div>
-
-    <div class="spaceSubtitle">
-      384D → DATA-DEPENDENT 3D PROJECTION
-    </div>
-
-
-    <div class="spaceStats">
-
-      OBJECTS:
-      <strong id="spaceObjects">
-        0
-      </strong>
-
-      <br>
-
-      DIMENSION:
-      <strong>
-        384D
-      </strong>
-
-      <br>
-
-      PROJECTION:
-      <strong>
-        PCA
-      </strong>
+      <div class="card-title">
+        Price Event
+      </div>
 
     </div>
 
+    <div
+      id="chartRange"
+      class="kicker">
+      11–13 MAR
+    </div>
 
-    <div class="controlsHint">
+  </div>
 
-      DRAG = ROTATE<br>
-      SCROLL = ZOOM<br>
-      CLICK = INSPECT<br>
-      TWO FINGER = PAN / ZOOM
+
+  <div
+    class="chart-area"
+    id="chartArea">
+
+    <canvas id="chart"></canvas>
+
+    <div
+      class="chart-info">
+
+      <div
+        class="chart-symbol"
+        id="chartSymbol">
+        AAPL
+      </div>
+
+      <div
+        class="chart-price"
+        id="chartPrice">
+        PRICE / SELECT RANGE
+      </div>
 
     </div>
+
+
+    <div
+      class="selection"
+      id="selection">
+
+      <div
+        class="selection-label"
+        id="selectionLabel">
+      </div>
+
+    </div>
+
+
+    <div class="chart-hint">
+      DRAG TO INVESTIGATE
+    </div>
+
+  </div>
+
+
+  <div class="chart-footer">
+
+    <button
+      class="btn"
+      id="resetSelection">
+      RESET
+    </button>
+
+    <button
+      class="btn"
+      id="eventSelection">
+      11–13 MAR
+    </button>
+
+    <button
+      class="btn cyan"
+      id="createObservation">
+      CREATE OBSERVATION
+    </button>
+
+    <button
+      class="btn pink"
+      id="findEvidenceTop">
+      FIND EVIDENCE
+    </button>
+
+    <button
+      class="btn green"
+      id="exportBtn">
+      EXPORT JSON
+    </button>
+
+    <button
+      class="btn amber"
+      id="importBtn">
+      IMPORT JSON
+    </button>
+
+    <input
+      type="file"
+      id="importFile"
+      accept=".json"
+      hidden>
 
   </div>
 
 </section>
 
 
-<!-- =======================================================
-     RIGHT
-======================================================= -->
+<!-- SIDE -->
 
-<section
-  id="rightPanel"
-  class="panel"
->
+<section class="side">
 
-  <!-- EXPLORER -->
 
-  <div class="explorer">
+  <!-- OBSERVATION -->
 
-    <div class="panelHeader">
+  <div class="card">
 
-      <span>
-        MEMORY EXPLORER
-      </span>
+    <div class="card-header">
 
-      <span id="resultCount">
-        0
-      </span>
+      <div>
+
+        <div class="kicker">
+          CURRENT STATE
+        </div>
+
+        <div class="card-title">
+          Observation
+        </div>
+
+      </div>
+
+      <div
+        id="investigationStatus"
+        class="kicker">
+        OPEN
+      </div>
 
     </div>
 
 
-    <div class="searchBox">
+    <div class="observation">
 
-      <div class="searchInput">
+      <div
+        class="observation-value"
+        id="observationMove">
+        −8.7%
+      </div>
 
-        <span class="searchIcon">
-          ⌕
+      <div
+        class="observation-meta"
+        id="observationMeta">
+        AAPL · 11.03.2026 → 13.03.2026
+      </div>
+
+
+      <div class="tags">
+
+        <span class="tag">
+          PRICE EVENT
         </span>
 
-        <input
-          id="search"
-          type="search"
-          autocomplete="off"
-          placeholder="Semantic Search..."
-        >
+        <span class="tag">
+          USER SELECTED
+        </span>
 
-      </div>
+        <span class="tag">
+          HIGH VOLUME
+        </span>
 
-    </div>
-
-
-    <div class="filters">
-
-      <button
-        class="filter active"
-        data-filter="all"
-      >
-        ALLE
-      </button>
-
-      <button
-        class="filter"
-        data-filter="concept"
-      >
-        CONCEPT
-      </button>
-
-      <button
-        class="filter"
-        data-filter="system"
-      >
-        SYSTEM
-      </button>
-
-      <button
-        class="filter"
-        data-filter="project"
-      >
-        PROJECT
-      </button>
-
-      <button
-        class="filter"
-        data-filter="technology"
-      >
-        TECHNOLOGY
-      </button>
-
-    </div>
-
-
-    <div
-      id="objectList"
-      class="objectList"
-    >
-
-      <div class="empty">
-        Noch keine Memory Objects vorhanden.<br><br>
-        Lege links dein erstes Objekt an.
       </div>
 
     </div>
@@ -1587,26 +1285,182 @@ footer{
   </div>
 
 
-  <!-- INSPECTOR -->
+  <!-- ACTIONS -->
 
-  <div class="inspector">
+  <div class="card">
 
-    <div class="panelHeader">
-      MEMORY INSPECTOR
+    <div class="card-header">
+
+      <div>
+
+        <div class="kicker">
+          KERNEL ACTIONS
+        </div>
+
+        <div class="card-title">
+          Investigation
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="side-actions">
+
+      <button
+        class="action"
+        id="findEvidence">
+
+        <strong>
+          FIND EVIDENCE
+        </strong>
+
+        <span>
+          Evidence candidates für die aktuelle Observation.
+        </span>
+
+      </button>
+
+
+      <button
+        class="action"
+        id="newHypothesis">
+
+        <strong>
+          NEW HYPOTHESIS
+        </strong>
+
+        <span>
+          Eine prüfbare Interpretation anlegen.
+        </span>
+
+      </button>
+
+
+      <button
+        class="action"
+        id="addRelation">
+
+        <strong>
+          ADD RELATION
+        </strong>
+
+        <span>
+          Evidence und Hypothese explizit verbinden.
+        </span>
+
+      </button>
+
+
+      <button
+        class="action"
+        id="showJSON">
+
+        <strong>
+          VIEW STATE
+        </strong>
+
+        <span>
+          Aktuellen Kernel-Zustand als Objekt ansehen.
+        </span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- HYPOTHESIS -->
+
+  <div class="card">
+
+    <div class="card-header">
+
+      <div>
+
+        <div class="kicker">
+          INTERPRETATION
+        </div>
+
+        <div class="card-title">
+          Hypothesis
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="hypothesis"
+      id="hypothesisBox">
+
+      <div class="hypothesis-id">
+        H-001
+      </div>
+
+      <div class="hypothesis-text">
+        Guidance reduction explains most of the selloff.
+      </div>
+
+      <div class="hypothesis-status">
+        UNDER REVIEW
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+</div>
+
+
+<!-- ======================================================
+     BOTTOM
+====================================================== -->
+
+<div class="bottom">
+
+
+<!-- EVIDENCE -->
+
+<section class="card">
+
+  <div class="card-header">
+
+    <div>
+
+      <div class="kicker">
+        EVIDENCE
+      </div>
+
+      <div class="card-title">
+        Evidence Explorer
+      </div>
+
     </div>
 
     <div
-      id="inspectorBody"
-      class="inspectorBody"
-    >
+      id="evidenceCountLabel"
+      class="kicker">
+      0 STORED
+    </div>
 
-      <div class="inspectorEmpty">
+  </div>
 
-        Kein Memory Object ausgewählt.<br><br>
 
-        Klicke einen Node im semantischen Raum
-        oder einen Treffer an.
+  <div
+    class="list"
+    id="evidenceList">
 
+    <div class="item">
+
+      <div class="item-text">
+        Noch keine Evidence übernommen.
+        Starte mit „Find Evidence“.
       </div>
 
     </div>
@@ -1616,102 +1470,181 @@ footer{
 </section>
 
 
-<!-- =======================================================
-     FOOTER
-======================================================= -->
+<!-- GRAPH -->
 
-<footer>
+<section class="card">
 
-  <div class="footerLeft">
+  <div class="card-header">
 
-    <div class="footerItem">
-      DB:
-      <span id="dbStatus">
-        OFFLINE
-      </span>
+    <div>
+
+      <div class="kicker">
+        KNOWLEDGE STATE
+      </div>
+
+      <div class="card-title">
+        Relation Graph
+      </div>
+
     </div>
 
-    <div class="footerItem">
-      MODEL:
-      <span id="modelStatus">
-        LOADING
-      </span>
-    </div>
-
-    <div class="footerItem">
-      VECTOR:
-      <span>
-        384D
-      </span>
+    <div class="kicker">
+      EXPLICIT
     </div>
 
   </div>
 
 
-  <div id="logText">
-    01 MEMORY ENGINE INITIALIZED
-  </div>
+  <div
+    class="graph"
+    id="graph">
 
-</footer>
+    <div
+      class="node ev"
+      style="left:8%;top:25%">
 
-</div>
+      <div class="node-id">
+        EV-421
+      </div>
 
-
-<!-- =======================================================
-     TOAST
-======================================================= -->
-
-<div id="toast"></div>
-
-
-<!-- =======================================================
-     JSON MODAL
-======================================================= -->
-
-<div
-  id="jsonModal"
-  class="modal"
->
-
-  <div class="modalBox">
-
-    <div class="modalHeader">
-
-      <span>
-        MEMORY JSON
-      </span>
-
-      <button
-        id="modalClose"
-        class="modalClose"
-      >
-        ✕
-      </button>
+      <div class="node-label">
+        NEWS
+      </div>
 
     </div>
 
-    <div class="modalBody">
 
-      <textarea
-        id="jsonText"
-        readonly
-      ></textarea>
+    <div
+      class="node ev"
+      style="left:8%;top:65%">
 
-      <div class="modalActions">
+      <div class="node-id">
+        EV-422
+      </div>
 
-        <button
-          id="copyJson"
-          class="secondaryButton"
-        >
-          COPY
-        </button>
+      <div class="node-label">
+        SEC
+      </div>
 
-        <button
-          id="downloadJson"
-          class="primaryButton"
-        >
-          DOWNLOAD
-        </button>
+    </div>
+
+
+    <div
+      class="node hyp"
+      style="right:8%;top:44%">
+
+      <div class="node-id">
+        H-001
+      </div>
+
+      <div class="node-label">
+        HYPOTHESIS
+      </div>
+
+    </div>
+
+
+    <div
+      class="relation"
+      style="
+        left:29%;
+        top:34%;
+        width:190px;
+        transform:rotate(8deg);
+      ">
+
+      <span>
+        SUPPORTS
+      </span>
+
+    </div>
+
+
+    <div
+      class="relation"
+      style="
+        left:29%;
+        top:69%;
+        width:190px;
+        transform:rotate(-10deg);
+      ">
+
+      <span>
+        SUPPORTS
+      </span>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- TRACE -->
+
+<section class="card">
+
+  <div class="card-header">
+
+    <div>
+
+      <div class="kicker">
+        EVENT STORE
+      </div>
+
+      <div class="card-title">
+        Knowledge Trace
+      </div>
+
+    </div>
+
+    <div class="kicker">
+      AUDITABLE
+    </div>
+
+  </div>
+
+
+  <div
+    class="trace"
+    id="trace">
+
+    <div class="trace-list">
+
+      <div class="event">
+
+        <i class="event-dot"></i>
+
+        <div class="event-time">
+          SYSTEM
+        </div>
+
+        <div class="event-type">
+          INVESTIGATION_CREATED
+        </div>
+
+        <div class="event-desc">
+          INV-291 initialisiert.
+        </div>
+
+      </div>
+
+
+      <div class="event">
+
+        <i class="event-dot"></i>
+
+        <div class="event-time">
+          SYSTEM
+        </div>
+
+        <div class="event-type">
+          OBSERVATION_CREATED
+        </div>
+
+        <div class="event-desc">
+          AAPL price event erkannt.
+        </div>
 
       </div>
 
@@ -1719,2559 +1652,1708 @@ footer{
 
   </div>
 
+</section>
+
+</div>
+
 </div>
 
 
-<!-- =======================================================
-     THREE.JS + TRANSFORMERS
-======================================================= -->
+<!-- ======================================================
+     MODAL
+====================================================== -->
 
-<script type="module">
+<div
+  class="modal"
+  id="modal">
 
-import * as THREE
-  from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+  <div class="modal-box">
 
-import {
-  pipeline,
-  env
-} from "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2";
+    <div class="modal-head">
+
+      <div>
+
+        <div
+          class="kicker"
+          id="modalKicker">
+          KERNEL
+        </div>
+
+        <div
+          class="card-title"
+          id="modalTitle">
+          Action
+        </div>
+
+      </div>
+
+      <button
+        class="btn"
+        id="closeModal">
+        ×
+      </button>
+
+    </div>
+
+
+    <div
+      class="modal-body"
+      id="modalBody">
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+"use strict";
+
+/* =========================================================
+   NEURAL MEMORY V1
+   DETERMINISTIC KNOWLEDGE KERNEL
+========================================================= */
 
 
 /* =========================================================
-   CONFIG
+   UTILITIES
 ========================================================= */
 
-const DB_NAME =
-  "NEURAL_MEMORY_DB";
+function uuid(prefix){
 
-const DB_VERSION =
-  3;
-
-const STORE_NAME =
-  "memoryObjects";
-
-const VECTOR_DIM =
-  384;
-
-const MODEL_NAME =
-  "Xenova/multilingual-e5-small";
+  return prefix + "-" +
+    Math.random()
+      .toString(36)
+      .slice(2,8)
+      .toUpperCase();
+}
 
 
-env.allowRemoteModels = true;
-env.allowLocalModels = true;
+function now(){
+
+  return new Date().toISOString();
+
+}
 
 
 /* =========================================================
-   STATE
+   DOMAIN OBJECTS
 ========================================================= */
 
-const state = {
+class Investigation{
 
-  objects: [],
+  constructor({
+    id,
+    subject,
+    start,
+    end,
+    status="OPEN"
+  }){
 
-  selectedId: null,
+    this.id=id;
 
-  activeFilter: "all",
+    this.subject=subject;
 
-  searchText: "",
+    this.timeRange={
+      start,
+      end
+    };
 
-  searchResults: null,
+    this.status=status;
 
-  selectedType: "concept",
+    this.observations=[];
 
-  db: null,
+    this.evidence=[];
 
-  dbPromise: null,
+    this.hypotheses=[];
 
-  embeddingsPipeline: null,
+    this.relations=[];
 
-  modelLoading: false,
+    this.events=[];
 
-  modelReady: false,
+  }
 
-  scene: null,
+}
 
-  camera: null,
 
-  renderer: null,
+class Evidence{
 
-  nodeMeshes: new Map(),
+  constructor({
+    id,
+    type,
+    source,
+    content,
+    publishedAt=null,
+    provenance={}
+  }){
 
-  nodeLabels: new Map(),
+    this.id=id;
 
-  relationLines: [],
+    this.type=type;
 
-  projected: new Map(),
+    this.source=source;
 
-  raycaster:
-    new THREE.Raycaster(),
+    this.content=content;
 
-  mouse:
-    new THREE.Vector2(),
+    this.publishedAt=publishedAt;
 
-  rotationX: 0.25,
+    this.provenance=provenance;
 
-  rotationY: 0.4,
+    /*
+      IMPORTANT:
 
-  zoom: 1,
+      embedding is deliberately NOT
+      part of the kernel logic.
 
-  dragging: false,
+      Later:
 
-  lastPointerX: 0,
+      evidence.embedding
 
-  lastPointerY: 0
+      may be maintained by the
+      retrieval layer.
+    */
+
+    this.embedding=null;
+
+  }
+
+}
+
+
+class Hypothesis{
+
+  constructor({
+    id,
+    text,
+    status="UNDER_REVIEW"
+  }){
+
+    this.id=id;
+
+    this.text=text;
+
+    this.status=status;
+
+  }
+
+}
+
+
+class Relation{
+
+  constructor({
+    id,
+    from,
+    to,
+    type
+  }){
+
+    this.id=id;
+
+    this.from=from;
+
+    this.to=to;
+
+    this.type=type;
+
+  }
+
+}
+
+
+class Event{
+
+  constructor({
+    id,
+    type,
+    timestamp=now(),
+    payload={}
+  }){
+
+    this.id=id;
+
+    this.type=type;
+
+    this.timestamp=timestamp;
+
+    this.payload=payload;
+
+  }
+
+}
+
+
+/* =========================================================
+   KNOWLEDGE KERNEL
+========================================================= */
+
+class KnowledgeKernel{
+
+  constructor(){
+
+    this.investigations=
+      new Map();
+
+  }
+
+
+  createInvestigation(data){
+
+    if(
+      !data.id ||
+      !data.subject ||
+      !data.start ||
+      !data.end
+    ){
+
+      throw new Error(
+        "Invalid investigation"
+      );
+
+    }
+
+
+    if(
+      this.investigations
+        .has(data.id)
+    ){
+
+      throw new Error(
+        "Investigation already exists"
+      );
+
+    }
+
+
+    const investigation=
+      new Investigation(data);
+
+
+    this.investigations.set(
+      investigation.id,
+      investigation
+    );
+
+
+    this.recordEvent(
+      investigation.id,
+
+      new Event({
+
+        id:uuid("EVENT"),
+
+        type:
+          "INVESTIGATION_CREATED",
+
+        payload:{
+          investigationId:
+            investigation.id
+        }
+
+      })
+
+    );
+
+
+    return investigation;
+
+  }
+
+
+  getInvestigation(id){
+
+    const inv=
+      this.investigations.get(id);
+
+
+    if(!inv){
+
+      throw new Error(
+        "Investigation not found"
+      );
+
+    }
+
+
+    return inv;
+
+  }
+
+
+  recordEvent(
+    investigationId,
+    event
+  ){
+
+    const inv=
+      this.getInvestigation(
+        investigationId
+      );
+
+
+    inv.events.push(event);
+
+  }
+
+
+  applyEvent(
+    investigationId,
+    event
+  ){
+
+    const inv=
+      this.getInvestigation(
+        investigationId
+      );
+
+
+    this.validateEvent(
+      inv,
+      event
+    );
+
+
+    switch(event.type){
+
+      case "OBSERVATION_CREATED":
+
+        inv.observations.push(
+          event.payload.observation
+        );
+
+        break;
+
+
+      case "EVIDENCE_ADDED":
+
+        inv.evidence.push(
+          event.payload.evidence
+        );
+
+        break;
+
+
+      case "HYPOTHESIS_CREATED":
+
+        inv.hypotheses.push(
+          event.payload.hypothesis
+        );
+
+        break;
+
+
+      case "RELATION_CREATED":
+
+        inv.relations.push(
+          event.payload.relation
+        );
+
+        break;
+
+
+      default:
+
+        throw new Error(
+          "Unknown event: "+
+          event.type
+        );
+
+    }
+
+
+    inv.events.push(event);
+
+    return inv;
+
+  }
+
+
+  validateEvent(
+    inv,
+    event
+  ){
+
+    if(!event.type){
+
+      throw new Error(
+        "Event type missing"
+      );
+
+    }
+
+
+    if(!event.payload){
+
+      throw new Error(
+        "Event payload missing"
+      );
+
+    }
+
+
+    if(
+      event.type==="RELATION_CREATED"
+    ){
+
+      const r=
+        event.payload.relation;
+
+
+      if(!r.from || !r.to){
+
+        throw new Error(
+          "Relation endpoints missing"
+        );
+
+      }
+
+
+      const knownIds=[
+        ...inv.evidence.map(
+          e=>e.id
+        ),
+
+        ...inv.hypotheses.map(
+          h=>h.id
+        ),
+
+        ...inv.observations.map(
+          o=>o.id
+        )
+      ];
+
+
+      /*
+        Relation targets must already
+        exist in the current state.
+      */
+
+      if(
+        !knownIds.includes(r.from) ||
+        !knownIds.includes(r.to)
+      ){
+
+        throw new Error(
+          "Relation references unknown object"
+        );
+
+      }
+
+
+      const allowed=[
+        "SUPPORTS",
+        "CONTRADICTS",
+        "WEAKENS",
+        "REFINES",
+        "RELATED_TO",
+        "DERIVED_FROM"
+      ];
+
+
+      if(
+        !allowed.includes(r.type)
+      ){
+
+        throw new Error(
+          "Invalid relation type"
+        );
+
+      }
+
+    }
+
+  }
+
+
+  addObservation(
+    investigationId,
+    observation
+  ){
+
+    const event=
+      new Event({
+
+        id:uuid("EVENT"),
+
+        type:
+          "OBSERVATION_CREATED",
+
+        payload:{
+          observation
+        }
+
+      });
+
+
+    return this.applyEvent(
+      investigationId,
+      event
+    );
+
+  }
+
+
+  addEvidence(
+    investigationId,
+    evidence
+  ){
+
+    const event=
+      new Event({
+
+        id:uuid("EVENT"),
+
+        type:
+          "EVIDENCE_ADDED",
+
+        payload:{
+          evidence
+        }
+
+      });
+
+
+    return this.applyEvent(
+      investigationId,
+      event
+    );
+
+  }
+
+
+  addHypothesis(
+    investigationId,
+    hypothesis
+  ){
+
+    const event=
+      new Event({
+
+        id:uuid("EVENT"),
+
+        type:
+          "HYPOTHESIS_CREATED",
+
+        payload:{
+          hypothesis
+        }
+
+      });
+
+
+    return this.applyEvent(
+      investigationId,
+      event
+    );
+
+  }
+
+
+  addRelation(
+    investigationId,
+    relation
+  ){
+
+    const event=
+      new Event({
+
+        id:uuid("EVENT"),
+
+        type:
+          "RELATION_CREATED",
+
+        payload:{
+          relation
+        }
+
+      });
+
+
+    return this.applyEvent(
+      investigationId,
+      event
+    );
+
+  }
+
+
+  export(){
+
+    return JSON.stringify(
+
+      [
+        ...this.investigations.values()
+      ],
+
+      null,
+      2
+
+    );
+
+  }
+
+
+  import(json){
+
+    const data=
+      JSON.parse(json);
+
+
+    if(!Array.isArray(data)){
+
+      throw new Error(
+        "Invalid investigation file"
+      );
+
+    }
+
+
+    this.investigations.clear();
+
+
+    data.forEach(raw=>{
+
+      const inv=
+        Object.assign(
+          new Investigation({
+            id:raw.id,
+            subject:raw.subject,
+            start:
+              raw.timeRange.start,
+            end:
+              raw.timeRange.end,
+            status:raw.status
+          }),
+          raw
+        );
+
+
+      this.investigations.set(
+        inv.id,
+        inv
+      );
+
+    });
+
+
+    return this;
+
+  }
+
+}
+
+
+/* =========================================================
+   KERNEL INSTANCE
+========================================================= */
+
+const kernel=
+  new KnowledgeKernel();
+
+
+/* =========================================================
+   INITIAL INVESTIGATION
+========================================================= */
+
+let currentId="INV-291";
+
+
+const investigation=
+  kernel.createInvestigation({
+
+    id:currentId,
+
+    subject:"AAPL",
+
+    start:"2026-03-11",
+
+    end:"2026-03-13"
+
+  });
+
+
+/* =========================================================
+   DEMO HYPOTHESIS
+========================================================= */
+
+const initialHypothesis=
+  new Hypothesis({
+
+    id:"H-001",
+
+    text:
+      "Guidance reduction explains most of the selloff."
+
+  });
+
+
+kernel.addHypothesis(
+  currentId,
+  initialHypothesis
+);
+
+
+/* =========================================================
+   CHART DATA
+========================================================= */
+
+const chartData={
+
+  AAPL:[
+    188,
+    189.5,
+    190.2,
+    189.2,
+    191.1,
+    192.3,
+    193,
+    192.4,
+    193.8,
+    194.1,
+    193.2,
+    194.8,
+    195.2,
+    196.1,
+    195.6,
+    196.8,
+    197.2,
+    196.5,
+    195.9,
+    196.7,
+    195.8,
+    194.2,
+    192.1,
+    189.8,
+    187.9,
+    184.8,
+    181.7,
+    178.9,
+    176.2,
+    174.4,
+    173.1,
+    171.8,
+    170.5,
+    171.2,
+    169.9,
+    168.6,
+    167.4,
+    166.9,
+    166.4,
+    165.8
+  ],
+
+  NVDA:[
+    118,
+    119,
+    121,
+    120,
+    122,
+    124,
+    123,
+    125,
+    127,
+    128,
+    126,
+    125,
+    123,
+    121,
+    119,
+    117,
+    115,
+    114,
+    112,
+    111,
+    109,
+    108,
+    110,
+    107,
+    106,
+    104,
+    103,
+    101,
+    100,
+    98,
+    97,
+    96,
+    95,
+    94,
+    93,
+    92,
+    91,
+    90,
+    89,
+    88
+  ],
+
+  TSLA:[
+    310,
+    313,
+    316,
+    314,
+    319,
+    322,
+    320,
+    325,
+    327,
+    324,
+    321,
+    318,
+    315,
+    312,
+    310,
+    307,
+    304,
+    301,
+    298,
+    295,
+    292,
+    290,
+    287,
+    284,
+    282,
+    279,
+    277,
+    274,
+    272,
+    270,
+    267,
+    265,
+    263,
+    260,
+    258,
+    256,
+    254,
+    252,
+    250,
+    249
+  ]
 
 };
 
 
-/* =========================================================
-   DOM HELPER
-========================================================= */
-
-const $ = id =>
-  document.getElementById(id);
-
-
-/* =========================================================
-   BASIC HELPERS
-========================================================= */
-
-function nowISO(){
-
-  return new Date()
-    .toISOString();
-
-}
-
-
-function createId(){
-
-  return (
-    "MEM-" +
-    Date.now().toString(36) +
-    "-" +
-    Math.random()
-      .toString(36)
-      .slice(2,7)
-  ).toUpperCase();
-
-}
-
-
-function setLog(
-  text,
-  error = false
-){
-
-  $("logText").textContent =
-    text;
-
-  $("statusDot").className =
-    "statusDot" +
-    (error ? " error" : "");
-
-}
+const dates=[
+  "03 Mar",
+  "04 Mar",
+  "05 Mar",
+  "06 Mar",
+  "07 Mar",
+  "08 Mar",
+  "09 Mar",
+  "10 Mar",
+  "11 Mar",
+  "11 Mar",
+  "11 Mar",
+  "12 Mar",
+  "12 Mar",
+  "12 Mar",
+  "12 Mar",
+  "13 Mar",
+  "13 Mar",
+  "13 Mar",
+  "13 Mar",
+  "13 Mar",
+  "14 Mar",
+  "14 Mar",
+  "15 Mar",
+  "16 Mar",
+  "17 Mar",
+  "18 Mar",
+  "19 Mar",
+  "20 Mar",
+  "21 Mar",
+  "22 Mar",
+  "23 Mar",
+  "24 Mar",
+  "25 Mar",
+  "26 Mar",
+  "27 Mar",
+  "28 Mar",
+  "29 Mar",
+  "30 Mar",
+  "31 Mar",
+  "01 Apr"
+];
 
 
-function toast(
-  message,
-  error = false
-){
+let activeSymbol="AAPL";
 
-  const el =
-    $("toast");
+let startIndex=8;
+let endIndex=19;
 
-  el.textContent =
-    message;
-
-  el.className =
-    error
-      ? "show error"
-      : "show";
-
-  clearTimeout(
-    toast.timer
-  );
-
-  toast.timer =
-    setTimeout(() => {
-
-      el.className = "";
-
-    }, 2800);
-
-}
+let dragging=false;
+let dragStart=0;
 
 
 /* =========================================================
-   VECTOR MATH
+   CANVAS
 ========================================================= */
 
-function vectorNorm(v){
+const canvas=
+  document.getElementById("chart");
 
-  let sum = 0;
+const ctx=
+  canvas.getContext("2d");
 
-  for(
-    let i = 0;
-    i < v.length;
-    i++
-  ){
+const chartArea=
+  document.getElementById("chartArea");
 
-    sum +=
-      v[i] * v[i];
+let W=0;
+let H=0;
+let DPR=
+  window.devicePixelRatio || 1;
 
-  }
 
-  return Math.sqrt(sum);
+function resizeCanvas(){
 
-}
+  const rect=
+    chartArea.getBoundingClientRect();
 
 
-function normalizeVector(v){
+  W=rect.width;
 
-  const n =
-    vectorNorm(v);
+  H=rect.height;
 
-  if(!Number.isFinite(n) || n === 0){
 
-    throw new Error(
-      "Embedding besitzt keine gültige Länge."
-    );
+  canvas.width=
+    W*DPR;
 
-  }
+  canvas.height=
+    H*DPR;
 
-  return v.map(
-    x => x / n
-  );
 
-}
-
-
-function dot(a,b){
-
-  let sum = 0;
-
-  for(
-    let i = 0;
-    i < a.length;
-    i++
-  ){
-
-    sum +=
-      a[i] * b[i];
-
-  }
-
-  return sum;
-
-}
-
-
-function cosineSimilarity(a,b){
-
-  if(
-    !Array.isArray(a) ||
-    !Array.isArray(b)
-  ){
-
-    return 0;
-
-  }
-
-  if(
-    a.length !== b.length
-  ){
-
-    return 0;
-
-  }
-
-  const na =
-    vectorNorm(a);
-
-  const nb =
-    vectorNorm(b);
-
-  if(
-    na === 0 ||
-    nb === 0
-  ){
-
-    return 0;
-
-  }
-
-  return (
-    dot(a,b) /
-    (na * nb)
-  );
-
-}
-
-
-/* =========================================================
-   INDEXED DB
-========================================================= */
-
-function openDB(){
-
-  if(state.db){
-
-    return Promise.resolve(
-      state.db
-    );
-
-  }
-
-  if(state.dbPromise){
-
-    return state.dbPromise;
-
-  }
-
-
-  state.dbPromise =
-    new Promise(
-      (resolve,reject) => {
-
-        const request =
-          indexedDB.open(
-            DB_NAME,
-            DB_VERSION
-          );
-
-
-        request.onupgradeneeded =
-          event => {
-
-            const db =
-              event.target.result;
-
-
-            if(
-              !db.objectStoreNames
-                .contains(STORE_NAME)
-            ){
-
-              db.createObjectStore(
-                STORE_NAME,
-                {
-                  keyPath:"id"
-                }
-              );
-
-            }
-
-          };
-
-
-        request.onsuccess =
-          event => {
-
-            const db =
-              event.target.result;
-
-            state.db =
-              db;
-
-
-            db.onversionchange =
-              () => {
-
-                db.close();
-
-                state.db =
-                  null;
-
-                state.dbPromise =
-                  null;
-
-              };
-
-
-            db.onclose =
-              () => {
-
-                state.db =
-                  null;
-
-                state.dbPromise =
-                  null;
-
-              };
-
-
-            $("dbStatus")
-              .textContent =
-              "ONLINE";
-
-
-            resolve(db);
-
-          };
-
-
-        request.onerror =
-          () => {
-
-            state.db =
-              null;
-
-            state.dbPromise =
-              null;
-
-            reject(
-              request.error ||
-              new Error(
-                "IndexedDB konnte nicht geöffnet werden."
-              )
-            );
-
-          };
-
-
-        request.onblocked =
-          () => {
-
-            console.warn(
-              "IndexedDB open blocked."
-            );
-
-          };
-
-      }
-    );
-
-  return state.dbPromise;
-
-}
-
-
-/* =========================================================
-   SAVE
-========================================================= */
-
-async function saveObject(object){
-
-  if(!object){
-
-    throw new Error(
-      "Memory Object fehlt."
-    );
-
-  }
-
-  if(
-    typeof object !== "object"
-  ){
-
-    throw new Error(
-      "Memory Object ist kein Objekt."
-    );
-
-  }
-
-  if(!object.id){
-
-    throw new Error(
-      "Memory Object besitzt keine ID."
-    );
-
-  }
-
-  if(
-    !Array.isArray(
-      object.embedding
-    )
-  ){
-
-    throw new Error(
-      "Embedding ist kein normales Array."
-    );
-
-  }
-
-  if(
-    object.embedding.length !==
-    VECTOR_DIM
-  ){
-
-    throw new Error(
-      `Embedding-Dimension falsch: ${
-        object.embedding.length
-      } statt ${VECTOR_DIM}.`
-    );
-
-  }
-
-
-  /*
-   * WICHTIG:
-   *
-   * Wir erzeugen absichtlich ein komplett
-   * neues Plain Object.
-   *
-   * Dadurch kann kein Tensor,
-   * Model-Objekt oder sonstiger
-   * nicht klonbarer Wert versehentlich
-   * in IndexedDB landen.
-   */
-
-  const cleanObject = {
-
-    id:
-      String(object.id),
-
-    version:
-      Number(object.version || 2),
-
-    type:
-      String(object.type || "other"),
-
-    label:
-      String(object.label || ""),
-
-    description:
-      String(object.description || ""),
-
-    tags:
-      Array.isArray(object.tags)
-        ? object.tags.map(String)
-        : [],
-
-    relations:
-      Array.isArray(object.relations)
-        ? object.relations.map(
-            relation => ({
-              type:
-                String(
-                  relation.type || ""
-                ),
-              target:
-                String(
-                  relation.target || ""
-                )
-            })
-          )
-        : [],
-
-    embedding:
-      object.embedding.map(
-        Number
-      ),
-
-    provenance:{
-
-      source:
-        String(
-          object.provenance?.source ||
-          "unknown"
-        ),
-
-      method:
-        String(
-          object.provenance?.method ||
-          ""
-        ),
-
-      model:
-        String(
-          object.provenance?.model ||
-          ""
-        )
-
-    },
-
-    createdAt:
-      String(
-        object.createdAt ||
-        nowISO()
-      ),
-
-    updatedAt:
-      String(
-        object.updatedAt ||
-        nowISO()
-      )
-
-  };
-
-
-  const db =
-    await openDB();
-
-
-  return new Promise(
-    (resolve,reject) => {
-
-      let finished =
-        false;
-
-
-      function fail(error){
-
-        if(finished)
-          return;
-
-        finished = true;
-
-        reject(error);
-
-      }
-
-
-      function success(){
-
-        if(finished)
-          return;
-
-        finished = true;
-
-        resolve();
-
-      }
-
-
-      let tx;
-
-      try{
-
-        tx =
-          db.transaction(
-            STORE_NAME,
-            "readwrite"
-          );
-
-      }catch(error){
-
-        fail(error);
-
-        return;
-
-      }
-
-
-      const store =
-        tx.objectStore(
-          STORE_NAME
-        );
-
-
-      tx.oncomplete =
-        success;
-
-
-      tx.onerror =
-        () => {
-
-          fail(
-            tx.error ||
-            new Error(
-              "IndexedDB transaction fehlgeschlagen."
-            )
-          );
-
-        };
-
-
-      tx.onabort =
-        () => {
-
-          fail(
-            tx.error ||
-            new Error(
-              "IndexedDB transaction wurde abgebrochen."
-            )
-          );
-
-        };
-
-
-      try{
-
-        store.put(
-          cleanObject
-        );
-
-      }catch(error){
-
-        fail(error);
-
-      }
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   LOAD
-========================================================= */
-
-async function loadObjects(){
-
-  const db =
-    await openDB();
-
-
-  return new Promise(
-    (resolve,reject) => {
-
-      let tx;
-
-      try{
-
-        tx =
-          db.transaction(
-            STORE_NAME,
-            "readonly"
-          );
-
-      }catch(error){
-
-        reject(error);
-
-        return;
-
-      }
-
-
-      const store =
-        tx.objectStore(
-          STORE_NAME
-        );
-
-
-      const request =
-        store.getAll();
-
-
-      request.onsuccess =
-        () => {
-
-          resolve(
-            Array.isArray(
-              request.result
-            )
-              ? request.result
-              : []
-          );
-
-        };
-
-
-      request.onerror =
-        () => {
-
-          reject(
-            request.error ||
-            new Error(
-              "Memory konnte nicht geladen werden."
-            )
-          );
-
-        };
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   DELETE
-========================================================= */
-
-async function clearDatabase(){
-
-  const db =
-    await openDB();
-
-
-  return new Promise(
-    (resolve,reject) => {
-
-      const tx =
-        db.transaction(
-          STORE_NAME,
-          "readwrite"
-        );
-
-
-      tx.objectStore(
-        STORE_NAME
-      ).clear();
-
-
-      tx.oncomplete =
-        resolve;
-
-
-      tx.onerror =
-        () => reject(
-          tx.error
-        );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   EMBEDDING ENGINE
-========================================================= */
-
-async function getEmbeddingPipeline(){
-
-  if(
-    state.embeddingsPipeline
-  ){
-
-    return state.embeddingsPipeline;
-
-  }
-
-
-  if(
-    state.modelLoading
-  ){
-
-    while(
-      state.modelLoading
-    ){
-
-      await new Promise(
-        resolve =>
-          setTimeout(
-            resolve,
-            100
-          )
-      );
-
-    }
-
-    if(
-      state.embeddingsPipeline
-    ){
-
-      return state.embeddingsPipeline;
-
-    }
-
-    throw new Error(
-      "Embedding-Modell konnte nicht geladen werden."
-    );
-
-  }
-
-
-  state.modelLoading =
-    true;
-
-
-  $("statusDot").className =
-    "statusDot loading";
-
-  $("engineStatusText")
-    .textContent =
-    "LOADING MODEL";
-
-  $("modelStatus")
-    .textContent =
-    "LOADING";
-
-  setLog(
-    "LOADING MULTILINGUAL EMBEDDING MODEL..."
+  ctx.setTransform(
+    DPR,
+    0,
+    0,
+    DPR,
+    0,
+    0
   );
 
 
-  try{
-
-    /*
-     * WICHTIG:
-     *
-     * feature-extraction
-     * ist die Pipeline-Aufgabe.
-     *
-     * Nur MODEL_NAME zu übergeben
-     * wäre falsch.
-     */
-
-    state.embeddingsPipeline =
-      await pipeline(
-        "feature-extraction",
-        MODEL_NAME
-      );
-
-
-    state.modelReady =
-      true;
-
-
-    $("statusDot").className =
-      "statusDot";
-
-    $("engineStatusText")
-      .textContent =
-      "LOCAL MEMORY ONLINE";
-
-    $("modelStatus")
-      .textContent =
-      "READY";
-
-
-    setLog(
-      "02 VECTOR SPACE READY"
-    );
-
-
-    return state.embeddingsPipeline;
-
-  }catch(error){
-
-    state.modelReady =
-      false;
-
-    $("statusDot").className =
-      "statusDot error";
-
-    $("engineStatusText")
-      .textContent =
-      "MODEL ERROR";
-
-    $("modelStatus")
-      .textContent =
-      "ERROR";
-
-
-    console.error(
-      "MODEL ERROR",
-      error
-    );
-
-
-    throw error;
-
-  }finally{
-
-    state.modelLoading =
-      false;
-
-  }
+  drawChart();
 
 }
 
 
-/* =========================================================
-   CREATE EMBEDDING
-========================================================= */
+function chartX(i){
 
-async function createEmbedding(
-  text,
-  mode = "passage"
-){
-
-  const cleanText =
-    String(text || "")
-      .trim();
-
-
-  if(!cleanText){
-
-    throw new Error(
-      "Embedding-Text ist leer."
-    );
-
-  }
-
-
-  const extractor =
-    await getEmbeddingPipeline();
-
-
-  /*
-   * E5 Retrieval Convention:
-   *
-   * gespeicherte Inhalte:
-   * passage:
-   *
-   * Suchanfragen:
-   * query:
-   */
-
-  const input =
-    `${mode}: ${cleanText}`;
-
-
-  const result =
-    await extractor(
-      input,
-      {
-        pooling:"mean",
-        normalize:true
-      }
-    );
-
-
-  /*
-   * Transformers.js kann hier
-   * ein TypedArray liefern.
-   *
-   * Für IndexedDB machen wir daraus
-   * bewusst ein normales Array.
-   */
-
-  let values;
-
-
-  if(
-    result &&
-    result.data
-  ){
-
-    values =
-      Array.from(
-        result.data
-      );
-
-  }else if(
-    Array.isArray(result)
-  ){
-
-    values =
-      Array.from(result);
-
-  }else{
-
-    throw new Error(
-      "Embedding-Ausgabe besitzt kein gültiges Datenformat."
-    );
-
-  }
-
-
-  if(
-    values.length !==
-    VECTOR_DIM
-  ){
-
-    throw new Error(
-      `Embedding besitzt ${
-        values.length
-      } Dimensionen statt ${
-        VECTOR_DIM
-      }.`
-    );
-
-  }
-
-
-  values =
-    values.map(Number);
-
-
-  values =
-    normalizeVector(
-      values
-    );
-
-
-  return values;
+  return 45+
+    i*
+    ((W-60)/
+     (chartData[activeSymbol].length-1));
 
 }
 
 
-/* =========================================================
-   CREATE MEMORY OBJECT
-========================================================= */
+function chartY(v){
 
-async function createMemoryObject(){
+  const values=
+    chartData[activeSymbol];
 
-  const label =
-    $("name")
-      .value
-      .trim();
+  const min=
+    Math.min(...values)-5;
 
-  const description =
-    $("description")
-      .value
-      .trim();
+  const max=
+    Math.max(...values)+5;
 
-  const tags =
-    $("tags")
-      .value
-      .split(",")
-      .map(
-        t => t.trim()
-      )
-      .filter(Boolean);
 
-  const type =
-    $("type").value;
-
-
-  if(!label){
-
-    toast(
-      "NAME FEHLT",
-      true
-    );
-
-    $("name").focus();
-
-    return;
-
-  }
-
-
-  if(!description){
-
-    toast(
-      "BESCHREIBUNG FEHLT",
-      true
-    );
-
-    $("description").focus();
-
-    return;
-
-  }
-
-
-  const button =
-    $("createBtn");
-
-
-  button.disabled =
-    true;
-
-
-  try{
-
-    setLog(
-      "03 CREATING EMBEDDING..."
-    );
-
-
-    /*
-     * Das ist der semantische Inhalt,
-     * aus dem der Vektor erzeugt wird.
-     */
-
-    const embeddingText = [
-
-      label,
-
-      description,
-
-      tags.length
-        ? `Tags: ${tags.join(", ")}`
-        : ""
-
-    ]
-      .filter(Boolean)
-      .join(". ");
-
-
-    const embedding =
-      await createEmbedding(
-        embeddingText,
-        "passage"
-      );
-
-
-    console.log(
-      "Embedding erzeugt:",
-      embedding.length
-    );
-
-
-    const timestamp =
-      nowISO();
-
-
-    const object = {
-
-      id:
-        createId(),
-
-      version:
-        2,
-
-      type:
-        type,
-
-      label:
-        label,
-
-      description:
-        description,
-
-      tags:
-        tags,
-
-      relations:
-        [],
-
-      embedding:
-        embedding,
-
-      provenance:{
-
-        source:
-          "user",
-
-        method:
-          "transformers.js",
-
-        model:
-          MODEL_NAME
-
-      },
-
-      createdAt:
-        timestamp,
-
-      updatedAt:
-        timestamp
-
-    };
-
-
-    setLog(
-      "04 STORING MEMORY OBJECT..."
-    );
-
-
-    /*
-     * ERST JETZT IndexedDB.
-     */
-
-    await saveObject(
-      object
-    );
-
-
-    state.objects.push(
-      object
-    );
-
-
-    state.selectedId =
-      object.id;
-
-
-    $("name").value =
-      "";
-
-    $("description").value =
-      "";
-
-    $("tags").value =
-      "";
-
-
-    setLog(
-      "05 MEMORY OBJECT STORED"
-    );
-
-
-    toast(
-      "MEMORY OBJECT STORED"
-    );
-
-
-    updateUI();
-
-
-  }catch(error){
-
-    console.error(
-      "MEMORY CREATION FAILED:",
-      error
-    );
-
-    console.error(
-      "ERROR NAME:",
-      error?.name
-    );
-
-    console.error(
-      "ERROR MESSAGE:",
-      error?.message
-    );
-
-    console.error(
-      "ERROR STACK:",
-      error?.stack
-    );
-
-
-    setLog(
-      "STORAGE ERROR",
-      true
-    );
-
-
-    toast(
-      `Speicherung fehlgeschlagen: ${
-        error?.name
-          ? error.name + " — "
-          : ""
-      }${
-        error?.message ||
-        "unbekannter Fehler"
-      }`,
-      true
-    );
-
-
-  }finally{
-
-    button.disabled =
-      false;
-
-  }
+  return H-
+    35-
+    ((v-min)/
+     (max-min))*
+    (H-65);
 
 }
 
 
-/* =========================================================
-   SEMANTIC SEARCH
-========================================================= */
+function drawChart(){
 
-async function semanticSearch(
-  query
-){
-
-  const clean =
-    query.trim();
-
-
-  state.searchText =
-    clean;
-
-
-  if(!clean){
-
-    state.searchResults =
-      null;
-
-    renderExplorer();
-
-    return;
-
-  }
-
-
-  if(
-    !state.objects.length
-  ){
-
-    state.searchResults =
-      [];
-
-    renderExplorer();
-
-    return;
-
-  }
-
-
-  try{
-
-    setLog(
-      "SEMANTIC SEARCH..."
-    );
-
-
-    const queryVector =
-      await createEmbedding(
-        clean,
-        "query"
-      );
-
-
-    const results =
-      state.objects
-
-        .map(
-          object => ({
-
-            object:
-
-              object,
-
-            score:
-
-              cosineSimilarity(
-                queryVector,
-                object.embedding
-              )
-
-          })
-        )
-
-        .sort(
-          (a,b) =>
-            b.score -
-            a.score
-        );
-
-
-    state.searchResults =
-      results;
-
-
-    setLog(
-      "SEMANTIC SEARCH READY"
-    );
-
-
-    renderExplorer();
-
-
-  }catch(error){
-
-    console.error(
-      error
-    );
-
-    state.searchResults =
-      null;
-
-
-    setLog(
-      "SEARCH ERROR",
-      true
-    );
-
-
-    toast(
-      error.message ||
-      "Semantische Suche fehlgeschlagen.",
-      true
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   PCA-LIKE 384D → 3D
-========================================================= */
-
-function subtractMean(
-  vectors
-){
-
-  if(!vectors.length)
-    return [];
-
-  const dim =
-    vectors[0].length;
-
-  const mean =
-    new Array(dim)
-      .fill(0);
-
-
-  for(
-    const vector of vectors
-  ){
-
-    for(
-      let i=0;
-      i<dim;
-      i++
-    ){
-
-      mean[i] +=
-        vector[i];
-
-    }
-
-  }
-
-
-  for(
-    let i=0;
-    i<dim;
-    i++
-  ){
-
-    mean[i] /=
-      vectors.length;
-
-  }
-
-
-  return vectors.map(
-    vector =>
-      vector.map(
-        (x,i) =>
-          x - mean[i]
-      )
-  );
-
-}
-
-
-function multiplyCovariance(
-  centered,
-  vector
-){
-
-  const n =
-    centered.length;
-
-  const dim =
-    vector.length;
-
-  const result =
-    new Array(dim)
-      .fill(0);
-
-
-  for(
-    const row of centered
-  ){
-
-    let projection =
-      0;
-
-
-    for(
-      let i=0;
-      i<dim;
-      i++
-    ){
-
-      projection +=
-        row[i] *
-        vector[i];
-
-    }
-
-
-    for(
-      let i=0;
-      i<dim;
-      i++
-    ){
-
-      result[i] +=
-        row[i] *
-        projection;
-
-    }
-
-  }
-
-
-  return result.map(
-    x =>
-      x / Math.max(1,n)
-  );
-
-}
-
-
-function normalizeBasis(
-  vector
-){
-
-  const n =
-    vectorNorm(vector);
-
-
-  if(!n){
-
-    return vector.map(
-      () => 0
-    );
-
-  }
-
-
-  return vector.map(
-    x =>
-      x / n
-  );
-
-}
-
-
-function orthogonalize(
-  vector,
-  basis
-){
-
-  let result =
-    vector.slice();
-
-
-  for(
-    const b of basis
-  ){
-
-    const projection =
-      dot(result,b);
-
-
-    for(
-      let i=0;
-      i<result.length;
-      i++
-    ){
-
-      result[i] -=
-        projection *
-        b[i];
-
-    }
-
-  }
-
-
-  return normalizeBasis(
-    result
-  );
-
-}
-
-
-function powerIteration(
-  centered,
-  basis
-){
-
-  const dim =
-    centered[0].length;
-
-
-  let vector =
-    new Array(dim);
-
-
-  for(
-    let i=0;
-    i<dim;
-    i++
-  ){
-
-    vector[i] =
-      Math.sin(
-        (i+1) *
-        (basis+1)
-      );
-
-  }
-
-
-  vector =
-    orthogonalize(
-      vector,
-      basisVectors
-    );
-
-
-  for(
-    let iteration=0;
-    iteration<35;
-    iteration++
-  ){
-
-    vector =
-      multiplyCovariance(
-        centered,
-        vector
-      );
-
-
-    vector =
-      orthogonalize(
-        vector,
-        basisVectors
-      );
-
-  }
-
-
-  return vector;
-
-}
-
-
-let basisVectors = [];
-
-
-function projectTo3D(
-  objects
-){
-
-  state.projected.clear();
-
-
-  if(
-    !objects.length
-  ){
-
-    return;
-
-  }
-
-
-  if(
-    objects.length === 1
-  ){
-
-    state.projected.set(
-      objects[0].id,
-      {
-        x:0,
-        y:0,
-        z:0
-      }
-    );
-
-    return;
-
-  }
-
-
-  const vectors =
-    objects.map(
-      o => o.embedding
-    );
-
-
-  const centered =
-    subtractMean(
-      vectors
-    );
-
-
-  basisVectors = [];
-
-
-  for(
-    let axis=0;
-    axis<3;
-    axis++
-  ){
-
-    const basis =
-      powerIteration(
-        centered,
-        axis
-      );
-
-
-    basisVectors.push(
-      basis
-    );
-
-  }
-
-
-  const coordinates =
-    centered.map(
-      vector => ({
-
-        x:
-          dot(
-            vector,
-            basisVectors[0]
-          ),
-
-        y:
-          dot(
-            vector,
-            basisVectors[1]
-          ),
-
-        z:
-          dot(
-            vector,
-            basisVectors[2]
-          )
-
-      })
-    );
-
-
-  let max =
-    0;
-
-
-  for(
-    const c of coordinates
-  ){
-
-    max =
-      Math.max(
-        max,
-        Math.abs(c.x),
-        Math.abs(c.y),
-        Math.abs(c.z)
-      );
-
-  }
-
-
-  const scale =
-    max > 0
-      ? 180 / max
-      : 1;
-
-
-  objects.forEach(
-    (object,index) => {
-
-      const c =
-        coordinates[index];
-
-
-      state.projected.set(
-        object.id,
-        {
-
-          x:c.x * scale,
-
-          y:c.y * scale,
-
-          z:c.z * scale
-
-        }
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   THREE SCENE
-========================================================= */
-
-function initScene(){
-
-  const container =
-    $("scene");
-
-
-  state.scene =
-    new THREE.Scene();
-
-
-  state.camera =
-    new THREE.PerspectiveCamera(
-      55,
-      container.clientWidth /
-        container.clientHeight,
-      0.1,
-      5000
-    );
-
-
-  state.camera.position.z =
-    650;
-
-
-  state.renderer =
-    new THREE.WebGLRenderer({
-      antialias:true,
-      alpha:true
-    });
-
-
-  state.renderer.setPixelRatio(
-    Math.min(
-      window.devicePixelRatio || 1,
-      2
-    )
-  );
-
-
-  state.renderer.setSize(
-    container.clientWidth,
-    container.clientHeight
-  );
-
-
-  container.appendChild(
-    state.renderer.domElement
-  );
-
-
-  /*
-   * Ambient light
-   */
-
-  state.scene.add(
-    new THREE.AmbientLight(
-      0xffffff,
-      1
-    )
-  );
-
-
-  addInteraction();
-
-  window.addEventListener(
-    "resize",
-    resizeScene
-  );
-
-
-  animate();
-
-}
-
-
-/* =========================================================
-   TYPE COLORS
-========================================================= */
-
-function typeColor(
-  type
-){
-
-  switch(type){
-
-    case "concept":
-      return 0x00f5ff;
-
-    case "system":
-      return 0x4ade80;
-
-    case "person":
-      return 0xff2b91;
-
-    case "project":
-      return 0xffe600;
-
-    case "technology":
-      return 0xa855f7;
-
-    default:
-      return 0x8da2b3;
-
-  }
-
-}
-
-
-/* =========================================================
-   LABEL SPRITE
-========================================================= */
-
-function createLabel(
-  text,
-  color
-){
-
-  const canvas =
-    document.createElement(
-      "canvas"
-    );
-
-
-  canvas.width =
-    512;
-
-  canvas.height =
-    96;
-
-
-  const ctx =
-    canvas.getContext("2d");
+  const values=
+    chartData[activeSymbol];
 
 
   ctx.clearRect(
     0,
     0,
-    canvas.width,
-    canvas.height
+    W,
+    H
   );
 
 
-  ctx.font =
-    "bold 30px monospace";
+  /* grid */
+
+  ctx.font=
+    "8px ui-monospace,monospace";
+
+  ctx.fillStyle=
+    "#637783";
 
 
-  ctx.fillStyle =
-    "#" +
-    color
-      .toString(16)
-      .padStart(6,"0");
+  for(
+    let i=0;
+    i<5;
+    i++
+  ){
+
+    const yy=
+      25+
+      i*
+      ((H-60)/4);
 
 
-  ctx.textAlign =
-    "center";
+    ctx.strokeStyle=
+      "#ffffff08";
 
-  ctx.textBaseline =
-    "middle";
+    ctx.beginPath();
 
-
-  ctx.fillText(
-    text.slice(0,28),
-    256,
-    48
-  );
-
-
-  const texture =
-    new THREE.CanvasTexture(
-      canvas
+    ctx.moveTo(
+      0,
+      yy
     );
 
+    ctx.lineTo(
+      W,
+      yy
+    );
 
-  texture.needsUpdate =
-    true;
+    ctx.stroke();
+
+  }
 
 
-  const material =
-    new THREE.SpriteMaterial({
-      map:texture,
-      transparent:true,
-      depthWrite:false
+  /* selected background */
+
+  const sx=
+    chartX(startIndex);
+
+  const ex=
+    chartX(endIndex);
+
+
+  ctx.fillStyle=
+    "#00f5ff09";
+
+  ctx.fillRect(
+    sx,
+    0,
+    ex-sx,
+    H
+  );
+
+
+  /* full line */
+
+  ctx.beginPath();
+
+
+  values.forEach(
+    (v,i)=>{
+
+      if(i===0){
+
+        ctx.moveTo(
+          chartX(i),
+          chartY(v)
+        );
+
+      }else{
+
+        ctx.lineTo(
+          chartX(i),
+          chartY(v)
+        );
+
+      }
+
+    }
+  );
+
+
+  ctx.strokeStyle=
+    "#00f5ff";
+
+  ctx.lineWidth=2;
+
+  ctx.shadowBlur=10;
+
+  ctx.shadowColor=
+    "#00f5ff";
+
+  ctx.stroke();
+
+  ctx.shadowBlur=0;
+
+
+  /* selected line */
+
+  ctx.beginPath();
+
+
+  for(
+    let i=startIndex;
+    i<=endIndex;
+    i++
+  ){
+
+    if(i===startIndex){
+
+      ctx.moveTo(
+        chartX(i),
+        chartY(values[i])
+      );
+
+    }else{
+
+      ctx.lineTo(
+        chartX(i),
+        chartY(values[i])
+      );
+
+    }
+
+  }
+
+
+  ctx.strokeStyle=
+    "#ff2d8d";
+
+  ctx.lineWidth=3;
+
+  ctx.stroke();
+
+
+  /* endpoints */
+
+  [startIndex,endIndex]
+    .forEach(i=>{
+
+      ctx.beginPath();
+
+      ctx.arc(
+        chartX(i),
+        chartY(values[i]),
+        4,
+        0,
+        Math.PI*2
+      );
+
+      ctx.fillStyle=
+        "#ff2d8d";
+
+      ctx.fill();
+
     });
 
 
-  const sprite =
-    new THREE.Sprite(
-      material
-    );
-
-
-  sprite.scale.set(
-    90,
-    17,
-    1
-  );
-
-
-  return sprite;
+  updateSelection();
 
 }
 
 
 /* =========================================================
-   RENDER 3D
+   SELECTION
 ========================================================= */
 
-function render3D(){
+function updateSelection(){
 
-  if(!state.scene)
-    return;
-
-
-  /*
-   * Alte Nodes entfernen.
-   */
-
-  for(
-    const mesh of
-      state.nodeMeshes.values()
-  ){
-
-    state.scene.remove(
-      mesh
+  const selection=
+    document.getElementById(
+      "selection"
     );
 
-    mesh.geometry.dispose();
 
-    mesh.material.dispose();
+  const label=
+    document.getElementById(
+      "selectionLabel"
+    );
 
-  }
+
+  const left=
+    chartX(startIndex);
+
+  const right=
+    chartX(endIndex);
 
 
-  for(
-    const label of
-      state.nodeLabels.values()
-  ){
+  selection.style.display=
+    "block";
 
-    state.scene.remove(
-      label
+  selection.style.left=
+    left+"px";
+
+  selection.style.width=
+    (right-left)+"px";
+
+
+  const values=
+    chartData[activeSymbol];
+
+
+  const change=
+    (
+      (
+        values[endIndex]/
+        values[startIndex]
+      )-1
+    )*100;
+
+
+  label.textContent=
+    dates[startIndex]+
+    " → "+
+    dates[endIndex]+
+    " / "+
+    change.toFixed(1)+
+    "%";
+
+}
+
+
+function indexFromPointer(
+  clientX
+){
+
+  const rect=
+    chartArea.getBoundingClientRect();
+
+
+  let p=
+    (
+      clientX-
+      rect.left-
+      45
+    )/
+    (W-60);
+
+
+  p=
+    Math.max(
+      0,
+      Math.min(1,p)
+    );
+
+
+  return Math.round(
+    p*
+    (
+      chartData[activeSymbol]
+        .length-1
+    )
+  );
+
+}
+
+
+/* =========================================================
+   POINTER
+========================================================= */
+
+canvas.addEventListener(
+  "pointerdown",
+  e=>{
+
+    dragging=true;
+
+    dragStart=
+      indexFromPointer(
+        e.clientX
+      );
+
+    canvas.setPointerCapture(
+      e.pointerId
     );
 
   }
+);
 
 
-  for(
-    const line of
-      state.relationLines
-  ){
+canvas.addEventListener(
+  "pointermove",
+  e=>{
 
-    state.scene.remove(
-      line
-    );
+    if(!dragging)
+      return;
 
-    line.geometry.dispose();
 
-    line.material.dispose();
+    const index=
+      indexFromPointer(
+        e.clientX
+      );
+
+
+    startIndex=
+      Math.min(
+        dragStart,
+        index
+      );
+
+
+    endIndex=
+      Math.max(
+        dragStart,
+        index
+      );
+
+
+    drawChart();
 
   }
+);
 
 
-  state.nodeMeshes.clear();
+canvas.addEventListener(
+  "pointerup",
+  ()=>{
 
-  state.nodeLabels.clear();
+    if(dragging){
 
-  state.relationLines = [];
+      dragging=false;
+
+      addTrace(
+        "CHART_SELECTION",
+        `Bereich ${dates[startIndex]} → ${dates[endIndex]} markiert.`
+      );
+
+    }
+
+  }
+);
 
 
-  projectTo3D(
-    state.objects
+/* =========================================================
+   OBSERVATION
+========================================================= */
+
+function createObservation(){
+
+  const values=
+    chartData[activeSymbol];
+
+
+  const start=
+    values[startIndex];
+
+  const end=
+    values[endIndex];
+
+
+  const change=
+    ((end/start)-1)*100;
+
+
+  const observation={
+
+    id:uuid("OBS"),
+
+    type:"PRICE_EVENT",
+
+    subject:activeSymbol,
+
+    startDate:
+      "2026-03-"+String(
+        3+startIndex
+      ).padStart(2,"0"),
+
+    endDate:
+      "2026-03-"+String(
+        3+endIndex
+      ).padStart(2,"0"),
+
+    startValue:
+      Number(start.toFixed(2)),
+
+    endValue:
+      Number(end.toFixed(2)),
+
+    changePercent:
+      Number(change.toFixed(2)),
+
+    source:"CHART_SELECTION"
+
+  };
+
+
+  kernel.addObservation(
+    currentId,
+    observation
   );
 
 
-  /*
-   * Nodes
-   */
-
-  for(
-    const object of
-      state.objects
-  ){
-
-    const position =
-      state.projected.get(
-        object.id
-      );
+  document.getElementById(
+    "observationMove"
+  ).textContent=
+    (
+      change>=0?"+":""
+    )+
+    change.toFixed(1)+
+    "%";
 
 
-    if(!position)
-      continue;
+  document.getElementById(
+    "observationMeta"
+  ).textContent=
+    activeSymbol+
+    " · "+
+    dates[startIndex]+
+    " → "+
+    dates[endIndex];
 
 
-    const geometry =
-      new THREE.SphereGeometry(
-        object.id === state.selectedId
-          ? 9
-          : 6,
-        20,
-        20
-      );
+  addTrace(
+    "OBSERVATION_CREATED",
+    `${observation.id} · ${activeSymbol} ${change.toFixed(1)}%`
+  );
 
 
-    const material =
-      new THREE.MeshBasicMaterial({
-        color:
-          typeColor(
-            object.type
-          )
-      });
+  flashButton(
+    "createObservation"
+  );
+
+}
 
 
-    const mesh =
-      new THREE.Mesh(
-        geometry,
-        material
-      );
+document.getElementById(
+  "createObservation"
+).onclick=
+  createObservation;
 
 
-    mesh.position.set(
-      position.x,
-      position.y,
-      position.z
-    );
+/* =========================================================
+   EVIDENCE
+========================================================= */
 
+const evidenceCandidates=[
 
-    mesh.userData.id =
-      object.id;
+  {
+    id:"EV-421",
 
+    type:"NEWS",
 
-    state.scene.add(
-      mesh
-    );
+    source:"REUTERS",
 
+    publishedAt:
+      "2026-03-11T08:12:00",
 
-    state.nodeMeshes.set(
-      object.id,
-      mesh
-    );
+    content:
+      "Apple lowers guidance amid weaker demand outlook.",
 
+    relevance:0.92
 
-    /*
-     * Label
-     */
+  },
 
-    const color =
-      typeColor(
-        object.type
-      )
-        .toString(16)
-        .padStart(6,"0");
+  {
+    id:"EV-422",
 
+    type:"SEC",
 
-    const label =
-      createLabel(
-        object.label,
-        color
-      );
+    source:"SEC FILING",
 
+    publishedAt:
+      "2026-03-12T10:04:00",
 
-    label.position.set(
-      position.x,
-      position.y + 13,
-      position.z
-    );
+    content:
+      "Primary regulatory filing identified within the selected period.",
 
+    relevance:0.89
 
-    state.scene.add(
-      label
-    );
+  },
 
+  {
+    id:"EV-423",
 
-    state.nodeLabels.set(
-      object.id,
-      label
-    );
+    type:"ANALYST",
+
+    source:"ANALYST REPORT",
+
+    publishedAt:
+      "2026-03-12T14:31:00",
+
+    content:
+      "Analysts revise Apple estimates following updated outlook.",
+
+    relevance:0.84
+
+  },
+
+  {
+    id:"EV-424",
+
+    type:"MARKET",
+
+    source:"MARKET CONTEXT",
+
+    publishedAt:
+      "2026-03-13T09:17:00",
+
+    content:
+      "Technology sector weakness accelerates during the investigation window.",
+
+    relevance:0.78
 
   }
 
-
-  /*
-   * Relations
-   */
-
-  for(
-    const source of
-      state.objects
-  ){
-
-    const sourcePosition =
-      state.projected.get(
-        source.id
-      );
+];
 
 
-    if(!sourcePosition)
-      continue;
+function findEvidence(){
+
+  renderEvidence();
+
+  addTrace(
+    "EVIDENCE_RETRIEVAL",
+    "Evidence candidates für den aktuellen Zeitraum geladen."
+  );
 
 
-    for(
-      const relation of
-        source.relations || []
-    ){
+  document.getElementById(
+    "evidenceList"
+  ).scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+  });
 
-      const targetPosition =
-        state.projected.get(
-          relation.target
+}
+
+
+function renderEvidence(){
+
+  const box=
+    document.getElementById(
+      "evidenceList"
+    );
+
+
+  box.innerHTML="";
+
+
+  evidenceCandidates.forEach(
+    candidate=>{
+
+      const item=
+        document.createElement(
+          "div"
         );
 
 
-      if(!targetPosition)
-        continue;
+      item.className="item";
 
 
-      const points = [
+      item.innerHTML=`
 
-        new THREE.Vector3(
-          sourcePosition.x,
-          sourcePosition.y,
-          sourcePosition.z
-        ),
+        <div class="item-top">
 
-        new THREE.Vector3(
-          targetPosition.x,
-          targetPosition.y,
-          targetPosition.z
-        )
+          <span class="source">
+            ${candidate.source}
+          </span>
 
-      ];
+          <span class="time">
+            ${candidate.publishedAt}
+          </span>
+
+        </div>
+
+        <div class="item-title">
+          ${candidate.content}
+        </div>
+
+        <div class="item-text">
+          Typ: ${candidate.type}
+          · Relevanz:
+          ${(candidate.relevance*100).toFixed(0)}%
+        </div>
+
+        <div class="item-actions">
+
+          <button class="mini add">
+            + ADD EVIDENCE
+          </button>
+
+        </div>
+
+      `;
 
 
-      const geometry =
-        new THREE.BufferGeometry()
-          .setFromPoints(
-            points
+      const button=
+        item.querySelector(
+          ".add"
+        );
+
+
+      button.onclick=()=>{
+
+        const evidence=
+          new Evidence({
+
+            id:candidate.id,
+
+            type:candidate.type,
+
+            source:candidate.source,
+
+            content:candidate.content,
+
+            publishedAt:
+              candidate.publishedAt,
+
+            provenance:{
+              retrieval:
+                "V1_DEMO",
+              candidateRelevance:
+                candidate.relevance
+            }
+
+          });
+
+
+        /*
+          Prevent duplicates.
+        */
+
+        const inv=
+          kernel.getInvestigation(
+            currentId
           );
 
 
-      const material =
-        new THREE.LineBasicMaterial({
-          color:0xff2b91,
-          transparent:true,
-          opacity:.35
-        });
-
-
-      const line =
-        new THREE.Line(
-          geometry,
-          material
-        );
-
-
-      state.scene.add(
-        line
-      );
-
-
-      state.relationLines.push(
-        line
-      );
-
-    }
-
-  }
-
-}
-
-
-/* =========================================================
-   ANIMATION
-========================================================= */
-
-function animate(){
-
-  requestAnimationFrame(
-    animate
-  );
-
-
-  if(!state.renderer)
-    return;
-
-
-  const group =
-    state.scene;
-
-
-  group.rotation.x =
-    state.rotationX;
-
-  group.rotation.y =
-    state.rotationY;
-
-
-  state.camera.position.z =
-    state.zoom;
-
-
-  state.renderer.render(
-    state.scene,
-    state.camera
-  );
-
-}
-
-
-/* =========================================================
-   RESIZE
-========================================================= */
-
-function resizeScene(){
-
-  const container =
-    $("scene");
-
-
-  if(
-    !container ||
-    !state.camera ||
-    !state.renderer
-  ){
-
-    return;
-
-  }
-
-
-  state.camera.aspect =
-    container.clientWidth /
-    container.clientHeight;
-
-
-  state.camera.updateProjectionMatrix();
-
-
-  state.renderer.setSize(
-    container.clientWidth,
-    container.clientHeight
-  );
-
-}
-
-
-/* =========================================================
-   POINTER INTERACTION
-========================================================= */
-
-function addInteraction(){
-
-  const canvas =
-    state.renderer.domElement;
-
-
-  canvas.addEventListener(
-    "pointerdown",
-    event => {
-
-      state.dragging =
-        true;
-
-      state.lastPointerX =
-        event.clientX;
-
-      state.lastPointerY =
-        event.clientY;
-
-      canvas.setPointerCapture(
-        event.pointerId
-      );
-
-    }
-  );
-
-
-  canvas.addEventListener(
-    "pointermove",
-    event => {
-
-      if(!state.dragging)
-        return;
-
-
-      const dx =
-        event.clientX -
-        state.lastPointerX;
-
-      const dy =
-        event.clientY -
-        state.lastPointerY;
-
-
-      state.rotationY +=
-        dx * .008;
-
-
-      state.rotationX +=
-        dy * .008;
-
-
-      state.lastPointerX =
-        event.clientX;
-
-      state.lastPointerY =
-        event.clientY;
-
-    }
-  );
-
-
-  canvas.addEventListener(
-    "pointerup",
-    event => {
-
-      state.dragging =
-        false;
-
-      try{
-
-        canvas.releasePointerCapture(
-          event.pointerId
-        );
-
-      }catch{}
-
-    }
-  );
-
-
-  canvas.addEventListener(
-    "wheel",
-    event => {
-
-      event.preventDefault();
-
-
-      state.camera.position.z =
-        Math.max(
-          180,
-          Math.min(
-            1400,
-            state.camera.position.z +
-              event.deltaY
+        if(
+          inv.evidence.some(
+            e=>e.id===evidence.id
           )
-        );
+        ){
 
-    },
-    {
-      passive:false
-    }
-  );
+          button.textContent=
+            "✓ ALREADY STORED";
 
+          return;
 
-  canvas.addEventListener(
-    "click",
-    event => {
-
-      const rect =
-        canvas.getBoundingClientRect();
+        }
 
 
-      state.mouse.x =
-        (
-          (event.clientX -
-            rect.left) /
-          rect.width
-        ) * 2 - 1;
-
-
-      state.mouse.y =
-        -(
-          (event.clientY -
-            rect.top) /
-          rect.height
-        ) * 2 + 1;
-
-
-      state.raycaster.setFromCamera(
-        state.mouse,
-        state.camera
-      );
-
-
-      const meshes =
-        Array.from(
-          state.nodeMeshes.values()
+        kernel.addEvidence(
+          currentId,
+          evidence
         );
 
 
-      const intersections =
-        state.raycaster.intersectObjects(
-          meshes
+        button.textContent=
+          "✓ STORED";
+
+        button.disabled=true;
+
+
+        renderEvidenceCount();
+
+
+        addTrace(
+          "EVIDENCE_ADDED",
+          `${evidence.id} · ${evidence.source}`
         );
 
-
-      if(
-        !intersections.length
-      ){
-
-        return;
-
-      }
+      };
 
 
-      const id =
-        intersections[0]
-          .object
-          .userData
-          .id;
-
-
-      selectObject(
-        id
-      );
+      box.appendChild(item);
 
     }
   );
@@ -4279,456 +3361,137 @@ function addInteraction(){
 }
 
 
+function renderEvidenceCount(){
+
+  const inv=
+    kernel.getInvestigation(
+      currentId
+    );
+
+
+  document.getElementById(
+    "evidenceCountLabel"
+  ).textContent=
+    inv.evidence.length+
+    " STORED";
+
+}
+
+
+document.getElementById(
+  "findEvidence"
+).onclick=
+  findEvidence;
+
+
+document.getElementById(
+  "findEvidenceTop"
+).onclick=
+  findEvidence;
+
+
 /* =========================================================
-   SELECT
+   HYPOTHESIS
 ========================================================= */
 
-function selectObject(
-  id
+function openHypothesisModal(){
+
+  openModal(
+    "NEW HYPOTHESIS",
+    `
+
+      <div class="kicker">
+        HYPOTHESIS TEXT
+      </div>
+
+      <br>
+
+      <textarea
+        class="modal-textarea"
+        id="hypothesisInput"
+        placeholder="Formuliere eine prüfbare Hypothese..."
+      ></textarea>
+
+      <div class="modal-actions">
+
+        <button
+          class="btn pink"
+          id="saveHypothesis">
+          CREATE HYPOTHESIS
+        </button>
+
+      </div>
+
+    `
+  );
+
+
+  document.getElementById(
+    "saveHypothesis"
+  ).onclick=()=>{
+
+    const text=
+      document.getElementById(
+        "hypothesisInput"
+      ).value.trim();
+
+
+    if(!text)
+      return;
+
+
+    const hypothesis=
+      new Hypothesis({
+
+        id:uuid("H"),
+
+        text
+
+      });
+
+
+    kernel.addHypothesis(
+      currentId,
+      hypothesis
+    );
+
+
+    renderHypothesis(
+      hypothesis
+    );
+
+
+    addTrace(
+      "HYPOTHESIS_CREATED",
+      `${hypothesis.id} · ${hypothesis.text}`
+    );
+
+
+    closeModal();
+
+  };
+
+}
+
+
+function renderHypothesis(
+  hypothesis
 ){
 
-  const object =
-    state.objects.find(
-      o => o.id === id
-    );
-
-
-  if(!object)
-    return;
-
-
-  state.selectedId =
-    id;
-
-
-  renderInspector();
-
-  renderExplorer();
-
-  render3D();
-
-}
-
-
-/* =========================================================
-   EXPLORER
-========================================================= */
-
-function getVisibleObjects(){
-
-  let objects;
-
-
-  if(
-    state.searchResults
-  ){
-
-    objects =
-      state.searchResults
-        .map(
-          result =>
-            result.object
-        );
-
-  }else{
-
-    objects =
-      state.objects.slice();
-
-  }
-
-
-  if(
-    state.activeFilter !==
-    "all"
-  ){
-
-    objects =
-      objects.filter(
-        object =>
-          object.type ===
-          state.activeFilter
-      );
-
-  }
-
-
-  return objects;
-
-}
-
-
-function renderExplorer(){
-
-  const list =
-    $("objectList");
-
-
-  const objects =
-    getVisibleObjects();
-
-
-  $("resultCount")
-    .textContent =
-    objects.length;
-
-
-  if(!objects.length){
-
-    list.innerHTML = `
-      <div class="empty">
-        ${
-          state.searchText
-            ? "Keine semantischen Treffer."
-            : "Noch keine Memory Objects vorhanden."
-        }
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  list.innerHTML = "";
-
-
-  for(
-    const object of
-      objects
-  ){
-
-    const item =
-      document.createElement(
-        "div"
-      );
-
-
-    item.className =
-      "objectItem" +
-      (
-        object.id ===
-        state.selectedId
-          ? " selected"
-          : ""
-      );
-
-
-    const dot =
-      document.createElement(
-        "div"
-      );
-
-
-    dot.className =
-      "objectDot";
-
-
-    dot.style.color =
-      "#" +
-      typeColor(
-        object.type
-      )
-        .toString(16)
-        .padStart(6,"0");
-
-
-    const info =
-      document.createElement(
-        "div"
-      );
-
-
-    info.className =
-      "objectInfo";
-
-
-    const name =
-      document.createElement(
-        "div"
-      );
-
-
-    name.className =
-      "objectName";
-
-    name.textContent =
-      object.label;
-
-
-    const meta =
-      document.createElement(
-        "div"
-      );
-
-
-    meta.className =
-      "objectMeta";
-
-
-    let scoreText = "";
-
-
-    if(state.searchResults){
-
-      const result =
-        state.searchResults.find(
-          r =>
-            r.object.id ===
-            object.id
-        );
-
-
-      if(result){
-
-        scoreText =
-          ` · ${(result.score * 100).toFixed(1)}%`;
-
-      }
-
-    }
-
-
-    meta.textContent =
-      `${object.type.toUpperCase()} · ${
-        object.id
-      }${scoreText}`;
-
-
-    info.appendChild(
-      name
-    );
-
-    info.appendChild(
-      meta
-    );
-
-
-    item.appendChild(
-      dot
-    );
-
-    item.appendChild(
-      info
-    );
-
-
-    item.onclick =
-      () =>
-        selectObject(
-          object.id
-        );
-
-
-    list.appendChild(
-      item
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   INSPECTOR
-========================================================= */
-
-function renderInspector(){
-
-  const container =
-    $("inspectorBody");
-
-
-  const object =
-    state.objects.find(
-      o =>
-        o.id ===
-        state.selectedId
-    );
-
-
-  if(!object){
-
-    container.innerHTML = `
-      <div class="inspectorEmpty">
-        Kein Memory Object ausgewählt.<br><br>
-        Klicke einen Node im semantischen Raum
-        oder einen Treffer an.
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  const relations =
-    object.relations || [];
-
-
-  const relationHTML =
-    relations.length
-
-      ? relations
-          .map(
-            relation => {
-
-              const target =
-                state.objects.find(
-                  o =>
-                    o.id ===
-                    relation.target
-                );
-
-
-              return `
-                <div class="relation">
-                  <strong>
-                    ${escapeHTML(
-                      relation.type
-                    )}
-                  </strong>
-                  →
-                  ${
-                    target
-                      ? escapeHTML(
-                          target.label
-                        )
-                      : escapeHTML(
-                          relation.target
-                        )
-                  }
-                </div>
-              `;
-
-            }
-          )
-          .join("")
-
-      : `
-          <div class="relation">
-            Keine Relationen.
-          </div>
-        `;
-
-
-  const tagsHTML =
-    object.tags.length
-
-      ? object.tags
-          .map(
-            tag =>
-              `<span class="tag">${
-                escapeHTML(tag)
-              }</span>`
-          )
-          .join("")
-
-      : `<span class="tag">
-          keine
-        </span>`;
-
-
-  const vectorPreview =
-    object.embedding
-      .slice(0,24)
-      .map(
-        x => x.toFixed(6)
-      )
-      .join(", ");
-
-
-  container.innerHTML = `
-
-    <div class="inspectorId">
-      ${escapeHTML(object.id)}
+  document.getElementById(
+    "hypothesisBox"
+  ).innerHTML=`
+
+    <div class="hypothesis-id">
+      ${hypothesis.id}
     </div>
 
-    <div class="inspectorName">
-      ${escapeHTML(object.label)}
+    <div class="hypothesis-text">
+      ${hypothesis.text}
     </div>
 
-    <div class="badge">
-      ${escapeHTML(
-        object.type.toUpperCase()
-      )}
-    </div>
-
-    <div class="inspectorDescription">
-      ${escapeHTML(
-        object.description
-      )}
-    </div>
-
-
-    <div class="infoBlock">
-
-      <div class="infoTitle">
-        TAGS
-      </div>
-
-      ${tagsHTML}
-
-    </div>
-
-
-    <div class="infoBlock">
-
-      <div class="infoTitle">
-        RELATIONS
-      </div>
-
-      ${relationHTML}
-
-    </div>
-
-
-    <div class="infoBlock">
-
-      <div class="infoTitle">
-        EMBEDDING
-      </div>
-
-      <div class="vectorPreview">
-        [${vectorPreview}, ...]
-        <br><br>
-        DIMENSION = ${
-          object.embedding.length
-        }
-      </div>
-
-    </div>
-
-
-    <div class="infoBlock">
-
-      <div class="infoTitle">
-        PROVENANCE
-      </div>
-
-      <div class="vectorPreview">
-
-        SOURCE:
-        ${escapeHTML(
-          object.provenance?.source || ""
-        )}
-
-        <br>
-
-        METHOD:
-        ${escapeHTML(
-          object.provenance?.method || ""
-        )}
-
-        <br>
-
-        MODEL:
-        ${escapeHTML(
-          object.provenance?.model || ""
-        )}
-
-      </div>
-
+    <div class="hypothesis-status">
+      ${hypothesis.status}
     </div>
 
   `;
@@ -4736,17 +3499,669 @@ function renderInspector(){
 }
 
 
+document.getElementById(
+  "newHypothesis"
+).onclick=
+  openHypothesisModal;
+
+
 /* =========================================================
-   ESCAPE
+   RELATION
 ========================================================= */
 
-function escapeHTML(
+function openRelationModal(){
+
+  const inv=
+    kernel.getInvestigation(
+      currentId
+    );
+
+
+  if(
+    inv.evidence.length===0 ||
+    inv.hypotheses.length===0
+  ){
+
+    openModal(
+      "RELATION NOT POSSIBLE",
+      `
+
+        <div class="item-text">
+
+          Eine Relation benötigt bereits
+          vorhandene Evidence und eine Hypothese.
+
+          <br><br>
+
+          Ablauf:
+
+          <br>
+
+          Evidence hinzufügen
+          →
+          Hypothese erstellen
+          →
+          Relation erzeugen.
+
+        </div>
+
+      `
+    );
+
+    return;
+
+  }
+
+
+  openModal(
+    "ADD RELATION",
+    `
+
+      <div class="kicker">
+        FROM
+      </div>
+
+      <br>
+
+      <select
+        class="modal-input"
+        id="relationFrom">
+
+        ${inv.evidence.map(
+          e=>`
+            <option value="${e.id}">
+              ${e.id} — ${e.source}
+            </option>
+          `
+        ).join("")}
+
+      </select>
+
+      <br><br>
+
+      <div class="kicker">
+        RELATION
+      </div>
+
+      <br>
+
+      <select
+        class="modal-input"
+        id="relationType">
+
+        <option>
+          SUPPORTS
+        </option>
+
+        <option>
+          CONTRADICTS
+        </option>
+
+        <option>
+          WEAKENS
+        </option>
+
+        <option>
+          REFINES
+        </option>
+
+        <option>
+          RELATED_TO
+        </option>
+
+      </select>
+
+      <br><br>
+
+      <div class="kicker">
+        TO
+      </div>
+
+      <br>
+
+      <select
+        class="modal-input"
+        id="relationTo">
+
+        ${inv.hypotheses.map(
+          h=>`
+            <option value="${h.id}">
+              ${h.id} — ${h.text}
+            </option>
+          `
+        ).join("")}
+
+      </select>
+
+      <div class="modal-actions">
+
+        <button
+          class="btn cyan"
+          id="saveRelation">
+
+          CREATE RELATION
+
+        </button>
+
+      </div>
+
+    `
+  );
+
+
+  document.getElementById(
+    "saveRelation"
+  ).onclick=()=>{
+
+    const relation=
+      new Relation({
+
+        id:uuid("REL"),
+
+        from:
+          document.getElementById(
+            "relationFrom"
+          ).value,
+
+        to:
+          document.getElementById(
+            "relationTo"
+          ).value,
+
+        type:
+          document.getElementById(
+            "relationType"
+          ).value
+
+      });
+
+
+    try{
+
+      kernel.addRelation(
+        currentId,
+        relation
+      );
+
+
+      addTrace(
+        "RELATION_CREATED",
+        `${relation.from} ${relation.type} ${relation.to}`
+      );
+
+
+      closeModal();
+
+
+    }catch(error){
+
+      alert(
+        error.message
+      );
+
+    }
+
+  };
+
+}
+
+
+document.getElementById(
+  "addRelation"
+).onclick=
+  openRelationModal;
+
+
+/* =========================================================
+   TRACE
+========================================================= */
+
+function addTrace(
+  type,
+  description
+){
+
+  const trace=
+    document.getElementById(
+      "trace"
+    );
+
+
+  const list=
+    trace.querySelector(
+      ".trace-list"
+    );
+
+
+  const event=
+    document.createElement(
+      "div"
+    );
+
+
+  event.className="event";
+
+
+  event.innerHTML=`
+
+    <i class="event-dot"></i>
+
+    <div class="event-time">
+      ${new Date().toLocaleTimeString(
+        "de-DE"
+      )}
+    </div>
+
+    <div class="event-type">
+      ${type}
+    </div>
+
+    <div class="event-desc">
+      ${description}
+    </div>
+
+  `;
+
+
+  list.appendChild(event);
+
+}
+
+
+/* =========================================================
+   JSON VIEW
+========================================================= */
+
+function showState(){
+
+  openModal(
+    "CURRENT KNOWLEDGE STATE",
+    `
+
+      <pre>${escapeHtml(
+        kernel.export()
+      )}</pre>
+
+    `
+  );
+
+}
+
+
+document.getElementById(
+  "showJSON"
+).onclick=
+  showState;
+
+
+/* =========================================================
+   EXPORT
+========================================================= */
+
+function exportJSON(){
+
+  const blob=
+    new Blob(
+      [
+        kernel.export()
+      ],
+      {
+        type:
+          "application/json"
+      }
+    );
+
+
+  const url=
+    URL.createObjectURL(
+      blob
+    );
+
+
+  const a=
+    document.createElement(
+      "a"
+    );
+
+
+  a.href=url;
+
+  a.download=
+    "neural-memory-investigation.json";
+
+  a.click();
+
+
+  URL.revokeObjectURL(url);
+
+
+  addTrace(
+    "STATE_EXPORTED",
+    "Investigation als JSON exportiert."
+  );
+
+}
+
+
+document.getElementById(
+  "exportBtn"
+).onclick=
+  exportJSON;
+
+
+/* =========================================================
+   IMPORT
+========================================================= */
+
+document.getElementById(
+  "importBtn"
+).onclick=()=>{
+
+  document.getElementById(
+    "importFile"
+  ).click();
+
+};
+
+
+document.getElementById(
+  "importFile"
+).onchange=e=>{
+
+  const file=
+    e.target.files[0];
+
+
+  if(!file)
+    return;
+
+
+  const reader=
+    new FileReader();
+
+
+  reader.onload=()=>{
+
+    try{
+
+      kernel.import(
+        reader.result
+      );
+
+
+      const first=
+        [
+          ...kernel.investigations
+            .values()
+        ][0];
+
+
+      if(first){
+
+        currentId=
+          first.id;
+
+
+        activeSymbol=
+          first.subject;
+
+
+        document.getElementById(
+          "chartSymbol"
+        ).textContent=
+          activeSymbol;
+
+
+        renderEvidenceCount();
+
+
+        if(first.hypotheses.length){
+
+          renderHypothesis(
+            first.hypotheses[
+              first.hypotheses.length-1
+            ]
+          );
+
+        }
+
+      }
+
+
+      addTrace(
+        "STATE_IMPORTED",
+        "Investigation aus JSON geladen."
+      );
+
+
+      alert(
+        "Investigation geladen."
+      );
+
+
+    }catch(error){
+
+      alert(
+        "Import fehlgeschlagen: "+
+        error.message
+      );
+
+    }
+
+  };
+
+
+  reader.readAsText(
+    file
+  );
+
+};
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+const modal=
+  document.getElementById(
+    "modal"
+  );
+
+
+function openModal(
+  title,
+  body
+){
+
+  document.getElementById(
+    "modalTitle"
+  ).textContent=
+    title;
+
+
+  document.getElementById(
+    "modalBody"
+  ).innerHTML=
+    body;
+
+
+  modal.classList.add(
+    "open"
+  );
+
+}
+
+
+function closeModal(){
+
+  modal.classList.remove(
+    "open"
+  );
+
+}
+
+
+document.getElementById(
+  "closeModal"
+).onclick=
+  closeModal;
+
+
+modal.addEventListener(
+  "click",
+  e=>{
+
+    if(
+      e.target===modal
+    ){
+
+      closeModal();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   WATCHLIST
+========================================================= */
+
+document.querySelectorAll(
+  ".watch"
+).forEach(
+  button=>{
+
+    button.onclick=()=>{
+
+      document
+        .querySelectorAll(
+          ".watch"
+        )
+        .forEach(
+          b=>b.classList.remove(
+            "active"
+          )
+        );
+
+
+      button.classList.add(
+        "active"
+      );
+
+
+      activeSymbol=
+        button.dataset.symbol;
+
+
+      document.getElementById(
+        "chartSymbol"
+      ).textContent=
+        activeSymbol;
+
+
+      /*
+        Demo keeps one investigation
+        for the kernel architecture.
+
+        In V2 each subject gets its
+        own Investigation.
+      */
+
+      drawChart();
+
+
+      addTrace(
+        "SUBJECT_SELECTED",
+        `${activeSymbol} als Chart-Subject ausgewählt.`
+      );
+
+    };
+
+  }
+);
+
+
+/* =========================================================
+   PRESET SELECTION
+========================================================= */
+
+document.getElementById(
+  "eventSelection"
+).onclick=()=>{
+
+  startIndex=8;
+
+  endIndex=19;
+
+  drawChart();
+
+
+  addTrace(
+    "CHART_SELECTION",
+    "Standardfenster 11–13 Mar ausgewählt."
+  );
+
+};
+
+
+document.getElementById(
+  "resetSelection"
+).onclick=()=>{
+
+  startIndex=0;
+
+  endIndex=39;
+
+  drawChart();
+
+
+  addTrace(
+    "CHART_SELECTION",
+    "Gesamter Chartbereich ausgewählt."
+  );
+
+};
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function flashButton(
+  id
+){
+
+  const button=
+    document.getElementById(
+      id
+    );
+
+
+  const original=
+    button.textContent;
+
+
+  button.textContent=
+    "✓ COMMITTED";
+
+
+  setTimeout(
+    ()=>{
+      button.textContent=
+        original;
+    },
+    900
+  );
+
+}
+
+
+function escapeHtml(
   value
 ){
 
-  return String(
-    value ?? ""
-  )
+  return String(value)
     .replaceAll(
       "&",
       "&amp;"
@@ -4762,1181 +4177,63 @@ function escapeHTML(
     .replaceAll(
       '"',
       "&quot;"
-    )
-    .replaceAll(
-      "'",
-      "&#039;"
     );
 
 }
 
 
 /* =========================================================
-   RELATION COUNT
+   INIT
 ========================================================= */
 
-function relationCount(){
+window.addEventListener(
+  "resize",
+  resizeCanvas
+);
 
-  let count = 0;
 
+resizeCanvas();
 
-  for(
-    const object of
-      state.objects
-  ){
 
-    count +=
-      Array.isArray(
-        object.relations
-      )
-        ? object.relations.length
-        : 0;
+renderHypothesis(
+  initialHypothesis
+);
 
-  }
 
+renderEvidenceCount();
 
-  return count;
 
-}
+/*
+  IMPORTANT ARCHITECTURE NOTE
 
+  Current V1:
 
-/* =========================================================
-   UI
-========================================================= */
+  UI
+   ↓
+  Kernel
+   ↓
+  State
+   ↓
+  Events
 
-function updateUI(){
+  NOT:
 
-  $("statObjects")
-    .textContent =
-    state.objects.length;
+  UI
+   ↓
+  LLM
+   ↓
+  Database
 
+  Future retrieval layer:
 
-  $("statRelations")
-    .textContent =
-    relationCount();
+  Evidence
+   ↓
+  Embedding
+   ↓
+  Vector Index
 
-
-  $("spaceObjects")
-    .textContent =
-    state.objects.length;
-
-
-  renderExplorer();
-
-  renderInspector();
-
-  render3D();
-
-}
-
-
-/* =========================================================
-   TYPE BUTTONS
-========================================================= */
-
-document
-  .querySelectorAll(
-    ".typeButton"
-  )
-  .forEach(
-    button => {
-
-      button.onclick =
-        () => {
-
-          document
-            .querySelectorAll(
-              ".typeButton"
-            )
-            .forEach(
-              b =>
-                b.classList.remove(
-                  "active"
-                )
-            );
-
-
-          button.classList.add(
-            "active"
-          );
-
-
-          state.selectedType =
-            button.dataset.type;
-
-
-          $("type").value =
-            state.selectedType;
-
-        };
-
-    }
-  );
-
-
-/* =========================================================
-   FILTER BUTTONS
-========================================================= */
-
-document
-  .querySelectorAll(
-    ".filter"
-  )
-  .forEach(
-    button => {
-
-      button.onclick =
-        () => {
-
-          document
-            .querySelectorAll(
-              ".filter"
-            )
-            .forEach(
-              b =>
-                b.classList.remove(
-                  "active"
-                )
-            );
-
-
-          button.classList.add(
-            "active"
-          );
-
-
-          state.activeFilter =
-            button.dataset.filter;
-
-
-          renderExplorer();
-
-        };
-
-    }
-  );
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-let searchTimer =
-  null;
-
-
-$("search")
-  .addEventListener(
-    "input",
-    event => {
-
-      clearTimeout(
-        searchTimer
-      );
-
-
-      searchTimer =
-        setTimeout(
-          () => {
-
-            semanticSearch(
-              event.target.value
-            );
-
-          },
-          350
-        );
-
-    }
-  );
-
-
-/* =========================================================
-   CREATE BUTTON
-========================================================= */
-
-$("createBtn")
-  .addEventListener(
-    "click",
-    createMemoryObject
-  );
-
-
-/* =========================================================
-   ENTER SHORTCUT
-========================================================= */
-
-$("name")
-  .addEventListener(
-    "keydown",
-    event => {
-
-      if(
-        event.key ===
-        "Enter"
-      ){
-
-        event.preventDefault();
-
-        $("description")
-          .focus();
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   EXPORT
-========================================================= */
-
-function createExportPayload(){
-
-  return {
-
-    format:
-      "NEURAL_MEMORY",
-
-    version:
-      2,
-
-    dimension:
-      VECTOR_DIM,
-
-    model:
-      MODEL_NAME,
-
-    exportedAt:
-      nowISO(),
-
-    objects:
-      state.objects
-
-  };
-
-}
-
-
-function downloadJSON(
-  payload
-){
-
-  const json =
-    JSON.stringify(
-      payload,
-      null,
-      2
-    );
-
-
-  const blob =
-    new Blob(
-      [json],
-      {
-        type:
-          "application/json"
-      }
-    );
-
-
-  const url =
-    URL.createObjectURL(
-      blob
-    );
-
-
-  const a =
-    document.createElement(
-      "a"
-    );
-
-
-  a.href =
-    url;
-
-  a.download =
-    `neural-memory-${Date.now()}.json`;
-
-
-  a.click();
-
-
-  URL.revokeObjectURL(
-    url
-  );
-
-}
-
-
-$("exportBtn")
-  .addEventListener(
-    "click",
-    () => {
-
-      if(
-        !state.objects.length
-      ){
-
-        toast(
-          "Keine Memory Objects vorhanden.",
-          true
-        );
-
-        return;
-
-      }
-
-
-      const payload =
-        createExportPayload();
-
-
-      $("jsonText").value =
-        JSON.stringify(
-          payload,
-          null,
-          2
-        );
-
-
-      $("jsonModal")
-        .classList.add(
-          "show"
-        );
-
-    }
-  );
-
-
-$("downloadJson")
-  .addEventListener(
-    "click",
-    () => {
-
-      downloadJSON(
-        createExportPayload()
-      );
-
-    }
-  );
-
-
-$("copyJson")
-  .addEventListener(
-    "click",
-    async () => {
-
-      try{
-
-        await navigator.clipboard.writeText(
-          $("jsonText").value
-        );
-
-
-        toast(
-          "JSON COPIED"
-        );
-
-      }catch{
-
-        toast(
-          "COPY NICHT VERFÜGBAR",
-          true
-        );
-
-      }
-
-    }
-  );
-
-
-$("modalClose")
-  .addEventListener(
-    "click",
-    () => {
-
-      $("jsonModal")
-        .classList.remove(
-          "show"
-        );
-
-    }
-  );
-
-
-/* =========================================================
-   IMPORT
-========================================================= */
-
-$("importBtn")
-  .addEventListener(
-    "click",
-    () =>
-      $("importFile").click()
-  );
-
-
-$("importFile")
-  .addEventListener(
-    "change",
-    async event => {
-
-      const file =
-        event.target.files?.[0];
-
-
-      if(!file)
-        return;
-
-
-      try{
-
-        const text =
-          await file.text();
-
-
-        const data =
-          JSON.parse(
-            text
-          );
-
-
-        const rawObjects =
-          Array.isArray(data)
-            ? data
-            : Array.isArray(
-                data.objects
-              )
-                ? data.objects
-                : Array.isArray(
-                    data.memory
-                  )
-                    ? data.memory
-                    : null;
-
-
-        if(!rawObjects){
-
-          throw new Error(
-            "Keine Memory Objects gefunden."
-          );
-
-        }
-
-
-        let imported =
-          0;
-
-
-        for(
-          const raw of
-            rawObjects
-        ){
-
-          /*
-           * Aktuelles Format
-           */
-
-          let embedding =
-            raw.embedding;
-
-
-          /*
-           * Legacy Format
-           */
-
-          if(
-            !Array.isArray(
-              embedding
-            ) &&
-            Array.isArray(
-              raw.vector
-            )
-          ){
-
-            embedding =
-              raw.vector;
-
-          }
-
-
-          if(
-            !Array.isArray(
-              embedding
-            )
-          ){
-
-            console.warn(
-              "Import übersprungen:",
-              raw
-            );
-
-            continue;
-
-          }
-
-
-          if(
-            embedding.length !==
-            VECTOR_DIM
-          ){
-
-            console.warn(
-              "Falsche Dimension:",
-              raw.id
-            );
-
-            continue;
-
-          }
-
-
-          const object = {
-
-            id:
-              String(
-                raw.id ||
-                createId()
-              ),
-
-            version:
-              2,
-
-            type:
-              String(
-                raw.type ||
-                "other"
-              ),
-
-            label:
-              String(
-                raw.label ||
-                raw.text ||
-                "Imported Memory"
-              ),
-
-            description:
-              String(
-                raw.description ||
-                raw.text ||
-                ""
-              ),
-
-            tags:
-              Array.isArray(
-                raw.tags
-              )
-                ? raw.tags.map(String)
-                : [],
-
-            relations:
-              Array.isArray(
-                raw.relations
-              )
-                ? raw.relations
-                    .map(
-                      relation => ({
-                        type:
-                          String(
-                            relation.type ||
-                            ""
-                          ),
-
-                        target:
-                          String(
-                            relation.target ||
-                            ""
-                          )
-
-                      })
-                    )
-                : [],
-
-            embedding:
-              normalizeVector(
-                embedding.map(
-                  Number
-                )
-              ),
-
-            provenance:
-              raw.provenance ||
-              {
-
-                source:
-                  "migration",
-
-                method:
-                  "legacy_neural_memory",
-
-                model:
-                  MODEL_NAME
-
-              },
-
-            createdAt:
-              raw.createdAt ||
-              raw.created ||
-              nowISO(),
-
-            updatedAt:
-              nowISO()
-
-          };
-
-
-          await saveObject(
-            object
-          );
-
-
-          const existingIndex =
-            state.objects.findIndex(
-              o =>
-                o.id ===
-                object.id
-            );
-
-
-          if(
-            existingIndex >= 0
-          ){
-
-            state.objects[
-              existingIndex
-            ] = object;
-
-          }else{
-
-            state.objects.push(
-              object
-            );
-
-          }
-
-
-          imported++;
-
-        }
-
-
-        state.selectedId =
-          imported
-            ? state.objects[
-                state.objects.length - 1
-              ].id
-            : null;
-
-
-        updateUI();
-
-
-        toast(
-          `${imported} Memory Objects importiert.`
-        );
-
-
-        setLog(
-          "MEMORY IMPORT COMPLETE"
-        );
-
-
-      }catch(error){
-
-        console.error(
-          error
-        );
-
-
-        toast(
-          `Import fehlgeschlagen: ${
-            error.message
-          }`,
-          true
-        );
-
-      }finally{
-
-        event.target.value =
-          "";
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   CLEAR
-========================================================= */
-
-$("clearBtn")
-  .addEventListener(
-    "click",
-    async () => {
-
-      const confirmed =
-        confirm(
-          "Wirklich die komplette lokale Memory löschen?"
-        );
-
-
-      if(!confirmed)
-        return;
-
-
-      try{
-
-        await clearDatabase();
-
-
-        state.objects =
-          [];
-
-        state.selectedId =
-          null;
-
-        state.searchResults =
-          null;
-
-        state.searchText =
-          "";
-
-
-        $("search").value =
-          "";
-
-
-        updateUI();
-
-
-        setLog(
-          "LOCAL MEMORY CLEARED"
-        );
-
-
-        toast(
-          "LOKALE MEMORY GELÖSCHT"
-        );
-
-
-      }catch(error){
-
-        console.error(
-          error
-        );
-
-
-        toast(
-          `Löschen fehlgeschlagen: ${
-            error.message
-          }`,
-          true
-        );
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   DEMO MEMORY
-========================================================= */
-
-async function createDemoObject(
-  label,
-  type,
-  description,
-  tags
-){
-
-  const embeddingText =
-    [
-      label,
-      description,
-      `Tags: ${tags.join(", ")}`
-    ]
-      .join(". ");
-
-
-  const embedding =
-    await createEmbedding(
-      embeddingText,
-      "passage"
-    );
-
-
-  const object = {
-
-    id:
-      createId(),
-
-    version:
-      2,
-
-    type,
-
-    label,
-
-    description,
-
-    tags,
-
-    relations:[],
-
-    embedding,
-
-    provenance:{
-
-      source:
-        "demo",
-
-      method:
-        "transformers.js",
-
-      model:
-        MODEL_NAME
-
-    },
-
-    createdAt:
-      nowISO(),
-
-    updatedAt:
-      nowISO()
-
-  };
-
-
-  await saveObject(
-    object
-  );
-
-
-  state.objects.push(
-    object
-  );
-
-
-  return object;
-
-}
-
-
-$("demoBtn")
-  .addEventListener(
-    "click",
-    async () => {
-
-      const button =
-        $("demoBtn");
-
-
-      button.disabled =
-        true;
-
-
-      try{
-
-        setLog(
-          "CREATING DEMO MEMORY..."
-        );
-
-
-        const aether =
-          await createDemoObject(
-
-            "AETHER",
-
-            "system",
-
-            "System zur Trennung von LLM-Planung und deterministischer Ausführung.",
-
-            [
-              "LLM",
-              "Architecture",
-              "Deterministic"
-            ]
-
-          );
-
-
-        const eots =
-          await createDemoObject(
-
-            "EOTS",
-
-            "project",
-
-            "Eye of the Sky ist eine visuelle Schnittstelle zwischen Benutzer und Large Language Model.",
-
-            [
-              "Vision",
-              "LLM",
-              "Interface"
-            ]
-
-          );
-
-
-        const memory =
-          await createDemoObject(
-
-            "Semantic Memory",
-
-            "concept",
-
-            "Lokaler semantischer Speicher mit Embeddings, Vektorraumsuche und Beziehungen.",
-
-            [
-              "Embedding",
-              "Vector",
-              "Memory"
-            ]
-
-          );
-
-
-        const transformers =
-          await createDemoObject(
-
-            "Transformers.js",
-
-            "technology",
-
-            "JavaScript-Bibliothek zur lokalen Ausführung von Machine-Learning-Modellen im Browser.",
-
-            [
-              "JavaScript",
-              "Embedding",
-              "Browser"
-            ]
-
-          );
-
-
-        aether.relations.push({
-
-          type:
-            "uses",
-
-          target:
-            memory.id
-
-        });
-
-
-        eots.relations.push({
-
-          type:
-            "uses",
-
-          target:
-            memory.id
-
-        });
-
-
-        memory.relations.push({
-
-          type:
-            "uses",
-
-          target:
-            transformers.id
-
-        });
-
-
-        await saveObject(
-          aether
-        );
-
-        await saveObject(
-          eots
-        );
-
-        await saveObject(
-          memory
-        );
-
-
-        state.selectedId =
-          aether.id;
-
-
-        updateUI();
-
-
-        setLog(
-          "DEMO MEMORY READY"
-        );
-
-
-        toast(
-          "DEMO MEMORY GELADEN"
-        );
-
-
-      }catch(error){
-
-        console.error(
-          error
-        );
-
-
-        toast(
-          `Demo fehlgeschlagen: ${
-            error.message
-          }`,
-          true
-        );
-
-
-        setLog(
-          "DEMO ERROR",
-          true
-        );
-
-      }finally{
-
-        button.disabled =
-          false;
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   INITIALIZATION
-========================================================= */
-
-async function initialize(){
-
-  try{
-
-    setLog(
-      "01 MEMORY ENGINE INITIALIZED"
-    );
-
-
-    /*
-     * Datenbank öffnen.
-     */
-
-    await openDB();
-
-
-    /*
-     * Bereits gespeicherte Objekte laden.
-     */
-
-    state.objects =
-      await loadObjects();
-
-
-    /*
-     * UI sofort mit vorhandener
-     * lokaler Memory aktualisieren.
-     */
-
-    updateUI();
-
-
-    /*
-     * 3D Engine.
-     */
-
-    initScene();
-
-
-    setLog(
-      "02 VECTOR SPACE READY"
-    );
-
-
-    /*
-     * Model nicht blockierend
-     * im Hintergrund laden.
-     */
-
-    getEmbeddingPipeline()
-      .then(
-        () => {
-
-          setLog(
-            "03 EMBEDDING ENGINE READY"
-          );
-
-        }
-      )
-      .catch(
-        error => {
-
-          console.error(
-            error
-          );
-
-          setLog(
-            "EMBEDDING ENGINE ERROR",
-            true
-          );
-
-        }
-      );
-
-
-    setLog(
-      "MEMORY ENGINE READY"
-    );
-
-
-  }catch(error){
-
-    console.error(
-      "INITIALIZATION FAILED:",
-      error
-    );
-
-
-    $("statusDot").className =
-      "statusDot error";
-
-
-    $("engineStatusText")
-      .textContent =
-      "INITIALIZATION ERROR";
-
-
-    $("dbStatus")
-      .textContent =
-      "ERROR";
-
-
-    setLog(
-      `INIT ERROR: ${
-        error.message
-      }`,
-      true
-    );
-
-
-    toast(
-      error.message ||
-      "Initialisierung fehlgeschlagen.",
-      true
-    );
-
-  }
-
-}
-
-
-initialize();
+  remains outside the kernel.
+*/
 
 </script>
 
