@@ -2,4240 +2,1085 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,
-               initial-scale=1,
-               maximum-scale=1,
-               user-scalable=no">
-
-<title>NEURAL MEMORY — V1</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cyberpunk RAG Memory V2</title>
 <style>
 :root{
-  --bg:#030507;
-  --panel:#080d12;
-  --panel2:#0c131b;
-  --line:#182631;
+  --bg:#050510;
+  --panel:#0b0b18;
+  --line:#29293d;
   --cyan:#00f5ff;
+  --pink:#ff00ff;
   --green:#4ade80;
-  --pink:#ff2d8d;
-  --amber:#ffc857;
-  --red:#ff5b72;
-  --text:#e8f5f7;
-  --muted:#70838e;
+  --text:#d9f9ff;
+  --muted:#71808c;
 }
-
-*{
-  box-sizing:border-box;
-}
-
-html,body{
+*{box-sizing:border-box}
+body{
   margin:0;
-  padding:0;
-  min-height:100%;
-  background:var(--bg);
-  color:var(--text);
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-}
-
-button,
-input,
-textarea,
-select{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-.app{
-  max-width:1500px;
-  margin:auto;
-  padding:14px;
-}
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-
-  padding:14px 16px;
-
-  border:1px solid var(--line);
   background:
-    linear-gradient(
-      180deg,
-      #0a1118,
-      #060a0f
-    );
-
-  box-shadow:
-    0 0 35px #00f5ff08;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.logo{
-  width:38px;
-  height:38px;
-
-  display:grid;
-  place-items:center;
-
-  border:1px solid var(--cyan);
-
-  color:var(--cyan);
-
-  font-size:12px;
-  font-weight:900;
-
-  box-shadow:
-    0 0 20px #00f5ff22;
-}
-
-.title{
-  font-size:15px;
-  font-weight:900;
-  letter-spacing:.18em;
-}
-
-.subtitle{
-  margin-top:3px;
-
-  color:var(--muted);
-
-  font-size:9px;
-  letter-spacing:.13em;
-}
-
-.kernel-status{
-  color:var(--green);
-
-  border:1px solid #4ade8040;
-
-  padding:7px 9px;
-
-  font-size:9px;
-  letter-spacing:.12em;
-}
-
-/* =========================================================
-   LAYOUT
-========================================================= */
-
-.layout{
-  display:grid;
-
-  grid-template-columns:
-    210px
-    minmax(400px,1fr)
-    330px;
-
-  gap:12px;
-
-  margin-top:12px;
-}
-
-.bottom{
-  display:grid;
-
-  grid-template-columns:
-    1fr
-    1fr
-    1fr;
-
-  gap:12px;
-
-  margin-top:12px;
-}
-
-.card{
-  border:1px solid var(--line);
-  background:var(--panel);
-
-  box-shadow:
-    0 0 25px #0008;
-}
-
-.card-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-
-  padding:11px 13px;
-
-  border-bottom:1px solid var(--line);
-}
-
-.kicker{
-  color:var(--muted);
-
-  font-size:8px;
-  letter-spacing:.16em;
-}
-
-.card-title{
-  margin-top:3px;
-
-  font-size:13px;
-  font-weight:800;
-}
-
-/* =========================================================
-   WATCHLIST
-========================================================= */
-
-.watchlist{
-  min-height:460px;
-}
-
-.watch-items{
-  padding:8px;
-}
-
-.watch{
-  width:100%;
-
-  margin-bottom:5px;
-  padding:11px;
-
-  text-align:left;
-
-  border:1px solid transparent;
-
-  background:#070b10;
-
+    radial-gradient(circle at 50% 45%,#11142a 0,#050510 55%,#020207 100%);
   color:var(--text);
-}
-
-.watch:hover{
-  border-color:#27404c;
-}
-
-.watch.active{
-  border-color:var(--cyan);
-
-  background:
-    linear-gradient(
-      90deg,
-      #00f5ff0c,
-      transparent
-    );
-}
-
-.watch-symbol{
-  font-size:13px;
-  font-weight:900;
-}
-
-.watch-name{
-  margin-top:3px;
-
-  color:var(--muted);
-
-  font-size:8px;
-}
-
-.watch-move{
-  float:right;
-
-  color:var(--red);
-
-  font-size:10px;
-}
-
-/* =========================================================
-   CHART
-========================================================= */
-
-.chart-card{
-  min-width:0;
-}
-
-.chart-area{
-  position:relative;
-
-  height:430px;
-
+  font-family:Arial,sans-serif;
   overflow:hidden;
-
-  background:
-    radial-gradient(
-      circle at 50% 40%,
-      #00f5ff07,
-      transparent 55%
-    ),
-    linear-gradient(
-      #ffffff04 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      #ffffff04 1px,
-      transparent 1px
-    );
-
-  background-size:
-    auto,
-    48px 48px,
-    48px 48px;
 }
-
-canvas{
+header{
+  height:54px;
+  padding:0 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#080810;
+  border-bottom:1px solid var(--line);
+  color:var(--pink);
+  letter-spacing:.12em;
+  font-weight:bold;
+}
+.status{
+  color:var(--green);
+  font-size:11px;
+  letter-spacing:.05em;
+}
+main{
+  display:grid;
+  grid-template-columns:minmax(0,2fr) minmax(320px,1fr);
+  height:calc(100vh - 54px);
+}
+#brain{
+  position:relative;
+  min-width:0;
+  background:
+    radial-gradient(circle at center,#11152b 0,#070812 55%,#030308 100%);
+  border-right:1px solid var(--line);
+}
+#brain canvas{
+  display:block;
   width:100%;
   height:100%;
-
-  display:block;
-
-  touch-action:none;
 }
-
-.chart-info{
+.brain-label{
   position:absolute;
-
-  top:12px;
-  left:14px;
-
+  left:16px;
+  top:14px;
   pointer-events:none;
 }
-
-.chart-symbol{
+.brain-title{
   color:var(--cyan);
-
-  font-size:18px;
-  font-weight:900;
+  font-size:11px;
+  letter-spacing:.18em;
 }
-
-.chart-price{
-  margin-top:2px;
-
-  font-size:10px;
-  color:var(--muted);
+.brain-sub{
+  margin-top:4px;
+  color:#81909b;
+  font-size:11px;
 }
-
-.chart-hint{
-  position:absolute;
-
-  right:13px;
-  bottom:10px;
-
-  color:#6d818b;
-
-  font-size:8px;
-  letter-spacing:.08em;
-
-  pointer-events:none;
-}
-
-.selection{
-  position:absolute;
-
-  top:0;
-  bottom:0;
-
-  display:none;
-
-  background:#00f5ff0c;
-
-  border-left:1px solid var(--cyan);
-  border-right:1px solid var(--cyan);
-
-  pointer-events:none;
-}
-
-.selection-label{
-  position:absolute;
-
-  top:9px;
-  left:8px;
-
-  color:var(--cyan);
-
-  font-size:8px;
-  white-space:nowrap;
-}
-
-.chart-footer{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-
+#side{
   padding:10px;
+  overflow:auto;
+  background:#06060d;
 }
-
-.btn{
-  padding:8px 10px;
-
+.panel{
   border:1px solid var(--line);
-
-  background:#091018;
-
+  background:linear-gradient(180deg,#0c0c17,#080811);
+  margin-bottom:10px;
+  padding:11px;
+  border-radius:8px;
+}
+h3{
+  margin:0 0 9px;
+  color:var(--cyan);
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+textarea,
+input,
+select{
+  width:100%;
+  background:#05050c;
   color:var(--text);
-
-  font-size:9px;
-  letter-spacing:.06em;
-}
-
-.btn:hover{
-  border-color:#46606e;
-}
-
-.btn.cyan{
-  color:var(--cyan);
-  border-color:#00f5ff55;
-}
-
-.btn.green{
-  color:var(--green);
-  border-color:#4ade8055;
-}
-
-.btn.pink{
-  color:#ff72b1;
-  border-color:#ff2d8d55;
-}
-
-.btn.amber{
-  color:var(--amber);
-  border-color:#ffc85755;
-}
-
-/* =========================================================
-   INVESTIGATION
-========================================================= */
-
-.observation{
-  margin:12px;
-
-  padding:13px;
-
-  border-left:2px solid var(--cyan);
-
-  background:#071117;
-}
-
-.observation-value{
-  font-size:25px;
-  font-weight:900;
-}
-
-.observation-meta{
-  margin-top:5px;
-
-  color:var(--muted);
-
-  font-size:9px;
-}
-
-.tags{
-  margin-top:9px;
-}
-
-.tag{
-  display:inline-block;
-
-  margin:2px 3px 2px 0;
-  padding:4px 6px;
-
   border:1px solid var(--line);
-
-  color:var(--muted);
-
-  font-size:7px;
-  letter-spacing:.08em;
+  border-radius:6px;
+  padding:9px;
+  outline:none;
 }
-
-.side-actions{
-  padding:10px;
-
-  display:grid;
-
-  grid-template-columns:1fr 1fr;
-
-  gap:7px;
-}
-
-.action{
-  min-height:72px;
-
-  padding:10px;
-
-  text-align:left;
-
-  border:1px solid var(--line);
-
-  background:#080f16;
-
-  color:var(--text);
-}
-
-.action:hover{
+textarea:focus,
+input:focus{
   border-color:var(--cyan);
 }
-
-.action strong{
-  display:block;
-
-  color:var(--cyan);
-
-  font-size:9px;
-  letter-spacing:.08em;
+textarea{
+  min-height:90px;
+  resize:vertical;
 }
-
-.action span{
-  display:block;
-
+button{
+  width:100%;
+  padding:9px;
   margin-top:7px;
-
+  border:1px solid var(--line);
+  border-radius:6px;
+  background:#101021;
+  color:var(--text);
+  cursor:pointer;
+}
+button:hover{
+  border-color:var(--cyan);
+  box-shadow:0 0 12px #00f5ff22;
+}
+button.primary{
+  color:var(--cyan);
+  border-color:#00f5ff66;
+}
+.row{
+  display:flex;
+  gap:7px;
+}
+.row>*{
+  flex:1;
+}
+.small{
   color:var(--muted);
-
-  font-size:8px;
+  font-size:10px;
+  line-height:1.45;
+  margin-top:7px;
+}
+.result{
+  padding:9px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  margin-top:6px;
+  cursor:pointer;
+  background:#090914;
+}
+.result:hover{
+  border-color:var(--cyan);
+}
+.score{
+  float:right;
+  color:var(--cyan);
+}
+.id{
+  color:var(--muted);
+  font-size:10px;
+}
+.content{
+  margin-top:4px;
+  font-size:12px;
   line-height:1.4;
 }
-
-.hypothesis{
-  margin:12px;
-
-  padding:12px;
-
-  border:1px solid var(--line);
-
-  background:#070c12;
-}
-
-.hypothesis-id{
-  color:var(--pink);
-
-  font-size:8px;
-  letter-spacing:.1em;
-}
-
-.hypothesis-text{
-  margin-top:7px;
-
+pre{
+  white-space:pre-wrap;
+  word-break:break-word;
+  color:#a8c0c9;
   font-size:11px;
   line-height:1.45;
 }
-
-.hypothesis-status{
-  margin-top:9px;
-
-  color:var(--amber);
-
-  font-size:8px;
-}
-
-/* =========================================================
-   EVIDENCE
-========================================================= */
-
-.list{
-  padding:10px 13px;
-}
-
-.item{
-  padding:11px 0;
-
-  border-bottom:1px solid #14202a;
-}
-
-.item:last-child{
-  border-bottom:0;
-}
-
-.item-top{
+.metric{
   display:flex;
   justify-content:space-between;
-  gap:10px;
+  padding:4px 0;
+  color:#91a1aa;
+  font-size:11px;
 }
-
-.source{
+.metric b{
   color:var(--cyan);
-
-  font-size:8px;
-  font-weight:800;
-
-  letter-spacing:.08em;
 }
-
-.time{
-  color:var(--muted);
-
-  font-size:8px;
-}
-
-.item-title{
-  margin-top:5px;
-
-  font-size:10px;
-  font-weight:750;
-}
-
-.item-text{
-  margin-top:4px;
-
-  color:#8fa3ad;
-
-  font-size:8px;
+#answer{
+  white-space:pre-wrap;
   line-height:1.5;
+  font-size:12px;
 }
-
-.item-actions{
-  display:flex;
-  gap:6px;
-
-  margin-top:8px;
-}
-
-.mini{
-  padding:5px 7px;
-
-  border:1px solid var(--line);
-
-  background:#080e14;
-
-  color:var(--muted);
-
-  font-size:7px;
-}
-
-.mini.add{
-  color:var(--green);
-
-  border-color:#4ade8050;
-}
-
-/* =========================================================
-   GRAPH
-========================================================= */
-
-.graph{
-  position:relative;
-
-  min-height:300px;
-
-  margin:10px;
-
-  overflow:hidden;
-
-  border:1px solid #15232e;
-
-  background:
-    radial-gradient(
-      circle at center,
-      #00f5ff06,
-      transparent 60%
-    );
-}
-
-.node{
-  position:absolute;
-
-  min-width:80px;
-
-  padding:9px;
-
-  text-align:center;
-
-  border:1px solid var(--line);
-
-  background:#091018;
-
-  box-shadow:0 0 18px #0009;
-}
-
-.node.ev{
-  border-color:#00f5ff55;
-}
-
-.node.hyp{
-  border-color:#ff2d8d66;
-}
-
-.node-id{
-  color:var(--muted);
-
-  font-size:7px;
-}
-
-.node-label{
-  margin-top:3px;
-
-  font-size:9px;
-  font-weight:800;
-}
-
-.relation{
-  position:absolute;
-
-  left:50%;
-  top:50%;
-
-  width:145px;
-
-  height:1px;
-
-  background:#35515e;
-
-  transform-origin:left center;
-}
-
-.relation span{
-  position:absolute;
-
-  left:50%;
-  top:-13px;
-
-  transform:translateX(-50%);
-
-  color:var(--muted);
-
-  background:#080d12;
-
-  padding:2px 4px;
-
-  font-size:6px;
-  letter-spacing:.08em;
-}
-
-/* =========================================================
-   TRACE
-========================================================= */
-
-.trace{
-  padding:12px 14px;
-}
-
-.trace-list{
-  position:relative;
-
-  padding-left:17px;
-}
-
-.trace-list:before{
-  content:"";
-
-  position:absolute;
-
-  left:3px;
-  top:3px;
-  bottom:3px;
-
-  width:1px;
-
-  background:#20323e;
-}
-
-.event{
-  position:relative;
-
-  margin-bottom:17px;
-}
-
-.event-dot{
-  position:absolute;
-
-  left:-18px;
-  top:2px;
-
-  width:9px;
-  height:9px;
-
-  border:1px solid var(--cyan);
-
-  background:var(--bg);
-
-  box-shadow:0 0 9px #00f5ff44;
-}
-
-.event-time{
-  color:var(--cyan);
-
-  font-size:7px;
-  letter-spacing:.08em;
-}
-
-.event-type{
-  margin-top:3px;
-
-  font-size:9px;
-  font-weight:800;
-}
-
-.event-desc{
-  margin-top:2px;
-
-  color:var(--muted);
-
-  font-size:8px;
-}
-
-/* =========================================================
-   MODAL
-========================================================= */
-
-.modal{
-  position:fixed;
-
-  inset:0;
-
-  display:none;
-
-  align-items:center;
-  justify-content:center;
-
-  padding:16px;
-
-  background:#000c;
-
-  z-index:100;
-}
-
-.modal.open{
-  display:flex;
-}
-
-.modal-box{
-  width:min(700px,100%);
-
-  max-height:90vh;
-
-  overflow:auto;
-
-  border:1px solid var(--cyan);
-
-  background:#080e14;
-
-  box-shadow:
-    0 0 60px #00f5ff15;
-}
-
-.modal-head{
-  display:flex;
-
-  justify-content:space-between;
-
-  padding:12px 14px;
-
-  border-bottom:1px solid var(--line);
-}
-
-.modal-body{
-  padding:14px;
-}
-
-.modal-input,
-.modal-textarea{
-  width:100%;
-
-  padding:10px;
-
-  border:1px solid var(--line);
-
-  outline:none;
-
-  background:#050a0f;
-
-  color:var(--text);
-
-  font-size:10px;
-}
-
-.modal-textarea{
-  min-height:100px;
-
-  resize:vertical;
-}
-
-.modal-input:focus,
-.modal-textarea:focus{
-  border-color:var(--cyan);
-}
-
-.modal-actions{
-  display:flex;
-  gap:7px;
-
-  margin-top:10px;
-}
-
-pre{
-  overflow:auto;
-
-  margin:0;
-
-  padding:12px;
-
-  border:1px solid var(--line);
-
-  background:#04080c;
-
-  color:#9fb2bc;
-
-  font-size:8px;
-
-  line-height:1.5;
-}
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media(max-width:1100px){
-
-  .layout{
-    grid-template-columns:
-      170px
-      minmax(300px,1fr);
+@media(max-width:800px){
+  body{overflow:auto}
+  main{
+    grid-template-columns:1fr;
+    height:auto;
   }
-
-  .layout > .side{
-    grid-column:1 / -1;
-
-    display:grid;
-
-    grid-template-columns:
-      1fr 1fr;
+  #brain{
+    height:55vh;
+    border-right:0;
+    border-bottom:1px solid var(--line);
   }
-
-  .bottom{
-    grid-template-columns:1fr 1fr;
-  }
-}
-
-@media(max-width:700px){
-
-  .app{
-    padding:8px;
-  }
-
-  .header{
-    position:relative;
-  }
-
-  .kernel-status{
-    display:none;
-  }
-
-  .layout{
-    display:flex;
-    flex-direction:column;
-  }
-
-  .watchlist{
-    min-height:auto;
-  }
-
-  .watch-items{
-    display:flex;
-    gap:6px;
-    overflow-x:auto;
-  }
-
-  .watch{
-    min-width:105px;
-  }
-
-  .side{
-    display:flex !important;
-    flex-direction:column;
-  }
-
-  .bottom{
-    display:flex;
-    flex-direction:column;
-  }
-
-  .chart-area{
-    height:330px;
-  }
-
-  .side-actions{
-    grid-template-columns:1fr 1fr;
+  #side{
+    height:auto;
   }
 }
 </style>
 </head>
-
 <body>
-
-<div class="app">
-
-<header class="header">
-
-  <div class="brand">
-
-    <div class="logo">
-      NM
-    </div>
-
-    <div>
-
-      <div class="title">
-        NEURAL MEMORY
-      </div>
-
-      <div class="subtitle">
-        INVESTIGATION & EVIDENCE KERNEL / V1
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="kernel-status">
-    ● DETERMINISTIC KERNEL
-  </div>
-
+<header>
+  <div>CYBERPUNK RAG MEMORY V2</div>
+  <div class="status" id="status">● READY</div>
 </header>
-
-
-<!-- ======================================================
-     MAIN
-====================================================== -->
-
-<div class="layout">
-
-
-<!-- WATCHLIST -->
-
-<section class="card watchlist">
-
-  <div class="card-header">
-
-    <div>
-      <div class="kicker">
-        SUBJECTS
-      </div>
-
-      <div class="card-title">
-        Watchlist
-      </div>
+<main>
+<div id="brain">
+  <div class="brain-label">
+    <div class="brain-title">3D EMBEDDING SPACE</div>
+    <div class="brain-sub">
+      Real vectors · deterministic projection
     </div>
-
-    <div class="kicker">
-      03
-    </div>
-
   </div>
-
-
-  <div class="watch-items">
-
-    <button
-      class="watch active"
-      data-symbol="AAPL">
-
-      <span class="watch-move">
-        −8.7%
-      </span>
-
-      <div class="watch-symbol">
-        AAPL
-      </div>
-
-      <div class="watch-name">
-        Apple Inc.
-      </div>
-
-    </button>
-
-
-    <button
-      class="watch"
-      data-symbol="NVDA">
-
-      <span class="watch-move">
-        −5.2%
-      </span>
-
-      <div class="watch-symbol">
-        NVDA
-      </div>
-
-      <div class="watch-name">
-        NVIDIA
-      </div>
-
-    </button>
-
-
-    <button
-      class="watch"
-      data-symbol="TSLA">
-
-      <span class="watch-move">
-        −6.1%
-      </span>
-
-      <div class="watch-symbol">
-        TSLA
-      </div>
-
-      <div class="watch-name">
-        Tesla
-      </div>
-
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- CHART -->
-
-<section class="card chart-card">
-
-  <div class="card-header">
-
-    <div>
-
-      <div class="kicker">
-        OBSERVATION SOURCE
-      </div>
-
-      <div class="card-title">
-        Price Event
-      </div>
-
-    </div>
-
-    <div
-      id="chartRange"
-      class="kicker">
-      11–13 MAR
-    </div>
-
-  </div>
-
-
-  <div
-    class="chart-area"
-    id="chartArea">
-
-    <canvas id="chart"></canvas>
-
-    <div
-      class="chart-info">
-
-      <div
-        class="chart-symbol"
-        id="chartSymbol">
-        AAPL
-      </div>
-
-      <div
-        class="chart-price"
-        id="chartPrice">
-        PRICE / SELECT RANGE
-      </div>
-
-    </div>
-
-
-    <div
-      class="selection"
-      id="selection">
-
-      <div
-        class="selection-label"
-        id="selectionLabel">
-      </div>
-
-    </div>
-
-
-    <div class="chart-hint">
-      DRAG TO INVESTIGATE
-    </div>
-
-  </div>
-
-
-  <div class="chart-footer">
-
-    <button
-      class="btn"
-      id="resetSelection">
-      RESET
-    </button>
-
-    <button
-      class="btn"
-      id="eventSelection">
-      11–13 MAR
-    </button>
-
-    <button
-      class="btn cyan"
-      id="createObservation">
-      CREATE OBSERVATION
-    </button>
-
-    <button
-      class="btn pink"
-      id="findEvidenceTop">
-      FIND EVIDENCE
-    </button>
-
-    <button
-      class="btn green"
-      id="exportBtn">
-      EXPORT JSON
-    </button>
-
-    <button
-      class="btn amber"
-      id="importBtn">
-      IMPORT JSON
-    </button>
-
-    <input
-      type="file"
-      id="importFile"
-      accept=".json"
-      hidden>
-
-  </div>
-
-</section>
-
-
-<!-- SIDE -->
-
-<section class="side">
-
-
-  <!-- OBSERVATION -->
-
-  <div class="card">
-
-    <div class="card-header">
-
-      <div>
-
-        <div class="kicker">
-          CURRENT STATE
-        </div>
-
-        <div class="card-title">
-          Observation
-        </div>
-
-      </div>
-
-      <div
-        id="investigationStatus"
-        class="kicker">
-        OPEN
-      </div>
-
-    </div>
-
-
-    <div class="observation">
-
-      <div
-        class="observation-value"
-        id="observationMove">
-        −8.7%
-      </div>
-
-      <div
-        class="observation-meta"
-        id="observationMeta">
-        AAPL · 11.03.2026 → 13.03.2026
-      </div>
-
-
-      <div class="tags">
-
-        <span class="tag">
-          PRICE EVENT
-        </span>
-
-        <span class="tag">
-          USER SELECTED
-        </span>
-
-        <span class="tag">
-          HIGH VOLUME
-        </span>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- ACTIONS -->
-
-  <div class="card">
-
-    <div class="card-header">
-
-      <div>
-
-        <div class="kicker">
-          KERNEL ACTIONS
-        </div>
-
-        <div class="card-title">
-          Investigation
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="side-actions">
-
-      <button
-        class="action"
-        id="findEvidence">
-
-        <strong>
-          FIND EVIDENCE
-        </strong>
-
-        <span>
-          Evidence candidates für die aktuelle Observation.
-        </span>
-
-      </button>
-
-
-      <button
-        class="action"
-        id="newHypothesis">
-
-        <strong>
-          NEW HYPOTHESIS
-        </strong>
-
-        <span>
-          Eine prüfbare Interpretation anlegen.
-        </span>
-
-      </button>
-
-
-      <button
-        class="action"
-        id="addRelation">
-
-        <strong>
-          ADD RELATION
-        </strong>
-
-        <span>
-          Evidence und Hypothese explizit verbinden.
-        </span>
-
-      </button>
-
-
-      <button
-        class="action"
-        id="showJSON">
-
-        <strong>
-          VIEW STATE
-        </strong>
-
-        <span>
-          Aktuellen Kernel-Zustand als Objekt ansehen.
-        </span>
-
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- HYPOTHESIS -->
-
-  <div class="card">
-
-    <div class="card-header">
-
-      <div>
-
-        <div class="kicker">
-          INTERPRETATION
-        </div>
-
-        <div class="card-title">
-          Hypothesis
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div
-      class="hypothesis"
-      id="hypothesisBox">
-
-      <div class="hypothesis-id">
-        H-001
-      </div>
-
-      <div class="hypothesis-text">
-        Guidance reduction explains most of the selloff.
-      </div>
-
-      <div class="hypothesis-status">
-        UNDER REVIEW
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
 </div>
-
-
-<!-- ======================================================
-     BOTTOM
-====================================================== -->
-
-<div class="bottom">
-
-
-<!-- EVIDENCE -->
-
-<section class="card">
-
-  <div class="card-header">
-
-    <div>
-
-      <div class="kicker">
-        EVIDENCE
-      </div>
-
-      <div class="card-title">
-        Evidence Explorer
-      </div>
-
-    </div>
-
-    <div
-      id="evidenceCountLabel"
-      class="kicker">
-      0 STORED
-    </div>
-
-  </div>
-
-
-  <div
-    class="list"
-    id="evidenceList">
-
-    <div class="item">
-
-      <div class="item-text">
-        Noch keine Evidence übernommen.
-        Starte mit „Find Evidence“.
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- GRAPH -->
-
-<section class="card">
-
-  <div class="card-header">
-
-    <div>
-
-      <div class="kicker">
-        KNOWLEDGE STATE
-      </div>
-
-      <div class="card-title">
-        Relation Graph
-      </div>
-
-    </div>
-
-    <div class="kicker">
-      EXPLICIT
-    </div>
-
-  </div>
-
-
-  <div
-    class="graph"
-    id="graph">
-
-    <div
-      class="node ev"
-      style="left:8%;top:25%">
-
-      <div class="node-id">
-        EV-421
-      </div>
-
-      <div class="node-label">
-        NEWS
-      </div>
-
-    </div>
-
-
-    <div
-      class="node ev"
-      style="left:8%;top:65%">
-
-      <div class="node-id">
-        EV-422
-      </div>
-
-      <div class="node-label">
-        SEC
-      </div>
-
-    </div>
-
-
-    <div
-      class="node hyp"
-      style="right:8%;top:44%">
-
-      <div class="node-id">
-        H-001
-      </div>
-
-      <div class="node-label">
-        HYPOTHESIS
-      </div>
-
-    </div>
-
-
-    <div
-      class="relation"
-      style="
-        left:29%;
-        top:34%;
-        width:190px;
-        transform:rotate(8deg);
-      ">
-
-      <span>
-        SUPPORTS
-      </span>
-
-    </div>
-
-
-    <div
-      class="relation"
-      style="
-        left:29%;
-        top:69%;
-        width:190px;
-        transform:rotate(-10deg);
-      ">
-
-      <span>
-        SUPPORTS
-      </span>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- TRACE -->
-
-<section class="card">
-
-  <div class="card-header">
-
-    <div>
-
-      <div class="kicker">
-        EVENT STORE
-      </div>
-
-      <div class="card-title">
-        Knowledge Trace
-      </div>
-
-    </div>
-
-    <div class="kicker">
-      AUDITABLE
-    </div>
-
-  </div>
-
-
-  <div
-    class="trace"
-    id="trace">
-
-    <div class="trace-list">
-
-      <div class="event">
-
-        <i class="event-dot"></i>
-
-        <div class="event-time">
-          SYSTEM
-        </div>
-
-        <div class="event-type">
-          INVESTIGATION_CREATED
-        </div>
-
-        <div class="event-desc">
-          INV-291 initialisiert.
-        </div>
-
-      </div>
-
-
-      <div class="event">
-
-        <i class="event-dot"></i>
-
-        <div class="event-time">
-          SYSTEM
-        </div>
-
-        <div class="event-type">
-          OBSERVATION_CREATED
-        </div>
-
-        <div class="event-desc">
-          AAPL price event erkannt.
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
+<div id="side">
+<!-- MEMORY INPUT -->
+<div class="panel">
+<h3>Memory</h3>
+<textarea
+  id="memoryInput"
+  placeholder="Wissenseintrag hier eingeben …"
+></textarea>
+<input
+  id="memorySource"
+  placeholder="Quelle / Kategorie (optional)"
+  style="margin-top:7px"
+>
+<button
+  class="primary"
+  id="storeMemory"
+>
+  EMBEDDING ERZEUGEN + SPEICHERN
+</button>
+<div class="small">
+Das Embedding wird real über den konfigurierten Ollama-Endpunkt
+erzeugt. Keine Hash-Simulation.
 </div>
-
 </div>
-
-
-<!-- ======================================================
-     MODAL
-====================================================== -->
-
-<div
-  class="modal"
-  id="modal">
-
-  <div class="modal-box">
-
-    <div class="modal-head">
-
-      <div>
-
-        <div
-          class="kicker"
-          id="modalKicker">
-          KERNEL
-        </div>
-
-        <div
-          class="card-title"
-          id="modalTitle">
-          Action
-        </div>
-
-      </div>
-
-      <button
-        class="btn"
-        id="closeModal">
-        ×
-      </button>
-
-    </div>
-
-
-    <div
-      class="modal-body"
-      id="modalBody">
-    </div>
-
-  </div>
-
+<!-- QUERY -->
+<div class="panel">
+<h3>Query</h3>
+<textarea
+  id="query"
+  placeholder="Was möchtest du aus dem Memory abrufen?"
+></textarea>
+<div class="row">
+<input
+  id="topK"
+  type="number"
+  min="1"
+  max="20"
+  value="5"
+>
+<button
+  class="primary"
+  id="retrieve"
+>
+  COSINE SEARCH
+</button>
 </div>
-
-
-<script>
-"use strict";
-
-/* =========================================================
-   NEURAL MEMORY V1
-   DETERMINISTIC KNOWLEDGE KERNEL
-========================================================= */
-
-
-/* =========================================================
-   UTILITIES
-========================================================= */
-
-function uuid(prefix){
-
-  return prefix + "-" +
-    Math.random()
-      .toString(36)
-      .slice(2,8)
-      .toUpperCase();
-}
-
-
-function now(){
-
-  return new Date().toISOString();
-
-}
-
-
-/* =========================================================
-   DOMAIN OBJECTS
-========================================================= */
-
-class Investigation{
-
-  constructor({
-    id,
-    subject,
-    start,
-    end,
-    status="OPEN"
-  }){
-
-    this.id=id;
-
-    this.subject=subject;
-
-    this.timeRange={
-      start,
-      end
-    };
-
-    this.status=status;
-
-    this.observations=[];
-
-    this.evidence=[];
-
-    this.hypotheses=[];
-
-    this.relations=[];
-
-    this.events=[];
-
-  }
-
-}
-
-
-class Evidence{
-
-  constructor({
-    id,
-    type,
-    source,
-    content,
-    publishedAt=null,
-    provenance={}
-  }){
-
-    this.id=id;
-
-    this.type=type;
-
-    this.source=source;
-
-    this.content=content;
-
-    this.publishedAt=publishedAt;
-
-    this.provenance=provenance;
-
-    /*
-      IMPORTANT:
-
-      embedding is deliberately NOT
-      part of the kernel logic.
-
-      Later:
-
-      evidence.embedding
-
-      may be maintained by the
-      retrieval layer.
-    */
-
-    this.embedding=null;
-
-  }
-
-}
-
-
-class Hypothesis{
-
-  constructor({
-    id,
-    text,
-    status="UNDER_REVIEW"
-  }){
-
-    this.id=id;
-
-    this.text=text;
-
-    this.status=status;
-
-  }
-
-}
-
-
-class Relation{
-
-  constructor({
-    id,
-    from,
-    to,
-    type
-  }){
-
-    this.id=id;
-
-    this.from=from;
-
-    this.to=to;
-
-    this.type=type;
-
-  }
-
-}
-
-
-class Event{
-
-  constructor({
-    id,
-    type,
-    timestamp=now(),
-    payload={}
-  }){
-
-    this.id=id;
-
-    this.type=type;
-
-    this.timestamp=timestamp;
-
-    this.payload=payload;
-
-  }
-
-}
-
-
-/* =========================================================
-   KNOWLEDGE KERNEL
-========================================================= */
-
-class KnowledgeKernel{
-
-  constructor(){
-
-    this.investigations=
-      new Map();
-
-  }
-
-
-  createInvestigation(data){
-
-    if(
-      !data.id ||
-      !data.subject ||
-      !data.start ||
-      !data.end
-    ){
-
-      throw new Error(
-        "Invalid investigation"
-      );
-
-    }
-
-
-    if(
-      this.investigations
-        .has(data.id)
-    ){
-
-      throw new Error(
-        "Investigation already exists"
-      );
-
-    }
-
-
-    const investigation=
-      new Investigation(data);
-
-
-    this.investigations.set(
-      investigation.id,
-      investigation
-    );
-
-
-    this.recordEvent(
-      investigation.id,
-
-      new Event({
-
-        id:uuid("EVENT"),
-
-        type:
-          "INVESTIGATION_CREATED",
-
-        payload:{
-          investigationId:
-            investigation.id
-        }
-
+</div>
+<!-- RETRIEVAL -->
+<div class="panel">
+<h3>Top-K Retrieval</h3>
+<div id="retrieval">
+Noch kein Retrieval.
+</div>
+</div>
+<!-- INSPECTOR -->
+<div class="panel">
+<h3>Memory Inspector</h3>
+<div class="metric">
+<span>Memories</span>
+<b id="memoryCount">0</b>
+</div>
+<div class="metric">
+<span>Embedding-Dimension</span>
+<b id="dimension">—</b>
+</div>
+<div class="metric">
+<span>Metric</span>
+<b>Cosine</b>
+</div>
+<div id="inspector">
+Keine Memory ausgewählt.
+</div>
+</div>
+<!-- LLM -->
+<div class="panel">
+<h3>LLM Context</h3>
+<div id="context">
+Noch kein Context.
+</div>
+<button
+  class="primary"
+  id="askLLM"
+>
+  CONTEXT → LLM
+</button>
+</div>
+<!-- ANSWER -->
+<div class="panel">
+<h3>Answer Console</h3>
+<div id="answer">
+Noch keine Antwort.
+</div>
+</div>
+<!-- CONFIG -->
+<div class="panel">
+<h3>Local AI</h3>
+<input
+  id="embeddingEndpoint"
+  value="http://localhost:11434/api/embeddings"
+  placeholder="Embedding Endpoint"
+>
+<input
+  id="embeddingModel"
+  value="nomic-embed-text"
+  placeholder="Embedding Model"
+  style="margin-top:7px"
+>
+<input
+  id="chatEndpoint"
+  value="http://localhost:11434/api/chat"
+  placeholder="Chat Endpoint"
+  style="margin-top:7px"
+>
+<input
+  id="chatModel"
+  value="llama3.1:latest"
+  placeholder="Chat Model"
+  style="margin-top:7px"
+>
+</div>
+</div>
+</main>
+<script type="module">
+import * as THREE from
+"https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js";
+/* ============================================================
+   STATE
+============================================================ */
+const memories=[];
+let selectedMemory=null;
+let queryVector=null;
+let retrieval=[];
+let queryNode=null;
+/* ============================================================
+   THREE.JS
+============================================================ */
+const brain=document.getElementById("brain");
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(
+  65,
+  brain.clientWidth/brain.clientHeight,
+  .1,
+  2000
+);
+camera.position.z=80;
+const renderer=new THREE.WebGLRenderer({
+  antialias:true,
+  alpha:true
+});
+renderer.setPixelRatio(
+  Math.min(window.devicePixelRatio,2)
+);
+renderer.setSize(
+  brain.clientWidth,
+  brain.clientHeight
+);
+brain.appendChild(renderer.domElement);
+const nodesGroup=new THREE.Group();
+scene.add(nodesGroup);
+/* ============================================================
+   REAL EMBEDDING
+============================================================ */
+async function createEmbedding(text){
+  const endpoint=
+    document.getElementById(
+      "embeddingEndpoint"
+    ).value.trim();
+  const model=
+    document.getElementById(
+      "embeddingModel"
+    ).value.trim();
+  const response=await fetch(
+    endpoint,
+    {
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        model:model,
+        prompt:text
       })
-
+    }
+  );
+  if(!response.ok){
+    throw new Error(
+      "Embedding HTTP Fehler: "+
+      response.status
     );
-
-
-    return investigation;
-
   }
-
-
-  getInvestigation(id){
-
-    const inv=
-      this.investigations.get(id);
-
-
-    if(!inv){
-
-      throw new Error(
-        "Investigation not found"
-      );
-
-    }
-
-
-    return inv;
-
-  }
-
-
-  recordEvent(
-    investigationId,
-    event
+  const data=await response.json();
+  if(
+    !data.embedding ||
+    !Array.isArray(data.embedding)
   ){
-
-    const inv=
-      this.getInvestigation(
-        investigationId
-      );
-
-
-    inv.events.push(event);
-
-  }
-
-
-  applyEvent(
-    investigationId,
-    event
-  ){
-
-    const inv=
-      this.getInvestigation(
-        investigationId
-      );
-
-
-    this.validateEvent(
-      inv,
-      event
+    throw new Error(
+      "Ollama hat kein gültiges Embedding geliefert."
     );
-
-
-    switch(event.type){
-
-      case "OBSERVATION_CREATED":
-
-        inv.observations.push(
-          event.payload.observation
-        );
-
-        break;
-
-
-      case "EVIDENCE_ADDED":
-
-        inv.evidence.push(
-          event.payload.evidence
-        );
-
-        break;
-
-
-      case "HYPOTHESIS_CREATED":
-
-        inv.hypotheses.push(
-          event.payload.hypothesis
-        );
-
-        break;
-
-
-      case "RELATION_CREATED":
-
-        inv.relations.push(
-          event.payload.relation
-        );
-
-        break;
-
-
-      default:
-
-        throw new Error(
-          "Unknown event: "+
-          event.type
-        );
-
-    }
-
-
-    inv.events.push(event);
-
-    return inv;
-
   }
-
-
-  validateEvent(
-    inv,
-    event
-  ){
-
-    if(!event.type){
-
-      throw new Error(
-        "Event type missing"
-      );
-
+  return data.embedding.map(Number);
+}
+/* ============================================================
+   COSINE SIMILARITY
+============================================================ */
+function cosine(a,b){
+  let dot=0;
+  let na=0;
+  let nb=0;
+  const n=Math.min(
+    a.length,
+    b.length
+  );
+  for(let i=0;i<n;i++){
+    dot+=a[i]*b[i];
+    na+=a[i]*a[i];
+    nb+=b[i]*b[i];
+  }
+  if(na===0 || nb===0)
+    return 0;
+  return dot/
+    (Math.sqrt(na)*Math.sqrt(nb));
+}
+/* ============================================================
+   DETERMINISTIC 3D PROJECTION
+============================================================ */
+/*
+   Wir verwenden NICHT embedding[0], [1], [2].
+   Stattdessen erzeugen wir drei deterministische
+   Projektionsrichtungen aus dem vollständigen Vektor.
+   Damit bleibt die Visualisierung eine Funktion
+   des echten Embeddings.
+   Die Projektion ist ausschließlich Visualisierung.
+   Retrieval benutzt weiterhin den vollständigen Vektor.
+*/
+function projectionDirections(dimension){
+  const dirs=[];
+  for(let axis=0;axis<3;axis++){
+    const v=new Float64Array(dimension);
+    for(let i=0;i<dimension;i++){
+      v[i]=
+        Math.sin(
+          (i+1)*
+          (axis+1)*
+          12.9898
+        )+
+        Math.cos(
+          (i+1)*
+          (axis+3)*
+          78.233
+        );
     }
-
-
-    if(!event.payload){
-
-      throw new Error(
-        "Event payload missing"
+    let norm=0;
+    for(let i=0;i<dimension;i++)
+      norm+=v[i]*v[i];
+    norm=Math.sqrt(norm);
+    for(let i=0;i<dimension;i++)
+      v[i]/=norm;
+    dirs.push(v);
+  }
+  return dirs;
+}
+let projection=null;
+function projectEmbedding(vector){
+  if(!projection ||
+     projection[0].length!==vector.length){
+    projection=
+      projectionDirections(
+        vector.length
       );
-
-    }
-
-
-    if(
-      event.type==="RELATION_CREATED"
+  }
+  return projection.map(direction=>{
+    let value=0;
+    for(
+      let i=0;
+      i<vector.length;
+      i++
     ){
-
-      const r=
-        event.payload.relation;
-
-
-      if(!r.from || !r.to){
-
-        throw new Error(
-          "Relation endpoints missing"
-        );
-
-      }
-
-
-      const knownIds=[
-        ...inv.evidence.map(
-          e=>e.id
-        ),
-
-        ...inv.hypotheses.map(
-          h=>h.id
-        ),
-
-        ...inv.observations.map(
-          o=>o.id
-        )
-      ];
-
-
-      /*
-        Relation targets must already
-        exist in the current state.
-      */
-
-      if(
-        !knownIds.includes(r.from) ||
-        !knownIds.includes(r.to)
-      ){
-
-        throw new Error(
-          "Relation references unknown object"
-        );
-
-      }
-
-
-      const allowed=[
-        "SUPPORTS",
-        "CONTRADICTS",
-        "WEAKENS",
-        "REFINES",
-        "RELATED_TO",
-        "DERIVED_FROM"
-      ];
-
-
-      if(
-        !allowed.includes(r.type)
-      ){
-
-        throw new Error(
-          "Invalid relation type"
-        );
-
-      }
-
+      value+=
+        vector[i]*
+        direction[i];
     }
-
-  }
-
-
-  addObservation(
-    investigationId,
-    observation
-  ){
-
-    const event=
-      new Event({
-
-        id:uuid("EVENT"),
-
-        type:
-          "OBSERVATION_CREATED",
-
-        payload:{
-          observation
-        }
-
-      });
-
-
-    return this.applyEvent(
-      investigationId,
-      event
+    return value;
+  });
+}
+/* ============================================================
+   3D NODE
+============================================================ */
+function createNode(memory){
+  const position=
+    projectEmbedding(
+      memory.embedding
     );
-
-  }
-
-
-  addEvidence(
-    investigationId,
-    evidence
-  ){
-
-    const event=
-      new Event({
-
-        id:uuid("EVENT"),
-
-        type:
-          "EVIDENCE_ADDED",
-
-        payload:{
-          evidence
-        }
-
-      });
-
-
-    return this.applyEvent(
-      investigationId,
-      event
+  const geometry=
+    new THREE.SphereGeometry(
+      1.5,
+      18,
+      18
     );
-
-  }
-
-
-  addHypothesis(
-    investigationId,
-    hypothesis
-  ){
-
-    const event=
-      new Event({
-
-        id:uuid("EVENT"),
-
-        type:
-          "HYPOTHESIS_CREATED",
-
-        payload:{
-          hypothesis
-        }
-
-      });
-
-
-    return this.applyEvent(
-      investigationId,
-      event
+  const material=
+    new THREE.MeshBasicMaterial({
+      color:0xff00ff
+    });
+  const mesh=
+    new THREE.Mesh(
+      geometry,
+      material
     );
-
-  }
-
-
-  addRelation(
-    investigationId,
-    relation
-  ){
-
-    const event=
-      new Event({
-
-        id:uuid("EVENT"),
-
-        type:
-          "RELATION_CREATED",
-
-        payload:{
-          relation
-        }
-
-      });
-
-
-    return this.applyEvent(
-      investigationId,
-      event
+  mesh.position.set(
+    position[0]*35,
+    position[1]*35,
+    position[2]*35
+  );
+  mesh.userData.memoryId=
+    memory.id;
+  nodesGroup.add(mesh);
+  memory.mesh=mesh;
+}
+/* ============================================================
+   QUERY NODE
+============================================================ */
+function renderQueryNode(vector){
+  if(queryNode){
+    nodesGroup.remove(
+      queryNode
     );
-
   }
-
-
-  export(){
-
-    return JSON.stringify(
-
-      [
-        ...this.investigations.values()
-      ],
-
-      null,
-      2
-
+  const p=
+    projectEmbedding(vector);
+  const geometry=
+    new THREE.SphereGeometry(
+      2.5,
+      20,
+      20
     );
-
-  }
-
-
-  import(json){
-
-    const data=
-      JSON.parse(json);
-
-
-    if(!Array.isArray(data)){
-
+  const material=
+    new THREE.MeshBasicMaterial({
+      color:0x00f5ff
+    });
+  queryNode=
+    new THREE.Mesh(
+      geometry,
+      material
+    );
+  queryNode.position.set(
+    p[0]*35,
+    p[1]*35,
+    p[2]*35
+  );
+  nodesGroup.add(
+    queryNode
+  );
+}
+/* ============================================================
+   MEMORY STORAGE
+============================================================ */
+function saveMemory(memory){
+  const stored=
+    JSON.parse(
+      localStorage.getItem(
+        "neural_memory_v2"
+      ) || "[]"
+    );
+  stored.push({
+    id:memory.id,
+    content:memory.content,
+    source:memory.source,
+    embedding:memory.embedding,
+    created:memory.created
+  });
+  localStorage.setItem(
+    "neural_memory_v2",
+    JSON.stringify(stored)
+  );
+}
+function loadMemories(){
+  const stored=
+    JSON.parse(
+      localStorage.getItem(
+        "neural_memory_v2"
+      ) || "[]"
+    );
+  stored.forEach(data=>{
+    const memory={
+      ...data
+    };
+    memories.push(
+      memory
+    );
+    createNode(
+      memory
+    );
+  });
+  updateCounters();
+}
+/* ============================================================
+   STORE BUTTON
+============================================================ */
+document
+.getElementById("storeMemory")
+.onclick=async()=>{
+  const input=
+    document.getElementById(
+      "memoryInput"
+    );
+  const source=
+    document.getElementById(
+      "memorySource"
+    );
+  const text=
+    input.value.trim();
+  if(!text)
+    return;
+  setStatus(
+    "● EMBEDDING…"
+  );
+  try{
+    const embedding=
+      await createEmbedding(
+        text
+      );
+    if(
+      memories.length &&
+      embedding.length !==
+      memories[0].embedding.length
+    ){
       throw new Error(
-        "Invalid investigation file"
+        "Embedding-Dimension passt nicht zum bestehenden Memory."
       );
-
     }
-
-
-    this.investigations.clear();
-
-
-    data.forEach(raw=>{
-
-      const inv=
-        Object.assign(
-          new Investigation({
-            id:raw.id,
-            subject:raw.subject,
-            start:
-              raw.timeRange.start,
-            end:
-              raw.timeRange.end,
-            status:raw.status
-          }),
-          raw
-        );
-
-
-      this.investigations.set(
-        inv.id,
-        inv
-      );
-
-    });
-
-
-    return this;
-
+    const memory={
+      id:
+        "mem_"+Date.now(),
+      content:text,
+      source:
+        source.value.trim(),
+      embedding:embedding,
+      created:
+        new Date().toISOString()
+    };
+    memories.push(
+      memory
+    );
+    saveMemory(
+      memory
+    );
+    createNode(
+      memory
+    );
+    updateCounters();
+    input.value="";
+    source.value="";
+    selectMemory(
+      memory
+    );
+    setStatus(
+      "● READY"
+    );
+  }catch(error){
+    console.error(error);
+    setStatus(
+      "● ERROR"
+    );
+    alert(
+      error.message
+    );
   }
-
-}
-
-
-/* =========================================================
-   KERNEL INSTANCE
-========================================================= */
-
-const kernel=
-  new KnowledgeKernel();
-
-
-/* =========================================================
-   INITIAL INVESTIGATION
-========================================================= */
-
-let currentId="INV-291";
-
-
-const investigation=
-  kernel.createInvestigation({
-
-    id:currentId,
-
-    subject:"AAPL",
-
-    start:"2026-03-11",
-
-    end:"2026-03-13"
-
-  });
-
-
-/* =========================================================
-   DEMO HYPOTHESIS
-========================================================= */
-
-const initialHypothesis=
-  new Hypothesis({
-
-    id:"H-001",
-
-    text:
-      "Guidance reduction explains most of the selloff."
-
-  });
-
-
-kernel.addHypothesis(
-  currentId,
-  initialHypothesis
-);
-
-
-/* =========================================================
-   CHART DATA
-========================================================= */
-
-const chartData={
-
-  AAPL:[
-    188,
-    189.5,
-    190.2,
-    189.2,
-    191.1,
-    192.3,
-    193,
-    192.4,
-    193.8,
-    194.1,
-    193.2,
-    194.8,
-    195.2,
-    196.1,
-    195.6,
-    196.8,
-    197.2,
-    196.5,
-    195.9,
-    196.7,
-    195.8,
-    194.2,
-    192.1,
-    189.8,
-    187.9,
-    184.8,
-    181.7,
-    178.9,
-    176.2,
-    174.4,
-    173.1,
-    171.8,
-    170.5,
-    171.2,
-    169.9,
-    168.6,
-    167.4,
-    166.9,
-    166.4,
-    165.8
-  ],
-
-  NVDA:[
-    118,
-    119,
-    121,
-    120,
-    122,
-    124,
-    123,
-    125,
-    127,
-    128,
-    126,
-    125,
-    123,
-    121,
-    119,
-    117,
-    115,
-    114,
-    112,
-    111,
-    109,
-    108,
-    110,
-    107,
-    106,
-    104,
-    103,
-    101,
-    100,
-    98,
-    97,
-    96,
-    95,
-    94,
-    93,
-    92,
-    91,
-    90,
-    89,
-    88
-  ],
-
-  TSLA:[
-    310,
-    313,
-    316,
-    314,
-    319,
-    322,
-    320,
-    325,
-    327,
-    324,
-    321,
-    318,
-    315,
-    312,
-    310,
-    307,
-    304,
-    301,
-    298,
-    295,
-    292,
-    290,
-    287,
-    284,
-    282,
-    279,
-    277,
-    274,
-    272,
-    270,
-    267,
-    265,
-    263,
-    260,
-    258,
-    256,
-    254,
-    252,
-    250,
-    249
-  ]
-
 };
-
-
-const dates=[
-  "03 Mar",
-  "04 Mar",
-  "05 Mar",
-  "06 Mar",
-  "07 Mar",
-  "08 Mar",
-  "09 Mar",
-  "10 Mar",
-  "11 Mar",
-  "11 Mar",
-  "11 Mar",
-  "12 Mar",
-  "12 Mar",
-  "12 Mar",
-  "12 Mar",
-  "13 Mar",
-  "13 Mar",
-  "13 Mar",
-  "13 Mar",
-  "13 Mar",
-  "14 Mar",
-  "14 Mar",
-  "15 Mar",
-  "16 Mar",
-  "17 Mar",
-  "18 Mar",
-  "19 Mar",
-  "20 Mar",
-  "21 Mar",
-  "22 Mar",
-  "23 Mar",
-  "24 Mar",
-  "25 Mar",
-  "26 Mar",
-  "27 Mar",
-  "28 Mar",
-  "29 Mar",
-  "30 Mar",
-  "31 Mar",
-  "01 Apr"
-];
-
-
-let activeSymbol="AAPL";
-
-let startIndex=8;
-let endIndex=19;
-
-let dragging=false;
-let dragStart=0;
-
-
-/* =========================================================
-   CANVAS
-========================================================= */
-
-const canvas=
-  document.getElementById("chart");
-
-const ctx=
-  canvas.getContext("2d");
-
-const chartArea=
-  document.getElementById("chartArea");
-
-let W=0;
-let H=0;
-let DPR=
-  window.devicePixelRatio || 1;
-
-
-function resizeCanvas(){
-
-  const rect=
-    chartArea.getBoundingClientRect();
-
-
-  W=rect.width;
-
-  H=rect.height;
-
-
-  canvas.width=
-    W*DPR;
-
-  canvas.height=
-    H*DPR;
-
-
-  ctx.setTransform(
-    DPR,
-    0,
-    0,
-    DPR,
-    0,
-    0
-  );
-
-
-  drawChart();
-
-}
-
-
-function chartX(i){
-
-  return 45+
-    i*
-    ((W-60)/
-     (chartData[activeSymbol].length-1));
-
-}
-
-
-function chartY(v){
-
-  const values=
-    chartData[activeSymbol];
-
-  const min=
-    Math.min(...values)-5;
-
-  const max=
-    Math.max(...values)+5;
-
-
-  return H-
-    35-
-    ((v-min)/
-     (max-min))*
-    (H-65);
-
-}
-
-
-function drawChart(){
-
-  const values=
-    chartData[activeSymbol];
-
-
-  ctx.clearRect(
-    0,
-    0,
-    W,
-    H
-  );
-
-
-  /* grid */
-
-  ctx.font=
-    "8px ui-monospace,monospace";
-
-  ctx.fillStyle=
-    "#637783";
-
-
-  for(
-    let i=0;
-    i<5;
-    i++
-  ){
-
-    const yy=
-      25+
-      i*
-      ((H-60)/4);
-
-
-    ctx.strokeStyle=
-      "#ffffff08";
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-      0,
-      yy
-    );
-
-    ctx.lineTo(
-      W,
-      yy
-    );
-
-    ctx.stroke();
-
-  }
-
-
-  /* selected background */
-
-  const sx=
-    chartX(startIndex);
-
-  const ex=
-    chartX(endIndex);
-
-
-  ctx.fillStyle=
-    "#00f5ff09";
-
-  ctx.fillRect(
-    sx,
-    0,
-    ex-sx,
-    H
-  );
-
-
-  /* full line */
-
-  ctx.beginPath();
-
-
-  values.forEach(
-    (v,i)=>{
-
-      if(i===0){
-
-        ctx.moveTo(
-          chartX(i),
-          chartY(v)
-        );
-
-      }else{
-
-        ctx.lineTo(
-          chartX(i),
-          chartY(v)
-        );
-
-      }
-
-    }
-  );
-
-
-  ctx.strokeStyle=
-    "#00f5ff";
-
-  ctx.lineWidth=2;
-
-  ctx.shadowBlur=10;
-
-  ctx.shadowColor=
-    "#00f5ff";
-
-  ctx.stroke();
-
-  ctx.shadowBlur=0;
-
-
-  /* selected line */
-
-  ctx.beginPath();
-
-
-  for(
-    let i=startIndex;
-    i<=endIndex;
-    i++
-  ){
-
-    if(i===startIndex){
-
-      ctx.moveTo(
-        chartX(i),
-        chartY(values[i])
-      );
-
-    }else{
-
-      ctx.lineTo(
-        chartX(i),
-        chartY(values[i])
-      );
-
-    }
-
-  }
-
-
-  ctx.strokeStyle=
-    "#ff2d8d";
-
-  ctx.lineWidth=3;
-
-  ctx.stroke();
-
-
-  /* endpoints */
-
-  [startIndex,endIndex]
-    .forEach(i=>{
-
-      ctx.beginPath();
-
-      ctx.arc(
-        chartX(i),
-        chartY(values[i]),
-        4,
-        0,
-        Math.PI*2
-      );
-
-      ctx.fillStyle=
-        "#ff2d8d";
-
-      ctx.fill();
-
-    });
-
-
-  updateSelection();
-
-}
-
-
-/* =========================================================
-   SELECTION
-========================================================= */
-
-function updateSelection(){
-
-  const selection=
+/* ============================================================
+   RETRIEVAL
+============================================================ */
+document
+.getElementById("retrieve")
+.onclick=async()=>{
+  const query=
     document.getElementById(
-      "selection"
+      "query"
+    ).value.trim();
+  if(!query)
+    return;
+  if(!memories.length){
+    alert(
+      "Memory ist leer."
     );
-
-
-  const label=
-    document.getElementById(
-      "selectionLabel"
-    );
-
-
-  const left=
-    chartX(startIndex);
-
-  const right=
-    chartX(endIndex);
-
-
-  selection.style.display=
-    "block";
-
-  selection.style.left=
-    left+"px";
-
-  selection.style.width=
-    (right-left)+"px";
-
-
-  const values=
-    chartData[activeSymbol];
-
-
-  const change=
-    (
-      (
-        values[endIndex]/
-        values[startIndex]
-      )-1
-    )*100;
-
-
-  label.textContent=
-    dates[startIndex]+
-    " → "+
-    dates[endIndex]+
-    " / "+
-    change.toFixed(1)+
-    "%";
-
-}
-
-
-function indexFromPointer(
-  clientX
-){
-
-  const rect=
-    chartArea.getBoundingClientRect();
-
-
-  let p=
-    (
-      clientX-
-      rect.left-
-      45
-    )/
-    (W-60);
-
-
-  p=
-    Math.max(
-      0,
-      Math.min(1,p)
-    );
-
-
-  return Math.round(
-    p*
-    (
-      chartData[activeSymbol]
-        .length-1
-    )
-  );
-
-}
-
-
-/* =========================================================
-   POINTER
-========================================================= */
-
-canvas.addEventListener(
-  "pointerdown",
-  e=>{
-
-    dragging=true;
-
-    dragStart=
-      indexFromPointer(
-        e.clientX
-      );
-
-    canvas.setPointerCapture(
-      e.pointerId
-    );
-
+    return;
   }
-);
-
-
-canvas.addEventListener(
-  "pointermove",
-  e=>{
-
-    if(!dragging)
-      return;
-
-
-    const index=
-      indexFromPointer(
-        e.clientX
+  setStatus(
+    "● RETRIEVING…"
+  );
+  try{
+    queryVector=
+      await createEmbedding(
+        query
       );
-
-
-    startIndex=
-      Math.min(
-        dragStart,
-        index
+    if(
+      queryVector.length !==
+      memories[0].embedding.length
+    ){
+      throw new Error(
+        "Query-Embedding hat eine andere Dimension."
       );
-
-
-    endIndex=
+    }
+    renderQueryNode(
+      queryVector
+    );
+    const k=
       Math.max(
-        dragStart,
-        index
+        1,
+        Number(
+          document.getElementById(
+            "topK"
+          ).value
+        ) || 5
       );
-
-
-    drawChart();
-
-  }
-);
-
-
-canvas.addEventListener(
-  "pointerup",
-  ()=>{
-
-    if(dragging){
-
-      dragging=false;
-
-      addTrace(
-        "CHART_SELECTION",
-        `Bereich ${dates[startIndex]} → ${dates[endIndex]} markiert.`
+    retrieval=
+      memories
+      .map(memory=>({
+        memory:memory,
+        score:
+          cosine(
+            queryVector,
+            memory.embedding
+          )
+      }))
+      .sort(
+        (a,b)=>
+          b.score-a.score
+      )
+      .slice(
+        0,
+        k
       );
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   OBSERVATION
-========================================================= */
-
-function createObservation(){
-
-  const values=
-    chartData[activeSymbol];
-
-
-  const start=
-    values[startIndex];
-
-  const end=
-    values[endIndex];
-
-
-  const change=
-    ((end/start)-1)*100;
-
-
-  const observation={
-
-    id:uuid("OBS"),
-
-    type:"PRICE_EVENT",
-
-    subject:activeSymbol,
-
-    startDate:
-      "2026-03-"+String(
-        3+startIndex
-      ).padStart(2,"0"),
-
-    endDate:
-      "2026-03-"+String(
-        3+endIndex
-      ).padStart(2,"0"),
-
-    startValue:
-      Number(start.toFixed(2)),
-
-    endValue:
-      Number(end.toFixed(2)),
-
-    changePercent:
-      Number(change.toFixed(2)),
-
-    source:"CHART_SELECTION"
-
-  };
-
-
-  kernel.addObservation(
-    currentId,
-    observation
-  );
-
-
-  document.getElementById(
-    "observationMove"
-  ).textContent=
-    (
-      change>=0?"+":""
-    )+
-    change.toFixed(1)+
-    "%";
-
-
-  document.getElementById(
-    "observationMeta"
-  ).textContent=
-    activeSymbol+
-    " · "+
-    dates[startIndex]+
-    " → "+
-    dates[endIndex];
-
-
-  addTrace(
-    "OBSERVATION_CREATED",
-    `${observation.id} · ${activeSymbol} ${change.toFixed(1)}%`
-  );
-
-
-  flashButton(
-    "createObservation"
-  );
-
-}
-
-
-document.getElementById(
-  "createObservation"
-).onclick=
-  createObservation;
-
-
-/* =========================================================
-   EVIDENCE
-========================================================= */
-
-const evidenceCandidates=[
-
-  {
-    id:"EV-421",
-
-    type:"NEWS",
-
-    source:"REUTERS",
-
-    publishedAt:
-      "2026-03-11T08:12:00",
-
-    content:
-      "Apple lowers guidance amid weaker demand outlook.",
-
-    relevance:0.92
-
-  },
-
-  {
-    id:"EV-422",
-
-    type:"SEC",
-
-    source:"SEC FILING",
-
-    publishedAt:
-      "2026-03-12T10:04:00",
-
-    content:
-      "Primary regulatory filing identified within the selected period.",
-
-    relevance:0.89
-
-  },
-
-  {
-    id:"EV-423",
-
-    type:"ANALYST",
-
-    source:"ANALYST REPORT",
-
-    publishedAt:
-      "2026-03-12T14:31:00",
-
-    content:
-      "Analysts revise Apple estimates following updated outlook.",
-
-    relevance:0.84
-
-  },
-
-  {
-    id:"EV-424",
-
-    type:"MARKET",
-
-    source:"MARKET CONTEXT",
-
-    publishedAt:
-      "2026-03-13T09:17:00",
-
-    content:
-      "Technology sector weakness accelerates during the investigation window.",
-
-    relevance:0.78
-
-  }
-
-];
-
-
-function findEvidence(){
-
-  renderEvidence();
-
-  addTrace(
-    "EVIDENCE_RETRIEVAL",
-    "Evidence candidates für den aktuellen Zeitraum geladen."
-  );
-
-
-  document.getElementById(
-    "evidenceList"
-  ).scrollIntoView({
-    behavior:"smooth",
-    block:"center"
-  });
-
-}
-
-
-function renderEvidence(){
-
-  const box=
-    document.getElementById(
-      "evidenceList"
+    renderRetrieval();
+    renderContext();
+    highlightRetrieval();
+    setStatus(
+      "● READY"
     );
-
-
-  box.innerHTML="";
-
-
-  evidenceCandidates.forEach(
-    candidate=>{
-
-      const item=
+  }catch(error){
+    console.error(error);
+    setStatus(
+      "● ERROR"
+    );
+    alert(
+      error.message
+    );
+  }
+};
+/* ============================================================
+   RETRIEVAL UI
+============================================================ */
+function renderRetrieval(){
+  const target=
+    document.getElementById(
+      "retrieval"
+    );
+  target.innerHTML="";
+  retrieval.forEach(
+    (hit,index)=>{
+      const div=
         document.createElement(
           "div"
         );
-
-
-      item.className="item";
-
-
-      item.innerHTML=`
-
-        <div class="item-top">
-
-          <span class="source">
-            ${candidate.source}
-          </span>
-
-          <span class="time">
-            ${candidate.publishedAt}
-          </span>
-
+      div.className="result";
+      div.innerHTML=`
+        <span class="score">
+          ${hit.score.toFixed(4)}
+        </span>
+        <div class="id">
+          #${index+1}
+          · ${hit.memory.id}
         </div>
-
-        <div class="item-title">
-          ${candidate.content}
+        <div class="content">
+          ${escapeHTML(
+            hit.memory.content
+          )}
         </div>
-
-        <div class="item-text">
-          Typ: ${candidate.type}
-          · Relevanz:
-          ${(candidate.relevance*100).toFixed(0)}%
-        </div>
-
-        <div class="item-actions">
-
-          <button class="mini add">
-            + ADD EVIDENCE
-          </button>
-
-        </div>
-
       `;
-
-
-      const button=
-        item.querySelector(
-          ".add"
+      div.onclick=()=>{
+        selectMemory(
+          hit.memory
         );
-
-
-      button.onclick=()=>{
-
-        const evidence=
-          new Evidence({
-
-            id:candidate.id,
-
-            type:candidate.type,
-
-            source:candidate.source,
-
-            content:candidate.content,
-
-            publishedAt:
-              candidate.publishedAt,
-
-            provenance:{
-              retrieval:
-                "V1_DEMO",
-              candidateRelevance:
-                candidate.relevance
-            }
-
-          });
-
-
-        /*
-          Prevent duplicates.
-        */
-
-        const inv=
-          kernel.getInvestigation(
-            currentId
-          );
-
-
-        if(
-          inv.evidence.some(
-            e=>e.id===evidence.id
-          )
-        ){
-
-          button.textContent=
-            "✓ ALREADY STORED";
-
-          return;
-
-        }
-
-
-        kernel.addEvidence(
-          currentId,
-          evidence
-        );
-
-
-        button.textContent=
-          "✓ STORED";
-
-        button.disabled=true;
-
-
-        renderEvidenceCount();
-
-
-        addTrace(
-          "EVIDENCE_ADDED",
-          `${evidence.id} · ${evidence.source}`
-        );
-
       };
-
-
-      box.appendChild(item);
-
+      target.appendChild(
+        div
+      );
     }
   );
-
 }
-
-
-function renderEvidenceCount(){
-
-  const inv=
-    kernel.getInvestigation(
-      currentId
+/* ============================================================
+   CONTEXT
+============================================================ */
+function renderContext(){
+  const target=
+    document.getElementById(
+      "context"
     );
-
-
-  document.getElementById(
-    "evidenceCountLabel"
-  ).textContent=
-    inv.evidence.length+
-    " STORED";
-
-}
-
-
-document.getElementById(
-  "findEvidence"
-).onclick=
-  findEvidence;
-
-
-document.getElementById(
-  "findEvidenceTop"
-).onclick=
-  findEvidence;
-
-
-/* =========================================================
-   HYPOTHESIS
-========================================================= */
-
-function openHypothesisModal(){
-
-  openModal(
-    "NEW HYPOTHESIS",
-    `
-
-      <div class="kicker">
-        HYPOTHESIS TEXT
-      </div>
-
-      <br>
-
-      <textarea
-        class="modal-textarea"
-        id="hypothesisInput"
-        placeholder="Formuliere eine prüfbare Hypothese..."
-      ></textarea>
-
-      <div class="modal-actions">
-
-        <button
-          class="btn pink"
-          id="saveHypothesis">
-          CREATE HYPOTHESIS
-        </button>
-
-      </div>
-
-    `
-  );
-
-
-  document.getElementById(
-    "saveHypothesis"
-  ).onclick=()=>{
-
-    const text=
-      document.getElementById(
-        "hypothesisInput"
-      ).value.trim();
-
-
-    if(!text)
-      return;
-
-
-    const hypothesis=
-      new Hypothesis({
-
-        id:uuid("H"),
-
-        text
-
-      });
-
-
-    kernel.addHypothesis(
-      currentId,
-      hypothesis
-    );
-
-
-    renderHypothesis(
-      hypothesis
-    );
-
-
-    addTrace(
-      "HYPOTHESIS_CREATED",
-      `${hypothesis.id} · ${hypothesis.text}`
-    );
-
-
-    closeModal();
-
-  };
-
-}
-
-
-function renderHypothesis(
-  hypothesis
-){
-
-  document.getElementById(
-    "hypothesisBox"
-  ).innerHTML=`
-
-    <div class="hypothesis-id">
-      ${hypothesis.id}
-    </div>
-
-    <div class="hypothesis-text">
-      ${hypothesis.text}
-    </div>
-
-    <div class="hypothesis-status">
-      ${hypothesis.status}
-    </div>
-
-  `;
-
-}
-
-
-document.getElementById(
-  "newHypothesis"
-).onclick=
-  openHypothesisModal;
-
-
-/* =========================================================
-   RELATION
-========================================================= */
-
-function openRelationModal(){
-
-  const inv=
-    kernel.getInvestigation(
-      currentId
-    );
-
-
-  if(
-    inv.evidence.length===0 ||
-    inv.hypotheses.length===0
-  ){
-
-    openModal(
-      "RELATION NOT POSSIBLE",
-      `
-
-        <div class="item-text">
-
-          Eine Relation benötigt bereits
-          vorhandene Evidence und eine Hypothese.
-
-          <br><br>
-
-          Ablauf:
-
+  if(!retrieval.length){
+    target.textContent=
+      "Kein Retrieval.";
+    return;
+  }
+  target.innerHTML=
+    retrieval.map(
+      (hit,index)=>`
+        <div>
+          <b>
+            Memory ${index+1}
+          </b>
+          <span
+            style="color:#00f5ff"
+          >
+            cosine=${hit.score.toFixed(4)}
+          </span>
           <br>
-
-          Evidence hinzufügen
-          →
-          Hypothese erstellen
-          →
-          Relation erzeugen.
-
+          ${escapeHTML(
+            hit.memory.content
+          )}
         </div>
-
+        <hr>
       `
+    ).join("");
+}
+/* ============================================================
+   LLM
+============================================================ */
+document
+.getElementById("askLLM")
+.onclick=async()=>{
+  if(!retrieval.length){
+    alert(
+      "Erst Retrieval ausführen."
     );
-
     return;
-
   }
-
-
-  openModal(
-    "ADD RELATION",
-    `
-
-      <div class="kicker">
-        FROM
-      </div>
-
-      <br>
-
-      <select
-        class="modal-input"
-        id="relationFrom">
-
-        ${inv.evidence.map(
-          e=>`
-            <option value="${e.id}">
-              ${e.id} — ${e.source}
-            </option>
-          `
-        ).join("")}
-
-      </select>
-
-      <br><br>
-
-      <div class="kicker">
-        RELATION
-      </div>
-
-      <br>
-
-      <select
-        class="modal-input"
-        id="relationType">
-
-        <option>
-          SUPPORTS
-        </option>
-
-        <option>
-          CONTRADICTS
-        </option>
-
-        <option>
-          WEAKENS
-        </option>
-
-        <option>
-          REFINES
-        </option>
-
-        <option>
-          RELATED_TO
-        </option>
-
-      </select>
-
-      <br><br>
-
-      <div class="kicker">
-        TO
-      </div>
-
-      <br>
-
-      <select
-        class="modal-input"
-        id="relationTo">
-
-        ${inv.hypotheses.map(
-          h=>`
-            <option value="${h.id}">
-              ${h.id} — ${h.text}
-            </option>
-          `
-        ).join("")}
-
-      </select>
-
-      <div class="modal-actions">
-
-        <button
-          class="btn cyan"
-          id="saveRelation">
-
-          CREATE RELATION
-
-        </button>
-
-      </div>
-
-    `
-  );
-
-
-  document.getElementById(
-    "saveRelation"
-  ).onclick=()=>{
-
-    const relation=
-      new Relation({
-
-        id:uuid("REL"),
-
-        from:
-          document.getElementById(
-            "relationFrom"
-          ).value,
-
-        to:
-          document.getElementById(
-            "relationTo"
-          ).value,
-
-        type:
-          document.getElementById(
-            "relationType"
-          ).value
-
-      });
-
-
-    try{
-
-      kernel.addRelation(
-        currentId,
-        relation
-      );
-
-
-      addTrace(
-        "RELATION_CREATED",
-        `${relation.from} ${relation.type} ${relation.to}`
-      );
-
-
-      closeModal();
-
-
-    }catch(error){
-
-      alert(
-        error.message
-      );
-
-    }
-
-  };
-
-}
-
-
-document.getElementById(
-  "addRelation"
-).onclick=
-  openRelationModal;
-
-
-/* =========================================================
-   TRACE
-========================================================= */
-
-function addTrace(
-  type,
-  description
-){
-
-  const trace=
+  const question=
     document.getElementById(
-      "trace"
-    );
-
-
-  const list=
-    trace.querySelector(
-      ".trace-list"
-    );
-
-
-  const event=
-    document.createElement(
-      "div"
-    );
-
-
-  event.className="event";
-
-
-  event.innerHTML=`
-
-    <i class="event-dot"></i>
-
-    <div class="event-time">
-      ${new Date().toLocaleTimeString(
-        "de-DE"
-      )}
-    </div>
-
-    <div class="event-type">
-      ${type}
-    </div>
-
-    <div class="event-desc">
-      ${description}
-    </div>
-
-  `;
-
-
-  list.appendChild(event);
-
-}
-
-
-/* =========================================================
-   JSON VIEW
-========================================================= */
-
-function showState(){
-
-  openModal(
-    "CURRENT KNOWLEDGE STATE",
-    `
-
-      <pre>${escapeHtml(
-        kernel.export()
-      )}</pre>
-
-    `
+      "query"
+    ).value.trim();
+  const endpoint=
+    document.getElementById(
+      "chatEndpoint"
+    ).value.trim();
+  const model=
+    document.getElementById(
+      "chatModel"
+    ).value.trim();
+  const context=
+    retrieval.map(
+      (hit,index)=>
+        `[MEMORY ${index+1}]\n`+
+        hit.memory.content
+    ).join("\n\n");
+  const systemPrompt=
+`Du bist ein RAG-Antwortsystem.
+Verwende ausschließlich den bereitgestellten
+Memory-Context.
+Erfinde keine Informationen.
+Wenn die Antwort nicht aus dem Context
+ableitbar ist, sage ausdrücklich:
+"Nicht im Memory vorhanden."
+Memory Context:
+${context}`;
+  setStatus(
+    "● LLM…"
   );
-
-}
-
-
-document.getElementById(
-  "showJSON"
-).onclick=
-  showState;
-
-
-/* =========================================================
-   EXPORT
-========================================================= */
-
-function exportJSON(){
-
-  const blob=
-    new Blob(
-      [
-        kernel.export()
-      ],
-      {
-        type:
-          "application/json"
-      }
-    );
-
-
-  const url=
-    URL.createObjectURL(
-      blob
-    );
-
-
-  const a=
-    document.createElement(
-      "a"
-    );
-
-
-  a.href=url;
-
-  a.download=
-    "neural-memory-investigation.json";
-
-  a.click();
-
-
-  URL.revokeObjectURL(url);
-
-
-  addTrace(
-    "STATE_EXPORTED",
-    "Investigation als JSON exportiert."
-  );
-
-}
-
-
-document.getElementById(
-  "exportBtn"
-).onclick=
-  exportJSON;
-
-
-/* =========================================================
-   IMPORT
-========================================================= */
-
-document.getElementById(
-  "importBtn"
-).onclick=()=>{
-
-  document.getElementById(
-    "importFile"
-  ).click();
-
-};
-
-
-document.getElementById(
-  "importFile"
-).onchange=e=>{
-
-  const file=
-    e.target.files[0];
-
-
-  if(!file)
-    return;
-
-
-  const reader=
-    new FileReader();
-
-
-  reader.onload=()=>{
-
-    try{
-
-      kernel.import(
-        reader.result
-      );
-
-
-      const first=
-        [
-          ...kernel.investigations
-            .values()
-        ][0];
-
-
-      if(first){
-
-        currentId=
-          first.id;
-
-
-        activeSymbol=
-          first.subject;
-
-
-        document.getElementById(
-          "chartSymbol"
-        ).textContent=
-          activeSymbol;
-
-
-        renderEvidenceCount();
-
-
-        if(first.hypotheses.length){
-
-          renderHypothesis(
-            first.hypotheses[
-              first.hypotheses.length-1
+  try{
+    const response=
+      await fetch(
+        endpoint,
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+          body:JSON.stringify({
+            model:model,
+            stream:false,
+            messages:[
+              {
+                role:"system",
+                content:
+                  systemPrompt
+              },
+              {
+                role:"user",
+                content:
+                  question
+              }
             ]
-          );
-
+          })
         }
-
-      }
-
-
-      addTrace(
-        "STATE_IMPORTED",
-        "Investigation aus JSON geladen."
       );
-
-
-      alert(
-        "Investigation geladen."
+    if(!response.ok){
+      throw new Error(
+        "LLM HTTP Fehler: "+
+        response.status
       );
-
-
-    }catch(error){
-
-      alert(
-        "Import fehlgeschlagen: "+
-        error.message
-      );
-
     }
-
-  };
-
-
-  reader.readAsText(
-    file
-  );
-
-};
-
-
-/* =========================================================
-   MODAL
-========================================================= */
-
-const modal=
-  document.getElementById(
-    "modal"
-  );
-
-
-function openModal(
-  title,
-  body
-){
-
-  document.getElementById(
-    "modalTitle"
-  ).textContent=
-    title;
-
-
-  document.getElementById(
-    "modalBody"
-  ).innerHTML=
-    body;
-
-
-  modal.classList.add(
-    "open"
-  );
-
-}
-
-
-function closeModal(){
-
-  modal.classList.remove(
-    "open"
-  );
-
-}
-
-
-document.getElementById(
-  "closeModal"
-).onclick=
-  closeModal;
-
-
-modal.addEventListener(
-  "click",
-  e=>{
-
-    if(
-      e.target===modal
-    ){
-
-      closeModal();
-
-    }
-
+    const data=
+      await response.json();
+    const answer=
+      data?.message?.content ||
+      "Keine Antwort erhalten.";
+    document
+      .getElementById(
+        "answer"
+      )
+      .textContent=
+        answer;
+    setStatus(
+      "● READY"
+    );
+  }catch(error){
+    console.error(error);
+    document
+      .getElementById(
+        "answer"
+      )
+      .textContent=
+        error.message;
+    setStatus(
+      "● ERROR"
+    );
   }
-);
-
-
-/* =========================================================
-   WATCHLIST
-========================================================= */
-
-document.querySelectorAll(
-  ".watch"
-).forEach(
-  button=>{
-
-    button.onclick=()=>{
-
-      document
-        .querySelectorAll(
-          ".watch"
+};
+/* ============================================================
+   INSPECTOR
+============================================================ */
+function selectMemory(memory){
+  selectedMemory=
+    memory;
+  document
+    .getElementById(
+      "inspector"
+    )
+    .innerHTML=`
+      <pre>${escapeHTML(
+        JSON.stringify(
+          {
+            id:memory.id,
+            source:memory.source,
+            created:memory.created,
+            dimensions:
+              memory.embedding.length,
+            content:
+              memory.content
+          },
+          null,
+          2
         )
-        .forEach(
-          b=>b.classList.remove(
-            "active"
-          )
+      )}</pre>
+    `;
+}
+/* ============================================================
+   HIGHLIGHT
+============================================================ */
+function highlightRetrieval(){
+  memories.forEach(
+    memory=>{
+      if(!memory.mesh)
+        return;
+      const hit=
+        retrieval.find(
+          r=>
+            r.memory.id===
+            memory.id
         );
-
-
-      button.classList.add(
-        "active"
-      );
-
-
-      activeSymbol=
-        button.dataset.symbol;
-
-
-      document.getElementById(
-        "chartSymbol"
-      ).textContent=
-        activeSymbol;
-
-
-      /*
-        Demo keeps one investigation
-        for the kernel architecture.
-
-        In V2 each subject gets its
-        own Investigation.
-      */
-
-      drawChart();
-
-
-      addTrace(
-        "SUBJECT_SELECTED",
-        `${activeSymbol} als Chart-Subject ausgewählt.`
-      );
-
-    };
-
-  }
-);
-
-
-/* =========================================================
-   PRESET SELECTION
-========================================================= */
-
-document.getElementById(
-  "eventSelection"
-).onclick=()=>{
-
-  startIndex=8;
-
-  endIndex=19;
-
-  drawChart();
-
-
-  addTrace(
-    "CHART_SELECTION",
-    "Standardfenster 11–13 Mar ausgewählt."
+      if(hit){
+        memory.mesh.material.color.set(
+          0x00f5ff
+        );
+        memory.mesh.scale.setScalar(
+          1.5+
+          hit.score*2
+        );
+      }else{
+        memory.mesh.material.color.set(
+          0xff00ff
+        );
+        memory.mesh.scale.setScalar(
+          1
+        );
+      }
+    }
   );
-
-};
-
-
-document.getElementById(
-  "resetSelection"
-).onclick=()=>{
-
-  startIndex=0;
-
-  endIndex=39;
-
-  drawChart();
-
-
-  addTrace(
-    "CHART_SELECTION",
-    "Gesamter Chartbereich ausgewählt."
-  );
-
-};
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function flashButton(
-  id
-){
-
-  const button=
-    document.getElementById(
-      id
-    );
-
-
-  const original=
-    button.textContent;
-
-
-  button.textContent=
-    "✓ COMMITTED";
-
-
-  setTimeout(
-    ()=>{
-      button.textContent=
-        original;
-    },
-    900
-  );
-
 }
-
-
-function escapeHtml(
-  value
-){
-
-  return String(value)
-    .replaceAll(
-      "&",
-      "&amp;"
+/* ============================================================
+   UI
+============================================================ */
+function updateCounters(){
+  document
+    .getElementById(
+      "memoryCount"
     )
-    .replaceAll(
-      "<",
-      "&lt;"
+    .textContent=
+      memories.length;
+  document
+    .getElementById(
+      "dimension"
     )
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-    .replaceAll(
-      '"',
-      "&quot;"
-    );
-
+    .textContent=
+      memories.length
+      ? memories[0].embedding.length
+      : "—";
 }
-
-
-/* =========================================================
-   INIT
-========================================================= */
-
+function setStatus(text){
+  document
+    .getElementById(
+      "status"
+    )
+    .textContent=
+      text;
+}
+function escapeHTML(text){
+  return text.replace(
+    /[&<>"']/g,
+    char=>({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    })[char]
+  );
+}
+/* ============================================================
+   RESIZE
+============================================================ */
 window.addEventListener(
   "resize",
-  resizeCanvas
+  ()=>{
+    camera.aspect=
+      brain.clientWidth/
+      brain.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(
+      brain.clientWidth,
+      brain.clientHeight
+    );
+  }
 );
-
-
-resizeCanvas();
-
-
-renderHypothesis(
-  initialHypothesis
-);
-
-
-renderEvidenceCount();
-
-
-/*
-  IMPORTANT ARCHITECTURE NOTE
-
-  Current V1:
-
-  UI
-   ↓
-  Kernel
-   ↓
-  State
-   ↓
-  Events
-
-  NOT:
-
-  UI
-   ↓
-  LLM
-   ↓
-  Database
-
-  Future retrieval layer:
-
-  Evidence
-   ↓
-  Embedding
-   ↓
-  Vector Index
-
-  remains outside the kernel.
-*/
-
+/* ============================================================
+   ANIMATION
+============================================================ */
+function animate(){
+  requestAnimationFrame(
+    animate
+  );
+  nodesGroup.rotation.y+=
+    0.0015;
+  renderer.render(
+    scene,
+    camera
+  );
+}
+/* ============================================================
+   START
+============================================================ */
+loadMemories();
+animate();
 </script>
-
 </body>
 </html>
